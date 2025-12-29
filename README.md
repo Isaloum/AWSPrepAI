@@ -1,5 +1,5 @@
 # AWSPrepAI
-AWS Cloud Practitioner (CLF-C02) certification study tool with 55+ practice questions, flashcards, mock exams, and progress tracking
+AWS Certification study tool with 157 practice questions for Cloud Practitioner (CLF-C02) and Solutions Architect Associate (SAA-C03)
 
 🔗 **Live Demo:** [https://isaloum.github.io/AWSPrepAI](https://isaloum.github.io/AWSPrepAI)
 
@@ -7,20 +7,25 @@ AWS Cloud Practitioner (CLF-C02) certification study tool with 55+ practice ques
 
 | Feature | Description |
 |---------|-------------|
-| **Practice Quiz** | 55+ questions across 6 AWS domains with explanations |
-| **Flashcards** | 25 AWS service cards with flip-to-reveal answers |
-| **Mock Exam** | 65 questions, 90-minute timer, 70% pass score |
-| **Services Guide** | Searchable AWS services reference |
-| **Progress Tracking** | Weak areas identification, streaks, exam readiness |
+| **Dual Certifications** | Support for CLF-C02 (38 questions) and SAA-C03 (119 questions) |
+| **Practice Quiz** | 157 total questions across all AWS domains with detailed explanations |
+| **Mock Exam** | Full-length timed exams matching real certification format |
+| **Services Guide** | Searchable AWS services reference with 30+ core services |
+| **Progress Tracking** | Weak areas identification, streaks, exam readiness scoring |
 
-## Domains Covered
+## Certifications Supported
 
-- 🖥️ **Compute** - EC2, Lambda, ECS, Fargate, Elastic Beanstalk
-- 💾 **Storage** - S3, EBS, EFS, Glacier, Snowball
-- 🗄️ **Database** - RDS, DynamoDB, Aurora, ElastiCache, Redshift
-- 🔐 **Security** - IAM, KMS, Shield, WAF, Inspector, Macie
-- 🌐 **Networking** - VPC, CloudFront, Route 53, Direct Connect, ELB
-- 💰 **Pricing** - Free Tier, Cost Explorer, Budgets, Support Plans
+### ☁️ AWS Cloud Practitioner (CLF-C02) - 38 Questions
+- Cloud Concepts - Understanding AWS Cloud, deployment models, shared responsibility
+- Security & Compliance - IAM, encryption, compliance programs
+- Technology - Core AWS services across compute, storage, database, networking
+- Billing & Pricing - Pricing models, cost optimization, support plans
+
+### 🏗️ AWS Solutions Architect Associate (SAA-C03) - 119 Questions
+- Design Secure Architectures - IAM, encryption, VPC security, compliance
+- Design Resilient Architectures - High availability, disaster recovery, decoupling
+- Design High-Performing Architectures - Caching, database optimization, scalability
+- Design Cost-Optimized Architectures - Storage classes, compute options, cost monitoring
 
 ## Tech Stack
 
