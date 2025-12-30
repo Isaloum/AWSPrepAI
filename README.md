@@ -1,5 +1,5 @@
 # AWSPrepAI
-AWS Certification study tool with 217+ practice questions for Cloud Practitioner (CLF-C02) and Solutions Architect Associate (SAA-C03)
+AWS Certification study tool with 352+ practice questions for Cloud Practitioner (CLF-C02) and Solutions Architect Associate (SAA-C03)
 
 🔗 **Live Demo:** [https://isaloum.github.io/AWSPrepAI](https://isaloum.github.io/AWSPrepAI)
 
@@ -7,8 +7,8 @@ AWS Certification study tool with 217+ practice questions for Cloud Practitioner
 
 | Feature | Description |
 |---------|-------------|
-| **Dual Certifications** | Support for CLF-C02 (38 questions) and SAA-C03 (184 questions from multiple practice tests) |
-| **Practice Quiz** | 217+ total questions across all AWS domains with detailed explanations |
+| **Dual Certifications** | Support for CLF-C02 (38 questions) and SAA-C03 (314 questions from multiple practice tests) |
+| **Practice Quiz** | 352+ total questions across all AWS domains with detailed explanations |
 | **Mock Exam** | Full-length timed exams matching real certification format |
 | **Services Guide** | Searchable AWS services reference with 30+ core services |
 | **Progress Tracking** | Weak areas identification, streaks, exam readiness scoring |
@@ -21,7 +21,7 @@ AWS Certification study tool with 217+ practice questions for Cloud Practitioner
 - Technology - Core AWS services across compute, storage, database, networking
 - Billing & Pricing - Pricing models, cost optimization, support plans
 
-### 🏗️ AWS Solutions Architect Associate (SAA-C03) - 184 Questions
+### 🏗️ AWS Solutions Architect Associate (SAA-C03) - 314 Questions
 - Design Secure Architectures - IAM, encryption, VPC security, compliance, cross-account access
 - Design Resilient Architectures - High availability, disaster recovery, decoupling, auto scaling
 - Design High-Performing Architectures - Caching, database optimization, scalability, CloudFront
