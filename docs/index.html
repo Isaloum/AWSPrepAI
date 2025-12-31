@@ -68,6 +68,13 @@
     .cert-badge.clf{background:#10b981;color:#fff}
     .cert-badge.saa{background:#3b82f6;color:#fff}
     @media(max-width:768px){.nav-tabs{justify-content:center}.header-content{justify-content:center;flex-direction:column}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    .floating-tips-btn{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));border:3px solid var(--bg);font-size:1.5rem;cursor:pointer;box-shadow:0 4px 12px rgba(255,153,0,.4);transition:all .3s;z-index:1000;animation:pulse 2s infinite}
+    .floating-tips-btn:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(255,153,0,.6)}
+    @keyframes pulse{0%,100%{box-shadow:0 4px 12px rgba(255,153,0,.4)}50%{box-shadow:0 4px 20px rgba(255,153,0,.7)}}
+    .tips-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:2000;align-items:center;justify-content:center}
+    .tips-modal.active{display:flex}
+    .tips-content{background:var(--card);border:2px solid var(--aws-orange);border-radius:var(--radius);padding:2rem;max-width:600px;max-height:80vh;overflow-y:auto;margin:1rem}
+    .tips-close{position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:var(--text);font-size:2rem;cursor:pointer;line-height:1}
   </style>
 </head>
 <body>
@@ -85,6 +92,7 @@
           <button class="nav-tab active" data-tab="dashboard"><span class="icon">📊</span><span>Dashboard</span></button>
           <button class="nav-tab" data-tab="quiz"><span class="icon">❓</span><span>Practice</span></button>
           <button class="nav-tab" data-tab="exam"><span class="icon">📝</span><span>Mock Exam</span></button>
+          <button class="nav-tab" data-tab="study-guide"><span class="icon">🎓</span><span>Study Guide</span></button>
           <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
         </nav>
       </div>
@@ -121,6 +129,11 @@
 
     <!-- Practice Quiz -->
     <section id="quiz" class="app-section">
+      <!-- Floating Tips Button -->
+      <button id="floatingTips" class="floating-tips-btn" onclick="showQuickTips()" title="Quick Study Tips" style="display:none">
+        💡
+      </button>
+
       <div class="card">
         <div class="card-title">🎯 Select Domain</div>
         <div class="btn-group" id="categoryBtns"></div>
@@ -138,6 +151,15 @@
         </div>
       </div>
     </section>
+
+    <!-- Tips Modal -->
+    <div id="tipsModal" class="tips-modal">
+      <div class="tips-content" style="position:relative">
+        <button class="tips-close" onclick="closeTips()">×</button>
+        <div class="card-title" style="margin-bottom:1rem">💡 Quick Study Tips</div>
+        <div id="tipsContent"></div>
+      </div>
+    </div>
 
     <!-- Mock Exam -->
     <section id="exam" class="app-section">
@@ -172,6 +194,226 @@
       </div>
     </section>
 
+    <!-- Study Guide -->
+    <section id="study-guide" class="app-section">
+      <div class="card card-orange">
+        <div class="card-title">🎓 SAA-C03 Smart Study Guide</div>
+        <p style="color:var(--muted)">Based on analysis of all 505 SAA-C03 practice questions</p>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-value">152</div><div class="stat-label">Design-Performant</div></div>
+        <div class="stat-card"><div class="stat-value">144</div><div class="stat-label">Design-Secure</div></div>
+        <div class="stat-card"><div class="stat-value">119</div><div class="stat-label">Design-Resilient</div></div>
+        <div class="stat-card"><div class="stat-value">90</div><div class="stat-label">Design-Cost</div></div>
+      </div>
+
+      <!-- Domain Selector -->
+      <div class="card">
+        <div class="card-title">📚 Select Domain</div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="showDomain('secure')">🔐 Design Secure</button>
+          <button class="btn btn-secondary" onclick="showDomain('resilient')">🛡️ Design Resilient</button>
+          <button class="btn btn-secondary" onclick="showDomain('performant')">⚡ Design Performant</button>
+          <button class="btn btn-secondary" onclick="showDomain('cost')">💰 Design Cost</button>
+        </div>
+      </div>
+
+      <!-- Design Secure -->
+      <div id="domain-secure" class="domain-content">
+        <div class="card">
+          <div class="card-title">🔐 Design Secure Architectures (144 Questions)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🏆 Top 10 Most Tested Services</h3>
+          <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+            <div class="data-item"><span>1. S3</span><span class="data-item-value">145</span></div>
+            <div class="data-item"><span>2. IAM</span><span class="data-item-value">101</span></div>
+            <div class="data-item"><span>3. VPC</span><span class="data-item-value">85</span></div>
+            <div class="data-item"><span>4. EC2</span><span class="data-item-value">84</span></div>
+            <div class="data-item"><span>5. CloudFront</span><span class="data-item-value">35</span></div>
+            <div class="data-item"><span>6. Route 53</span><span class="data-item-value">33</span></div>
+            <div class="data-item"><span>7. WAF</span><span class="data-item-value">30</span></div>
+            <div class="data-item"><span>8. VPN</span><span class="data-item-value">30</span></div>
+            <div class="data-item"><span>9. Direct Connect</span><span class="data-item-value">29</span></div>
+            <div class="data-item"><span>10. RDS</span><span class="data-item-value">26</span></div>
+          </div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Key Topics to Master</h3>
+          <div class="insight positive">✅ <strong>IAM:</strong> Roles vs policies, cross-account access, resource-based policies, permissions boundaries</div>
+          <div class="insight positive">✅ <strong>Encryption:</strong> KMS, SSE-S3, SSE-C, SSE-KMS, SSL/TLS, client-side encryption</div>
+          <div class="insight positive">✅ <strong>VPC Security:</strong> Security Groups (stateful) vs NACLs (stateless), VPC endpoints, PrivateLink</div>
+          <div class="insight positive">✅ <strong>S3 Security:</strong> Bucket policies, ACLs, encryption at rest, versioning, MFA delete</div>
+          <div class="insight positive">✅ <strong>Security Services:</strong> GuardDuty, WAF, Shield, Macie, Security Hub, Inspector</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⚠️ Common Wrong Answer Traps</h3>
+          <div class="insight warning">❌ Using Internet Gateway instead of NAT Gateway for private subnets</div>
+          <div class="insight warning">❌ Confusing Security Groups (instance-level) with NACLs (subnet-level)</div>
+          <div class="insight warning">❌ Using VPC Peering for complex connectivity (use Transit Gateway instead)</div>
+          <div class="insight warning">❌ Making resources public when private access is possible</div>
+          <div class="insight warning">❌ Confusing Gateway Endpoints (S3/DynamoDB only) with Interface Endpoints (other services)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">💡 Quick Reference</h3>
+          <div class="insight">🔑 <strong>Cross-Account Access:</strong> Requires BOTH IAM role AND resource-based policy</div>
+          <div class="insight">🔑 <strong>Security Groups:</strong> Stateful, instance-level, allow rules only</div>
+          <div class="insight">🔑 <strong>NACLs:</strong> Stateless, subnet-level, allow + deny rules</div>
+          <div class="insight">🔑 <strong>VPC Endpoints:</strong> Gateway (S3/DynamoDB) vs Interface (all others)</div>
+          <div class="insight">🔑 <strong>Encryption at rest:</strong> KMS, SSE-S3, SSE-C, EBS encryption, RDS encryption</div>
+        </div>
+      </div>
+
+      <!-- Design Resilient -->
+      <div id="domain-resilient" class="domain-content" style="display:none">
+        <div class="card">
+          <div class="card-title">🛡️ Design Resilient Architectures (119 Questions)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🏆 Top 10 Most Tested Services</h3>
+          <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+            <div class="data-item"><span>1. EC2</span><span class="data-item-value">82</span></div>
+            <div class="data-item"><span>2. S3</span><span class="data-item-value">50</span></div>
+            <div class="data-item"><span>3. Multi-AZ</span><span class="data-item-value">48</span></div>
+            <div class="data-item"><span>4. SQS</span><span class="data-item-value">39</span></div>
+            <div class="data-item"><span>5. RDS</span><span class="data-item-value">37</span></div>
+            <div class="data-item"><span>6. Auto Scaling</span><span class="data-item-value">35</span></div>
+            <div class="data-item"><span>7. Aurora</span><span class="data-item-value">30</span></div>
+            <div class="data-item"><span>8. Lambda</span><span class="data-item-value">29</span></div>
+            <div class="data-item"><span>9. DynamoDB</span><span class="data-item-value">28</span></div>
+            <div class="data-item"><span>10. SNS</span><span class="data-item-value">26</span></div>
+          </div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Key Topics to Master</h3>
+          <div class="insight positive">✅ <strong>Multi-AZ:</strong> RDS, Aurora, ELB, NAT Gateway - automatic failover, high availability</div>
+          <div class="insight positive">✅ <strong>Auto Scaling:</strong> Target tracking, step scaling, scheduled scaling, lifecycle hooks</div>
+          <div class="insight positive">✅ <strong>Load Balancing:</strong> ALB (Layer 7), NLB (Layer 4), health checks, cross-zone</div>
+          <div class="insight positive">✅ <strong>Decoupling:</strong> SQS (standard vs FIFO), SNS, EventBridge</div>
+          <div class="insight positive">✅ <strong>Database HA:</strong> Multi-AZ vs Read Replicas vs Aurora Global Database</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⚠️ Common Wrong Answer Traps</h3>
+          <div class="insight warning">❌ Confusing Read Replicas (read scaling) with Multi-AZ (HA/failover)</div>
+          <div class="insight warning">❌ Confusing CloudWatch (metrics) with CloudTrail (API logs)</div>
+          <div class="insight warning">❌ Using single AZ for production workloads</div>
+          <div class="insight warning">❌ Forgetting Read Replicas don't provide automatic failover</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">💡 Quick Reference</h3>
+          <div class="insight">🔑 <strong>Multi-AZ:</strong> Automatic failover, synchronous replication, RTO: 1-2 minutes</div>
+          <div class="insight">🔑 <strong>Read Replicas:</strong> Read scaling, asynchronous, manual promotion required</div>
+          <div class="insight">🔑 <strong>SQS Standard:</strong> At-least-once delivery, best-effort ordering</div>
+          <div class="insight">🔑 <strong>SQS FIFO:</strong> Exactly-once processing, strict ordering, 3000 msg/sec with batching</div>
+          <div class="insight">🔑 <strong>Minimum AZs:</strong> Always use at least 2 AZs for high availability</div>
+        </div>
+      </div>
+
+      <!-- Design Performant -->
+      <div id="domain-performant" class="domain-content" style="display:none">
+        <div class="card">
+          <div class="card-title">⚡ Design High-Performing Architectures (152 Questions)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🏆 Top 10 Most Tested Services</h3>
+          <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+            <div class="data-item"><span>1. S3</span><span class="data-item-value">138</span></div>
+            <div class="data-item"><span>2. EC2</span><span class="data-item-value">81</span></div>
+            <div class="data-item"><span>3. Lambda</span><span class="data-item-value">58</span></div>
+            <div class="data-item"><span>4. DynamoDB</span><span class="data-item-value">46</span></div>
+            <div class="data-item"><span>5. Kinesis</span><span class="data-item-value">43</span></div>
+            <div class="data-item"><span>6. CloudFront</span><span class="data-item-value">42</span></div>
+            <div class="data-item"><span>7. RDS</span><span class="data-item-value">40</span></div>
+            <div class="data-item"><span>8. Auto Scaling</span><span class="data-item-value">35</span></div>
+            <div class="data-item"><span>9. Aurora</span><span class="data-item-value">34</span></div>
+            <div class="data-item"><span>10. API Gateway</span><span class="data-item-value">31</span></div>
+          </div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Key Topics to Master</h3>
+          <div class="insight positive">✅ <strong>Caching:</strong> CloudFront (edge), ElastiCache (Redis/Memcached), DAX (DynamoDB)</div>
+          <div class="insight positive">✅ <strong>Database Performance:</strong> Aurora, DynamoDB, read replicas, proper indexing</div>
+          <div class="insight positive">✅ <strong>Serverless:</strong> Lambda optimization, API Gateway, Step Functions</div>
+          <div class="insight positive">✅ <strong>S3 Performance:</strong> Transfer Acceleration, Multipart Upload, prefixes for scaling</div>
+          <div class="insight positive">✅ <strong>Data Processing:</strong> Kinesis, EMR, Glue, Athena, Redshift</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⚠️ Common Wrong Answer Traps</h3>
+          <div class="insight warning">❌ Not using caching when latency is critical</div>
+          <div class="insight warning">❌ Using wrong EBS type (IOPS vs throughput)</div>
+          <div class="insight warning">❌ Spot Instances for stable workloads (use Reserved)</div>
+          <div class="insight warning">❌ Not using CloudFront for global content delivery</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">💡 Quick Reference</h3>
+          <div class="insight">🔑 <strong>ElastiCache:</strong> Redis (complex data) vs Memcached (simple key-value)</div>
+          <div class="insight">🔑 <strong>DAX:</strong> DynamoDB-specific cache, microsecond latency, API-compatible</div>
+          <div class="insight">🔑 <strong>S3 Transfer Acceleration:</strong> Uses CloudFront edge locations for faster uploads</div>
+          <div class="insight">🔑 <strong>Multipart Upload:</strong> For files >100MB, parallel uploads improve throughput</div>
+          <div class="insight">🔑 <strong>Aurora:</strong> 5x faster than MySQL, 3x faster than PostgreSQL, auto-scaling storage</div>
+        </div>
+      </div>
+
+      <!-- Design Cost -->
+      <div id="domain-cost" class="domain-content" style="display:none">
+        <div class="card">
+          <div class="card-title">💰 Design Cost-Optimized Architectures (90 Questions)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🏆 Top 10 Most Tested Services</h3>
+          <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+            <div class="data-item"><span>1. S3</span><span class="data-item-value">167</span></div>
+            <div class="data-item"><span>2. EC2</span><span class="data-item-value">50</span></div>
+            <div class="data-item"><span>3. EFS</span><span class="data-item-value">44</span></div>
+            <div class="data-item"><span>4. Lambda</span><span class="data-item-value">34</span></div>
+            <div class="data-item"><span>5. Glacier</span><span class="data-item-value">31</span></div>
+            <div class="data-item"><span>6. EBS</span><span class="data-item-value">25</span></div>
+            <div class="data-item"><span>7. CloudFront</span><span class="data-item-value">21</span></div>
+            <div class="data-item"><span>8. VPC</span><span class="data-item-value">16</span></div>
+            <div class="data-item"><span>9. Fargate</span><span class="data-item-value">13</span></div>
+            <div class="data-item"><span>10. DynamoDB</span><span class="data-item-value">12</span></div>
+          </div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Key Topics to Master</h3>
+          <div class="insight positive">✅ <strong>EC2 Pricing:</strong> On-Demand, Reserved (1/3yr), Spot (up to 90% off), Savings Plans</div>
+          <div class="insight positive">✅ <strong>S3 Storage Classes:</strong> Standard, IA, One Zone-IA, Intelligent-Tiering, Glacier</div>
+          <div class="insight positive">✅ <strong>Serverless:</strong> Lambda (pay per invocation), Fargate, S3, DynamoDB</div>
+          <div class="insight positive">✅ <strong>Data Transfer:</strong> CloudFront, VPC endpoints reduce egress costs</div>
+          <div class="insight positive">✅ <strong>Cost Tools:</strong> Cost Explorer, Budgets, Trusted Advisor, Compute Optimizer</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⚠️ Common Wrong Answer Traps</h3>
+          <div class="insight warning">❌ Using S3 Standard for infrequent access (use S3 IA)</div>
+          <div class="insight warning">❌ Over-provisioning EBS volumes</div>
+          <div class="insight warning">❌ Not using lifecycle policies for S3</div>
+          <div class="insight warning">❌ On-Demand for predictable workloads (use Reserved/Savings Plans)</div>
+
+          <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">💡 Quick Reference</h3>
+          <div class="insight">🔑 <strong>Reserved Instances:</strong> Up to 72% savings, 1 or 3-year commitment</div>
+          <div class="insight">🔑 <strong>Spot Instances:</strong> Up to 90% off, for interruptible workloads</div>
+          <div class="insight">🔑 <strong>S3 Intelligent-Tiering:</strong> Auto-moves objects between tiers, no retrieval fees</div>
+          <div class="insight">🔑 <strong>S3 Glacier:</strong> $1/TB/month for archives, retrieval in minutes to hours</div>
+          <div class="insight">🔑 <strong>VPC Gateway Endpoint:</strong> Free access to S3/DynamoDB, no data transfer charges</div>
+        </div>
+      </div>
+
+      <!-- Exam Strategy -->
+      <div class="card">
+        <div class="card-title">📝 Exam Preparation Strategy</div>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⏱️ Time Management (130 minutes / 65 questions)</h3>
+        <div class="insight">⏰ Average <strong>2 minutes per question</strong></div>
+        <div class="insight">⏰ Mark difficult questions, return later</div>
+        <div class="insight">⏰ Reserve 15-20 minutes for final review</div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Domain Weighting (Approximate)</h3>
+        <div class="insight">📊 Design Resilient: ~30% (20 questions)</div>
+        <div class="insight">📊 Design Performant: ~28% (18 questions)</div>
+        <div class="insight">📊 Design Secure: ~24% (16 questions)</div>
+        <div class="insight">📊 Design Cost: ~18% (11 questions)</div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">❌ Red Flags (Usually Wrong)</h3>
+        <div class="insight warning">Overly complex solutions</div>
+        <div class="insight warning">Manual processes instead of automation</div>
+        <div class="insight warning">Self-managed vs AWS-managed services</div>
+        <div class="insight warning">Single AZ for production</div>
+        <div class="insight warning">Storing credentials in code</div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">✅ Green Flags (Usually Correct)</h3>
+        <div class="insight positive">Managed AWS services</div>
+        <div class="insight positive">Automation over manual intervention</div>
+        <div class="insight positive">Multi-AZ for high availability</div>
+        <div class="insight positive">Least privilege for security</div>
+        <div class="insight positive">Decoupled architectures</div>
+      </div>
+    </section>
+
     <!-- Services Reference -->
     <section id="services" class="app-section">
       <div class="card">
@@ -197,7 +439,109 @@
         document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
+
+        // Hide floating tips button when not on quiz tab
+        if (tab.dataset.tab !== 'quiz') {
+          document.getElementById('floatingTips').style.display = 'none';
+        }
       });
+    });
+
+    // Study Guide Domain Switching
+    function showDomain(domain) {
+      // Hide all domain content
+      document.querySelectorAll('.domain-content').forEach(d => d.style.display = 'none');
+
+      // Show selected domain
+      document.getElementById('domain-' + domain).style.display = 'block';
+
+      // Update button styles
+      document.querySelectorAll('#study-guide .btn-group .btn').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+      });
+      event.target.classList.remove('btn-secondary');
+      event.target.classList.add('btn-primary');
+    }
+
+    // Quick Tips Modal
+    const domainTips = {
+      'design-secure': {
+        title: '🔐 Design Secure Architectures',
+        tips: [
+          '<strong>IAM Best Practices:</strong> Use roles over users, enable MFA, apply least privilege principle',
+          '<strong>Encryption:</strong> EBS/S3 encryption at rest, TLS in transit, KMS for key management',
+          '<strong>VPC Security:</strong> Security Groups are stateful, NACLs are stateless and subnet-level',
+          '<strong>Common Traps:</strong> Don\'t confuse IAM policies with S3 bucket policies, Security Groups with NACLs',
+          '<strong>Key Services:</strong> IAM (89 questions), KMS (45), VPC (34), Security Groups (28), CloudTrail (23)'
+        ]
+      },
+      'design-resilient': {
+        title: '🛡️ Design Resilient Architectures',
+        tips: [
+          '<strong>High Availability:</strong> Multi-AZ deployments, ELB for load distribution, Auto Scaling',
+          '<strong>Disaster Recovery:</strong> Backup/Restore → Pilot Light → Warm Standby → Multi-Site',
+          '<strong>Decoupling:</strong> Use SQS for queues, SNS for pub/sub, EventBridge for events',
+          '<strong>Common Traps:</strong> Don\'t use ALB for Layer 4 (use NLB), don\'t skip health checks',
+          '<strong>Key Services:</strong> Auto Scaling (34 questions), ELB (28), RDS Multi-AZ (23), S3 (67)'
+        ]
+      },
+      'design-performant': {
+        title: '⚡ Design High-Performing Architectures',
+        tips: [
+          '<strong>Caching:</strong> CloudFront for global, ElastiCache (Redis/Memcached) for database',
+          '<strong>Database:</strong> RDS for relational, DynamoDB for NoSQL, Aurora for performance',
+          '<strong>Compute:</strong> EC2 for baseline, Lambda for serverless, ECS/Fargate for containers',
+          '<strong>Common Traps:</strong> Don\'t use RDS for high-write workloads (use DynamoDB)',
+          '<strong>Key Services:</strong> S3 (145 questions), Lambda (45), CloudFront (34), ElastiCache (23)'
+        ]
+      },
+      'design-cost': {
+        title: '💰 Design Cost-Optimized Architectures',
+        tips: [
+          '<strong>S3 Storage:</strong> Standard → IA → Glacier → Deep Archive based on access patterns',
+          '<strong>Compute:</strong> Savings Plans, Reserved Instances, Spot for fault-tolerant workloads',
+          '<strong>Monitoring:</strong> Cost Explorer, Budgets, CloudWatch for resource optimization',
+          '<strong>Common Traps:</strong> Don\'t keep unused EBS volumes, NAT Gateway costs add up',
+          '<strong>Key Services:</strong> S3 (78 questions), EC2 (34), RDS (28), Cost Explorer (12)'
+        ]
+      }
+    };
+
+    function showQuickTips() {
+      const currentCat = window.currentQuestion?.cat || 'design-secure';
+      const tips = domainTips[currentCat];
+
+      if (!tips) return;
+
+      const content = `
+        <div style="margin-bottom:1rem">
+          <h3 style="color:var(--aws-orange);margin-bottom:.5rem">${tips.title}</h3>
+          <p style="color:var(--muted);font-size:.9rem">Context-sensitive tips for your current domain</p>
+        </div>
+        <div style="display:grid;gap:.75rem">
+          ${tips.tips.map(tip => `
+            <div style="background:var(--bg);padding:1rem;border-radius:8px;border-left:3px solid var(--aws-orange)">
+              ${tip}
+            </div>
+          `).join('')}
+        </div>
+        <div style="margin-top:1.5rem;text-align:center">
+          <button class="btn btn-primary" onclick="closeTips()">Got it! 👍</button>
+        </div>
+      `;
+
+      document.getElementById('tipsContent').innerHTML = content;
+      document.getElementById('tipsModal').classList.add('active');
+    }
+
+    function closeTips() {
+      document.getElementById('tipsModal').classList.remove('active');
+    }
+
+    // Close modal on background click
+    document.getElementById('tipsModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'tipsModal') closeTips();
     });
 
     // Certification Data
@@ -934,10 +1278,15 @@
       if (filteredQuestions.length === 0) {
         document.getElementById('quizQuestion').textContent = 'No questions in this category!';
         document.getElementById('quizOptions').innerHTML = '';
+        document.getElementById('floatingTips').style.display = 'none';
         return;
       }
       const q = filteredQuestions[currentQuestionIndex];
       const cert = certifications[currentCert];
+
+      // Store current question for tips modal
+      window.currentQuestion = q;
+
       document.getElementById('quizCategory').textContent = cert.domainLabels[q.cat] || q.cat;
       document.getElementById('quizQuestion').textContent = q.q;
       document.getElementById('questionCounter').textContent = `(${currentQuestionIndex + 1}/${filteredQuestions.length})`;
@@ -946,6 +1295,9 @@
       `).join('');
       document.getElementById('quizExplanation').style.display = 'none';
       document.getElementById('nextQuizBtn').style.display = 'none';
+
+      // Show floating tips button only for SAA-C03
+      document.getElementById('floatingTips').style.display = currentCert === 'saa' ? 'block' : 'none';
     }
 
     function checkAnswer(selected) {
