@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact - AWSPrepAI</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root{--bg:#0f172a;--card:#1e293b;--accent:#f59e0b;--accent-2:#fbbf24;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;--radius:12px;--aws-orange:#ff9900}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+    .container{max-width:1200px;margin:0 auto;padding:1rem}
+    header{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);border-bottom:3px solid var(--aws-orange);padding:1rem 0}
+    .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .logo{display:flex;align-items:center;gap:.75rem;font-size:1.5rem;font-weight:800;color:var(--aws-orange);text-decoration:none}
+    .logo img{height:40px}
+    .nav-links{display:flex;gap:1rem;flex-wrap:wrap}
+    .nav-link{color:var(--text);text-decoration:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;transition:all .2s}
+    .nav-link:hover{background:var(--card);color:var(--aws-orange)}
+    .nav-link.active{background:var(--aws-orange);color:#000}
+    main{padding:2rem 0;min-height:calc(100vh - 200px)}
+    .content-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem}
+    h1{font-size:2.5rem;color:var(--aws-orange);margin-bottom:1.5rem}
+    h2{font-size:1.75rem;color:var(--aws-orange);margin-top:2rem;margin-bottom:1rem}
+    p{margin-bottom:1rem;color:var(--muted)}
+    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+    .contact-card{background:var(--bg);padding:1.5rem;border-radius:var(--radius);border-left:4px solid var(--aws-orange);text-align:center}
+    .contact-icon{font-size:3rem;margin-bottom:1rem}
+    .contact-card h3{color:var(--aws-orange);margin-bottom:.5rem}
+    .contact-card a{color:var(--text);text-decoration:none;transition:color .2s}
+    .contact-card a:hover{color:var(--aws-orange)}
+    footer{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);border-top:3px solid var(--aws-orange);padding:1.5rem 0;margin-top:3rem;text-align:center;color:var(--muted)}
+    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <img src="logo.svg" alt="AWSPrepAI Logo">
+        </a>
+        <nav class="nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="contact.html" class="nav-link active">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="content-card">
+      <h1>Get in Touch</h1>
+      
+      <p>We'd love to hear from you! Whether you have questions, feedback, or suggestions for improving AWSPrepAI, feel free to reach out through any of the channels below.</p>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">📧</div>
+          <h3>GitHub Issues</h3>
+          <p>Report bugs, request features, or ask questions</p>
+          <a href="https://github.com/Isaloum/AWSPrepAI/issues" target="_blank" rel="noopener">Open an Issue</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon">💬</div>
+          <h3>Discussions</h3>
+          <p>Join the community discussion</p>
+          <a href="https://github.com/Isaloum/AWSPrepAI/discussions" target="_blank" rel="noopener">Start a Discussion</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon">👨‍💻</div>
+          <h3>GitHub Profile</h3>
+          <p>Connect with the developer</p>
+          <a href="https://github.com/Isaloum" target="_blank" rel="noopener">@Isaloum</a>
+        </div>
+      </div>
+
+      <h2>Contribute</h2>
+      <p>AWSPrepAI is open source and we welcome contributions! Here's how you can help:</p>
+      
+      <div style="background:var(--bg);padding:1.5rem;border-radius:var(--radius);margin:1.5rem 0">
+        <p><strong>📝 Submit Questions:</strong> Help expand our question bank with high-quality practice questions</p>
+        <p><strong>🐛 Report Bugs:</strong> Found an issue? Let us know on GitHub Issues</p>
+        <p><strong>💡 Suggest Features:</strong> Have ideas for new features? We'd love to hear them</p>
+        <p><strong>🔀 Pull Requests:</strong> Contribute code, fix typos, or improve documentation</p>
+        <p><strong>⭐ Star the Repo:</strong> Show your support and help others discover AWSPrepAI</p>
+      </div>
+
+      <h2>Follow Updates</h2>
+      <p>Stay updated with the latest features and improvements by:</p>
+      <ul style="margin-left:2rem;color:var(--muted)">
+        <li>Watching the <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub repository</a></li>
+        <li>Checking the releases page for version updates</li>
+        <li>Reading the changelog in the README</li>
+      </ul>
+
+      <h2>Support the Project</h2>
+      <p>If AWSPrepAI has helped you in your AWS certification journey, consider:</p>
+      <ul style="margin-left:2rem;color:var(--muted)">
+        <li>⭐ Starring the repository on GitHub</li>
+        <li>🔀 Sharing it with others preparing for AWS exams</li>
+        <li>📝 Providing feedback to help us improve</li>
+        <li>🤝 Contributing to the project</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>

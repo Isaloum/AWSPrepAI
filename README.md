@@ -32,14 +32,17 @@
 
 | Feature | Description |
 |---------|-------------|
+| 🎯 **Hero Landing Page** | Engaging landing page with AWS SAA-C03 badge, compelling intro, and clear call-to-action |
 | 🎓 **Smart Study Guide** | AI-analyzed content from 505 SAA-C03 questions with domain-specific tips, common traps, and top tested services |
 | 📝 **Practice Quiz** | 540+ questions with detailed explanations across all exam domains |
 | ⏱️ **Mock Exams** | Full-length timed exams matching real certification format |
 | 📊 **Progress Tracking** | Track accuracy, streaks, weak areas, and exam readiness |
 | 🔍 **Services Reference** | Searchable guide with 30+ core AWS services |
 | 💡 **Contextual Tips** | Floating tips button provides domain-specific help during practice |
+| 📚 **Resource Pages** | Dedicated About, Contact, Glossary (coming soon), and Resources (coming soon) pages |
 | 💾 **Offline Support** | All data stored locally using LocalStorage—no backend required |
-| 📱 **Responsive Design** | Works seamlessly on desktop, tablet, and mobile |
+| 📱 **Mobile Responsive** | Fully responsive design with hamburger menu navigation for mobile devices |
+| 🎨 **Professional Branding** | Custom logo and favicon for a polished professional appearance |
 
 ---
 
@@ -77,11 +80,31 @@ The Study Guide is powered by AI analysis of all 505 SAA-C03 practice questions:
 
 ---
 
+## 📄 Site Structure
+
+AWSPrepAI now includes several pages for a comprehensive learning experience:
+
+- **🏠 Home (Landing Page):** Hero section with AWS SAA-C03 badge, feature overview, and quick start
+- **📊 Dashboard:** Track your progress, accuracy, and identify weak areas
+- **❓ Practice Quiz:** 540+ practice questions with instant feedback
+- **📝 Mock Exams:** Full-length timed certification practice exams
+- **🎓 Study Guide:** AI-analyzed tips and strategies (SAA-C03)
+- **💡 Hints/Keywords:** Quick reference for exam keywords and scenarios
+- **📚 Services:** Reference guide for 30+ core AWS services
+- **ℹ️ About:** Learn about the platform, mission, and technology stack
+- **📞 Contact:** Get in touch, contribute, or report issues
+- **🗂️ Glossary & Flashcards:** Interactive learning tools (coming soon)
+- **📖 Resources & FAQ:** Study resources and frequently asked questions (coming soon)
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** Vanilla JavaScript (ES6+), HTML5, CSS3
 - **Data Persistence:** LocalStorage API
-- **Design:** Responsive CSS with AWS branding
+- **Design:** Responsive CSS with AWS branding, mobile-first approach
+- **Navigation:** Responsive hamburger menu for mobile devices
+- **Assets:** Custom SVG logo and favicon
 - **Deployment:** GitHub Pages
 - **Dependencies:** Zero external libraries (fully self-contained)
 
@@ -116,11 +139,13 @@ No build process required—just open `docs/index.html` directly in any modern b
 
 ## 📖 How to Use
 
-1. **Choose Certification:** Select CLF-C02 or SAA-C03 from the dropdown
-2. **Study Guide:** Review domain-specific tips and key topics
-3. **Practice Quiz:** Start with practice mode to learn and track progress
-4. **Mock Exam:** Take timed full-length exams when ready
-5. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
+1. **Explore the Landing Page:** Get an overview of the platform and start with the "Start Practicing Now" button
+2. **Choose Certification:** Select CLF-C02 or SAA-C03 from the dropdown
+3. **Navigate:** Use the top navigation to access About, Glossary, Resources, and Contact pages
+4. **Study Guide:** Review domain-specific tips and key topics for SAA-C03
+5. **Practice Quiz:** Start with practice mode to learn and track progress
+6. **Mock Exam:** Take timed full-length exams when ready
+7. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
 
 ---
 
