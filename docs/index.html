@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AWSPrepAI - AWS Certification Study Tool</title>
   <meta name="description" content="Master AWS certifications with practice questions, flashcards, and mock exams. Cloud Practitioner & Solutions Architect.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <style>
     :root{--bg:#0f172a;--card:#1e293b;--accent:#f59e0b;--accent-2:#fbbf24;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;--radius:12px;--aws-orange:#ff9900}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -67,7 +67,35 @@
     .cert-badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:700;margin-left:.5rem}
     .cert-badge.clf{background:#10b981;color:#fff}
     .cert-badge.saa{background:#3b82f6;color:#fff}
-    @media(max-width:768px){.nav-tabs{justify-content:center}.header-content{justify-content:center;flex-direction:column}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    .hero{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);padding:4rem 1rem;text-align:center;margin:-1.5rem -1rem 2rem;border-radius:0 0 var(--radius) var(--radius)}
+    .hero h1{font-size:3rem;color:var(--aws-orange);margin-bottom:1rem;font-weight:900}
+    .hero p{font-size:1.25rem;color:var(--muted);margin-bottom:2rem;max-width:800px;margin-left:auto;margin-right:auto}
+    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--card);padding:.75rem 1.5rem;border-radius:999px;margin-bottom:2rem;border:2px solid var(--aws-orange)}
+    .hero-badge img{width:50px;height:50px}
+    .cta-button{display:inline-block;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));color:#000;border-radius:8px;font-weight:800;font-size:1.1rem;text-decoration:none;transition:all .3s;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(255,153,0,.4)}
+    .cta-button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,153,0,.6)}
+    .logo img{height:40px;width:auto}
+    .page-links{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+    .page-link{color:var(--text);text-decoration:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;transition:all .2s;font-size:.875rem;border:1px solid transparent}
+    .page-link:hover{border-color:var(--aws-orange);color:var(--aws-orange)}
+    .hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:.5rem}
+    .hamburger span{width:25px;height:3px;background:var(--aws-orange);border-radius:2px;transition:all .3s}
+    .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-6px)}
+    .mobile-menu{display:none}
+    @media(max-width:768px){
+      .nav-tabs{justify-content:center}
+      .header-content{justify-content:center;flex-direction:column}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .hero h1{font-size:2rem}
+      .hero p{font-size:1rem}
+      .hero{padding:2rem 1rem}
+      .hamburger{display:flex}
+      .nav-tabs,.page-links{display:none;width:100%;flex-direction:column}
+      .nav-tabs.active,.page-links.active{display:flex}
+      .mobile-menu.active{display:block}
+    }
     .floating-tips-btn{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));border:3px solid var(--bg);font-size:1.5rem;cursor:pointer;box-shadow:0 4px 12px rgba(255,153,0,.4);transition:all .3s;z-index:1000;animation:pulse 2s infinite}
     .floating-tips-btn:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(255,153,0,.6)}
     @keyframes pulse{0%,100%{box-shadow:0 4px 12px rgba(255,153,0,.4)}50%{box-shadow:0 4px 20px rgba(255,153,0,.7)}}
@@ -91,13 +119,26 @@
   <header>
     <div class="container">
       <div class="header-content">
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-          <a href="#" class="logo">☁️ AWSPrepAI</a>
-          <select class="cert-selector" id="certSelector" onchange="switchCert()">
-            <option value="clf">☁️ Cloud Practitioner (CLF-C02)</option>
-            <option value="saa">🏗️ Solutions Architect (SAA-C03)</option>
-          </select>
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;width:100%;justify-content:space-between">
+          <a href="#" class="logo" onclick="showDashboard(); return false;">
+            <img src="logo.svg" alt="AWSPrepAI">
+          </a>
+          <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="page-links">
+            <a href="about.html" class="page-link">About</a>
+            <a href="glossary.html" class="page-link">Glossary</a>
+            <a href="resources.html" class="page-link">Resources</a>
+            <a href="contact.html" class="page-link">Contact</a>
+          </div>
         </div>
+        <select class="cert-selector" id="certSelector" onchange="switchCert()">
+          <option value="clf">☁️ Cloud Practitioner (CLF-C02)</option>
+          <option value="saa">🏗️ Solutions Architect (SAA-C03)</option>
+        </select>
         <nav class="nav-tabs">
           <button class="nav-tab active" data-tab="dashboard"><span class="icon">📊</span><span>Dashboard</span></button>
           <button class="nav-tab" data-tab="quiz"><span class="icon">❓</span><span>Practice</span></button>
@@ -111,6 +152,20 @@
   </header>
 
   <main class="container">
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+      <div class="hero-badge">
+        <span style="font-size:2.5rem">☁️</span>
+        <div style="text-align:left">
+          <div style="font-weight:800;color:var(--aws-orange)">AWS SAA-C03 Certified</div>
+          <div style="font-size:.75rem;color:var(--muted)">Solutions Architect Associate</div>
+        </div>
+      </div>
+      <h1>Master AWS Certifications</h1>
+      <p>540+ curated practice questions, AI-powered study guide, and full mock exams for Cloud Practitioner and Solutions Architect certifications</p>
+      <button class="cta-button" onclick="document.querySelector('[data-tab=quiz]').click()">Start Practicing Now →</button>
+    </section>
+
     <!-- Dashboard -->
     <section id="dashboard" class="app-section active">
       <div class="card card-orange">
@@ -803,12 +858,48 @@
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
 
+        // Hide hero section when navigating away from dashboard
+        const heroSection = document.getElementById('hero');
+        if (tab.dataset.tab === 'dashboard') {
+          heroSection.style.display = 'block';
+        } else {
+          heroSection.style.display = 'none';
+        }
+
         // Hide floating tips button when not on quiz tab
         if (tab.dataset.tab !== 'quiz') {
           document.getElementById('floatingTips').style.display = 'none';
         }
+
+        // Close mobile menu after navigation
+        closeMobileMenu();
       });
     });
+
+    // Mobile Menu Functions
+    function toggleMobileMenu() {
+      const hamburger = document.querySelector('.hamburger');
+      const navTabs = document.querySelector('.nav-tabs');
+      const pageLinks = document.querySelector('.page-links');
+      
+      hamburger.classList.toggle('active');
+      navTabs.classList.toggle('active');
+      pageLinks.classList.toggle('active');
+    }
+
+    function closeMobileMenu() {
+      const hamburger = document.querySelector('.hamburger');
+      const navTabs = document.querySelector('.nav-tabs');
+      const pageLinks = document.querySelector('.page-links');
+      
+      hamburger.classList.remove('active');
+      navTabs.classList.remove('active');
+      pageLinks.classList.remove('active');
+    }
+
+    function showDashboard() {
+      document.querySelector('[data-tab="dashboard"]').click();
+    }
 
     // Study Guide Domain Switching
     function showDomain(domain) {
