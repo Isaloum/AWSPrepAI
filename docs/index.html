@@ -103,6 +103,7 @@
           <button class="nav-tab" data-tab="quiz"><span class="icon">❓</span><span>Practice</span></button>
           <button class="nav-tab" data-tab="exam"><span class="icon">📝</span><span>Mock Exam</span></button>
           <button class="nav-tab" data-tab="study-guide"><span class="icon">🎓</span><span>Study Guide</span></button>
+          <button class="nav-tab" data-tab="hints-keywords"><span class="icon">💡</span><span>Hint / Keywords</span></button>
           <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
         </nav>
       </div>
@@ -421,6 +422,333 @@
         <div class="insight positive">Multi-AZ for high availability</div>
         <div class="insight positive">Least privilege for security</div>
         <div class="insight positive">Decoupled architectures</div>
+      </div>
+    </section>
+
+    <!-- Hint / Keywords -->
+    <section id="hints-keywords" class="app-section">
+      <div class="card card-orange">
+        <div class="card-title">💡 AWS Exam Keywords & Hints</div>
+        <p style="color:var(--muted)">Quick reference guide for AWS exam keywords, scenarios, and service mappings</p>
+      </div>
+
+      <!-- Keyword Categories -->
+      <div class="card">
+        <div class="card-title">🔑 Key Exam Keywords by Scenario</div>
+        
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🔐 Security & Compliance Keywords</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="insight">🔑 <strong>"Encrypt data at rest"</strong> → S3 SSE-S3, SSE-KMS, SSE-C | EBS encryption | RDS encryption</div>
+          <div class="insight">🔑 <strong>"Encrypt data in transit"</strong> → SSL/TLS, HTTPS | VPN | CloudFront with HTTPS</div>
+          <div class="insight">🔑 <strong>"Least privilege"</strong> → IAM policies with minimal permissions | Use roles instead of users</div>
+          <div class="insight">🔑 <strong>"Cross-account access"</strong> → IAM roles with trust policies | Resource-based policies</div>
+          <div class="insight">🔑 <strong>"Prevent public access"</strong> → S3 Block Public Access | VPC with private subnets | Security Groups</div>
+          <div class="insight">🔑 <strong>"Compliance and auditing"</strong> → CloudTrail (API logs) | Config (resource compliance) | GuardDuty (threat detection)</div>
+          <div class="insight">🔑 <strong>"DDoS protection"</strong> → AWS Shield Standard (free) | Shield Advanced (paid) | WAF</div>
+          <div class="insight">🔑 <strong>"Web application firewall"</strong> → WAF on CloudFront, ALB, or API Gateway</div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🛡️ High Availability & Resilience Keywords</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="insight">🔑 <strong>"High availability"</strong> → Multi-AZ deployment | Multiple regions | Auto Scaling</div>
+          <div class="insight">🔑 <strong>"Disaster recovery"</strong> → Cross-region replication | Backup and restore | RDS snapshots</div>
+          <div class="insight">🔑 <strong>"Automatic failover"</strong> → RDS Multi-AZ | Aurora Global Database | Route 53 health checks</div>
+          <div class="insight">🔑 <strong>"Decouple components"</strong> → SQS (queue) | SNS (pub/sub) | EventBridge (event bus)</div>
+          <div class="insight">🔑 <strong>"Load balancing"</strong> → ALB (Layer 7, HTTP/HTTPS) | NLB (Layer 4, TCP/UDP) | GWLB (Layer 3)</div>
+          <div class="insight">🔑 <strong>"Auto-scaling"</strong> → EC2 Auto Scaling Groups | DynamoDB auto scaling | Aurora auto scaling</div>
+          <div class="insight">🔑 <strong>"Fault tolerance"</strong> → Multi-AZ | Read replicas | SQS with dead-letter queues</div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">⚡ Performance Optimization Keywords</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="insight">🔑 <strong>"Low latency"</strong> → CloudFront (CDN) | ElastiCache | DynamoDB DAX | Global Accelerator</div>
+          <div class="insight">🔑 <strong>"Caching"</strong> → CloudFront (edge) | ElastiCache (Redis/Memcached) | DAX (DynamoDB)</div>
+          <div class="insight">🔑 <strong>"High throughput"</strong> → Provisioned IOPS (io1/io2) | S3 Transfer Acceleration | Enhanced networking</div>
+          <div class="insight">🔑 <strong>"Real-time processing"</strong> → Kinesis Data Streams | Lambda | DynamoDB Streams</div>
+          <div class="insight">🔑 <strong>"Serverless"</strong> → Lambda (compute) | DynamoDB (database) | S3 (storage) | API Gateway</div>
+          <div class="insight">🔑 <strong>"Global distribution"</strong> → CloudFront | Global Accelerator | Route 53 with geolocation routing</div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">💰 Cost Optimization Keywords</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="insight">🔑 <strong>"Most cost-effective"</strong> → S3 Intelligent-Tiering | Spot Instances | Reserved Instances</div>
+          <div class="insight">🔑 <strong>"Infrequent access"</strong> → S3 Standard-IA | S3 One Zone-IA | EFS IA</div>
+          <div class="insight">🔑 <strong>"Archive storage"</strong> → S3 Glacier Flexible Retrieval | S3 Glacier Deep Archive</div>
+          <div class="insight">🔑 <strong>"Reduce data transfer costs"</strong> → VPC endpoints | CloudFront | Direct Connect</div>
+          <div class="insight">🔑 <strong>"Pay for what you use"</strong> → Lambda | Fargate | DynamoDB On-Demand | S3</div>
+          <div class="insight">🔑 <strong>"Long-term commitment"</strong> → Reserved Instances (1/3 year) | Savings Plans | Dedicated Hosts</div>
+        </div>
+      </div>
+
+      <!-- Scenario to Service Mapping -->
+      <div class="card">
+        <div class="card-title">🎯 Common Scenarios → AWS Service Mapping</div>
+        
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">Storage Scenarios</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Object storage with 99.999999999% durability</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">S3</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Block storage for EC2 instances</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">EBS</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Shared file system across multiple EC2 instances</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">EFS</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Archive data for 7-10 years at lowest cost</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">S3 Glacier Deep Archive</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Hybrid cloud storage with on-premises caching</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Storage Gateway</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">Database Scenarios</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Relational database with automatic failover</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">RDS Multi-AZ</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">NoSQL database with single-digit millisecond latency</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">DynamoDB</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">MySQL/PostgreSQL 5x faster performance</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Aurora</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">In-memory caching for database queries</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">ElastiCache</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Petabyte-scale data warehouse for analytics</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Redshift</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">Networking Scenarios</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Distribute traffic across EC2 instances (HTTP/HTTPS)</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Application Load Balancer</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Low-latency load balancing (TCP/UDP)</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Network Load Balancer</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Global content delivery with edge caching</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">CloudFront</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Private connectivity to AWS services (no internet)</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">VPC Endpoints</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Connect on-premises to AWS over dedicated line</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Direct Connect</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Connect multiple VPCs in hub-and-spoke model</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Transit Gateway</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">Security Scenarios</h3>
+        <div style="display:grid;gap:.5rem;margin-bottom:1.5rem">
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Block SQL injection and XSS attacks</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">AWS WAF</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Managed encryption key service</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">AWS KMS</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Intelligent threat detection using ML</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">GuardDuty</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Track all API calls for auditing</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">CloudTrail</div>
+          </div>
+          <div class="data-item">
+            <div class="data-item-info">
+              <div class="data-item-title">Discover and protect sensitive data in S3</div>
+              <div class="data-item-meta">Scenario → Service</div>
+            </div>
+            <div style="color:var(--aws-orange);font-weight:700">Macie</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Decision Trees -->
+      <div class="card">
+        <div class="card-title">🌳 Quick Decision Trees</div>
+        
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">Which Load Balancer?</h3>
+        <div class="insight positive">✅ <strong>ALB:</strong> HTTP/HTTPS traffic, path/host-based routing, Lambda targets, containerized apps</div>
+        <div class="insight positive">✅ <strong>NLB:</strong> TCP/UDP traffic, extreme performance (<100ms), static IP, PrivateLink</div>
+        <div class="insight positive">✅ <strong>GWLB:</strong> Deploy/scale 3rd-party virtual appliances (firewalls, IDS/IPS)</div>
+        <div class="insight warning">⚠️ <strong>CLB:</strong> Legacy - avoid for new deployments</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">Which S3 Storage Class?</h3>
+        <div class="insight positive">✅ <strong>S3 Standard:</strong> Frequently accessed data, low latency</div>
+        <div class="insight positive">✅ <strong>S3 Standard-IA:</strong> Infrequent access, immediate retrieval, cheaper than Standard</div>
+        <div class="insight positive">✅ <strong>S3 One Zone-IA:</strong> Infrequent access, non-critical data, 20% cheaper than Standard-IA</div>
+        <div class="insight positive">✅ <strong>S3 Intelligent-Tiering:</strong> Unknown/changing access patterns, automatic tier optimization</div>
+        <div class="insight positive">✅ <strong>S3 Glacier Instant Retrieval:</strong> Archive with millisecond retrieval, quarterly access</div>
+        <div class="insight positive">✅ <strong>S3 Glacier Flexible Retrieval:</strong> Archive with minutes-hours retrieval, 1-2x/year access</div>
+        <div class="insight positive">✅ <strong>S3 Glacier Deep Archive:</strong> Long-term archive, 12-hour retrieval, lowest cost</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">Which Database?</h3>
+        <div class="insight positive">✅ <strong>RDS:</strong> Traditional relational (MySQL, PostgreSQL, Oracle, SQL Server, MariaDB)</div>
+        <div class="insight positive">✅ <strong>Aurora:</strong> High-performance MySQL/PostgreSQL compatible, auto-scaling storage</div>
+        <div class="insight positive">✅ <strong>DynamoDB:</strong> NoSQL key-value, single-digit ms latency, serverless, auto-scaling</div>
+        <div class="insight positive">✅ <strong>ElastiCache:</strong> In-memory caching (Redis for complex, Memcached for simple)</div>
+        <div class="insight positive">✅ <strong>Redshift:</strong> Petabyte-scale data warehouse, columnar storage, analytics</div>
+        <div class="insight positive">✅ <strong>DocumentDB:</strong> MongoDB-compatible document database</div>
+        <div class="insight positive">✅ <strong>Neptune:</strong> Graph database for highly connected datasets</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">Which Compute?</h3>
+        <div class="insight positive">✅ <strong>EC2:</strong> Full control, persistent workloads, specific OS/software requirements</div>
+        <div class="insight positive">✅ <strong>Lambda:</strong> Event-driven, short-lived (<15 min), serverless, pay per invocation</div>
+        <div class="insight positive">✅ <strong>ECS:</strong> Docker containers, AWS-native orchestration</div>
+        <div class="insight positive">✅ <strong>EKS:</strong> Kubernetes containers, complex orchestration needs</div>
+        <div class="insight positive">✅ <strong>Fargate:</strong> Serverless containers (ECS/EKS), no server management</div>
+        <div class="insight positive">✅ <strong>Batch:</strong> Batch processing jobs, automatic provisioning</div>
+      </div>
+
+      <!-- Exam Tips -->
+      <div class="card">
+        <div class="card-title">📝 Exam Strategy Tips</div>
+        
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">🎯 Question Analysis Strategy</h3>
+        <div class="insight">1️⃣ <strong>Identify the scenario:</strong> Read carefully for keywords (high availability, cost-effective, low latency, etc.)</div>
+        <div class="insight">2️⃣ <strong>Eliminate wrong answers:</strong> Remove obviously incorrect options first</div>
+        <div class="insight">3️⃣ <strong>Look for AWS best practices:</strong> Managed services > self-managed, Multi-AZ > single AZ, etc.</div>
+        <div class="insight">4️⃣ <strong>Watch for qualifiers:</strong> "MOST cost-effective", "LEAST operational overhead", "HIGHEST performance"</div>
+        <div class="insight">5️⃣ <strong>Multiple correct answers:</strong> For "Select TWO/THREE" questions, ensure all selections work together</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">✅ Green Flags (Usually Correct Answers)</h3>
+        <div class="insight positive">✅ AWS managed services over self-managed (RDS vs MySQL on EC2)</div>
+        <div class="insight positive">✅ Multi-AZ deployments for high availability</div>
+        <div class="insight positive">✅ Auto Scaling for handling variable load</div>
+        <div class="insight positive">✅ CloudFormation/IaC for infrastructure automation</div>
+        <div class="insight positive">✅ IAM roles over hardcoded credentials</div>
+        <div class="insight positive">✅ Encryption at rest and in transit</div>
+        <div class="insight positive">✅ Least privilege access principle</div>
+        <div class="insight positive">✅ Decoupled architectures (SQS, SNS, EventBridge)</div>
+        <div class="insight positive">✅ Serverless options (Lambda, Fargate, DynamoDB)</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">❌ Red Flags (Usually Wrong Answers)</h3>
+        <div class="insight warning">❌ Single points of failure (single AZ, single instance)</div>
+        <div class="insight warning">❌ Manual processes that can be automated</div>
+        <div class="insight warning">❌ Overly complex solutions when simple ones exist</div>
+        <div class="insight warning">❌ Self-managed when AWS-managed available</div>
+        <div class="insight warning">❌ Hardcoded credentials in application code</div>
+        <div class="insight warning">❌ Public access when private is possible</div>
+        <div class="insight warning">❌ Ignoring encryption requirements</div>
+        <div class="insight warning">❌ Cross-region without justification (adds cost/complexity)</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">⚡ Common Traps to Avoid</h3>
+        <div class="insight warning">⚠️ <strong>Read Replica ≠ Multi-AZ:</strong> Read replicas are for read scaling, Multi-AZ is for HA/failover</div>
+        <div class="insight warning">⚠️ <strong>Security Groups ≠ NACLs:</strong> SG is stateful (instance-level), NACL is stateless (subnet-level)</div>
+        <div class="insight warning">⚠️ <strong>CloudWatch ≠ CloudTrail:</strong> CloudWatch monitors metrics, CloudTrail logs API calls</div>
+        <div class="insight warning">⚠️ <strong>Gateway Endpoint ≠ Interface Endpoint:</strong> Gateway only for S3/DynamoDB, Interface for other services</div>
+        <div class="insight warning">⚠️ <strong>Standard SQS ≠ FIFO SQS:</strong> Standard is at-least-once, FIFO is exactly-once with ordering</div>
+        <div class="insight warning">⚠️ <strong>NAT Gateway ≠ Internet Gateway:</strong> NAT for private subnet outbound, IGW for public subnet bidirectional</div>
+      </div>
+
+      <!-- Memory Aids -->
+      <div class="card">
+        <div class="card-title">🧠 Memory Aids & Mnemonics</div>
+        
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-orange)">S3 Storage Classes (Cost: Low → High)</h3>
+        <div class="insight">💰 <strong>Glacier Deep Archive</strong> → Glacier Flexible → Glacier Instant → One Zone-IA → Standard-IA → Intelligent-Tiering → Standard</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">EC2 Instance Types (Remember: FIGHT DR MC PX)</h3>
+        <div class="insight">🖥️ <strong>F</strong>PGA, <strong>I</strong>nstance Store (high I/O), <strong>G</strong>PU, <strong>H</strong>igh disk throughput</div>
+        <div class="insight">🖥️ <strong>D</strong>ense storage, <strong>R</strong>AM (memory), <strong>M</strong>ain (general), <strong>C</strong>PU (compute)</div>
+        <div class="insight">🖥️ <strong>P</strong>ics (GPU graphics), <strong>X</strong>treme memory</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">Well-Architected Framework Pillars</h3>
+        <div class="insight">🏛️ <strong>CROPS:</strong> <strong>C</strong>ost Optimization, <strong>R</strong>eliability, <strong>O</strong>perational Excellence, <strong>P</strong>erformance Efficiency, <strong>S</strong>ecurity</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">RDS vs Aurora vs DynamoDB</h3>
+        <div class="insight">🗄️ <strong>RDS:</strong> Traditional relational, Multi-AZ for HA, Read Replicas for scaling</div>
+        <div class="insight">🗄️ <strong>Aurora:</strong> MySQL/PostgreSQL compatible, 5x/3x faster, auto-scaling storage, global database</div>
+        <div class="insight">🗄️ <strong>DynamoDB:</strong> NoSQL key-value, single-digit ms latency, serverless, global tables</div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:.5rem;color:var(--aws-orange)">VPC Endpoint Types</h3>
+        <div class="insight">🔌 <strong>Gateway Endpoints:</strong> S3 and DynamoDB ONLY (uses route table)</div>
+        <div class="insight">🔌 <strong>Interface Endpoints:</strong> All other AWS services (uses ENI with private IP)</div>
       </div>
     </section>
 
