@@ -250,9 +250,10 @@ function loadFlashcard() {
   }
   
   const card = currentCards[currentCardIndex];
-  const cardId = `${card.domain}-${currentCardIndex}`;
-  const isKnown = sessionStats.known.includes(cardId);
-  const isUnknown = sessionStats.unknown.includes(cardId);
+  // Create stable ID using domain and first part of question
+  const cardId = `${card.domain}::${card.front.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const isKnown = sessionStats.known ? sessionStats.known.includes(cardId) : false;
+  const isUnknown = sessionStats.unknown ? sessionStats.unknown.includes(cardId) : false;
   
   container.innerHTML = `
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -315,7 +316,8 @@ function previousCard() {
 
 function markCard(status) {
   const card = currentCards[currentCardIndex];
-  const cardId = `${card.domain}-${currentCardIndex}`;
+  // Create stable ID using domain and first part of question
+  const cardId = `${card.domain}::${card.front.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}`;
   
   // Remove from opposite list
   if (status === 'known') {
@@ -353,19 +355,23 @@ function updateStats() {
   }
   
   const totalCards = currentCards.length;
+  
+  // Create stable IDs for current cards to match against session stats
+  const currentCardIds = currentCards.map(card => 
+    `${card.domain}::${card.front.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_')}`
+  );
+  
   const reviewedCount = sessionStats.reviewed ? sessionStats.reviewed.filter(id => {
-    const [domain] = id.split('-');
-    return currentDomain === 'all' || domain === currentDomain;
+    // Match IDs that start with the current domain or if showing all
+    return currentDomain === 'all' ? currentCardIds.includes(id) : id.startsWith(`${currentDomain}::`);
   }).length : 0;
   
   const knownCount = sessionStats.known ? sessionStats.known.filter(id => {
-    const [domain] = id.split('-');
-    return currentDomain === 'all' || domain === currentDomain;
+    return currentDomain === 'all' ? currentCardIds.includes(id) : id.startsWith(`${currentDomain}::`);
   }).length : 0;
   
   const unknownCount = sessionStats.unknown ? sessionStats.unknown.filter(id => {
-    const [domain] = id.split('-');
-    return currentDomain === 'all' || domain === currentDomain;
+    return currentDomain === 'all' ? currentCardIds.includes(id) : id.startsWith(`${currentDomain}::`);
   }).length : 0;
   
   const progressPercent = totalCards > 0 ? Math.round((reviewedCount / totalCards) * 100) : 0;
