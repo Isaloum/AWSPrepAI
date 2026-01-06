@@ -19,17 +19,79 @@
     .nav-link:hover{background:var(--card);color:var(--aws-orange)}
     .nav-link.active{background:var(--aws-orange);color:#000}
     main{padding:2rem 0;min-height:calc(100vh - 200px)}
-    .content-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem}
-    h1{font-size:2.5rem;color:var(--aws-orange);margin-bottom:1.5rem}
-    h2{font-size:1.75rem;color:var(--aws-orange);margin-top:2rem;margin-bottom:1rem}
-    p{margin-bottom:1rem;color:var(--muted)}
-    .coming-soon{background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));color:#000;padding:3rem;border-radius:var(--radius);text-align:center;margin:2rem 0}
-    .coming-soon h2{color:#000;font-size:2.5rem;margin-bottom:1rem}
-    .feature-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
-    .preview-card{background:var(--bg);padding:1.5rem;border-radius:var(--radius);border-left:4px solid var(--aws-orange)}
-    .preview-card h3{color:var(--aws-orange);margin-bottom:.5rem}
+    .page-header{text-align:center;margin-bottom:2rem}
+    .page-header h1{font-size:2.5rem;color:var(--aws-orange);margin-bottom:.5rem}
+    .page-header p{color:var(--muted);font-size:1.1rem}
+    .mode-selector{display:flex;gap:1rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap}
+    .mode-btn{padding:.75rem 2rem;border-radius:var(--radius);font-weight:700;cursor:pointer;transition:all .3s;border:2px solid var(--border);background:var(--card);color:var(--text);font-size:1rem}
+    .mode-btn:hover{border-color:var(--aws-orange);transform:translateY(-2px)}
+    .mode-btn.active{background:var(--aws-orange);color:#000;border-color:var(--aws-orange)}
+    .section{display:none}
+    .section.active{display:block}
+    .search-bar{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+    .search-input{flex:1;min-width:250px;padding:.75rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem}
+    .search-input:focus{outline:none;border-color:var(--aws-orange)}
+    .filter-group{display:flex;gap:.5rem;flex-wrap:wrap}
+    .filter-btn{padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .2s;font-size:.875rem}
+    .filter-btn:hover{border-color:var(--aws-orange);color:var(--aws-orange)}
+    .filter-btn.active{background:var(--aws-orange);color:#000;border-color:var(--aws-orange)}
+    .glossary-list{display:grid;gap:1rem}
+    .glossary-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:all .2s;cursor:pointer}
+    .glossary-item:hover{border-color:var(--aws-orange)}
+    .glossary-item.exam-relevant{border-left:4px solid var(--aws-orange)}
+    .glossary-term{font-size:1.25rem;font-weight:700;color:var(--aws-orange);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+    .exam-badge{background:var(--aws-orange);color:#000;padding:.25rem .5rem;border-radius:4px;font-size:.75rem;font-weight:700}
+    .glossary-short{color:var(--muted);margin-bottom:.5rem}
+    .glossary-full{color:var(--text);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);display:none}
+    .glossary-item.expanded .glossary-full{display:block}
+    .example{background:var(--bg);padding:1rem;border-radius:8px;margin-top:.5rem;border-left:3px solid var(--success)}
+    .example-title{color:var(--success);font-weight:600;margin-bottom:.5rem}
+    .flashcard-container{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem}
+    .flashcard-controls{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;justify-content:space-between;align-items:center}
+    .domain-selector{display:flex;gap:.5rem;flex-wrap:wrap;flex:1}
+    .domain-btn{padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .2s;font-size:.875rem}
+    .domain-btn:hover{border-color:var(--aws-orange);color:var(--aws-orange)}
+    .domain-btn.active{background:var(--aws-orange);color:#000;border-color:var(--aws-orange)}
+    .flashcard-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+    .action-btn{padding:.5rem 1rem;background:var(--aws-orange);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;transition:all .2s;font-size:.875rem}
+    .action-btn:hover{background:var(--accent-2);transform:translateY(-2px)}
+    .action-btn.secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+    .action-btn.secondary:hover{border-color:var(--aws-orange);color:var(--aws-orange)}
+    .flashcard{perspective:1000px;min-height:350px;cursor:pointer;margin-bottom:1.5rem}
+    .flashcard-inner{position:relative;width:100%;height:100%;min-height:350px;text-align:center;transition:transform .6s;transform-style:preserve-3d}
+    .flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+    .flashcard-front,.flashcard-back{position:absolute;width:100%;height:100%;min-height:350px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;border-radius:var(--radius);border:2px solid var(--border)}
+    .flashcard-front{background:linear-gradient(135deg,var(--card) 0%,#232f3e 100%)}
+    .flashcard-back{background:linear-gradient(135deg,#232f3e 0%,var(--card) 100%);transform:rotateY(180deg)}
+    .flashcard-label{font-size:.875rem;color:var(--muted);margin-bottom:1rem;font-weight:600}
+    .flashcard-content{font-size:1.5rem;font-weight:700;color:var(--aws-orange);line-height:1.4}
+    .flashcard-hint{font-size:.875rem;color:var(--muted);margin-top:1rem;font-style:italic}
+    .flashcard-footer{display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap}
+    .knowledge-btn{padding:.75rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer;transition:all .2s;border:none;font-size:1rem}
+    .knowledge-btn.known{background:var(--success);color:#fff}
+    .knowledge-btn.unknown{background:var(--danger);color:#fff}
+    .knowledge-btn:hover{transform:scale(1.05)}
+    .progress-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;background:var(--bg);padding:1rem;border-radius:var(--radius);margin-bottom:2rem}
+    .stat-box{text-align:center}
+    .stat-value{font-size:2rem;font-weight:800;color:var(--aws-orange)}
+    .stat-label{font-size:.875rem;color:var(--muted);margin-top:.25rem}
+    .alpha-nav{display:flex;gap:.25rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem}
+    .alpha-btn{width:35px;height:35px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;transition:all .2s;font-size:.875rem;font-weight:600}
+    .alpha-btn:hover{border-color:var(--aws-orange);color:var(--aws-orange)}
+    .alpha-btn.active{background:var(--aws-orange);color:#000;border-color:var(--aws-orange)}
+    .empty-state{text-align:center;padding:3rem;color:var(--muted);background:var(--bg);border-radius:var(--radius)}
     footer{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);border-top:3px solid var(--aws-orange);padding:1.5rem 0;margin-top:3rem;text-align:center;color:var(--muted)}
-    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}.coming-soon h2{font-size:2rem}}
+    @media(max-width:768px){
+      .nav-links{width:100%;justify-content:center}
+      .page-header h1{font-size:2rem}
+      .search-bar{flex-direction:column;align-items:stretch}
+      .search-input{width:100%}
+      .flashcard-controls{flex-direction:column}
+      .domain-selector{width:100%}
+      .flashcard-content{font-size:1.25rem}
+      .mode-selector{flex-direction:column}
+      .mode-btn{width:100%}
+    }
   </style>
 </head>
 <body>
@@ -42,6 +104,8 @@
         <nav class="nav-links">
           <a href="index.html" class="nav-link">Home</a>
           <a href="about.html" class="nav-link">About</a>
+          <a href="glossary.html" class="nav-link active">Glossary</a>
+          <a href="resources.html" class="nav-link">Resources</a>
           <a href="contact.html" class="nav-link">Contact</a>
         </nav>
       </div>
@@ -49,67 +113,75 @@
   </header>
 
   <main class="container">
-    <div class="content-card">
+    <div class="page-header">
       <h1>🗂️ Glossary & Flashcards</h1>
-      
-      <div class="coming-soon">
-        <h2>🚧 Coming Soon!</h2>
-        <p style="color:#000;font-size:1.1rem;margin:0">This feature is currently under development and will be available soon.</p>
-      </div>
-
-      <h2>What to Expect</h2>
-      <p>The Glossary & Flashcards section will provide an interactive way to learn and memorize AWS concepts, services, and terminology.</p>
-
-      <div class="feature-preview">
-        <div class="preview-card">
-          <h3>📚 Comprehensive Glossary</h3>
-          <p>Searchable database of AWS terms, services, and concepts with clear definitions and explanations.</p>
-        </div>
-
-        <div class="preview-card">
-          <h3>🎴 Interactive Flashcards</h3>
-          <p>Digital flashcards for quick revision of key AWS concepts, perfect for last-minute study sessions.</p>
-        </div>
-
-        <div class="preview-card">
-          <h3>🔍 Smart Search</h3>
-          <p>Quickly find definitions and related terms with intelligent search and filtering.</p>
-        </div>
-
-        <div class="preview-card">
-          <h3>📊 Progress Tracking</h3>
-          <p>Track which terms you've mastered and which need more review.</p>
-        </div>
-
-        <div class="preview-card">
-          <h3>🏷️ Categorization</h3>
-          <p>Terms organized by service category, exam domain, and difficulty level.</p>
-        </div>
-
-        <div class="preview-card">
-          <h3>💾 Personalized Decks</h3>
-          <p>Create custom flashcard decks focused on your weak areas or specific exam topics.</p>
-        </div>
-      </div>
-
-      <h2>Planned Features</h2>
-      <ul style="margin-left:2rem;color:var(--muted);line-height:2">
-        <li>Quick-reference cards for each AWS service</li>
-        <li>Acronym decoder (e.g., IAM, VPC, S3)</li>
-        <li>Common exam terminology and phrases</li>
-        <li>Service comparisons (e.g., RDS vs Aurora vs DynamoDB)</li>
-        <li>Spaced repetition algorithm for effective learning</li>
-        <li>Export/import flashcard decks</li>
-        <li>Keyboard shortcuts for quick navigation</li>
-      </ul>
-
-      <h2>Stay Updated</h2>
-      <p>Want to be notified when this feature launches? Follow our <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub repository</a> for updates!</p>
-
-      <div style="background:var(--bg);padding:1.5rem;border-radius:var(--radius);margin-top:2rem;text-align:center">
-        <p style="font-size:1.1rem">In the meantime, check out our <a href="index.html" style="color:var(--aws-orange)">Practice Quiz</a> and <a href="index.html" style="color:var(--aws-orange)">Study Guide</a>!</p>
-      </div>
+      <p>Master AWS terminology and concepts for the SAA-C03 exam</p>
     </div>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" onclick="switchMode('glossary')">📚 Glossary</button>
+      <button class="mode-btn" onclick="switchMode('flashcards')">🎴 Flashcards</button>
+    </div>
+
+    <!-- Glossary Section -->
+    <section id="glossary-section" class="section active">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="glossarySearch" placeholder="🔍 Search terms..." oninput="filterGlossary()">
+        <div class="filter-group">
+          <button class="filter-btn active" data-category="all" onclick="filterByCategory('all')">All</button>
+          <button class="filter-btn" data-category="compute" onclick="filterByCategory('compute')">Compute</button>
+          <button class="filter-btn" data-category="storage" onclick="filterByCategory('storage')">Storage</button>
+          <button class="filter-btn" data-category="database" onclick="filterByCategory('database')">Database</button>
+          <button class="filter-btn" data-category="security" onclick="filterByCategory('security')">Security</button>
+          <button class="filter-btn" data-category="networking" onclick="filterByCategory('networking')">Networking</button>
+        </div>
+      </div>
+
+      <div class="alpha-nav" id="alphaNav"></div>
+
+      <div class="glossary-list" id="glossaryList"></div>
+    </section>
+
+    <!-- Flashcards Section -->
+    <section id="flashcards-section" class="section">
+      <div class="progress-stats">
+        <div class="stat-box">
+          <div class="stat-value" id="cardCount">0/0</div>
+          <div class="stat-label">Progress</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="knownCount">0</div>
+          <div class="stat-label">Known</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="unknownCount">0</div>
+          <div class="stat-label">To Review</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="sessionProgress">0%</div>
+          <div class="stat-label">Session Complete</div>
+        </div>
+      </div>
+
+      <div class="flashcard-container">
+        <div class="flashcard-controls">
+          <div class="domain-selector">
+            <button class="domain-btn active" data-domain="all" onclick="selectDomain('all')">All Domains</button>
+            <button class="domain-btn" data-domain="compute" onclick="selectDomain('compute')">Compute</button>
+            <button class="domain-btn" data-domain="storage" onclick="selectDomain('storage')">Storage</button>
+            <button class="domain-btn" data-domain="database" onclick="selectDomain('database')">Database</button>
+            <button class="domain-btn" data-domain="security" onclick="selectDomain('security')">Security</button>
+            <button class="domain-btn" data-domain="networking" onclick="selectDomain('networking')">Networking</button>
+          </div>
+          <div class="flashcard-actions">
+            <button class="action-btn" onclick="shuffleCards()">🔀 Shuffle</button>
+            <button class="action-btn secondary" onclick="resetProgress()">🔄 Reset</button>
+          </div>
+        </div>
+
+        <div id="flashcardDisplay"></div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -117,5 +189,8 @@
       <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub</a></p>
     </div>
   </footer>
+
+  <script src="glossary-data.js"></script>
+  <script src="glossary-app.js"></script>
 </body>
 </html>
