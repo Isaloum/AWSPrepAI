@@ -41,6 +41,11 @@ let currentCardIndex = 0;
 let currentCards = [];
 let sessionStats = DB.get('flashcard_session') || { known: [], unknown: [], reviewed: [] };
 
+// Ensure sessionStats has all required properties
+if (!sessionStats.known) sessionStats.known = [];
+if (!sessionStats.unknown) sessionStats.unknown = [];
+if (!sessionStats.reviewed) sessionStats.reviewed = [];
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
   initializeGlossary();
@@ -55,8 +60,10 @@ function switchMode(mode) {
   // Update buttons
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.classList.remove('active');
+    if (btn.textContent.includes(mode === 'glossary' ? 'Glossary' : 'Flashcards')) {
+      btn.classList.add('active');
+    }
   });
-  event.target.classList.add('active');
   
   // Update sections
   document.querySelectorAll('.section').forEach(section => {
@@ -341,28 +348,37 @@ function markCard(status) {
 }
 
 function updateStats() {
+  if (!currentCards || currentCards.length === 0) {
+    return;
+  }
+  
   const totalCards = currentCards.length;
-  const reviewedCount = sessionStats.reviewed.filter(id => {
+  const reviewedCount = sessionStats.reviewed ? sessionStats.reviewed.filter(id => {
     const [domain] = id.split('-');
     return currentDomain === 'all' || domain === currentDomain;
-  }).length;
+  }).length : 0;
   
-  const knownCount = sessionStats.known.filter(id => {
+  const knownCount = sessionStats.known ? sessionStats.known.filter(id => {
     const [domain] = id.split('-');
     return currentDomain === 'all' || domain === currentDomain;
-  }).length;
+  }).length : 0;
   
-  const unknownCount = sessionStats.unknown.filter(id => {
+  const unknownCount = sessionStats.unknown ? sessionStats.unknown.filter(id => {
     const [domain] = id.split('-');
     return currentDomain === 'all' || domain === currentDomain;
-  }).length;
+  }).length : 0;
   
   const progressPercent = totalCards > 0 ? Math.round((reviewedCount / totalCards) * 100) : 0;
   
-  document.getElementById('cardCount').textContent = `${currentCardIndex + 1}/${totalCards}`;
-  document.getElementById('knownCount').textContent = knownCount;
-  document.getElementById('unknownCount').textContent = unknownCount;
-  document.getElementById('sessionProgress').textContent = `${progressPercent}%`;
+  const cardCountEl = document.getElementById('cardCount');
+  const knownCountEl = document.getElementById('knownCount');
+  const unknownCountEl = document.getElementById('unknownCount');
+  const sessionProgressEl = document.getElementById('sessionProgress');
+  
+  if (cardCountEl) cardCountEl.textContent = `${currentCardIndex + 1}/${totalCards}`;
+  if (knownCountEl) knownCountEl.textContent = knownCount;
+  if (unknownCountEl) unknownCountEl.textContent = unknownCount;
+  if (sessionProgressEl) sessionProgressEl.textContent = `${progressPercent}%`;
 }
 
 function shuffleCards() {
