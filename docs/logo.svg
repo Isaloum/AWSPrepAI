@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60">
   <defs>
     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#ff9900;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#0073BB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A8E1;stop-opacity:1" />
     </linearGradient>
   </defs>
   <text x="10" y="45" font-size="40" font-weight="800" fill="url(#logoGradient)" font-family="'Inter', -apple-system, sans-serif">☁️ AWSPrepAI</text>
