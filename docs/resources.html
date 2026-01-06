@@ -22,14 +22,30 @@
     .content-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2rem}
     h1{font-size:2.5rem;color:var(--aws-orange);margin-bottom:1.5rem}
     h2{font-size:1.75rem;color:var(--aws-orange);margin-top:2rem;margin-bottom:1rem}
+    h3{font-size:1.3rem;color:var(--aws-orange);margin-top:1.5rem;margin-bottom:.75rem}
     p{margin-bottom:1rem;color:var(--muted)}
-    .coming-soon{background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));color:#000;padding:3rem;border-radius:var(--radius);text-align:center;margin:2rem 0}
-    .coming-soon h2{color:#000;font-size:2.5rem;margin-bottom:1rem}
-    .feature-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
-    .preview-card{background:var(--bg);padding:1.5rem;border-radius:var(--radius);border-left:4px solid var(--aws-orange)}
-    .preview-card h3{color:var(--aws-orange);margin-bottom:.5rem}
+    a{color:var(--aws-orange);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin:1.5rem 0}
+    .resource-card{background:var(--bg);padding:1.5rem;border-radius:var(--radius);border-left:4px solid var(--aws-orange);transition:all .3s}
+    .resource-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,153,0,.2)}
+    .resource-card h3{margin-top:0;font-size:1.1rem}
+    .resource-card ul{margin-left:1.5rem;margin-top:.5rem;line-height:1.8}
+    .resource-card li{color:var(--muted);margin-bottom:.5rem}
+    .faq-item{background:var(--bg);border-radius:var(--radius);margin-bottom:1rem;border:1px solid var(--border);overflow:hidden}
+    .faq-question{padding:1.25rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--text);transition:all .2s}
+    .faq-question:hover{background:var(--card);color:var(--aws-orange)}
+    .faq-question.active{background:var(--card);color:var(--aws-orange);border-bottom:1px solid var(--border)}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 1.25rem;color:var(--muted)}
+    .faq-answer.active{max-height:500px;padding:1.25rem}
+    .faq-toggle{font-size:1.5rem;transition:transform .3s}
+    .faq-toggle.active{transform:rotate(180deg)}
+    .domain-section{margin-top:2rem;padding-top:2rem;border-top:2px solid var(--border)}
+    .badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:700;margin-left:.5rem;background:var(--accent);color:#000}
+    .badge.legacy{background:var(--muted);color:#000}
+    .note-box{background:var(--bg);border-left:4px solid var(--accent);padding:1rem;border-radius:8px;margin:1.5rem 0}
     footer{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);border-top:3px solid var(--aws-orange);padding:1.5rem 0;margin-top:3rem;text-align:center;color:var(--muted)}
-    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}.coming-soon h2{font-size:2rem}}
+    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}h2{font-size:1.5rem}.resource-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -42,6 +58,8 @@
         <nav class="nav-links">
           <a href="index.html" class="nav-link">Home</a>
           <a href="about.html" class="nav-link">About</a>
+          <a href="glossary.html" class="nav-link">Glossary</a>
+          <a href="resources.html" class="nav-link active">Resources</a>
           <a href="contact.html" class="nav-link">Contact</a>
         </nav>
       </div>
@@ -51,78 +69,351 @@
   <main class="container">
     <div class="content-card">
       <h1>📚 Resources & FAQ</h1>
+      <p>Your comprehensive guide to AWS SAA-C03 exam preparation with curated resources and answers to common questions.</p>
       
-      <div class="coming-soon">
-        <h2>🚧 Coming Soon!</h2>
-        <p style="color:#000;font-size:1.1rem;margin:0">This section is currently being developed with valuable resources and answers to common questions.</p>
+      <div class="note-box">
+        <strong>📌 SAA-C03 Focus:</strong> All resources below are specifically targeted for the AWS Solutions Architect Associate (SAA-C03) certification. CLF-C02 (Cloud Practitioner) content is legacy and not the primary focus of these resources.
       </div>
 
-      <h2>What to Expect</h2>
-      <p>The Resources & FAQ section will provide comprehensive guidance for your AWS certification journey, including study tips, exam strategies, and answers to frequently asked questions.</p>
+      <!-- RESOURCES SECTION -->
+      <h2>📖 Study Resources</h2>
+      <p>Carefully curated resources organized by category to help you prepare for the SAA-C03 exam.</p>
 
-      <div class="feature-preview">
-        <div class="preview-card">
-          <h3>📖 Study Resources</h3>
-          <p>Curated list of official AWS documentation, whitepapers, and recommended learning paths.</p>
+      <div class="resource-grid">
+        <div class="resource-card">
+          <h3>🏛️ Official AWS Documentation</h3>
+          <ul>
+            <li><a href="https://aws.amazon.com/certification/certified-solutions-architect-associate/" target="_blank">SAA-C03 Exam Guide</a></li>
+            <li><a href="https://d1.awsstatic.com/training-and-certification/docs-sa-associate/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf" target="_blank">Official Exam Guide PDF</a></li>
+            <li><a href="https://d1.awsstatic.com/training-and-certification/docs-sa-associate/AWS-Certified-Solutions-Architect-Associate_Sample-Questions.pdf" target="_blank">Sample Questions PDF</a></li>
+            <li><a href="https://aws.amazon.com/architecture/well-architected/" target="_blank">AWS Well-Architected Framework</a></li>
+          </ul>
         </div>
 
-        <div class="preview-card">
-          <h3>❓ Frequently Asked Questions</h3>
-          <p>Answers to common questions about AWS certifications, exam format, and preparation strategies.</p>
+        <div class="resource-card">
+          <h3>🎓 Free AWS Training</h3>
+          <ul>
+            <li><a href="https://explore.skillbuilder.aws/learn" target="_blank">AWS Skill Builder (Free Tier)</a></li>
+            <li><a href="https://aws.amazon.com/training/digital/" target="_blank">AWS Digital Training</a></li>
+            <li><a href="https://aws.amazon.com/training/learn-about/solutions-architect/" target="_blank">Solutions Architect Learning Path</a></li>
+            <li><a href="https://www.aws.training/Details/eLearning?id=49720" target="_blank">Exam Readiness: SAA-C03</a></li>
+          </ul>
         </div>
 
-        <div class="preview-card">
-          <h3>🎯 Exam Tips</h3>
-          <p>Proven strategies for approaching the exam, time management, and avoiding common pitfalls.</p>
+        <div class="resource-card">
+          <h3>📄 Essential Whitepapers</h3>
+          <ul>
+            <li><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html" target="_blank">AWS Overview</a></li>
+            <li><a href="https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html" target="_blank">Well-Architected Framework</a></li>
+            <li><a href="https://d1.awsstatic.com/whitepapers/Security/DDoS_White_Paper.pdf" target="_blank">DDoS Best Practices</a></li>
+            <li><a href="https://d1.awsstatic.com/whitepapers/architecture/AWS-Serverless-Applications-Lens.pdf" target="_blank">Serverless Applications Lens</a></li>
+          </ul>
         </div>
 
-        <div class="preview-card">
-          <h3>🔗 Useful Links</h3>
-          <p>Links to official AWS training, certification pages, and community resources.</p>
+        <div class="resource-card">
+          <h3>🎬 Video Tutorials</h3>
+          <ul>
+            <li><a href="https://www.youtube.com/user/AmazonWebServices" target="_blank">AWS YouTube Channel</a></li>
+            <li><a href="https://www.youtube.com/c/amazontechvideos" target="_blank">AWS Events & Webinars</a></li>
+            <li><a href="https://www.youtube.com/results?search_query=aws+solutions+architect+associate" target="_blank">SAA-C03 Tutorial Videos</a></li>
+            <li><a href="https://aws.amazon.com/architecture/this-is-my-architecture/" target="_blank">This Is My Architecture</a></li>
+          </ul>
         </div>
 
-        <div class="preview-card">
-          <h3>📅 Study Plans</h3>
-          <p>Recommended study schedules for different timeframes (1 month, 2 months, 3 months).</p>
+        <div class="resource-card">
+          <h3>💻 Hands-On Practice</h3>
+          <ul>
+            <li><a href="https://aws.amazon.com/free/" target="_blank">AWS Free Tier</a></li>
+            <li><a href="https://aws.amazon.com/getting-started/hands-on/" target="_blank">AWS Hands-on Tutorials</a></li>
+            <li><a href="https://aws.amazon.com/training/self-paced-labs/" target="_blank">AWS Self-Paced Labs</a></li>
+            <li><a href="https://workshops.aws/" target="_blank">AWS Workshops</a></li>
+          </ul>
         </div>
 
-        <div class="preview-card">
-          <h3>💡 Best Practices</h3>
-          <p>Tips from successful candidates and industry professionals who've passed AWS exams.</p>
+        <div class="resource-card">
+          <h3>📝 Trusted Blogs & Communities</h3>
+          <ul>
+            <li><a href="https://aws.amazon.com/blogs/architecture/" target="_blank">AWS Architecture Blog</a></li>
+            <li><a href="https://aws.amazon.com/blogs/aws/" target="_blank">Official AWS Blog</a></li>
+            <li><a href="https://www.reddit.com/r/AWSCertifications/" target="_blank">r/AWSCertifications</a></li>
+            <li><a href="https://acloud.guru/forums/aws-certified-solutions-architect-associate" target="_blank">A Cloud Guru Forums</a></li>
+          </ul>
         </div>
       </div>
 
-      <h2>Planned FAQ Topics</h2>
-      <ul style="margin-left:2rem;color:var(--muted);line-height:2">
-        <li>What is the passing score for AWS certifications?</li>
-        <li>How long should I study before taking the exam?</li>
-        <li>Can I use practice questions during the exam?</li>
-        <li>What happens if I fail the exam?</li>
-        <li>How long is my certification valid?</li>
-        <li>What's the difference between Associate and Professional certifications?</li>
-        <li>Do I need hands-on AWS experience to pass?</li>
-        <li>Are practice exams similar to the real exam?</li>
-        <li>What are the exam prerequisites?</li>
-        <li>How much does the exam cost?</li>
-      </ul>
+      <!-- Domain-Specific Resources -->
+      <div class="domain-section">
+        <h2>🎯 Resources by Exam Domain</h2>
+        
+        <div class="resource-grid">
+          <div class="resource-card">
+            <h3>🔐 Design Secure Architectures</h3>
+            <ul>
+              <li><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank">IAM User Guide</a></li>
+              <li><a href="https://docs.aws.amazon.com/kms/latest/developerguide/overview.html" target="_blank">AWS KMS Documentation</a></li>
+              <li><a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html" target="_blank">Amazon VPC Guide</a></li>
+              <li><a href="https://d1.awsstatic.com/whitepapers/Security/AWS_Security_Best_Practices.pdf" target="_blank">AWS Security Best Practices</a></li>
+            </ul>
+          </div>
 
-      <h2>Planned Resource Categories</h2>
-      <ul style="margin-left:2rem;color:var(--muted);line-height:2">
-        <li>Official AWS documentation and whitepapers</li>
-        <li>AWS Training and Certification portal</li>
-        <li>Recommended video courses and tutorials</li>
-        <li>Community forums and study groups</li>
-        <li>Free AWS tier and hands-on labs</li>
-        <li>Exam registration and scheduling</li>
-        <li>Recertification information</li>
-        <li>Career paths and job opportunities</li>
-      </ul>
+          <div class="resource-card">
+            <h3>🛡️ Design Resilient Architectures</h3>
+            <ul>
+              <li><a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html" target="_blank">Auto Scaling Guide</a></li>
+              <li><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html" target="_blank">Elastic Load Balancing</a></li>
+              <li><a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html" target="_blank">RDS Multi-AZ Deployments</a></li>
+              <li><a href="https://d1.awsstatic.com/whitepapers/architecture/AWS-Reliability-Pillar.pdf" target="_blank">Reliability Pillar Whitepaper</a></li>
+            </ul>
+          </div>
 
-      <h2>Stay Updated</h2>
-      <p>Want to be notified when this section is ready? Follow our <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub repository</a> for updates!</p>
+          <div class="resource-card">
+            <h3>⚡ Design High-Performing Architectures</h3>
+            <ul>
+              <li><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html" target="_blank">CloudFront Documentation</a></li>
+              <li><a href="https://docs.aws.amazon.com/elasticache/index.html" target="_blank">Amazon ElastiCache Guide</a></li>
+              <li><a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" target="_blank">AWS Lambda Documentation</a></li>
+              <li><a href="https://d1.awsstatic.com/whitepapers/architecture/AWS-Performance-Efficiency-Pillar.pdf" target="_blank">Performance Efficiency Pillar</a></li>
+            </ul>
+          </div>
 
-      <div style="background:var(--bg);padding:1.5rem;border-radius:var(--radius);margin-top:2rem;text-align:center">
-        <p style="font-size:1.1rem">In the meantime, explore our <a href="index.html" style="color:var(--aws-orange)">Practice Questions</a> and <a href="index.html" style="color:var(--aws-orange)">Study Guide</a>!</p>
+          <div class="resource-card">
+            <h3>💰 Design Cost-Optimized Architectures</h3>
+            <ul>
+              <li><a href="https://aws.amazon.com/pricing/" target="_blank">AWS Pricing Overview</a></li>
+              <li><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html" target="_blank">S3 Storage Classes</a></li>
+              <li><a href="https://aws.amazon.com/ec2/pricing/" target="_blank">EC2 Pricing Models</a></li>
+              <li><a href="https://d1.awsstatic.com/whitepapers/architecture/AWS-Cost-Optimization-Pillar.pdf" target="_blank">Cost Optimization Pillar</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ SECTION -->
+      <div class="domain-section">
+        <h2>❓ Frequently Asked Questions</h2>
+        <p>Answers to the most common questions about the AWS SAA-C03 certification exam.</p>
+
+        <!-- Exam Format & Logistics -->
+        <h3 style="margin-top:2rem">📋 Exam Format & Logistics</h3>
+        
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the format of the SAA-C03 exam?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>The SAA-C03 exam consists of 65 questions (multiple-choice and multiple-response) to be completed in 130 minutes. The exam is available in English, Japanese, Korean, and Simplified Chinese. You can take it at a testing center or online with remote proctoring.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the passing score for SAA-C03?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>The passing score is 720 out of 1000 points (approximately 72%). AWS uses a scaled scoring model, so the exact number of correct answers needed may vary slightly between exam versions.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How much does the SAA-C03 exam cost?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>The exam costs $150 USD. Practice exams are available for $40 USD. Prices may vary by region and promotional offers.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How long is the SAA-C03 certification valid?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>The certification is valid for 3 years from the date you pass the exam. You'll need to recertify before it expires to maintain your credential.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What happens if I fail the exam?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>If you don't pass, you must wait 14 days before retaking the exam. There's no limit to the number of attempts, but you must pay the full exam fee for each attempt. Use your score report to identify weak areas for focused study.</p>
+          </div>
+        </div>
+
+        <!-- Preparation & Study -->
+        <h3 style="margin-top:2rem">📚 Preparation & Study</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How long should I study before taking the SAA-C03 exam?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Study time varies based on experience. For those with AWS experience: 1-2 months of focused study. For beginners: 2-3 months with hands-on practice. We recommend at least 40-60 hours of total study time including practice labs and mock exams.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Do I need hands-on AWS experience to pass?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>While not strictly required, hands-on experience significantly improves your chances. AWS recommends 1+ year of hands-on experience. Use the AWS Free Tier to practice building solutions and get familiar with the AWS Console.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Are practice exams similar to the real exam?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Quality practice exams closely mirror the real exam in format, difficulty, and topics. Use official AWS practice exams and reputable third-party resources. Focus on understanding explanations, not just memorizing answers.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What are the prerequisites for SAA-C03?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>There are no formal prerequisites. However, AWS recommends having the Cloud Practitioner certification or equivalent knowledge, plus experience with AWS services. Understanding of networking, security, and database concepts is helpful.</p>
+          </div>
+        </div>
+
+        <!-- Key AWS Concepts -->
+        <h3 style="margin-top:2rem">☁️ Key AWS Concepts</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the difference between Security Groups and NACLs?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p><strong>Security Groups:</strong> Stateful, instance-level firewall. Supports allow rules only. Return traffic is automatically allowed.<br><br><strong>NACLs:</strong> Stateless, subnet-level firewall. Supports both allow and deny rules. Must explicitly allow both inbound and outbound traffic including ephemeral ports.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What's the difference between Multi-AZ and Read Replicas?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p><strong>Multi-AZ:</strong> Synchronous replication for high availability. Automatic failover (1-2 min). Standby not accessible for reads. Used for disaster recovery.<br><br><strong>Read Replicas:</strong> Asynchronous replication for read scaling. Manual promotion required. Replicas serve read traffic. Can be cross-region.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>When should I use S3 vs EBS vs EFS?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p><strong>S3:</strong> Object storage for files, backups, static websites. Unlimited scalability, pay per GB.<br><br><strong>EBS:</strong> Block storage attached to single EC2 instance. Boot volumes, databases requiring IOPS.<br><br><strong>EFS:</strong> Shared file system accessible from multiple EC2 instances. NFS protocol, scales automatically.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the AWS Well-Architected Framework?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>The Well-Architected Framework consists of 6 pillars for designing cloud architectures: <strong>Operational Excellence</strong>, <strong>Security</strong>, <strong>Reliability</strong>, <strong>Performance Efficiency</strong>, <strong>Cost Optimization</strong>, and <strong>Sustainability</strong>. The SAA-C03 exam focuses heavily on the middle four pillars.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the shared responsibility model?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p><strong>AWS Responsibility (Security OF the cloud):</strong> Physical infrastructure, hardware, networking, facilities.<br><br><strong>Customer Responsibility (Security IN the cloud):</strong> Data encryption, IAM, network configuration, application security, guest OS patching.</p>
+          </div>
+        </div>
+
+        <!-- Best Practices -->
+        <h3 style="margin-top:2rem">💡 Exam Strategy & Best Practices</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What are some exam day tips?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>• Read each question carefully - they often contain key requirements<br>• Eliminate obviously wrong answers first<br>• Budget ~2 minutes per question (130 min ÷ 65 questions)<br>• Flag difficult questions and return to them later<br>• Look for keywords like "most cost-effective," "least operational overhead," "highly available"<br>• When uncertain, choose managed AWS services over self-managed solutions</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What topics are most heavily tested?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Based on the exam guide and analysis:<br>• <strong>S3</strong> (storage classes, encryption, lifecycle policies)<br>• <strong>VPC</strong> (subnets, routing, security, endpoints)<br>• <strong>EC2</strong> (instance types, Auto Scaling, pricing models)<br>• <strong>IAM</strong> (roles, policies, cross-account access)<br>• <strong>RDS/Aurora</strong> (Multi-AZ, read replicas, backup)<br>• <strong>Load Balancers</strong> (ALB, NLB, health checks)<br>• <strong>CloudFront & Route 53</strong> (caching, routing policies)</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How can I tell if I'm exam-ready?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>You're likely ready when you:<br>• Consistently score 75%+ on practice exams<br>• Can explain the "why" behind answers, not just memorize them<br>• Understand trade-offs between different architectural choices<br>• Are comfortable with all four exam domains<br>• Have completed hands-on labs for core services<br>• Can design solutions considering cost, performance, and security simultaneously</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What's the difference between SAA-C02 and SAA-C03?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>SAA-C03 (launched 2022) replaced SAA-C02. Key differences:<br>• Updated to reflect new AWS services and features<br>• More emphasis on serverless and container technologies<br>• Additional focus on cost optimization and sustainability<br>• Same exam structure (65 questions, 130 minutes, 720/1000 passing score)<br><br><strong>Note:</strong> SAA-C02 content is now legacy. All preparation should focus on SAA-C03.</p>
+          </div>
+        </div>
+
+        <!-- Career & Next Steps -->
+        <h3 style="margin-top:2rem">🚀 Career & Next Steps</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What can I do after passing SAA-C03?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>After SAA-C03, consider:<br>• <strong>Professional Level:</strong> Solutions Architect Professional (SAP-C02)<br>• <strong>Specialty Certifications:</strong> Security, Advanced Networking, Database, Machine Learning<br>• <strong>Career opportunities:</strong> Cloud Architect, Solutions Architect, DevOps Engineer, Cloud Consultant<br>• <strong>Practical application:</strong> Apply your knowledge to real-world projects and build your portfolio</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How do I maintain my certification?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>To recertify before your 3-year expiration:<br>• Retake the current SAA exam<br>• Pass a higher-level exam (Professional or Specialty)<br>• Complete AWS recertification training (when available)<br><br>AWS sends reminders starting 6 months before expiration. Plan your recertification strategy early!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div style="background:linear-gradient(135deg,var(--card),var(--bg));padding:2rem;border-radius:var(--radius);margin-top:3rem;text-align:center;border:2px solid var(--aws-orange)">
+        <h2 style="margin-top:0">Ready to Start Practicing?</h2>
+        <p style="font-size:1.1rem;margin-bottom:1.5rem">Test your knowledge with our 540+ curated practice questions and AI-powered study guide!</p>
+        <a href="index.html" style="display:inline-block;padding:1rem 2rem;background:linear-gradient(135deg,var(--aws-orange),var(--accent-2));color:#000;border-radius:8px;font-weight:800;text-decoration:none;transition:all .3s">Start Practicing Now →</a>
       </div>
     </div>
   </main>
@@ -132,5 +423,33 @@
       <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-orange)">GitHub</a></p>
     </div>
   </footer>
+
+  <script>
+    function toggleFaq(element) {
+      const answer = element.nextElementSibling;
+      const toggle = element.querySelector('.faq-toggle');
+      const isActive = answer.classList.contains('active');
+      
+      // Close all other FAQs
+      document.querySelectorAll('.faq-answer.active').forEach(el => {
+        if (el !== answer) {
+          el.classList.remove('active');
+          el.previousElementSibling.classList.remove('active');
+          el.previousElementSibling.querySelector('.faq-toggle').classList.remove('active');
+        }
+      });
+      
+      // Toggle current FAQ
+      if (isActive) {
+        answer.classList.remove('active');
+        element.classList.remove('active');
+        toggle.classList.remove('active');
+      } else {
+        answer.classList.add('active');
+        element.classList.add('active');
+        toggle.classList.add('active');
+      }
+    }
+  </script>
 </body>
 </html>
