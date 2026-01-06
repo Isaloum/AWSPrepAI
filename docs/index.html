@@ -1635,7 +1635,7 @@
       const cert = certifications.saa;
       document.getElementById('currentCertName').textContent = cert.name;
       document.getElementById('certBadge').textContent = cert.code;
-      document.getElementById('certBadge').className = 'cert-badge ' + currentCert;
+      document.getElementById('certBadge').className = 'cert-badge saa';
       document.getElementById('passScore').textContent = cert.passScore + '%';
       document.getElementById('examQuestions').textContent = cert.questions;
       document.getElementById('examTime').textContent = cert.time + ' min';
