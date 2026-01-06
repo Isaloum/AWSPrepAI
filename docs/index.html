@@ -993,12 +993,12 @@
 
       const content = `
         <div style="margin-bottom:1rem">
-          <h3 style="color:var(--aws-orange);margin-bottom:.5rem">${tips.title}</h3>
+          <h3 style="color:var(--light-aqua);margin-bottom:.5rem">${tips.title}</h3>
           <p style="color:var(--muted);font-size:.9rem">Context-sensitive tips for your current domain</p>
         </div>
         <div style="display:grid;gap:.75rem">
           ${tips.tips.map(tip => `
-            <div style="background:var(--bg);padding:1rem;border-radius:8px;border-left:3px solid var(--aws-orange)">
+            <div style="background:var(--bg);padding:1rem;border-radius:8px;border-left:3px solid var(--light-aqua)">
               ${tip}
             </div>
           `).join('')}
@@ -1821,7 +1821,7 @@
       document.getElementById('examProgress').textContent = `Question ${examIndex + 1} of ${examQuestions.length}`;
       document.getElementById('examQuestion').textContent = q.q;
       document.getElementById('examOptions').innerHTML = q.options.map((opt, i) => `
-        <div class="quiz-option ${examAnswers[examIndex] === i ? 'selected' : ''}" onclick="selectExamAnswer(${i})" style="${examAnswers[examIndex] === i ? 'border-color:var(--aws-orange)' : ''}">${opt}</div>
+        <div class="quiz-option ${examAnswers[examIndex] === i ? 'selected' : ''}" onclick="selectExamAnswer(${i})" style="${examAnswers[examIndex] === i ? 'border-color:var(--light-aqua)' : ''}">${opt}</div>
       `).join('');
     }
 
