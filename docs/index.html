@@ -16,11 +16,9 @@
     .logo{display:flex;align-items:center;gap:.75rem;font-size:1.5rem;font-weight:800;color:var(--aws-orange);text-decoration:none;min-width:fit-content}
     .logo img{height:50px;width:auto;object-fit:contain}
     .nav-tabs{display:flex;gap:.5rem;flex-wrap:wrap;position:relative}
-    .nav-tab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s ease;font-size:.875rem;position:relative}
-    .nav-tab::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:3px;background:var(--aws-orange);transition:width .3s ease;border-radius:2px}
+    .nav-tab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s ease;font-size:.875rem}
     .nav-tab:hover{border-color:var(--aws-orange);color:var(--aws-orange);transform:translateY(-2px)}
     .nav-tab.active{background:var(--aws-orange);color:#000;border-color:var(--aws-orange);box-shadow:0 2px 8px rgba(255,153,0,.3)}
-    .nav-tab.active::after{width:100%}
     main{padding:1.5rem 0}
     .app-section{display:none}
     .app-section.active{display:block}
