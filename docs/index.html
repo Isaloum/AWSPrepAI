@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AWSPrepAI - AWS Certification Study Tool</title>
-  <meta name="description" content="Master AWS certifications with practice questions, flashcards, and mock exams. Cloud Practitioner & Solutions Architect.">
+  <meta name="description" content="Master AWS Solutions Architect Associate (SAA-C03) certification with 506 practice questions, AI-powered study guide, and mock exams.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <style>
     :root{--bg:#0f172a;--card:#1e293b;--accent:#f59e0b;--accent-2:#fbbf24;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;--radius:12px;--aws-orange:#ff9900}
@@ -15,8 +15,6 @@
     .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
     .logo{display:flex;align-items:center;gap:.75rem;font-size:1.5rem;font-weight:800;color:var(--aws-orange);text-decoration:none;min-width:fit-content}
     .logo img{height:50px;width:auto;object-fit:contain}
-    .cert-selector{background:var(--bg);border:2px solid var(--aws-orange);color:var(--text);padding:.5rem 1rem;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer}
-    .cert-selector:focus{outline:none}
     .nav-tabs{display:flex;gap:.5rem;flex-wrap:wrap;position:relative}
     .nav-tab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s ease;font-size:.875rem;position:relative}
     .nav-tab::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:3px;background:var(--aws-orange);transition:width .3s ease;border-radius:2px}
@@ -68,7 +66,6 @@
     .service-desc{font-size:.9rem;color:var(--muted);margin-top:.5rem}
     .exam-timer{font-size:2rem;font-weight:800;color:var(--aws-orange);text-align:center;padding:1rem}
     .cert-badge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:700;margin-left:.5rem}
-    .cert-badge.clf{background:#10b981;color:#fff}
     .cert-badge.saa{background:#3b82f6;color:#fff}
     .hero{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);padding:4rem 1rem;text-align:center;margin:0 0 2rem 0;border-radius:var(--radius)}
     .hero h1{font-size:3rem;color:var(--aws-orange);margin-bottom:1rem;font-weight:900}
@@ -138,10 +135,6 @@
             <a href="contact.html" class="page-link">Contact</a>
           </div>
         </div>
-        <select class="cert-selector" id="certSelector" onchange="switchCert()">
-          <option value="clf">☁️ Cloud Practitioner (CLF-C02)</option>
-          <option value="saa">🏗️ Solutions Architect (SAA-C03)</option>
-        </select>
         <nav class="nav-tabs">
           <button class="nav-tab active" data-tab="dashboard"><span class="icon">📊</span><span>Dashboard</span></button>
           <button class="nav-tab" data-tab="quiz"><span class="icon">❓</span><span>Practice</span></button>
@@ -164,8 +157,8 @@
           <div style="font-size:.75rem;color:var(--muted)">Solutions Architect Associate</div>
         </div>
       </div>
-      <h1>Master AWS Certifications</h1>
-      <p>540+ curated practice questions, AI-powered study guide, and full mock exams for Cloud Practitioner and Solutions Architect certifications</p>
+      <h1>Master AWS Solutions Architect Associate</h1>
+      <p>506 curated practice questions, AI-powered study guide, and full mock exams for SAA-C03 certification</p>
       <button class="cta-button" onclick="document.querySelector('[data-tab=quiz]').click()">Start Practicing Now →</button>
     </section>
 
@@ -173,7 +166,7 @@
     <section id="dashboard" class="app-section active">
       <h1 class="section-heading">📊 Dashboard</h1>
       <div class="card card-orange">
-        <div class="card-title">🎯 Current Certification: <span id="currentCertName">Cloud Practitioner</span><span class="cert-badge clf" id="certBadge">CLF-C02</span></div>
+        <div class="card-title">🎯 Current Certification: <span id="currentCertName">Solutions Architect Associate</span><span class="cert-badge saa" id="certBadge">SAA-C03</span></div>
         <p style="color:var(--muted)">Pass score: <span id="passScore">70%</span> | Questions: <span id="examQuestions">65</span> | Time: <span id="examTime">90 min</span></p>
       </div>
 
@@ -211,7 +204,7 @@
       </div>
 
       <div class="card card-orange">
-        <div class="card-title">☁️ <span id="quizCertTitle">AWS Cloud Practitioner</span> <span id="questionCounter" style="font-weight:400;color:var(--muted);font-size:.9rem"></span></div>
+        <div class="card-title">☁️ <span id="quizCertTitle">AWS Solutions Architect Associate</span> <span id="questionCounter" style="font-weight:400;color:var(--muted);font-size:.9rem"></span></div>
         <div id="quizCategory" style="color:var(--aws-orange);font-size:.875rem;margin-bottom:.5rem"></div>
         <div class="quiz-question" id="quizQuestion">Loading question...</div>
         <div class="quiz-options" id="quizOptions"></div>
@@ -270,7 +263,7 @@
     <section id="study-guide" class="app-section">
       <div class="card card-orange">
         <div class="card-title">🎓 SAA-C03 Smart Study Guide</div>
-        <p style="color:var(--muted)">Based on analysis of all 505 SAA-C03 practice questions</p>
+        <p style="color:var(--muted)">Based on analysis of all 506 SAA-C03 practice questions</p>
       </div>
 
       <div class="stats-grid" style="margin-bottom:1.5rem">
@@ -1029,15 +1022,6 @@
 
     // Certification Data
     const certifications = {
-      clf: {
-        name: "Cloud Practitioner",
-        code: "CLF-C02",
-        passScore: 70,
-        questions: 65,
-        time: 90,
-        domains: ["cloud-concepts", "security", "technology", "billing"],
-        domainLabels: { "cloud-concepts": "☁️ Cloud Concepts", "security": "🔐 Security", "technology": "🖥️ Technology", "billing": "💰 Billing & Pricing" }
-      },
       saa: {
         name: "Solutions Architect Associate",
         code: "SAA-C03",
@@ -1048,47 +1032,6 @@
         domainLabels: { "design-secure": "🔐 Secure Architectures", "design-resilient": "🛡️ Resilient Architectures", "design-performant": "⚡ High-Performing", "design-cost": "💰 Cost-Optimized" }
       }
     };
-
-    // CLF-C02 Questions
-    const clfQuestions = [
-      { cat: "cloud-concepts", q: "What does EC2 stand for?", options: ["Elastic Compute Cloud", "Electronic Computing Center", "Enterprise Cloud Computing", "Elastic Container Cluster"], answer: 0, explain: "EC2 = Elastic Compute Cloud. Virtual servers in the cloud." },
-      { cat: "cloud-concepts", q: "What is AWS Lambda?", options: ["Database service", "Serverless compute", "Storage service", "Networking tool"], answer: 1, explain: "Lambda runs code without provisioning servers." },
-      { cat: "cloud-concepts", q: "Which service provides object storage?", options: ["EBS", "S3", "RDS", "EC2"], answer: 1, explain: "S3 (Simple Storage Service) stores objects with unlimited scalability." },
-      { cat: "cloud-concepts", q: "What is the benefit of cloud computing elasticity?", options: ["Lower security", "Fixed capacity", "Scale up/down based on demand", "Higher latency"], answer: 2, explain: "Elasticity means automatically adjusting resources to match demand." },
-      { cat: "cloud-concepts", q: "What is a Region in AWS?", options: ["A single data center", "A geographical area with multiple AZs", "A virtual network", "A security group"], answer: 1, explain: "A Region is a geographical area containing multiple Availability Zones." },
-      { cat: "cloud-concepts", q: "What is an Availability Zone?", options: ["Multiple regions combined", "One or more data centers", "A virtual machine", "A storage bucket"], answer: 1, explain: "An AZ is one or more discrete data centers with redundant power and networking." },
-      { cat: "cloud-concepts", q: "What EC2 pricing offers biggest discount for long-term?", options: ["On-Demand", "Spot", "Reserved Instances", "Dedicated"], answer: 2, explain: "Reserved Instances offer up to 72% discount for 1-3 year commitments." },
-      { cat: "cloud-concepts", q: "What are Spot Instances?", options: ["Free instances", "Unused capacity at discount", "Premium instances", "Dedicated hardware"], answer: 1, explain: "Spot uses spare EC2 capacity at up to 90% discount but can be interrupted." },
-      { cat: "cloud-concepts", q: "What is AWS Elastic Beanstalk?", options: ["Container service", "PaaS for apps", "Database", "CDN"], answer: 1, explain: "Elastic Beanstalk is PaaS that handles deployment automatically." },
-      { cat: "cloud-concepts", q: "What does an AMI contain?", options: ["Just OS", "Template for EC2", "Container images", "Database"], answer: 1, explain: "AMI is a template with OS, applications, and configurations." },
-
-      { cat: "security", q: "What does IAM stand for?", options: ["Internet Access Management", "Identity and Access Management", "Integrated Application Module", "Instance Availability Manager"], answer: 1, explain: "IAM manages users, groups, roles, and permissions." },
-      { cat: "security", q: "What is the shared responsibility model?", options: ["AWS manages all", "Customer manages all", "AWS: infrastructure, Customer: data", "Only enterprise"], answer: 2, explain: "AWS secures the cloud; customers secure what's IN the cloud." },
-      { cat: "security", q: "What is an IAM role?", options: ["User account", "Temporary credentials", "Group of users", "Password policy"], answer: 1, explain: "Roles provide temporary credentials for services or cross-account access." },
-      { cat: "security", q: "Which service provides DDoS protection?", options: ["WAF", "Shield", "GuardDuty", "Inspector"], answer: 1, explain: "AWS Shield provides DDoS protection." },
-      { cat: "security", q: "What is AWS KMS?", options: ["Container management", "Key management", "Kubernetes", "Monitoring"], answer: 1, explain: "KMS creates and manages encryption keys." },
-      { cat: "security", q: "What is MFA?", options: ["Multiple Firewall Access", "Multi-Factor Authentication", "Managed File Access", "Main Function Admin"], answer: 1, explain: "MFA adds an extra authentication factor beyond password." },
-      { cat: "security", q: "What is principle of least privilege?", options: ["Max permissions", "Only needed permissions", "No permissions", "Admin for all"], answer: 1, explain: "Grant only minimum permissions required for a task." },
-      { cat: "security", q: "What does AWS WAF protect against?", options: ["DDoS only", "SQL injection & XSS", "Physical theft", "Power outage"], answer: 1, explain: "WAF protects web apps from common exploits." },
-
-      { cat: "technology", q: "What is VPC?", options: ["Virtual Private Cloud", "Virtual Processing Center", "Verified Public Connection", "Variable Pricing"], answer: 0, explain: "VPC is your isolated network in AWS." },
-      { cat: "technology", q: "What is CloudFront?", options: ["DNS service", "CDN", "Database", "Compute"], answer: 1, explain: "CloudFront is a CDN for fast global content delivery." },
-      { cat: "technology", q: "What is Route 53?", options: ["CDN", "DNS service", "VPN", "Storage"], answer: 1, explain: "Route 53 is DNS and domain registration service." },
-      { cat: "technology", q: "What database is DynamoDB?", options: ["Relational", "Graph", "NoSQL key-value", "Time-series"], answer: 2, explain: "DynamoDB is NoSQL with single-digit ms latency." },
-      { cat: "technology", q: "What is RDS?", options: ["NoSQL database", "Managed relational DB", "Cache", "Storage"], answer: 1, explain: "RDS manages MySQL, PostgreSQL, SQL Server, etc." },
-      { cat: "technology", q: "What is ElastiCache for?", options: ["Storage", "In-memory caching", "Compute", "Networking"], answer: 1, explain: "ElastiCache provides Redis or Memcached caching." },
-      { cat: "technology", q: "What is EBS?", options: ["Object storage", "Block storage for EC2", "File storage", "Archive"], answer: 1, explain: "EBS provides persistent block storage for EC2." },
-      { cat: "technology", q: "What is EFS?", options: ["Block storage", "Shared file system", "Object storage", "Archive"], answer: 1, explain: "EFS is shared NFS file storage for multiple EC2." },
-
-      { cat: "billing", q: "What is AWS Free Tier?", options: ["Always free only", "12 months free for new accounts", "Students only", "None"], answer: 1, explain: "Free Tier includes 12 months limited free usage plus always-free services." },
-      { cat: "billing", q: "What is Cost Explorer?", options: ["Service catalog", "Visualize costs", "Calculator", "Alarm"], answer: 1, explain: "Cost Explorer visualizes spending patterns." },
-      { cat: "billing", q: "What estimates costs before deployment?", options: ["Cost Explorer", "Pricing Calculator", "Budgets", "Trusted Advisor"], answer: 1, explain: "Pricing Calculator estimates costs before use." },
-      { cat: "billing", q: "What is AWS Budgets?", options: ["Calculate prices", "Set cost alerts", "Pay bills", "Get refunds"], answer: 1, explain: "Budgets sets alerts when costs exceed thresholds." },
-      { cat: "billing", q: "Which support has TAM?", options: ["Basic", "Developer", "Business", "Enterprise"], answer: 3, explain: "Enterprise Support includes Technical Account Manager." },
-      { cat: "billing", q: "What is always free?", options: ["EC2 t2.micro", "S3 5GB", "IAM", "RDS"], answer: 2, explain: "IAM is always free - no charge for users, roles, policies." },
-      { cat: "billing", q: "What is Consolidated Billing?", options: ["Single bill for multiple accounts", "Installments", "Auto discounts", "Free tier extension"], answer: 0, explain: "Combines usage across accounts for volume discounts." },
-      { cat: "billing", q: "On-Demand pricing means?", options: ["Long commitment", "No upfront, pay as you go", "Reserved", "Free"], answer: 1, explain: "On-Demand: pay by hour/second with no commitment." }
-    ];
 
     // SAA-C03 Questions (Solutions Architect) - Full 65-Question Mock Exam
     const saaQuestions = [
@@ -1666,13 +1609,13 @@
     ];
 
     // State
-    let currentCert = DB.getOne('currentCert') || 'clf';
+    let currentCert = 'saa';
     let currentCategory = 'all';
-    let questions = currentCert === 'clf' ? clfQuestions : saaQuestions;
+    let questions = saaQuestions;
     let filteredQuestions = [...questions];
     let currentQuestionIndex = 0;
-    let quizStats = DB.getOne('quizStats_' + currentCert) || { correct: 0, total: 0, bestStreak: 0, currentStreak: 0, byCategory: {} };
-    let answeredQuestions = DB.get('answeredQuestions_' + currentCert) || [];
+    let quizStats = DB.getOne('quizStats_saa') || { correct: 0, total: 0, bestStreak: 0, currentStreak: 0, byCategory: {} };
+    let answeredQuestions = DB.get('answeredQuestions_saa') || [];
 
     // Exam State
     let examQuestions = [];
@@ -1688,25 +1631,11 @@
       }
     }
 
-    function switchCert() {
-      currentCert = document.getElementById('certSelector').value;
-      DB.setOne('currentCert', currentCert);
-      questions = currentCert === 'clf' ? clfQuestions : saaQuestions;
-      quizStats = DB.getOne('quizStats_' + currentCert) || { correct: 0, total: 0, bestStreak: 0, currentStreak: 0, byCategory: {} };
-      answeredQuestions = DB.get('answeredQuestions_' + currentCert) || [];
-      filteredQuestions = [...questions];
-      shuffleArray(filteredQuestions);
-      currentQuestionIndex = 0;
-      currentCategory = 'all';
-      updateUI();
-      loadQuestion();
-    }
-
     function updateUI() {
-      const cert = certifications[currentCert];
+      const cert = certifications.saa;
       document.getElementById('currentCertName').textContent = cert.name;
       document.getElementById('certBadge').textContent = cert.code;
-      document.getElementById('certBadge').className = 'cert-badge ' + currentCert;
+      document.getElementById('certBadge').className = 'cert-badge saa';
       document.getElementById('passScore').textContent = cert.passScore + '%';
       document.getElementById('examQuestions').textContent = cert.questions;
       document.getElementById('examTime').textContent = cert.time + ' min';
@@ -1779,8 +1708,8 @@
       document.getElementById('quizExplanation').style.display = 'none';
       document.getElementById('nextQuizBtn').style.display = 'none';
 
-      // Show floating tips button only for SAA-C03
-      document.getElementById('floatingTips').style.display = currentCert === 'saa' ? 'block' : 'none';
+      // Show floating tips button for SAA-C03
+      document.getElementById('floatingTips').style.display = 'block';
     }
 
     function checkAnswer(selected) {
@@ -1806,8 +1735,8 @@
         answeredQuestions.push({ q: q.q, cat: q.cat, correct: false, date: new Date().toISOString() });
       }
 
-      DB.setOne('quizStats_' + currentCert, quizStats);
-      DB.set('answeredQuestions_' + currentCert, answeredQuestions.slice(-200));
+      DB.setOne('quizStats_saa', quizStats);
+      DB.set('answeredQuestions_saa', answeredQuestions.slice(-200));
 
       const explainEl = document.getElementById('quizExplanation');
       explainEl.innerHTML = `<strong>${selected === q.answer ? '✅ Correct!' : '❌ Incorrect'}</strong><br>${q.explain}`;
@@ -1825,11 +1754,11 @@
     }
 
     function resetQuiz() {
-      if (confirm('Reset all progress for ' + certifications[currentCert].name + '?')) {
+      if (confirm('Reset all progress for Solutions Architect Associate?')) {
         quizStats = { correct: 0, total: 0, bestStreak: 0, currentStreak: 0, byCategory: {} };
         answeredQuestions = [];
-        DB.setOne('quizStats_' + currentCert, quizStats);
-        DB.set('answeredQuestions_' + currentCert, []);
+        DB.setOne('quizStats_saa', quizStats);
+        DB.set('answeredQuestions_saa', []);
         updateUI();
       }
     }
@@ -1840,7 +1769,7 @@
       document.getElementById('bestStreak').textContent = quizStats.bestStreak;
 
       const accuracy = quizStats.total > 0 ? (quizStats.correct / quizStats.total) * 100 : 0;
-      const cert = certifications[currentCert];
+      const cert = certifications.saa;
       const ready = accuracy >= cert.passScore && quizStats.total >= 30;
       document.getElementById('examReady').textContent = ready ? 'Yes!' : 'No';
       document.getElementById('examReady').style.color = ready ? 'var(--success)' : 'var(--danger)';
@@ -1968,7 +1897,6 @@
     }
 
     // Initialize
-    document.getElementById('certSelector').value = currentCert;
     shuffleArray(filteredQuestions);
     updateUI();
     loadQuestion();
