@@ -80,7 +80,7 @@ AWSPrepAI now includes several pages for a comprehensive learning experience:
 
 - **🏠 Home (Landing Page):** Hero section with AWS SAA-C03 badge, feature overview, and quick start
 - **📊 Dashboard:** Track your progress, accuracy, and identify weak areas
-- **❓ Practice Quiz:** 540+ practice questions with instant feedback
+- **❓ Practice Quiz:** 506 SAA-C03 practice questions with instant feedback
 - **📝 Mock Exams:** Full-length timed certification practice exams
 - **🎓 Study Guide:** AI-analyzed tips and strategies (SAA-C03)
 - **💡 Hints/Keywords:** Quick reference for exam keywords and scenarios
