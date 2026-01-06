@@ -2,9 +2,9 @@
 
 <div align="center">
 
-### AI-Powered AWS Certification Study Platform
+### AI-Powered AWS SAA-C03 Study Platform
 
-**540+ curated practice questions • Smart Study Guide • Mock Exams • Progress Analytics**
+**506 curated practice questions • Smart Study Guide • Mock Exams • Progress Analytics**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-FF9900?style=for-the-badge&logo=amazon-aws)](https://isaloum.github.io/AWSPrepAI)
 [![GitHub](https://img.shields.io/badge/GitHub-View%20Source-181717?style=for-the-badge&logo=github)](https://github.com/Isaloum/AWSPrepAI)
@@ -20,9 +20,9 @@
 
 ## 📋 About
 
-**AWSPrepAI** is a comprehensive study platform designed to help you ace AWS certification exams. Built with vanilla JavaScript, it features 540+ carefully curated practice questions, an AI-analyzed smart study guide, full-length mock exams, and intelligent progress tracking—all without requiring any backend or external dependencies.
+**AWSPrepAI** is a comprehensive study platform designed to help you ace the AWS Solutions Architect Associate (SAA-C03) certification exam. Built with vanilla JavaScript, it features 506 carefully curated practice questions, an AI-analyzed smart study guide, full-length mock exams, and intelligent progress tracking—all without requiring any backend or external dependencies.
 
-**Perfect for:** Cloud Practitioner (CLF-C02) and Solutions Architect Associate (SAA-C03) exam preparation.
+**Perfect for:** Solutions Architect Associate (SAA-C03) exam preparation.
 
 🎯 **[Try it now →](https://isaloum.github.io/AWSPrepAI)**
 
@@ -33,8 +33,8 @@
 | Feature | Description |
 |---------|-------------|
 | 🎯 **Hero Landing Page** | Engaging landing page with AWS SAA-C03 badge, compelling intro, and clear call-to-action |
-| 🎓 **Smart Study Guide** | AI-analyzed content from 505 SAA-C03 questions with domain-specific tips, common traps, and top tested services |
-| 📝 **Practice Quiz** | 540+ questions with detailed explanations across all exam domains |
+| 🎓 **Smart Study Guide** | AI-analyzed content from 506 SAA-C03 questions with domain-specific tips, common traps, and top tested services |
+| 📝 **Practice Quiz** | 506 questions with detailed explanations across all SAA-C03 exam domains |
 | ⏱️ **Mock Exams** | Full-length timed exams matching real certification format |
 | 📊 **Progress Tracking** | Track accuracy, streaks, weak areas, and exam readiness |
 | 🔍 **Services Reference** | Searchable guide with 30+ core AWS services |
@@ -52,13 +52,7 @@
 
 ---
 
-## 📚 Certifications Supported
-
-### ☁️ AWS Cloud Practitioner (CLF-C02) - 34 Questions
-- **Cloud Concepts** - AWS Cloud fundamentals, deployment models, shared responsibility
-- **Security & Compliance** - IAM, encryption, compliance programs
-- **Technology** - Core services: compute, storage, database, networking
-- **Billing & Pricing** - Pricing models, cost optimization, support plans
+## 📚 Certification Supported
 
 ### 🏗️ AWS Solutions Architect Associate (SAA-C03) - 506 Questions
 - **Design Secure Architectures** (144 questions) - IAM, KMS, VPC, Security Groups, compliance
@@ -70,7 +64,7 @@
 
 ## 🎓 Smart Study Guide Highlights
 
-The Study Guide is powered by AI analysis of all 505 SAA-C03 practice questions:
+The Study Guide is powered by AI analysis of all 506 SAA-C03 practice questions:
 
 - **Top 10 Most Tested Services** per domain (e.g., S3 appears 145 times in performance questions)
 - **Key Topics to Master** with specific exam focus areas
@@ -140,12 +134,10 @@ No build process required—just open `docs/index.html` directly in any modern b
 ## 📖 How to Use
 
 1. **Explore the Landing Page:** Get an overview of the platform and start with the "Start Practicing Now" button
-2. **Choose Certification:** Select CLF-C02 or SAA-C03 from the dropdown
-3. **Navigate:** Use the top navigation to access About, Glossary, Resources, and Contact pages
-4. **Study Guide:** Review domain-specific tips and key topics for SAA-C03
-5. **Practice Quiz:** Start with practice mode to learn and track progress
-6. **Mock Exam:** Take timed full-length exams when ready
-7. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
+2. **Study Guide:** Review domain-specific tips and key topics for SAA-C03
+3. **Practice Quiz:** Start with practice mode to learn and track progress
+4. **Mock Exam:** Take timed full-length exams when ready
+5. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
 
 ---
 
@@ -153,9 +145,7 @@ No build process required—just open `docs/index.html` directly in any modern b
 
 | Certification | Total Questions | Domains Covered |
 |---------------|----------------|----------------|
-| **CLF-C02** | 34 questions | 4 domains (Cloud Concepts, Security, Technology, Billing) |
 | **SAA-C03** | 506 questions | 4 domains (Secure, Resilient, Performant, Cost-Optimized) |
-| **Total** | **540 questions** | 8 comprehensive domains |
 
 All questions include:
 - ✅ Detailed explanations
@@ -165,12 +155,6 @@ All questions include:
 ---
 
 ## 🎯 Exam Information
-
-### Cloud Practitioner (CLF-C02)
-- **Questions:** 65 (50 scored + 15 unscored)
-- **Duration:** 90 minutes
-- **Pass Score:** 700/1000 (~70%)
-- **Cost:** $100 USD
 
 ### Solutions Architect Associate (SAA-C03)
 - **Questions:** 65 (50-55 scored)
