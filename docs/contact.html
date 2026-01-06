@@ -8,7 +8,7 @@
   <style>
     :root{--bg:#f5f5f5;--card:#ffffff;--accent:#0073BB;--accent-2:#005A9C;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#232F3E;--aws-blue:#0073BB;--light-bg:#fafafa}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f9fa;color:var(--text);line-height:1.6;min-height:100vh}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     .container{max-width:1200px;margin:0 auto;padding:1rem}
     header{background:var(--aws-dark);border-bottom:2px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 4px rgba(0,0,0,.1)}
     .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
@@ -29,8 +29,16 @@
     .contact-card h3{color:var(--aws-blue);margin-bottom:.5rem}
     .contact-card a{color:var(--text);text-decoration:none;transition:color .2s}
     .contact-card a:hover{color:var(--aws-blue)}
-    footer{background:linear-gradient(135deg,#232f3e 0%,#1a2332 100%);border-top:3px solid var(--aws-orange);padding:1.5rem 0;margin-top:3rem;text-align:center;color:var(--muted)}
-    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}}
+    footer{background:var(--aws-dark);border-top:2px solid var(--border);padding:2rem 0;margin-top:3rem}
+    .footer-content{max-width:1200px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem}
+    .footer-left{display:flex;flex-direction:column;gap:.5rem}
+    .footer-title{font-size:1.25rem;font-weight:700;color:#fff}
+    .footer-subtitle{color:#d5dbdb;font-size:.9rem}
+    .footer-right{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+    .footer-link{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:rgba(255,255,255,.1);border:1px solid transparent;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;transition:all .2s;font-size:.9rem}
+    .footer-link:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+    .tech-badge{display:inline-block;padding:.25rem .75rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;font-size:.75rem;color:#d5dbdb;font-weight:600}
+    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}.footer-content{flex-direction:column;text-align:center}.footer-right{justify-content:center}}
   </style>
 </head>
 <body>
@@ -112,7 +120,27 @@
 
   <footer>
     <div class="container">
-      <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-blue)">GitHub</a></p>
+      <div class="footer-content">
+        <div class="footer-left">
+          <div class="footer-title">☁️ AWSPrepAI</div>
+          <div class="footer-subtitle">Built by Ihab Saloum • Open Source Project</div>
+          <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+            <span class="tech-badge">JavaScript</span>
+            <span class="tech-badge">HTML5</span>
+            <span class="tech-badge">CSS3</span>
+            <span class="tech-badge">LocalStorage</span>
+          </div>
+        </div>
+        <div class="footer-right">
+          <a href="https://github.com/Isaloum/AWSPrepAI" class="footer-link" target="_blank" rel="noopener">
+            <span>⭐</span>
+            <span>View Source Code</span>
+          </a>
+          <a href="https://github.com/Isaloum" class="footer-link" target="_blank" rel="noopener">
+            <span>More Projects →</span>
+          </a>
+        </div>
+      </div>
     </div>
   </footer>
 </body>
