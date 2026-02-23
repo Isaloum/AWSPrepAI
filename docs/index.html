@@ -540,187 +540,187 @@
         <div class="card-title">📝 Practice Test #4 (Attempt 3) - Targeted Hint / Keywords</div>
         <p style="color:var(--muted)">Incorrect questions converted into quick exam keyword mappings.</p>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 3 - Cost + Performance (Read-Heavy API)</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Cost + Performance (Read-Heavy API)</h3>
         <div class="insight">✅ <strong>Answer:</strong> Enable <strong>Amazon API Gateway Caching</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> When read traffic is high and data can be stale (up to 24 hours), API Gateway cache + TTL reduces Lambda/Aurora calls, improving latency and lowering database cost.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> API Gateway Caching, TTL, Read-heavy, Cost Optimization, Performance</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 4 - Hybrid Multi-Region Connectivity</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Hybrid Multi-Region Connectivity</h3>
         <div class="insight">✅ <strong>Answer:</strong> Connect both Direct Connect links to a shared <strong>Direct Connect Gateway</strong> and attach each region's <strong>VGW</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Direct Connect Gateway supports transitive routing across regions and on-prem locations with lower operational overhead than managing complex peering/VPN combinations.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Direct Connect Gateway, VGW, Transitive Routing, Hybrid Cloud, Multi-Region, Direct Connect</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 6 - Geographic Traffic Steering</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Geographic Traffic Steering</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use Route 53 <strong>Geoproximity routing</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Geoproximity routing can dynamically shift which geographic area routes to a resource by applying a bias value.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Geoproximity Routing, Route 53, Bias, Geographic Routing, Dynamic Traffic Routing</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 7 - Reusable Best-Practice Infrastructure</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Reusable Best-Practice Infrastructure</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>AWS CloudFormation</strong> to manage RDS databases via reusable templates.</div>
         <div class="insight">💡 <strong>Why:</strong> CloudFormation is Infrastructure as Code — encode best practices once into a template and every user/team reuses it. Trusted Advisor only recommends; Lambda alerts are reactive; IAM deny doesn't guide correct config.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> CloudFormation, Infrastructure as Code, IaC, Reusable Template, Best Practices, JSON/YAML</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 8 - Message Broker with MQTT Protocol</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Message Broker with MQTT Protocol</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>Amazon MQ</strong> for managed message broker with MQTT support.</div>
         <div class="insight">💡 <strong>Why:</strong> Amazon MQ supports industry-standard protocols (JMS, AMQP, STOMP, MQTT, WebSocket). SQS/SNS/Kinesis are AWS-proprietary and do not support MQTT — no code changes needed with Amazon MQ.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Amazon MQ, MQTT, AMQP, STOMP, ActiveMQ, Lift-and-Shift, Message Broker, Protocol Support</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 9 - One-Time 1 PB S3 Cross-Region Copy</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">One-Time 1 PB S3 Cross-Region Copy</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>aws s3 sync</strong> command OR <strong>S3 Batch Replication</strong> (then delete the replication config).</div>
         <div class="insight">💡 <strong>Why:</strong> s3 sync uses CopyObject API and is idempotent. Batch Replication handles existing objects cross-region. Snowball is for on-prem→AWS only. S3 console is not feasible at PB scale. Transfer Acceleration speeds client→S3, not bucket-to-bucket.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> s3 sync, S3 Batch Replication, CopyObject, Cross-Region, One-Time Copy, CDC, Region-to-Region</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 10 - Async Image Processing, Cost Minimization</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Async Image Processing, Cost Minimization</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Amazon SQS</strong> + <strong>EC2 Spot Instances</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> SQS buffers jobs asynchronously with built-in retry. Spot Instances cost up to 90% less than On-Demand. Reserved Instances require 1-3 year commitment — wrong for variable load. SNS has no retry/queue behavior.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> SQS, Spot Instances, Async Processing, Retry, Cost Optimization, Decoupling, Queue</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 16 - Cheapest Multi-VPC Connectivity (Same Account)</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Cheapest Multi-VPC Connectivity (Same Account)</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>VPC Peering</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> VPC Peering is the most cost-effective solution for connecting VPCs within the same account. Direct Connect is for on-premises. NAT Gateway is for internet access. Internet Gateway is for public internet.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> VPC Peering, Same Account, Cost-Effective, Private Connectivity, Non-Transitive</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 18 - Proactive + Reactive EC2 Scaling</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Proactive + Reactive EC2 Scaling</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Predictive Scaling</strong> + <strong>Dynamic Scaling with Target Tracking</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Predictive Scaling uses ML on historical data to pre-warm capacity. Target Tracking reacts in real-time to maintain a metric (e.g. CPU at 60%). Combined = forecast + react. Step Scaling is reactive only. Scheduled Scaling can't adapt dynamically.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Predictive Scaling, Target Tracking, Dynamic Scaling, ML Forecast, Historical Patterns, Auto Scaling Group</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 20 - ALB Marks All Instances Unhealthy</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">ALB Marks All Instances Unhealthy</h3>
         <div class="insight">✅ <strong>Answer:</strong> (1) <strong>Health check route is misconfigured</strong> OR (2) <strong>EC2 security group blocks ALB traffic</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> If the site loads via IP but ALB marks instances unhealthy, the ALB is hitting the wrong path OR the security group isn't allowing traffic from the ALB's security group on the health check port. EIPs, EBS volumes, and app runtime are not relevant.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Health Check Route, Security Group, ALB, Unhealthy Targets, Listener Port, Health Check Port</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 21 - Real-Time Streaming Analytics to S3</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Real-Time Streaming Analytics to S3</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Kinesis Data Streams → Kinesis Data Analytics → Kinesis Data Firehose → S3</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> KDS ingests, KDA runs real-time SQL on the stream, KDF delivers to S3. Athena is batch/interactive — not real-time. QuickSight can't consume KDS directly. SQS+EC2 isn't purpose-built for streaming analytics.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Kinesis Data Streams, Kinesis Data Analytics, Kinesis Firehose, Real-Time Analytics, Streaming Pipeline, KDS→KDA→KDF→S3</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 22 - Hybrid Storage: Cached vs Stored Volumes</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Hybrid Storage: Cached vs Stored Volumes</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Storage Gateway — Cached Volumes</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Cached Volumes store primary data in S3 and cache frequently accessed data locally → minimizes local storage. Stored Volumes keep full dataset on-prem with async snapshots to S3 — still requires large local storage and recovery needs restore from S3.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Storage Gateway, Cached Volumes, Stored Volumes, S3 Primary, Local Cache, Hybrid Cloud, Bandwidth Optimization</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 24 - ASG Minimum Capacity + Cost for HA</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">ASG Minimum Capacity + Cost for HA</h3>
         <div class="insight">✅ <strong>Answer:</strong> Minimum capacity = <strong>2</strong> + use <strong>Reserved Instances</strong> for the minimum baseline.</div>
         <div class="insight">💡 <strong>Why:</strong> Min=2 ensures HA across AZs (ASG recovers to 2 after an AZ failure). Min=1 is a single point of failure. Min=3 wastes cost. Reserve only the always-on minimum for maximum savings; use On-Demand/Spot for burst.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Auto Scaling Group, Minimum Capacity, Reserved Instances, High Availability, Multi-AZ, Cost Optimization, HA Baseline</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 25 - Static IP for Firewall Whitelisting</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Static IP for Firewall Whitelisting</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use a <strong>Network Load Balancer (NLB)</strong> with an Auto Scaling Group.</div>
         <div class="insight">💡 <strong>Why:</strong> NLB exposes a fixed static IP per AZ (or Elastic IP) that can be whitelisted. ALB and CLB expose a DNS name only — no static IP. There is no "dynamic EIP attachment" feature in ASG.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Network Load Balancer, NLB, Static IP, Elastic IP, Firewall Whitelist, Layer 4, Fixed IP</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 26 - Graph Database for Social Queries</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Graph Database for Social Queries</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>Amazon Neptune</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Neptune is a purpose-built graph database optimized for highly connected datasets and relationship queries. Redshift is a data warehouse. OpenSearch is for log/search. Aurora is relational with poor deep graph traversal.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Amazon Neptune, Graph Database, Highly Connected, Relationships, Social Network, Gremlin, SPARQL, Recommendation Engine</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 27 - Identify Idle EC2s + Right-Sizing</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Identify Idle EC2s + Right-Sizing</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>AWS Cost Optimization Hub</strong> + <strong>AWS Compute Optimizer</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Cost Optimization Hub consolidates recommendations (idle resources, RIs, Savings Plans) across all accounts. Compute Optimizer uses ML for instance type right-sizing. S3 Storage Class Analysis only covers Standard→IA transitions (NOT Glacier). Trusted Advisor does NOT auto-renew RIs.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Cost Optimization Hub, Compute Optimizer, Right-Sizing, Idle Resources, Savings Plans, Reserved Instances, Cost Dashboard</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 30 - Annual Key Rotation for S3 Encryption</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Annual Key Rotation for S3 Encryption</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>KMS Customer Managed Key (CMK)</strong> with automatic rotation enabled + S3 default encryption set to that CMK.</div>
         <div class="insight">💡 <strong>Why:</strong> CMK auto-rotation is user-configurable, auditable, and rotates every 12 months automatically. SSE-S3 keys are not user-configurable or auditable. Imported key material disables auto-rotation. CloudHSM requires manual key management — highest overhead.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> KMS, Customer Managed Key, CMK, Automatic Key Rotation, Annual Rotation, SSE-KMS, S3 Encryption, Auditable</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 31 - Stream S3 Files into Kinesis (Fastest, No Code)</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Stream S3 Files into Kinesis (Fastest, No Code)</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>AWS DMS (Database Migration Service)</strong> as bridge from S3 to Kinesis Data Streams.</div>
         <div class="insight">💡 <strong>Why:</strong> DMS natively supports S3 as source and Kinesis as target, handles full load AND CDC with no custom code. EventBridge+Lambda requires CloudTrail + custom development. S3 event notifications require significant custom code. S3 cannot directly write to SNS.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> AWS DMS, S3 to Kinesis, CDC, Change Data Capture, No Code, Full Load, Streaming, Database Migration Service</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 35 - EFS for Sporadic Bursts, Low Average Throughput</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">EFS for Sporadic Bursts, Low Average Throughput</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>EFS Burst Throughput Mode</strong> + General Purpose performance mode + EFS Standard storage class.</div>
         <div class="insight">💡 <strong>Why:</strong> Burst mode earns credits during idle periods and spends them during bursts — fully automatic, no manual config. Provisioned Throughput costs more for low-average workloads. One Zone doesn't auto-enable burst mode. EFS IA adds retrieval latency during bursts.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> EFS, Burst Throughput, Burst Credits, General Purpose, Sporadic, Automatic Scaling, No Provisioning</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 38 - Stable IPs for Multi-Region ALBs</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Stable IPs for Multi-Region ALBs</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>AWS Global Accelerator</strong>; register ALBs as endpoints.</div>
         <div class="insight">💡 <strong>Why:</strong> Global Accelerator provides 2 static anycast IPs globally — one-time firewall config. Lambda IP scripts need ongoing updates as IPs change. A single NLB is region-bound. Migrating all ALBs to NLBs still results in multiple IPs per region.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Global Accelerator, Static IP, Anycast, Multi-Region, Firewall Whitelist, One-Time Config, ALB Endpoints</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 40 - Minimum EFS Latency Across AZs</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Minimum EFS Latency Across AZs</h3>
         <div class="insight">✅ <strong>Answer:</strong> Create <strong>one EFS mount target per Availability Zone</strong> and mount from same-AZ instances.</div>
         <div class="insight">💡 <strong>Why:</strong> EC2 connecting to its local AZ mount target keeps traffic within the AZ — lowest latency, no cross-AZ charges. A single mount target forces cross-AZ traffic. Mount targets are VPC-level ENIs managed by EFS, not created on EC2 instances.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> EFS, Mount Target, Per-AZ, Local Access, Low Latency, ENI, Cross-AZ, VPC, Best Practice</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 42 - CloudFront Capabilities (Select Three)</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">CloudFront Capabilities (Select Three)</h3>
         <div class="insight">✅ <strong>Answer:</strong> (1) <strong>Field-Level Encryption</strong>, (2) <strong>Route to multiple origins by content type</strong>, (3) <strong>Origin group for HA/failover</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> CloudFront uses field-level encryption (not KMS directly). Geo restriction blocks countries — it's not for HA. Price class groups edge locations by cost and does NOT route to different origins. Origin groups provide primary/secondary failover.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> CloudFront, Field-Level Encryption, Origin Group, Failover, Multiple Origins, Content Type Routing, Geo Restriction, Price Class</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 44 - Scale VPN Throughput Beyond 1.25 Gbps</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Scale VPN Throughput Beyond 1.25 Gbps</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>AWS Transit Gateway with ECMP</strong> routing + multiple VPN tunnels.</div>
         <div class="insight">💡 <strong>Why:</strong> Each VPN tunnel maxes at 1.25 Gbps. TGW + ECMP aggregates multiple tunnels to scale beyond that. Must enable BGP (dynamic routing) on TGW. Virtual Private Gateway does NOT support ECMP. Global Accelerator optimises path but doesn't add VPN bandwidth.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Transit Gateway, ECMP, Equal Cost Multi-Path, VPN Tunnels, BGP, 1.25 Gbps, VPN Throughput, Scalable VPN</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 45 - Short-Lived RDS Credentials from Lambda</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Short-Lived RDS Credentials from Lambda</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>IAM DB Authentication</strong> + <strong>IAM Role attached to Lambda</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> IAM role on Lambda generates a short-lived DB auth token (15 min lifetime) instead of using static username/password. Traffic is encrypted via SSL. Security group rules control network access, not authentication. VPC placement is network config, not auth.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> IAM DB Authentication, IAM Role, Lambda, Short-Lived Token, RDS, PostgreSQL, 15 Minutes, No Password</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 46 - Cross-Account S3 Access</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Cross-Account S3 Access</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use a <strong>Bucket Policy</strong> (resource-based policy).</div>
         <div class="insight">💡 <strong>Why:</strong> Bucket policies support cross-account principals. User/identity-based policies only apply to principals in YOUR account. Permissions boundary limits max permissions but does not grant access. Both bucket + user policy: the user policy alone still can't cross accounts.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Bucket Policy, Resource-Based Policy, Cross-Account, S3, Principal, Identity Policy vs Resource Policy</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 47 - Migrate Physical Tapes to AWS</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Migrate Physical Tapes to AWS</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>AWS Storage Gateway — Tape Gateway</strong> (Virtual Tape Library).</div>
         <div class="insight">💡 <strong>Why:</strong> Tape Gateway replaces physical tapes with virtual tapes in S3, with no backup workflow changes. Archives to Glacier/Deep Archive for ultra-low cost. DataSync supports NFS/SMB only — not tape. Direct Connect is for ongoing hybrid connectivity, not one-time tape migration.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Tape Gateway, VTL, Virtual Tape Library, Physical Tapes, S3 Glacier, No Workflow Change, Storage Gateway</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 48 - S3 Lifecycle: Images vs Thumbnails</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">S3 Lifecycle: Images vs Thumbnails</h3>
         <div class="insight">✅ <strong>Answer:</strong> (1) <strong>Transition /images prefix to Standard-IA after 45 days</strong>. (2) <strong>Transition ALL objects to Glacier after 180 days</strong> (no prefix needed).</div>
         <div class="insight">💡 <strong>Why:</strong> Thumbnails are still active at 45d so only transition images using prefix. At 180d everything archives — no prefix needed. One Zone-IA is not HA (single AZ). Glacier with prefix at 180d is unnecessary — archive everything.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> S3 Lifecycle, Prefix, Standard-IA, S3 Glacier, Transition, Selective Transition, Archive All, Lifecycle Policy</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 49 - Elastic Beanstalk Fast Instance Launch</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Elastic Beanstalk Fast Instance Launch</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Golden AMI</strong> (static components) + <strong>EC2 User Data</strong> (dynamic parts at boot).</div>
         <div class="insight">💡 <strong>Why:</strong> Golden AMI pre-bakes the 45-min static install. User Data runs only the fast dynamic config at boot. Using User Data for the full install still takes 45 min. S3 is storage — not an execution environment. Elastic Beanstalk deployment caching does not exist.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Golden AMI, EC2 User Data, Fast Launch, Static Installation, Dynamic Config, Elastic Beanstalk, Pre-baked Image</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 51 - Prevent Accidental DynamoDB Table Deletion</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Prevent Accidental DynamoDB Table Deletion</h3>
         <div class="insight">✅ <strong>Answer:</strong> Enable <strong>DynamoDB Deletion Protection</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Deletion Protection is a simple toggle that prevents any DeleteTable operation — zero ongoing maintenance. PITR restores AFTER deletion (reactive). CloudTrail+EventBridge+Lambda detects but data is already lost. Weekly S3 exports have data-loss gaps and require manual recovery.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> DynamoDB, Deletion Protection, Prevent Deletion, Zero Overhead, PITR vs Deletion Protection, Proactive vs Reactive</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 52 - S3 Bucket Policy IpAddress + NotIpAddress</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">S3 Bucket Policy IpAddress + NotIpAddress</h3>
         <div class="insight">✅ <strong>Answer:</strong> The policy <strong>allows the entire /24 CIDR except one IP (54.240.143.188)</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> IpAddress condition = source must be within 54.240.143.0/24. NotIpAddress condition = source must NOT be 54.240.143.188/32. Both must be true (AND logic). Result: all 256 IPs in the /24 are allowed except .188.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Bucket Policy, IpAddress, NotIpAddress, CIDR, Condition, AND Logic, IP Restriction, Allow Except</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 54 - Route 53 Record Updated but Users Still Hit Old LB</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Route 53 Record Updated but Users Still Hit Old LB</h3>
         <div class="insight">✅ <strong>Answer:</strong> The <strong>TTL (Time to Live) is still in effect</strong> — DNS resolvers are serving cached records.</div>
         <div class="insight">💡 <strong>Why:</strong> DNS changes don't propagate instantly — resolvers cache the old record until TTL expires. Best practice: lower TTL to 300s before making changes. Simple records have NO health checks. CNAME/Alias misconfiguration would break routing entirely, not just delay it.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Route 53, TTL, Time to Live, DNS Propagation, DNS Cache, Simple Record, No Health Checks</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 57 - DynamoDB: Idle at Night, Instant Spikes During Day</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">DynamoDB: Idle at Night, Instant Spikes During Day</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>DynamoDB On-Demand Capacity Mode</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> On-Demand pays per request, handles instant spikes with no capacity planning, and costs nothing during idle periods. Provisioned + Auto Scaling introduces CloudWatch alarm lag — not instant. Global Tables are for multi-region replication, not variable load.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> DynamoDB, On-Demand, Pay-Per-Request, Unpredictable Traffic, Instant Scale, No Capacity Planning, Bursty Workload</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 59 - Lambda Best Practices (Select Three)</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Lambda Best Practices (Select Three)</h3>
         <div class="insight">✅ <strong>Answer:</strong> (1) <strong>VPC Lambda needs NAT Gateway for internet access</strong>. (2) <strong>CloudWatch Alarms on ConcurrentExecutions/Invocations</strong>. (3) <strong>Lambda Layers for reusable shared code</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> Default Lambda runs in AWS-owned VPC with internet access. VPC-enabled Lambda loses that and needs NAT for public access. Lambda CAN be deployed as container images (supported since 2020). Do NOT over-provision timeout — match it to actual runtime.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Lambda, VPC, NAT Gateway, Lambda Layers, ConcurrentExecutions, CloudWatch Alarm, Container Image, Timeout, Best Practices</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 60 - IAM's Only Resource-Based Policy</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">IAM's Only Resource-Based Policy</h3>
         <div class="insight">✅ <strong>Answer:</strong> <strong>Trust Policy</strong> (Role Trust Policy) is the only resource-based policy IAM supports.</div>
         <div class="insight">💡 <strong>Why:</strong> An IAM role is both an identity and a resource — it needs a trust policy defining who can assume it. ACLs are used by S3/VPC, not IAM. Permissions Boundary limits max permissions but doesn't grant access. SCPs are AWS Organizations level.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Trust Policy, IAM Role, Resource-Based Policy, Assume Role, Principal, STS, Permissions Boundary vs Trust Policy</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 62 - Async Decoupling with SaaS + Third-Party Apps</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Async Decoupling with SaaS + Third-Party Apps</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use <strong>Amazon EventBridge</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> EventBridge is the ONLY AWS event service with native third-party SaaS integration. It ingests events from 90+ AWS services and supports 15+ targets. SNS/SQS have no SaaS integration. ELB is synchronous load balancing — not event-driven.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> EventBridge, SaaS Integration, Async Decoupling, Third-Party, Event Bus, Event-Driven, Schema Registry</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 63 - 10x Traffic Spike on Dynamic Website</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">10x Traffic Spike on Dynamic Website</h3>
         <div class="insight">✅ <strong>Answer:</strong> Use an <strong>Auto Scaling Group (ASG)</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> ASG automatically adds/removes EC2 instances to handle any traffic level. CloudFront caches STATIC content — useless for highly dynamic content. S3 hosts static sites only. Route 53 Multi-Value is DNS distribution, not compute scaling.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> Auto Scaling Group, ASG, Dynamic Content, Traffic Spike, Horizontal Scaling, EC2, CloudFront Static Only</div>
 
-        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 65 - Encrypt RDS Data In-Transit</h3>
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Encrypt RDS Data In-Transit</h3>
         <div class="insight">✅ <strong>Answer:</strong> Configure <strong>Amazon RDS to use SSL/TLS</strong>.</div>
         <div class="insight">💡 <strong>Why:</strong> SSL/TLS encrypts data moving between the application and RDS. KMS encrypts data AT REST — not in transit. IAM DB auth authenticates users but does not encrypt the channel. Security group changes control network access, not encryption.</div>
         <div class="insight">🔑 <strong>Keywords:</strong> RDS, SSL, TLS, Data-in-Transit, Encryption, In-Transit vs At-Rest, PostgreSQL, ssl_ca, Force SSL</div>
