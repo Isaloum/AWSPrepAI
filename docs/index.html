@@ -535,6 +535,27 @@
         </div>
       </div>
 
+      <!-- Practice test result-driven hints -->
+      <div class="card">
+        <div class="card-title">📝 Practice Test #4 (Attempt 3) - Targeted Hint / Keywords</div>
+        <p style="color:var(--muted)">Incorrect questions converted into quick exam keyword mappings.</p>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 3 - Cost + Performance (Read-Heavy API)</h3>
+        <div class="insight">✅ <strong>Answer:</strong> Enable <strong>Amazon API Gateway Caching</strong>.</div>
+        <div class="insight">💡 <strong>Why:</strong> When read traffic is high and data can be stale (up to 24 hours), API Gateway cache + TTL reduces Lambda/Aurora calls, improving latency and lowering database cost.</div>
+        <div class="insight">🔑 <strong>Keywords:</strong> API Gateway Caching, TTL, Read-heavy, Cost Optimization, Performance</div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 4 - Hybrid Multi-Region Connectivity</h3>
+        <div class="insight">✅ <strong>Answer:</strong> Connect both Direct Connect links to a shared <strong>Direct Connect Gateway</strong> and attach each region's <strong>VGW</strong>.</div>
+        <div class="insight">💡 <strong>Why:</strong> Direct Connect Gateway supports transitive routing across regions and on-prem locations with lower operational overhead than managing complex peering/VPN combinations.</div>
+        <div class="insight">🔑 <strong>Keywords:</strong> Direct Connect Gateway, VGW, Transitive Routing, Hybrid Cloud, Multi-Region, Direct Connect</div>
+
+        <h3 style="margin-top:1rem;margin-bottom:.5rem;color:var(--aws-dark)">Question 6 - Geographic Traffic Steering</h3>
+        <div class="insight">✅ <strong>Answer:</strong> Use Route 53 <strong>Geoproximity routing</strong>.</div>
+        <div class="insight">💡 <strong>Why:</strong> Geoproximity routing can dynamically shift which geographic area routes to a resource by applying a bias value.</div>
+        <div class="insight">🔑 <strong>Keywords:</strong> Geoproximity Routing, Route 53, Bias, Geographic Routing, Dynamic Traffic Routing</div>
+      </div>
+
       <!-- Scenario to Service Mapping -->
       <div class="card">
         <div class="card-title">🎯 Common Scenarios → AWS Service Mapping</div>
