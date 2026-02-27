@@ -225,7 +225,7 @@
   <!-- Professional Navigation Bar -->
   <nav class="main-nav" role="navigation">
     <div class="nav-container">
-      <a href="#" class="nav-logo" aria-label="AWSPrepAI Home" onclick="showTab('dashboard'); return false;">
+      <a href="#" class="nav-logo" aria-label="AWSPrepAI Home" onclick="showTab('home'); return false;">
         <img src="logo.svg" alt="AWSPrepAI">
         <span class="logo-text">AWSPrepAI</span>
       </a>
@@ -332,7 +332,8 @@
   <!-- Hidden tab buttons for programmatic section switching (used by showTab) -->
   <div style="display:none" aria-hidden="true">
     <nav class="nav-tabs">
-      <button class="nav-tab active" data-tab="dashboard"></button>
+      <button class="nav-tab active" data-tab="home"></button>
+      <button class="nav-tab" data-tab="dashboard"></button>
       <button class="nav-tab" data-tab="quiz"></button>
       <button class="nav-tab" data-tab="exam"></button>
       <button class="nav-tab" data-tab="study-guide"></button>
@@ -343,7 +344,9 @@
     </nav>
   </div>
 
-  <!-- Landing Page Sections (full-width, outside container) -->
+  <!-- Landing Page (Home) -->
+  <section id="home" class="app-section active" aria-label="Home">
+
   <!-- Hero Section (Redesigned) -->
   <section id="hero" class="hero-new" aria-label="Hero">
     <div class="hero-container">
@@ -473,9 +476,11 @@
     </div>
   </section>
 
+  </section><!-- end #home -->
+
   <main class="container">
 
-    <section id="dashboard" class="app-section active">
+    <section id="dashboard" class="app-section">
       <h1 class="section-heading">📊 Dashboard</h1>
       <div class="card card-orange">
         <div class="card-title">🎯 Current Certification: <span id="currentCertName">Solutions Architect Associate</span><span class="cert-badge saa" id="certBadge">SAA-C03</span></div>
@@ -1748,6 +1753,7 @@
 
     // Tab Navigation
     const tabTitles = {
+      'home': 'AWSPrepAI',
       'dashboard': '📊 Dashboard',
       'quiz': '❓ Practice Quiz',
       'exam': '📝 Mock Exam',
@@ -1781,14 +1787,6 @@
         // Update page title
         updatePageTitle(tab.dataset.tab);
 
-        // Hide hero section when navigating away from dashboard
-        const heroSection = document.getElementById('hero');
-        if (tab.dataset.tab === 'dashboard') {
-          heroSection.style.display = 'block';
-        } else {
-          heroSection.style.display = 'none';
-        }
-
         // Hide floating tips button when not on quiz tab
         if (tab.dataset.tab !== 'quiz') {
           document.getElementById('floatingTips').style.display = 'none';
@@ -1812,7 +1810,11 @@
 
         // Update URL hash for deep linking and back/forward navigation (skip during popstate)
         if (!window._isPopStateNavigation) {
-          history.pushState(null, null, '#' + tab.dataset.tab);
+          if (tab.dataset.tab === 'home') {
+            history.pushState(null, null, window.location.pathname);
+          } else {
+            history.pushState(null, null, '#' + tab.dataset.tab);
+          }
         }
 
         // Update active nav link state
@@ -1835,6 +1837,14 @@
         if (tabEl) {
           window._isPopStateNavigation = true;
           tabEl.click();
+          window._isPopStateNavigation = false;
+        }
+      } else {
+        // No hash — return to home (landing page)
+        const homeTabEl = document.querySelector('[data-tab="home"]');
+        if (homeTabEl) {
+          window._isPopStateNavigation = true;
+          homeTabEl.click();
           window._isPopStateNavigation = false;
         }
       }
@@ -2859,7 +2869,7 @@
     updateUI();
     loadQuestion();
     loadServices();
-    updatePageTitle('dashboard'); // Set initial page title
+    updatePageTitle('home'); // Set initial page title
 
     // Handle deep linking from other pages (e.g. index.html#quiz)
     if (window.location.hash) {
