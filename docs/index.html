@@ -113,6 +113,33 @@
     .footer-link:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
     .tech-badge{display:inline-block;padding:.25rem .75rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;font-size:.75rem;color:#d5dbdb;font-weight:600}
     @media(max-width:768px){.footer-content{flex-direction:column;text-align:center}.footer-right{justify-content:center}}
+    /* Adaptive Learning Styles */
+    @keyframes successPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    @keyframes checkmarkPop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+    .adaptive-diff-btn{flex:1;min-width:140px;padding:1.25rem;border-radius:12px;cursor:pointer;border:2px solid var(--border);background:#fff;transition:all .25s;text-align:center}
+    .adaptive-diff-btn:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
+    .adaptive-diff-btn.beginner-btn.active{border-color:#10b981;background:rgba(16,185,129,.08)}
+    .adaptive-diff-btn.intermediate-btn.active{border-color:#f59e0b;background:rgba(245,158,11,.08)}
+    .adaptive-diff-btn.advanced-btn.active{border-color:#ef4444;background:rgba(239,68,68,.08)}
+    .attempt-dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--border);margin:0 3px;transition:background .3s}
+    .attempt-dot.filled.beginner{background:#10b981}
+    .attempt-dot.filled.intermediate{background:#f59e0b}
+    .attempt-dot.filled.advanced{background:#ef4444}
+    .adaptive-option{background:#fff;padding:1rem;border-radius:10px;cursor:pointer;border:2px solid var(--border);transition:all .2s;display:flex;flex-direction:column;gap:.5rem}
+    .adaptive-option:hover:not([disabled]){border-color:var(--aws-blue);background:#f8f9fa;transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.1)}
+    .adaptive-option[disabled]{cursor:default}
+    .adaptive-option.correct{border-color:#10b981;background:rgba(16,185,129,.12);animation:successPulse .5s ease}
+    .adaptive-option.incorrect{border-color:#ef4444;background:rgba(239,68,68,.1);animation:shake .4s ease}
+    .adaptive-option-img{width:100%;border-radius:6px;background:#f0f4f8;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:80px}
+    .adaptive-options-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+    @media(max-width:600px){.adaptive-options-grid{grid-template-columns:1fr}}
+    .adaptive-hint-box{background:linear-gradient(135deg,#fffde7,#fff8e1);border:1px solid #f59e0b;border-left:4px solid #f59e0b;border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
+    .adaptive-success-box{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #10b981;border-left:4px solid #10b981;border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
+    .adaptive-explain-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue);border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
+    .adaptive-console-path{background:rgba(35,47,62,.06);border-radius:6px;padding:.5rem .75rem;font-size:.8rem;font-family:monospace;color:var(--muted);margin-top:.5rem;display:inline-block}
+    .checkmark-anim{display:inline-block;font-size:1.75rem;animation:checkmarkPop .5s ease both}
   </style>
 </head>
 <body>
@@ -143,6 +170,7 @@
           <button class="nav-tab" data-tab="study-guide"><span class="icon">🎓</span><span>Study Guide</span></button>
           <button class="nav-tab" data-tab="hints-keywords"><span class="icon">💡</span><span>Hint / Keywords</span></button>
           <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
+          <button class="nav-tab" data-tab="adaptive"><span class="icon">🎓</span><span>Adaptive Learning</span></button>
         </nav>
       </div>
     </div>
@@ -1090,6 +1118,55 @@
       </div>
       <div class="service-grid" id="serviceGrid"></div>
     </section>
+
+    <!-- Adaptive Learning -->
+    <section id="adaptive" class="app-section">
+      <h1 class="section-heading">🎓 Adaptive Learning</h1>
+
+      <!-- Difficulty Selector -->
+      <div class="card" id="adaptiveDiffCard">
+        <div class="card-title">🎯 Choose Your Difficulty Level</div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem">
+          <button class="adaptive-diff-btn beginner-btn" onclick="setDifficulty('beginner')" id="btnBeginner" aria-label="Beginner mode">
+            <div style="font-size:2rem">🟢</div>
+            <div style="font-weight:700;font-size:1.1rem;color:#10b981">Beginner</div>
+            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">3 attempts • Progressive hints • Visual aids • Console paths</div>
+          </button>
+          <button class="adaptive-diff-btn intermediate-btn" onclick="setDifficulty('intermediate')" id="btnIntermediate" aria-label="Intermediate mode">
+            <div style="font-size:2rem">🟡</div>
+            <div style="font-weight:700;font-size:1.1rem;color:#f59e0b">Intermediate</div>
+            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">2 attempts • One hint • Explanation after answer</div>
+          </button>
+          <button class="adaptive-diff-btn advanced-btn" onclick="setDifficulty('advanced')" id="btnAdvanced" aria-label="Advanced mode">
+            <div style="font-size:2rem">🔴</div>
+            <div style="font-weight:700;font-size:1.1rem;color:#ef4444">Advanced</div>
+            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">1 attempt • No hints • Exam simulation</div>
+          </button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-value" id="adaptStatBeginner" style="color:#10b981">--</div><div class="stat-label">🟢 Beginner Score</div></div>
+          <div class="stat-card"><div class="stat-value" id="adaptStatIntermediate" style="color:#f59e0b">--</div><div class="stat-label">🟡 Intermediate Score</div></div>
+          <div class="stat-card"><div class="stat-value" id="adaptStatAdvanced" style="color:#ef4444">--</div><div class="stat-label">🔴 Advanced Score</div></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="card card-orange" id="adaptiveQuestionCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+          <span id="adaptiveDiffBadge"></span>
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted)">
+            Attempts: <span id="adaptiveAttemptDots"></span>
+          </div>
+        </div>
+        <div class="quiz-question" id="adaptiveQuestion">Select a difficulty level to begin.</div>
+        <div id="adaptiveOptions"></div>
+        <div id="adaptiveFeedback"></div>
+        <div id="adaptiveConsolePath" style="display:none;margin-top:.75rem"></div>
+        <div style="margin-top:1.25rem">
+          <button class="btn btn-primary" id="adaptiveNextBtn" onclick="nextAdaptiveQuestion()" style="display:none">Next Question →</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1132,7 +1209,8 @@
       'exam': '📝 Mock Exam',
       'study-guide': '🎓 Study Guide',
       'hints-keywords': '💡 Hint / Keywords',
-      'services': '📚 Services'
+      'services': '📚 Services',
+      'adaptive': '🎓 Adaptive Learning'
     };
 
     function updatePageTitle(tabName) {
@@ -1166,6 +1244,12 @@
         // Hide floating tips button when not on quiz tab
         if (tab.dataset.tab !== 'quiz') {
           document.getElementById('floatingTips').style.display = 'none';
+        }
+
+        // Initialize adaptive learning on first visit
+        if (tab.dataset.tab === 'adaptive' && !adaptiveInitialized) {
+          initAdaptive();
+          adaptiveInitialized = true;
         }
 
         // Close mobile menu after navigation
@@ -1846,7 +1930,17 @@
       { cat: "design-performant", q: "Clickstream data with unpredictable spikes - scalable serverless real-time ingestion and processing?", options: ["Kinesis Data Firehose to S3, Athena scheduled queries", "SNS to SQS, Glue jobs at fixed intervals", "EC2 Kafka cluster with manual scaling, Athena queries", "Kinesis Data Streams on-demand, Lambda consumer for real-time processing"], answer: 3, explain: "Kinesis Data Streams on-demand mode auto-scales for unpredictable traffic. Lambda processes events in real-time serverlessly. Low-latency ingestion and processing." },
       { cat: "design-resilient", q: "Custom scripts run once during EC2 launch - best way with minimal effort?", options: ["User data scripts on EC2", "Update config to ensure user data runs only at boot", "Use CLI to run user data once at launch", "Instance metadata scripts"], answer: 0, explain: "User data scripts run automatically during first boot when launching instance. No extra configuration needed for one-time execution. Default behavior runs once." },
       { cat: "design-cost", q: "Backend in private subnet accesses S3, compliance prohibits internet traffic - cost-effective?", options: ["VPC peering with another VPC, proxy EC2 for S3 access", "S3 interface VPC endpoint with security group", "Gateway VPC endpoint for S3, update route table", "S3 bucket policy allowing NAT gateway Elastic IP"], answer: 2, explain: "Gateway VPC endpoint for S3 routes traffic privately over AWS network. No internet access needed. Free of hourly charges. Update route table for private subnet." },
-      { cat: "design-performant", q: "Build index of S3 files (100K files, 50TB) reading first 250 bytes - efficient?", options: ["Traverse bucket, Byte Range Fetch first 250 bytes, store in RDS", "Traverse bucket, S3 Select Byte Range Fetch first 250 bytes", "RDS Import from S3, SQL query to build index", "Traverse bucket, read all files, extract first 250 bytes"], answer: 0, explain: "Byte Range Fetch retrieves only specified bytes. Fetch first 250 bytes of each object efficiently. Avoids reading entire 50TB. Store metadata in RDS for index." }
+      { cat: "design-performant", q: "Build index of S3 files (100K files, 50TB) reading first 250 bytes - efficient?", options: ["Traverse bucket, Byte Range Fetch first 250 bytes, store in RDS", "Traverse bucket, S3 Select Byte Range Fetch first 250 bytes", "RDS Import from S3, SQL query to build index", "Traverse bucket, read all files, extract first 250 bytes"], answer: 0, explain: "Byte Range Fetch retrieves only specified bytes. Fetch first 250 bytes of each object efficiently. Avoids reading entire 50TB. Store metadata in RDS for index." },
+
+      // Enhanced Questions for Adaptive Learning (with hints, console paths, and detailed explanations)
+      { cat: "design-secure", q: "A company wants to enable automatic server-side encryption for all new objects stored in an S3 bucket using AWS-managed keys. Which option should they configure?", options: ["Enable S3 Object Lock on the bucket", "Enable default bucket encryption with SSE-S3", "Create a lifecycle policy to encrypt objects after upload", "Use AWS Config to enforce encryption rules"], answer: 1, explain: "SSE-S3 uses AES-256 encryption and AWS fully manages the encryption keys automatically. Enable it under Bucket Properties → Default encryption.", hint1: "Look in the S3 bucket settings — there is a specific section for default encryption that applies automatically to all new objects.", hint2: "In the S3 console go to Bucket → Properties → Default encryption. Choose SSE-S3 (Amazon S3-managed keys) or SSE-KMS (AWS KMS-managed keys). SSE-S3 requires no extra key management.", awsConsolePath: "S3 → Buckets → [Bucket Name] → Properties → Default encryption → Enable → SSE-S3", wrongExplanations: { 0: "S3 Object Lock prevents deletion or overwriting of objects (WORM) — it is not an encryption setting.", 2: "Lifecycle policies automate storage class transitions and expiration; they cannot encrypt objects.", 3: "AWS Config rules check and report compliance but do not automatically encrypt existing or new objects." } },
+      { cat: "design-secure", q: "An EC2 instance needs to access an S3 bucket without storing any credentials on the instance. What is the recommended approach?", options: ["Store AWS access keys in the EC2 user data script", "Attach an IAM role with the required S3 permissions to the EC2 instance", "Hardcode credentials in the application environment variables", "Create an IAM user and store its credentials in /etc/aws/credentials"], answer: 1, explain: "IAM roles attached to EC2 instances provide temporary credentials automatically rotated by AWS STS. No credentials are stored on the instance.", hint1: "AWS recommends never storing long-term credentials on EC2 instances. Instead, use an identity that can be attached directly to the instance.", hint2: "Attach an IAM role to the EC2 instance profile. The instance automatically receives temporary credentials via the instance metadata service (IMDS) at 169.254.169.254.", awsConsolePath: "EC2 → Instances → [Instance] → Actions → Security → Modify IAM role → Attach role", wrongExplanations: { 0: "User data is visible in instance metadata and is not a secure place for credentials.", 2: "Environment variables on the instance are readable by any process and pose a security risk.", 3: "Storing IAM user credentials in a file on the instance is insecure and violates the least privilege principle." } },
+      { cat: "design-resilient", q: "A company needs its RDS database to automatically recover from an Availability Zone failure with minimal downtime. Which feature provides this capability?", options: ["RDS Read Replica in the same AZ", "RDS Multi-AZ deployment with automatic failover", "Manual RDS snapshot restored to a new AZ", "Amazon Aurora with single-AZ configuration"], answer: 1, explain: "RDS Multi-AZ maintains a synchronous standby replica in a different AZ. If the primary fails, AWS automatically fails over to the standby (typically 1-2 minutes).", hint1: "Think about which RDS feature specifically exists to survive an Availability Zone failure with automatic recovery.", hint2: "Multi-AZ keeps a synchronous standby replica in another AZ. Failover is automatic — no manual intervention needed. Read Replicas are for read scaling, not HA.", awsConsolePath: "RDS → Databases → [DB Instance] → Modify → Multi-AZ deployment → Yes", wrongExplanations: { 0: "Read Replicas use asynchronous replication and require manual promotion — they are not an automatic failover solution.", 2: "Restoring from a manual snapshot takes significant time and requires manual effort; it does not provide automatic failover.", 3: "A single-AZ Aurora configuration still has a single point of failure at the AZ level." } },
+      { cat: "design-performant", q: "A web application is experiencing slow database query responses due to repetitive read requests hitting the same data. Which AWS service provides in-memory caching for Amazon RDS?", options: ["Amazon RDS Proxy", "Amazon ElastiCache (Redis or Memcached)", "Amazon DynamoDB Accelerator (DAX)", "AWS Global Accelerator"], answer: 1, explain: "Amazon ElastiCache (Redis or Memcached) caches frequently read data in memory, reducing database load and improving read latency dramatically.", hint1: "The solution needs an in-memory cache that sits in front of your relational database to serve repeated reads without hitting the database.", hint2: "ElastiCache Redis or Memcached stores query results in memory. Your application checks the cache first; if data is there (cache hit) it returns immediately without querying RDS.", awsConsolePath: "ElastiCache → Create cluster → Redis OSS or Memcached → Configure and connect your app", wrongExplanations: { 0: "RDS Proxy manages database connection pooling — it reduces connection overhead but does not cache query results.", 2: "DAX is specifically for DynamoDB caching only; it cannot be used with RDS.", 3: "Global Accelerator optimizes network routing for global users; it is unrelated to database caching." } },
+      { cat: "design-cost", q: "A company stores infrequently accessed compliance data in S3 that must be retained for 7 years. They want the lowest possible storage cost while maintaining immediate retrieval capability. Which storage class should they use?", options: ["S3 Standard", "S3 One Zone-Infrequent Access (One Zone-IA)", "S3 Standard-Infrequent Access (Standard-IA)", "S3 Glacier Flexible Retrieval"], answer: 2, explain: "S3 Standard-IA provides lower storage cost than S3 Standard with the same high availability across multiple AZs and immediate retrieval. Ideal for infrequently accessed compliance data.", hint1: "Think about which storage class is designed for data that is accessed infrequently but still requires immediate (millisecond) access when needed.", hint2: "S3 Standard-IA costs less per GB/month than Standard but charges a retrieval fee. One Zone-IA is even cheaper but stores data in only one AZ — risky for compliance data. Glacier requires minutes to hours for retrieval.", awsConsolePath: "S3 → Buckets → [Bucket] → Properties → Default storage class → Standard-IA", wrongExplanations: { 1: "One Zone-IA stores data in a single AZ, creating availability risk — not appropriate for compliance data that must be durable.", 0: "S3 Standard is the most expensive option and is optimized for frequently accessed data.", 3: "Glacier Flexible Retrieval takes minutes to hours to retrieve data — not suitable when immediate access is required." } },
+      { cat: "design-resilient", q: "An application sends messages to an SQS queue. A processing service must ensure each message is processed exactly once and in the order received. Which SQS queue type should be used?", options: ["SQS Standard queue with deduplication IDs", "SQS FIFO (First-In-First-Out) queue", "SQS Standard queue with long polling enabled", "SQS Standard queue with visibility timeout set to 0"], answer: 1, explain: "SQS FIFO queues guarantee exactly-once processing and preserve message order. Standard queues offer at-least-once delivery and best-effort ordering.", hint1: "One SQS queue type is specifically designed to guarantee both message ordering and exactly-once delivery.", hint2: "FIFO stands for First-In-First-Out. SQS FIFO queues process messages in the exact order they are sent and deduplicate messages automatically within a 5-minute window.", awsConsolePath: "SQS → Create queue → Type: FIFO → Enable content-based deduplication", wrongExplanations: { 0: "Standard queues offer at-least-once delivery — duplicates can occur even with deduplication IDs. Use FIFO for guaranteed exactly-once processing.", 2: "Long polling reduces empty responses but does not change the delivery guarantees of Standard queues.", 3: "Setting visibility timeout to 0 would cause messages to be visible immediately after retrieval, leading to duplicate processing." } },
+      { cat: "design-secure", q: "A solutions architect needs to allow users in Account A to access resources in Account B without creating IAM users in Account B. What is the correct approach?", options: ["Share the root account credentials between accounts", "Create an IAM role in Account B with a trust policy allowing Account A, then have users assume the role", "Create identical IAM users in both accounts with the same credentials", "Use VPC peering to share access between accounts"], answer: 1, explain: "Cross-account access is done via IAM roles. Create a role in Account B that trusts Account A. Users in Account A call sts:AssumeRole to get temporary credentials for Account B resources.", hint1: "AWS cross-account access uses a feature that lets identities from one account temporarily act as an identity in another account.", hint2: "Create an IAM role in the TARGET account (Account B). Add a trust policy allowing the SOURCE account (Account A) to assume it. Then grant users in Account A permission to call sts:AssumeRole.", awsConsolePath: "IAM → Roles → Create role → AWS account → Enter Account A ID → Attach permissions → Create", wrongExplanations: { 0: "Sharing root credentials is a critical security violation. Root credentials should never be shared.", 2: "Creating identical users in both accounts doubles management overhead and breaks the single-identity principle.", 3: "VPC peering enables network connectivity between VPCs but does not grant IAM-based access to AWS resources." } },
+      { cat: "design-cost", q: "A company runs a batch processing workload that can be interrupted and restarted without data loss. The job runs for 2-4 hours. Which EC2 purchasing option provides the lowest cost?", options: ["On-Demand Instances", "Reserved Instances (1-year, no upfront)", "Spot Instances", "Dedicated Hosts"], answer: 2, explain: "Spot Instances offer up to 90% discount compared to On-Demand pricing. They are ideal for fault-tolerant, interruptible workloads like batch processing that can handle interruptions.", hint1: "This workload can be interrupted and restarted — that characteristic matches perfectly with one very cheap EC2 pricing option.", hint2: "Spot Instances use unused EC2 capacity at steep discounts (up to 90%). AWS can reclaim them with a 2-minute notice. For batch jobs that checkpoint their work, this is the most cost-effective option.", awsConsolePath: "EC2 → Instances → Launch instances → Purchasing option → Spot instances", wrongExplanations: { 0: "On-Demand is the baseline price with no discount; suitable when you need guaranteed capacity with no commitment.", 1: "Reserved Instances save money for steady, predictable workloads over 1 or 3 years — not for batch jobs that run occasionally.", 3: "Dedicated Hosts are the most expensive option, used for licensing compliance not cost optimization." } }
     ];
 
     // AWS Services Reference
@@ -2169,6 +2263,240 @@
           <span style="font-size:.75rem;background:var(--card);padding:.25rem .5rem;border-radius:4px">${s.cat}</span>
         </div>
       `).join('');
+    }
+
+    // ==================== Adaptive Learning ====================
+
+    // Adaptive Learning State
+    let currentDifficulty = localStorage.getItem('awsprep_adaptive_difficulty') || 'beginner';
+    let adaptiveAttemptCount = 0;
+    let adaptiveAnswered = false;
+    let adaptiveCurrentQ = null;
+    let adaptiveFilteredQuestions = [];
+    let adaptiveCurrentIndex = 0;
+    let adaptiveInitialized = false;
+    const adaptiveMaxAttempts = { beginner: 3, intermediate: 2, advanced: 1 };
+    const ADAPTIVE_DEFAULT_HINT1 = 'Think carefully about the core requirement in the question. Consider what the question is really asking for.';
+    const ADAPTIVE_DEFAULT_HINT2 = 'Consider the option that is the most specific AWS-managed solution for this scenario.';
+
+    function getDiffBtnId(diff) {
+      return 'btn' + diff.charAt(0).toUpperCase() + diff.slice(1);
+    }
+
+    function handleAdaptiveImgError(el) {
+      el.parentElement.innerHTML = '<div style="padding:.75rem;text-align:center;color:var(--muted);font-size:.8rem">📸 AWS Console View</div>';
+    }
+
+    function setDifficulty(level) {
+      currentDifficulty = level;
+      localStorage.setItem('awsprep_adaptive_difficulty', level);
+      ['beginner', 'intermediate', 'advanced'].forEach(d => {
+        const btn = document.getElementById(getDiffBtnId(d));
+        if (btn) btn.classList.toggle('active', d === level);
+      });
+      loadAdaptiveQuestion();
+      updateAdaptiveStats();
+    }
+
+    function loadAdaptiveQuestion() {
+      if (adaptiveFilteredQuestions.length === 0) {
+        adaptiveFilteredQuestions = [...saaQuestions];
+        shuffleArray(adaptiveFilteredQuestions);
+        adaptiveCurrentIndex = 0;
+      }
+      adaptiveCurrentQ = adaptiveFilteredQuestions[adaptiveCurrentIndex % adaptiveFilteredQuestions.length];
+      adaptiveAttemptCount = 0;
+      adaptiveAnswered = false;
+      renderAdaptiveQuestion();
+    }
+
+    function renderAdaptiveQuestion() {
+      const q = adaptiveCurrentQ;
+      const diff = currentDifficulty;
+      const maxAttempts = adaptiveMaxAttempts[diff];
+      const diffColors = { beginner: '#10b981', intermediate: '#f59e0b', advanced: '#ef4444' };
+      const diffEmoji = { beginner: '🟢', intermediate: '🟡', advanced: '🔴' };
+      const diffLabel = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
+
+      document.getElementById('adaptiveDiffBadge').innerHTML =
+        `<span style="background:${diffColors[diff]};color:#fff;padding:.25rem .75rem;border-radius:999px;font-size:.85rem">${diffEmoji[diff]} ${diffLabel[diff]}</span>`;
+
+      renderAttemptDots(diff, maxAttempts, 0);
+      document.getElementById('adaptiveQuestion').textContent = q.q;
+
+      const optionsContainer = document.getElementById('adaptiveOptions');
+      if (diff === 'advanced') {
+        optionsContainer.className = 'quiz-options';
+        optionsContainer.innerHTML = q.options.map((opt, i) => `
+          <div class="adaptive-option" onclick="selectAdaptiveAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</div>
+        `).join('');
+      } else {
+        optionsContainer.className = 'adaptive-options-grid';
+        optionsContainer.innerHTML = q.options.map((opt, i) => `
+          <div class="adaptive-option" onclick="selectAdaptiveAnswer(${i})">
+            <div class="adaptive-option-img">
+              <img src="screenshots/placeholder.svg" alt="AWS Console View"
+                style="width:100%;height:auto;max-height:90px;object-fit:contain"
+                onerror="handleAdaptiveImgError(this)" />
+            </div>
+            <div>${String.fromCharCode(65 + i)}. ${opt}</div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('adaptiveFeedback').innerHTML = '';
+      document.getElementById('adaptiveConsolePath').style.display = 'none';
+      document.getElementById('adaptiveNextBtn').style.display = 'none';
+    }
+
+    function renderAttemptDots(diff, maxAttempts, usedAttempts) {
+      let dots = '';
+      for (let i = 0; i < maxAttempts; i++) {
+        const filled = i < usedAttempts;
+        dots += `<span class="attempt-dot ${filled ? 'filled ' + diff : ''}" aria-hidden="true"></span>`;
+      }
+      const dotsEl = document.getElementById('adaptiveAttemptDots');
+      if (dotsEl) dotsEl.innerHTML = dots;
+    }
+
+    function selectAdaptiveAnswer(selected) {
+      if (adaptiveAnswered) return;
+      const q = adaptiveCurrentQ;
+      const diff = currentDifficulty;
+      const maxAttempts = adaptiveMaxAttempts[diff];
+      const isCorrect = selected === q.answer;
+
+      adaptiveAttemptCount++;
+      const remaining = maxAttempts - adaptiveAttemptCount;
+
+      const options = document.querySelectorAll('#adaptiveOptions .adaptive-option');
+
+      if (isCorrect) {
+        adaptiveAnswered = true;
+        options[selected].classList.add('correct');
+        options.forEach(opt => { opt.setAttribute('disabled', ''); opt.style.pointerEvents = 'none'; });
+        renderAttemptDots(diff, maxAttempts, adaptiveAttemptCount);
+
+        const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
+        stats.correct++;
+        stats.total++;
+        DB.setOne('adaptive_stats_' + diff, stats);
+
+        showAdaptiveSuccess(q);
+        document.getElementById('adaptiveNextBtn').style.display = 'inline-block';
+      } else {
+        options[selected].classList.add('incorrect');
+        setTimeout(() => options[selected].classList.remove('incorrect'), 500);
+        renderAttemptDots(diff, maxAttempts, adaptiveAttemptCount);
+
+        if (remaining <= 0) {
+          adaptiveAnswered = true;
+          options.forEach(opt => { opt.style.pointerEvents = 'none'; });
+          options[q.answer].classList.add('correct');
+
+          const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
+          stats.total++;
+          DB.setOne('adaptive_stats_' + diff, stats);
+
+          showAdaptiveExplanation(q, selected);
+          document.getElementById('adaptiveNextBtn').style.display = 'inline-block';
+        } else {
+          if (diff === 'beginner') {
+            showAdaptiveHint(q, adaptiveAttemptCount);
+          } else if (diff === 'intermediate' && adaptiveAttemptCount >= 1) {
+            showAdaptiveHint(q, 1);
+          }
+        }
+      }
+      updateAdaptiveStats();
+    }
+
+    function showAdaptiveHint(q, attemptNum) {
+      const feedback = document.getElementById('adaptiveFeedback');
+      let hintText = '';
+      if (attemptNum === 1 && q.hint1) {
+        hintText = q.hint1;
+      } else if (attemptNum >= 2 && q.hint2) {
+        hintText = q.hint2;
+      } else if (attemptNum === 1) {
+        hintText = ADAPTIVE_DEFAULT_HINT1;
+      } else {
+        hintText = ADAPTIVE_DEFAULT_HINT2;
+      }
+      feedback.innerHTML += `
+        <div class="adaptive-hint-box">
+          <strong>💡 Hint ${attemptNum}:</strong> ${hintText}
+        </div>
+      `;
+    }
+
+    function showAdaptiveSuccess(q) {
+      document.getElementById('adaptiveFeedback').innerHTML = `
+        <div class="adaptive-success-box">
+          <span class="checkmark-anim">✅</span> <strong>Excellent! That's correct!</strong>
+          <div style="margin-top:.5rem;font-size:.9rem;color:#065f46">${q.explain}</div>
+        </div>
+      `;
+      if (q.awsConsolePath && currentDifficulty === 'beginner') {
+        document.getElementById('adaptiveConsolePath').innerHTML = `
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">📍 Find it in the AWS Console:</div>
+          <span class="adaptive-console-path">${q.awsConsolePath}</span>
+        `;
+        document.getElementById('adaptiveConsolePath').style.display = 'block';
+      }
+    }
+
+    function showAdaptiveExplanation(q, selected) {
+      const wrongExplain = q.wrongExplanations && q.wrongExplanations[selected]
+        ? `<div style="margin-top:.5rem;font-size:.9rem;color:var(--muted)"><strong>Why your answer was incorrect:</strong> ${q.wrongExplanations[selected]}</div>`
+        : '';
+      document.getElementById('adaptiveFeedback').innerHTML = `
+        <div class="adaptive-explain-box">
+          <strong>📚 Explanation:</strong>
+          <div style="margin-top:.5rem">${q.explain}</div>
+          ${wrongExplain}
+        </div>
+      `;
+      if (q.awsConsolePath && currentDifficulty === 'beginner') {
+        document.getElementById('adaptiveConsolePath').innerHTML = `
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">📍 Find it in the AWS Console:</div>
+          <span class="adaptive-console-path">${q.awsConsolePath}</span>
+        `;
+        document.getElementById('adaptiveConsolePath').style.display = 'block';
+      }
+    }
+
+    function nextAdaptiveQuestion() {
+      adaptiveCurrentIndex = (adaptiveCurrentIndex + 1) % adaptiveFilteredQuestions.length;
+      if (adaptiveCurrentIndex === 0) shuffleArray(adaptiveFilteredQuestions);
+      loadAdaptiveQuestion();
+    }
+
+    function updateAdaptiveStats() {
+      ['beginner', 'intermediate', 'advanced'].forEach(diff => {
+        const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
+        const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+        const elId = 'adaptStat' + diff.charAt(0).toUpperCase() + diff.slice(1);
+        const el = document.getElementById(elId);
+        if (el) el.textContent = stats.total > 0 ? pct + '%' : '--';
+      });
+    }
+
+    function initAdaptive() {
+      adaptiveFilteredQuestions = [...saaQuestions];
+      shuffleArray(adaptiveFilteredQuestions);
+      adaptiveCurrentIndex = 0;
+
+      const saved = localStorage.getItem('awsprep_adaptive_difficulty');
+      if (saved) currentDifficulty = saved;
+
+      ['beginner', 'intermediate', 'advanced'].forEach(d => {
+        const btn = document.getElementById(getDiffBtnId(d));
+        if (btn) btn.classList.toggle('active', d === currentDifficulty);
+      });
+
+      loadAdaptiveQuestion();
+      updateAdaptiveStats();
     }
 
     // Initialize
