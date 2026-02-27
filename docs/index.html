@@ -1267,7 +1267,7 @@
       }
     }
 
-    let adaptiveInitialized = false;
+    let architectureBuilderInitialized = false;
 
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1293,9 +1293,9 @@
         }
 
         // Initialize architecture builder on first visit
-        if (tab.dataset.tab === 'adaptive' && !adaptiveInitialized) {
+        if (tab.dataset.tab === 'adaptive' && !architectureBuilderInitialized) {
           initArchitectureBuilder();
-          adaptiveInitialized = true;
+          architectureBuilderInitialized = true;
         }
 
         // Close mobile menu after navigation

@@ -1,6 +1,11 @@
 // Architecture Builder - Interactive AWS Architecture Learning Tool
 // Drag-and-drop canvas for building and validating AWS architectures
 
+// ==================== CONSTANTS ====================
+
+const CANVAS_GRID_SIZE = 20;       // Grid snap size in pixels
+const ICON_CENTER_OFFSET = 36;     // Half the dropped icon bounding box for centering cursor
+
 // ==================== QUESTION DATA ====================
 
 const ARCHITECTURE_QUESTIONS = [
@@ -406,8 +411,8 @@ function setupArchCanvasDrop() {
     if (!serviceId || !AWS_SERVICES[serviceId]) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = Math.round((e.clientX - rect.left - 36) / archState.zoom);
-    const y = Math.round((e.clientY - rect.top - 36) / archState.zoom);
+    const x = Math.round((e.clientX - rect.left - ICON_CENTER_OFFSET) / archState.zoom);
+    const y = Math.round((e.clientY - rect.top - ICON_CENTER_OFFSET) / archState.zoom);
 
     placeServiceOnCanvas(serviceId, Math.max(0, x), Math.max(0, y));
   });
@@ -427,9 +432,9 @@ function placeServiceOnCanvas(serviceId, x, y) {
   if (!svc) return;
 
   const instanceId = 'inst_' + (archState.nextInstanceId++);
-  // Snap to 20px grid
-  const sx = Math.round(x / 20) * 20;
-  const sy = Math.round(y / 20) * 20;
+  // Snap to grid
+  const sx = Math.round(x / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+  const sy = Math.round(y / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
 
   archState.placedServices.push({ instanceId, serviceId, x: sx, y: sy });
   renderCanvasService(instanceId, serviceId, sx, sy);
@@ -486,9 +491,9 @@ function makeDraggableOnCanvas(el) {
     const canvasRect = archState.canvasEl.getBoundingClientRect();
     let newX = (e.clientX - canvasRect.left - dragOffsetX) / archState.zoom;
     let newY = (e.clientY - canvasRect.top - dragOffsetY) / archState.zoom;
-    // Snap to 20px grid
-    newX = Math.round(newX / 20) * 20;
-    newY = Math.round(newY / 20) * 20;
+    // Snap to grid
+    newX = Math.round(newX / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
+    newY = Math.round(newY / CANVAS_GRID_SIZE) * CANVAS_GRID_SIZE;
     newX = Math.max(0, newX);
     newY = Math.max(0, newY);
 
