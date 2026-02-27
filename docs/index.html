@@ -157,15 +157,47 @@
     .arch-feedback-solution{background:#f0fdf4;border:1px solid #10b981;border-left:4px solid #10b981}
     .arch-btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
     /* ===== Visual Architecture Exam Styles ===== */
-    .ve-start-card{background:linear-gradient(135deg,#e8f4fd 0%,#fff 100%);border:2px solid var(--aws-blue);border-radius:12px;padding:2rem;text-align:center;max-width:700px;margin:0 auto}
-    .ve-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem}
-    @media(max-width:600px){.ve-mode-grid{grid-template-columns:1fr}}
-    .ve-mode-card{background:#fff;border:2px solid var(--border);border-radius:10px;padding:1.5rem;cursor:pointer;transition:all .2s;text-align:left}
-    .ve-mode-card:hover{border-color:var(--aws-blue);box-shadow:0 4px 14px rgba(0,115,187,.18);transform:translateY(-2px)}
-    .ve-mode-title{font-size:1.15rem;font-weight:800;color:var(--aws-dark);margin-bottom:.5rem}
-    .ve-mode-desc{font-size:.88rem;color:var(--muted);line-height:1.6}
-    .ve-mode-btn{display:inline-block;margin-top:1rem;padding:.6rem 1.2rem;background:var(--aws-blue);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:.9rem;transition:background .2s}
-    .ve-mode-btn:hover{background:var(--accent-2)}
+    .ve-container{max-width:1200px;margin:0 auto;padding:2rem}
+    .ve-hero{text-align:center;padding:3rem 0 2rem}
+    .ve-hero h1{font-size:2.5rem;font-weight:800;color:#1A202C;margin-bottom:1rem}
+    .ve-subtitle{font-size:1.25rem;color:#4A5568;max-width:600px;margin:0 auto}
+    .ve-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0}
+    .ve-stat-card{background:#fff;border:2px solid #E2E8F0;border-radius:12px;padding:2rem;text-align:center;transition:all .2s}
+    .ve-stat-card:hover{border-color:#3498DB;transform:translateY(-2px);box-shadow:0 4px 12px rgba(52,152,219,.15)}
+    .ve-stat-number{font-size:3rem;font-weight:800;color:#3498DB;line-height:1;margin-bottom:.5rem}
+    .ve-stat-label{font-size:.95rem;color:#4A5568;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+    .ve-stat-sublabel{font-size:.85rem;color:#718096;margin-top:.25rem}
+    .ve-how-it-works{margin:4rem 0}
+    .ve-how-it-works h2{font-size:1.75rem;font-weight:700;color:#1A202C;margin-bottom:2rem;text-align:center}
+    .ve-steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem}
+    .ve-step{display:flex;gap:1rem}
+    .ve-step-number{width:48px;height:48px;background:linear-gradient(135deg,#3498DB,#2980B9);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;flex-shrink:0}
+    .ve-step-content h3{font-size:1.1rem;font-weight:700;color:#1A202C;margin-bottom:.5rem}
+    .ve-step-content p{font-size:.95rem;color:#4A5568;line-height:1.5}
+    .ve-mode-selection{margin:4rem 0}
+    .ve-mode-selection h2{font-size:1.75rem;font-weight:700;color:#1A202C;margin-bottom:2rem;text-align:center}
+    .ve-modes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem}
+    .ve-mode-card{background:#fff;border:2px solid #E2E8F0;border-radius:16px;padding:2.5rem;transition:all .3s;position:relative;overflow:hidden}
+    .ve-mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3498DB,#9B59B6);opacity:0;transition:opacity .3s}
+    .ve-mode-card:hover{border-color:#3498DB;transform:translateY(-4px);box-shadow:0 12px 24px rgba(52,152,219,.2)}
+    .ve-mode-card:hover::before{opacity:1}
+    .ve-mode-icon{font-size:3rem;margin-bottom:1rem}
+    .ve-mode-card h3{font-size:1.5rem;font-weight:700;color:#1A202C;margin-bottom:1rem}
+    .ve-mode-desc{font-size:1rem;color:#4A5568;margin-bottom:1.5rem;line-height:1.6}
+    .ve-mode-features{list-style:none;padding:0;margin:1.5rem 0}
+    .ve-mode-features li{padding:.5rem 0;color:#2D3748;font-size:.95rem}
+    .ve-mode-btn{width:100%;padding:1rem 1.5rem;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:1rem}
+    .ve-mode-btn-primary{background:linear-gradient(135deg,#3498DB,#2980B9);color:#fff}
+    .ve-mode-btn-primary:hover{background:linear-gradient(135deg,#2980B9,#21618C);transform:translateY(-2px);box-shadow:0 8px 16px rgba(52,152,219,.3)}
+    .ve-mode-btn-secondary{background:#fff;color:#3498DB;border:2px solid #3498DB}
+    .ve-mode-btn-secondary:hover{background:#3498DB;color:#fff}
+    .ve-progress-card{background:linear-gradient(135deg,#667EEA,#764BA2);color:#fff;border-radius:16px;padding:2rem;margin-top:2rem}
+    .ve-progress-card h3{font-size:1.5rem;margin-bottom:1rem}
+    .ve-progress-stats{display:flex;gap:2rem;margin:1.5rem 0}
+    .ve-progress-stat{display:flex;flex-direction:column;gap:.5rem}
+    .ve-progress-card .ve-progress-label{font-size:.9rem;opacity:.9;color:#fff}
+    .ve-progress-value{font-size:1.5rem;font-weight:700}
+    @media(max-width:768px){.ve-hero h1{font-size:2rem}.ve-subtitle{font-size:1rem}.ve-stats-grid{grid-template-columns:1fr}.ve-steps-grid{grid-template-columns:1fr}.ve-modes-grid{grid-template-columns:1fr}}
     .ve-timer-bar{display:flex;align-items:center;gap:.75rem;background:#fff;border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;margin-bottom:1rem;flex-wrap:wrap}
     .ve-timer-display{font-size:1.6rem;font-weight:800;color:var(--aws-blue);font-variant-numeric:tabular-nums;min-width:6ch}
     .ve-timer-yellow{color:var(--warning)}
@@ -1490,7 +1522,6 @@
 
     <!-- ===== VISUAL ARCHITECTURE EXAM ===== -->
     <section id="visual-exam" class="app-section">
-      <h1 class="section-heading">🎯 Visual Architecture Exam</h1>
 
       <!-- Pause Overlay -->
       <div class="ve-pause-overlay" id="vePauseOverlay">
@@ -1514,70 +1545,126 @@
 
       <!-- ========== START SCREEN ========== -->
       <div id="veStartScreen">
-        <div class="ve-start-card">
-          <div style="font-size:3rem;margin-bottom:.5rem">🏗️</div>
-          <h2 style="font-size:1.75rem;font-weight:800;color:var(--aws-dark);margin-bottom:.5rem">Visual Architecture Exam</h2>
-          <p style="color:var(--muted);margin-bottom:1.5rem;font-size:1rem">Test BOTH your knowledge AND your ability to build correct AWS architectures.</p>
+        <div class="ve-container">
 
-          <div class="stats-grid" style="max-width:500px;margin:0 auto 1.5rem">
-            <div class="stat-card">
-              <div class="stat-value" id="veExamInfo_total">20</div>
-              <div class="stat-label">Questions</div>
+          <!-- Hero Section -->
+          <div class="ve-hero">
+            <h1>🎯 Visual Architecture Exam</h1>
+            <p class="ve-subtitle">Master AWS by building architectures, not just memorizing answers</p>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="ve-stats-grid">
+            <div class="ve-stat-card">
+              <div class="ve-stat-number" id="veExamInfo_total">20</div>
+              <div class="ve-stat-label">Questions</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-value" id="veExamInfo_points">40</div>
-              <div class="stat-label">Total Points</div>
+            <div class="ve-stat-card">
+              <div class="ve-stat-number" id="veExamInfo_points">40</div>
+              <div class="ve-stat-label">Total Points</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-value" id="veExamInfo_pass">--</div>
-              <div class="stat-label">Pass Score</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="veExamInfo_time">20 min</div>
-              <div class="stat-label">Timed Mode</div>
+            <div class="ve-stat-card">
+              <div class="ve-stat-number" id="veExamInfo_pass">--</div>
+              <div class="ve-stat-label">Pass Score</div>
+              <div class="ve-stat-sublabel" id="veExamInfo_pass_sub"></div>
             </div>
           </div>
 
-          <div style="background:#f0f6ff;border:1px solid var(--aws-blue);border-radius:8px;padding:1rem;text-align:left;margin-bottom:1.5rem;font-size:.9rem">
-            <strong>For each question you will:</strong>
-            <ol style="margin:.5rem 0 0 1.25rem;line-height:1.8">
-              <li>Read the scenario</li>
-              <li>Select your answer (A, B, C, or D) — <strong>1 point</strong></li>
-              <li>Build the architecture for your answer on the canvas — <strong>up to 1 point</strong></li>
-              <li>Get dual scoring and detailed feedback</li>
-            </ol>
-          </div>
-
-          <div class="ve-mode-grid">
-            <div class="ve-mode-card">
-              <div class="ve-mode-title">⏱️ Timed Mode</div>
-              <div class="ve-mode-desc">
-                <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
-                  <li>1 minute per question</li>
-                  <li>Simulates real exam pressure</li>
-                  <li>Up to 2 pauses (5 min each)</li>
-                  <li>Auto-submits when time expires</li>
-                </ul>
+          <!-- How It Works -->
+          <div class="ve-how-it-works">
+            <h2>📋 How It Works</h2>
+            <div class="ve-steps-grid">
+              <div class="ve-step">
+                <div class="ve-step-number">1</div>
+                <div class="ve-step-content">
+                  <h3>Read the Scenario</h3>
+                  <p>Understand the AWS requirements</p>
+                </div>
               </div>
-              <button class="ve-mode-btn" onclick="veStartExam('timed')">Start Timed Exam →</button>
-            </div>
-            <div class="ve-mode-card">
-              <div class="ve-mode-title">⏸️ Practice Mode</div>
-              <div class="ve-mode-desc">
-                <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
-                  <li>No time limit</li>
-                  <li>Review any question anytime</li>
-                  <li>Can revisit previous questions</li>
-                  <li>Best for learning</li>
-                </ul>
+              <div class="ve-step">
+                <div class="ve-step-number">2</div>
+                <div class="ve-step-content">
+                  <h3>Select Your Answer</h3>
+                  <p>Choose A, B, C, or D — earn <strong>1 point</strong></p>
+                </div>
               </div>
-              <button class="ve-mode-btn" onclick="veStartExam('practice')">Start Practice Mode →</button>
+              <div class="ve-step">
+                <div class="ve-step-number">3</div>
+                <div class="ve-step-content">
+                  <h3>Build the Architecture</h3>
+                  <p>Drag AWS services on canvas — earn <strong>up to 1 point</strong></p>
+                </div>
+              </div>
+              <div class="ve-step">
+                <div class="ve-step-number">4</div>
+                <div class="ve-step-content">
+                  <h3>Get Dual Scoring</h3>
+                  <p>Instant feedback on answer + architecture</p>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Mode Selection -->
+          <div class="ve-mode-selection">
+            <h2>Choose Your Mode</h2>
+            <div class="ve-modes-grid">
+
+              <!-- Timed Mode -->
+              <div class="ve-mode-card">
+                <div class="ve-mode-icon">⏱️</div>
+                <h3>Timed Mode</h3>
+                <p class="ve-mode-desc">20 questions in 20 minutes — simulate real exam pressure</p>
+                <ul class="ve-mode-features">
+                  <li>✓ 20 questions</li>
+                  <li>✓ 1 minute per question</li>
+                  <li>✓ Pass score: 71% (29/40)</li>
+                  <li>✓ Up to 2 pauses (5 min each)</li>
+                </ul>
+                <button class="ve-mode-btn ve-mode-btn-primary" onclick="veStartExam('timed')">
+                  🚀 Start Timed Exam
+                </button>
+              </div>
+
+              <!-- Practice Mode -->
+              <div class="ve-mode-card">
+                <div class="ve-mode-icon">📚</div>
+                <h3>Practice Mode</h3>
+                <p class="ve-mode-desc">Learn at your own pace — no timer, instant feedback</p>
+                <ul class="ve-mode-features">
+                  <li>✓ All 20 questions</li>
+                  <li>✓ No time limit</li>
+                  <li>✓ Skip &amp; review</li>
+                  <li>✓ Detailed explanations</li>
+                </ul>
+                <button class="ve-mode-btn ve-mode-btn-secondary" onclick="veStartExam('practice')">
+                  📖 Start Practice
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Progress Card (if user has a saved session) -->
+          <div class="ve-progress-card" id="veProgressCard" style="display:none">
+            <h3>📊 Resume Your Progress</h3>
+            <div class="ve-progress-stats">
+              <div class="ve-progress-stat">
+                <span class="ve-progress-label">Completed:</span>
+                <span class="ve-progress-value" id="veProgressCompleted">0/20</span>
+              </div>
+              <div class="ve-progress-stat">
+                <span class="ve-progress-label">Score:</span>
+                <span class="ve-progress-value" id="veProgressScore">0/40</span>
+              </div>
+            </div>
+            <button class="ve-mode-btn ve-mode-btn-primary" onclick="veResumeSession()">
+              ▶️ Resume Exam
+            </button>
+          </div>
+
         </div>
       </div>
-
-      <!-- ========== QUESTION AREA ========== -->
       <div id="veQuestionArea" style="display:none">
         <div class="ve-exam-layout">
 
