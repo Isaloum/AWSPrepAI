@@ -43,7 +43,7 @@
 | 💾 **Offline Support** | All data stored locally using LocalStorage—no backend required |
 | 📱 **Mobile Responsive** | Fully responsive design with hamburger menu navigation for mobile devices |
 | 🎨 **Professional Branding** | Custom logo and favicon for a polished professional appearance |
-| 🎓 **Adaptive Learning** | Three difficulty levels (Beginner/Intermediate/Advanced) with progressive hints, visual aids, attempt tracking, and animations |
+| 🏗️ **Architecture Builder** | Interactive drag-and-drop canvas to build and validate AWS architectures with 10+ scenario-based challenges, real-time feedback, and solution animations |
 
 ---
 
@@ -86,7 +86,7 @@ AWSPrepAI now includes several pages for a comprehensive learning experience:
 - **🎓 Study Guide:** AI-analyzed tips and strategies (SAA-C03)
 - **💡 Hints/Keywords:** Quick reference for exam keywords and scenarios
 - **📚 Services:** Reference guide for 30+ core AWS services
-- **🎓 Adaptive Learning:** Three difficulty levels with progressive hints, visual aids, and attempt tracking
+- **🏗️ Architecture Builder:** Interactive drag-and-drop canvas for building AWS architectures, drawing service connections, validating solutions, and learning through scenario-based challenges
 - **ℹ️ About:** Learn about the platform, mission, and technology stack
 - **📞 Contact:** Get in touch, contribute, or report issues
 - **🗂️ Glossary & Flashcards:** Interactive learning tools (coming soon)
@@ -139,7 +139,7 @@ No build process required—just open `docs/index.html` directly in any modern b
 2. **Study Guide:** Review domain-specific tips and key topics for SAA-C03
 3. **Practice Quiz:** Start with practice mode to learn and track progress
 4. **Mock Exam:** Take timed full-length exams when ready
-5. **Adaptive Learning:** Select your difficulty level (Beginner/Intermediate/Advanced) for a guided, progressive learning experience with hints and visual aids
+5. **Architecture Builder:** Select a scenario, drag AWS service icons onto the canvas, draw connections between services, and validate your architecture design
 6. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
 
 ---
