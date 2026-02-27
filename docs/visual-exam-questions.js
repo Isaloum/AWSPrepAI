@@ -767,3 +767,341 @@ const VISUAL_EXAM_QUESTIONS = [
     }
   }
 ];
+
+// ==================== ARCHITECTURE TEMPLATES ====================
+// Maps common SAA-C03 architectural patterns to service/connection data
+
+const ARCH_TEMPLATES = {
+  'ec2-basic': {
+    requiredServices: ['ec2'],
+    requiredConnections: []
+  },
+  'ec2-alb-asg': {
+    requiredServices: ['alb', 'asg', 'ec2'],
+    requiredConnections: [{ from: 'alb', to: 'asg' }, { from: 'asg', to: 'ec2' }]
+  },
+  'lambda-api': {
+    requiredServices: ['apigateway', 'lambda'],
+    requiredConnections: [{ from: 'apigateway', to: 'lambda' }]
+  },
+  'serverless': {
+    requiredServices: ['apigateway', 'lambda', 'dynamodb'],
+    requiredConnections: [{ from: 'apigateway', to: 'lambda' }, { from: 'lambda', to: 'dynamodb' }]
+  },
+  's3-static': {
+    requiredServices: ['s3', 'cloudfront'],
+    requiredConnections: [{ from: 'cloudfront', to: 's3' }]
+  },
+  's3-cloudfront-route53': {
+    requiredServices: ['route53', 'cloudfront', 's3'],
+    requiredConnections: [{ from: 'route53', to: 'cloudfront' }, { from: 'cloudfront', to: 's3' }]
+  },
+  'rds-ec2': {
+    requiredServices: ['ec2', 'rds'],
+    requiredConnections: [{ from: 'ec2', to: 'rds' }]
+  },
+  'rds-multi-az': {
+    requiredServices: ['ec2', 'rds'],
+    requiredConnections: [{ from: 'ec2', to: 'rds' }]
+  },
+  'aurora': {
+    requiredServices: ['ec2', 'aurora'],
+    requiredConnections: [{ from: 'ec2', to: 'aurora' }]
+  },
+  'dynamodb': {
+    requiredServices: ['lambda', 'dynamodb'],
+    requiredConnections: [{ from: 'lambda', to: 'dynamodb' }]
+  },
+  'elasticache': {
+    requiredServices: ['ec2', 'elasticache', 'rds'],
+    requiredConnections: [{ from: 'ec2', to: 'elasticache' }, { from: 'ec2', to: 'rds' }]
+  },
+  'sqs-decoupling': {
+    requiredServices: ['ec2', 'sqs', 'ec2'],
+    requiredConnections: [{ from: 'ec2', to: 'sqs' }, { from: 'sqs', to: 'ec2' }]
+  },
+  'sns-fanout': {
+    requiredServices: ['sns', 'sqs'],
+    requiredConnections: [{ from: 'sns', to: 'sqs' }]
+  },
+  'vpc-public-private': {
+    requiredServices: ['vpc', 'igw', 'natgw', 'ec2'],
+    requiredConnections: [{ from: 'igw', to: 'ec2' }, { from: 'ec2', to: 'natgw' }]
+  },
+  'vpc-endpoint': {
+    requiredServices: ['ec2', 'vpcendpoint', 's3'],
+    requiredConnections: [{ from: 'ec2', to: 'vpcendpoint' }, { from: 'vpcendpoint', to: 's3' }]
+  },
+  'direct-connect': {
+    requiredServices: ['directconnect', 'vpc'],
+    requiredConnections: [{ from: 'directconnect', to: 'vpc' }]
+  },
+  'vpn': {
+    requiredServices: ['vpn', 'vpc'],
+    requiredConnections: [{ from: 'vpn', to: 'vpc' }]
+  },
+  'cloudwatch': {
+    requiredServices: ['cloudwatch', 'ec2'],
+    requiredConnections: [{ from: 'cloudwatch', to: 'ec2' }]
+  },
+  'kinesis': {
+    requiredServices: ['kinesis', 's3'],
+    requiredConnections: [{ from: 'kinesis', to: 's3' }]
+  },
+  'kinesis-firehose': {
+    requiredServices: ['kinesisfirehose', 's3'],
+    requiredConnections: [{ from: 'kinesisfirehose', to: 's3' }]
+  },
+  'iam': {
+    requiredServices: ['iam', 'ec2'],
+    requiredConnections: [{ from: 'iam', to: 'ec2' }]
+  },
+  'kms': {
+    requiredServices: ['kms', 's3'],
+    requiredConnections: [{ from: 's3', to: 'kms' }]
+  },
+  'secrets-manager': {
+    requiredServices: ['secretsmanager', 'ec2'],
+    requiredConnections: [{ from: 'ec2', to: 'secretsmanager' }]
+  },
+  'waf-alb': {
+    requiredServices: ['waf', 'alb', 'ec2'],
+    requiredConnections: [{ from: 'waf', to: 'alb' }, { from: 'alb', to: 'ec2' }]
+  },
+  'cloudfront-waf': {
+    requiredServices: ['cloudfront', 'waf', 's3'],
+    requiredConnections: [{ from: 'waf', to: 'cloudfront' }, { from: 'cloudfront', to: 's3' }]
+  },
+  'cognito': {
+    requiredServices: ['cognito', 'apigateway', 'lambda'],
+    requiredConnections: [{ from: 'cognito', to: 'apigateway' }, { from: 'apigateway', to: 'lambda' }]
+  },
+  'route53-health': {
+    requiredServices: ['route53', 'ec2'],
+    requiredConnections: [{ from: 'route53', to: 'ec2' }]
+  },
+  'cloudfront-ec2': {
+    requiredServices: ['cloudfront', 'alb', 'ec2'],
+    requiredConnections: [{ from: 'cloudfront', to: 'alb' }, { from: 'alb', to: 'ec2' }]
+  },
+  'ecs': {
+    requiredServices: ['ecs', 'alb'],
+    requiredConnections: [{ from: 'alb', to: 'ecs' }]
+  },
+  'fargate': {
+    requiredServices: ['fargate', 'alb'],
+    requiredConnections: [{ from: 'alb', to: 'fargate' }]
+  },
+  'eks': {
+    requiredServices: ['eks', 'alb'],
+    requiredConnections: [{ from: 'alb', to: 'eks' }]
+  },
+  'redshift': {
+    requiredServices: ['redshift', 's3'],
+    requiredConnections: [{ from: 's3', to: 'redshift' }]
+  },
+  'athena': {
+    requiredServices: ['athena', 's3'],
+    requiredConnections: [{ from: 'athena', to: 's3' }]
+  },
+  'glue': {
+    requiredServices: ['glue', 's3'],
+    requiredConnections: [{ from: 'glue', to: 's3' }]
+  },
+  'emr': {
+    requiredServices: ['emr', 's3'],
+    requiredConnections: [{ from: 'emr', to: 's3' }]
+  },
+  'step-functions': {
+    requiredServices: ['stepfunctions', 'lambda'],
+    requiredConnections: [{ from: 'stepfunctions', to: 'lambda' }]
+  },
+  'dms': {
+    requiredServices: ['dms', 'rds'],
+    requiredConnections: [{ from: 'dms', to: 'rds' }]
+  },
+  'cloudtrail': {
+    requiredServices: ['cloudtrail', 's3'],
+    requiredConnections: [{ from: 'cloudtrail', to: 's3' }]
+  },
+  'config': {
+    requiredServices: ['awsconfig', 'sns'],
+    requiredConnections: [{ from: 'awsconfig', to: 'sns' }]
+  },
+  'guardduty': {
+    requiredServices: ['guardduty', 'cloudwatch'],
+    requiredConnections: [{ from: 'guardduty', to: 'cloudwatch' }]
+  },
+  'macie': {
+    requiredServices: ['macie', 's3'],
+    requiredConnections: [{ from: 'macie', to: 's3' }]
+  },
+  'transit-gateway': {
+    requiredServices: ['transitgateway', 'vpc'],
+    requiredConnections: [{ from: 'transitgateway', to: 'vpc' }]
+  },
+  'datasync': {
+    requiredServices: ['datasync', 's3'],
+    requiredConnections: [{ from: 'datasync', to: 's3' }]
+  },
+  'backup': {
+    requiredServices: ['backup', 'rds'],
+    requiredConnections: [{ from: 'backup', to: 'rds' }]
+  },
+  'eventbridge': {
+    requiredServices: ['eventbridge', 'lambda'],
+    requiredConnections: [{ from: 'eventbridge', to: 'lambda' }]
+  },
+  'ebs': {
+    requiredServices: ['ec2', 'ebs'],
+    requiredConnections: [{ from: 'ec2', to: 'ebs' }]
+  },
+  'efs': {
+    requiredServices: ['ec2', 'efs'],
+    requiredConnections: [{ from: 'ec2', to: 'efs' }]
+  },
+  's3-only': {
+    requiredServices: ['s3'],
+    requiredConnections: []
+  },
+  'rds-only': {
+    requiredServices: ['rds'],
+    requiredConnections: []
+  }
+};
+
+// ==================== KEYWORD → TEMPLATE MAPPING ====================
+// Maps question/option keywords to architecture template IDs
+
+const KEYWORD_TEMPLATE_MAP = [
+  { keywords: ['cloudfront', 'cdn', 'distribution', 'edge location', 'static website', 'static content', 's3', 'origin'], template: 's3-cloudfront-route53' },
+  { keywords: ['waf', 'sql injection', 'xss', 'web application firewall', 'owasp'], template: 'waf-alb' },
+  { keywords: ['auto scaling', 'autoscaling', 'asg', 'application load balancer', 'alb', 'load balancer', 'scale'], template: 'ec2-alb-asg' },
+  { keywords: ['lambda', 'api gateway', 'serverless', 'function', 'dynamodb'], template: 'serverless' },
+  { keywords: ['lambda', 'api gateway', 'serverless', 'function'], template: 'lambda-api' },
+  { keywords: ['kinesis data firehose', 'firehose', 'delivery stream'], template: 'kinesis-firehose' },
+  { keywords: ['kinesis data streams', 'kinesis streams', 'kinesis'], template: 'kinesis' },
+  { keywords: ['elasticache', 'redis', 'memcached', 'cache', 'caching'], template: 'elasticache' },
+  { keywords: ['sqs', 'queue', 'message queue', 'decouple', 'decoupling', 'loose coupling'], template: 'sqs-decoupling' },
+  { keywords: ['sns', 'notification', 'pub/sub', 'fanout', 'topic'], template: 'sns-fanout' },
+  { keywords: ['direct connect', 'directconnect', 'dedicated connection'], template: 'direct-connect' },
+  { keywords: ['vpn', 'site-to-site vpn', 'vpn tunnel'], template: 'vpn' },
+  { keywords: ['vpc endpoint', 'gateway endpoint', 'interface endpoint', 'privatelink', 'private connectivity'], template: 'vpc-endpoint' },
+  { keywords: ['nat gateway', 'private subnet', 'public subnet', 'internet gateway', 'igw'], template: 'vpc-public-private' },
+  { keywords: ['aurora', 'amazon aurora', 'aurora global'], template: 'aurora' },
+  { keywords: ['rds', 'relational database', 'mysql', 'postgresql', 'oracle', 'sql server', 'multi-az'], template: 'rds-multi-az' },
+  { keywords: ['dynamodb', 'nosql', 'key-value', 'document store'], template: 'dynamodb' },
+  { keywords: ['redshift', 'data warehouse', 'olap', 'analytics database'], template: 'redshift' },
+  { keywords: ['athena', 'query s3', 'sql on s3'], template: 'athena' },
+  { keywords: ['glue', 'etl', 'data catalog', 'crawler'], template: 'glue' },
+  { keywords: ['emr', 'hadoop', 'spark', 'big data', 'hive'], template: 'emr' },
+  { keywords: ['step functions', 'workflow', 'state machine', 'orchestrat'], template: 'step-functions' },
+  { keywords: ['cloudtrail', 'audit', 'api activity', 'logging'], template: 'cloudtrail' },
+  { keywords: ['cloudwatch', 'monitoring', 'metrics', 'alarms', 'logs'], template: 'cloudwatch' },
+  { keywords: ['aws config', 'compliance', 'configuration rules'], template: 'config' },
+  { keywords: ['kms', 'key management', 'customer managed key', 'cmk', 'encrypt'], template: 'kms' },
+  { keywords: ['secrets manager', 'secret', 'credential rotation', 'database password'], template: 'secrets-manager' },
+  { keywords: ['cognito', 'user pool', 'identity pool', 'authentication', 'oauth', 'saml'], template: 'cognito' },
+  { keywords: ['guardduty', 'threat detection', 'malicious activity'], template: 'guardduty' },
+  { keywords: ['macie', 'sensitive data', 'pii', 'data classification'], template: 'macie' },
+  { keywords: ['iam', 'role', 'permission', 'policy', 'access control', 'least privilege'], template: 'iam' },
+  { keywords: ['ecs', 'container', 'docker', 'task definition'], template: 'ecs' },
+  { keywords: ['eks', 'kubernetes', 'k8s'], template: 'eks' },
+  { keywords: ['fargate', 'serverless container', 'container without server'], template: 'fargate' },
+  { keywords: ['datasync', 'data transfer', 'migrate data', 'on-premises to s3'], template: 'datasync' },
+  { keywords: ['aws backup', 'centralized backup', 'backup plan'], template: 'backup' },
+  { keywords: ['dms', 'database migration', 'migrate database'], template: 'dms' },
+  { keywords: ['transit gateway', 'hub-and-spoke', 'connect vpcs'], template: 'transit-gateway' },
+  { keywords: ['route 53', 'route53', 'dns', 'health check', 'failover routing', 'latency routing', 'weighted routing'], template: 'route53-health' },
+  { keywords: ['eventbridge', 'event bus', 'scheduled events', 'event-driven'], template: 'eventbridge' },
+  { keywords: ['ebs', 'block storage', 'volume', 'snapshots'], template: 'ebs' },
+  { keywords: ['efs', 'elastic file system', 'nfs', 'shared file'], template: 'efs' },
+  { keywords: ['s3', 'object storage', 'bucket', 'glacier', 'storage class'], template: 's3-only' },
+  { keywords: ['ec2', 'instance', 'virtual machine', 'compute'], template: 'ec2-basic' }
+];
+
+/**
+ * Infer an architecture template from option text and question text.
+ * Returns a template object or a fallback minimal architecture.
+ */
+function veInferArchitecture(optionText, questionText) {
+  const combined = (optionText + ' ' + questionText).toLowerCase();
+
+  // Walk through keyword map, return first matching template
+  for (const entry of KEYWORD_TEMPLATE_MAP) {
+    if (entry.keywords.some(kw => combined.includes(kw))) {
+      const tpl = ARCH_TEMPLATES[entry.template];
+      if (tpl) return { ...tpl, feedback: '' };
+    }
+  }
+
+  // Fallback: guess a single service from the option text
+  const fallbackServices = [
+    { kw: 'cloudfront', id: 'cloudfront' },
+    { kw: 'alb', id: 'alb' },
+    { kw: 'nlb', id: 'nlb' },
+    { kw: 's3', id: 's3' },
+    { kw: 'rds', id: 'rds' },
+    { kw: 'lambda', id: 'lambda' },
+    { kw: 'ec2', id: 'ec2' },
+    { kw: 'dynamodb', id: 'dynamodb' },
+    { kw: 'aurora', id: 'aurora' },
+    { kw: 'elasticache', id: 'elasticache' },
+    { kw: 'sqs', id: 'sqs' },
+    { kw: 'sns', id: 'sns' },
+    { kw: 'kinesis', id: 'kinesis' },
+    { kw: 'iam', id: 'iam' },
+    { kw: 'kms', id: 'kms' },
+    { kw: 'route 53', id: 'route53' },
+    { kw: 'cloudwatch', id: 'cloudwatch' },
+    { kw: 'ecs', id: 'ecs' },
+    { kw: 'eks', id: 'eks' },
+    { kw: 'fargate', id: 'fargate' }
+  ];
+  for (const fb of fallbackServices) {
+    if (combined.includes(fb.kw)) {
+      return { requiredServices: [fb.id], requiredConnections: [], feedback: '' };
+    }
+  }
+
+  return { requiredServices: ['ec2'], requiredConnections: [], feedback: '' };
+}
+
+/**
+ * Auto-generate architecture data for a saaQuestion.
+ * Returns an object keyed 0–3 (one per answer option).
+ */
+function veGenerateArchitectures(question) {
+  const archs = {};
+  question.options.forEach((opt, idx) => {
+    const arch = veInferArchitecture(opt, question.q);
+    arch.feedback = (idx === question.answer)
+      ? '✅ ' + (question.explain || 'This is the correct answer.')
+      : '❌ ' + opt + ' — ' + (question.explain && question.explain.trim() ? 'The correct approach: ' + question.explain.split('.')[0] + '.' : 'Incorrect for this scenario.');
+    archs[idx] = arch;
+  });
+  return archs;
+}
+
+// ==================== EXTEND WITH ALL SAA QUESTIONS ====================
+// Auto-populate VISUAL_EXAM_QUESTIONS from the global saaQuestions array,
+// skipping any questions already included above.
+
+(function extendFromSaaQuestions() {
+  if (typeof saaQuestions === 'undefined') return;
+  const existingTexts = new Set(VISUAL_EXAM_QUESTIONS.map(q => q.q));
+  let nextId = VISUAL_EXAM_QUESTIONS.length + 1;
+  saaQuestions.forEach(sq => {
+    if (existingTexts.has(sq.q)) return; // skip duplicates
+    if (!sq.q || !sq.options || sq.options.length < 4) return;
+    VISUAL_EXAM_QUESTIONS.push({
+      id: nextId++,
+      cat: sq.cat || 'design-resilient',
+      q: sq.q,
+      options: sq.options.slice(0, 26).map((opt, i) => String.fromCharCode(65 + i) + ') ' + opt),
+      answer: sq.answer,
+      explain: sq.explain || '',
+      architectures: veGenerateArchitectures(sq)
+    });
+  });
+})();
