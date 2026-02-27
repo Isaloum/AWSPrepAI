@@ -30,14 +30,18 @@ const veState = {
   selectedAnswer: null  // 0-3 for current question
 };
 
-const VE_TOTAL_QUESTIONS = VISUAL_EXAM_QUESTIONS.length;
-const VE_MAX_POINTS      = VE_TOTAL_QUESTIONS * 2;
-const VE_PASS_POINTS     = Math.round(VE_MAX_POINTS * 0.71);
-const VE_CANVAS_GRID     = 20;
-const VE_ICON_OFFSET     = 36;
-const VE_TIMED_SECONDS   = VE_TOTAL_QUESTIONS * 60; // 1 min per question
-const VE_MAX_PAUSES      = 2;
-const VE_PAUSE_SECS      = 5 * 60; // 5 minutes per pause
+const VE_TOTAL_QUESTIONS         = VISUAL_EXAM_QUESTIONS.length;
+const VE_PASS_PERCENTAGE         = 0.71;   // mirrors SAA-C03 pass threshold
+const VE_MAX_POINTS              = VE_TOTAL_QUESTIONS * 2;
+const VE_PASS_POINTS             = Math.round(VE_MAX_POINTS * VE_PASS_PERCENTAGE);
+const VE_CANVAS_GRID             = 20;
+const VE_ICON_OFFSET             = 36;
+const VE_TIMED_SECONDS           = VE_TOTAL_QUESTIONS * 60; // 1 min per question
+const VE_MAX_PAUSES              = 2;
+const VE_PAUSE_SECS              = 5 * 60;   // 5 minutes per pause
+const VE_TIMER_WARNING_MINS      = 60;        // yellow warning threshold (minutes)
+const VE_TIMER_CRITICAL_MINS     = 15;        // red critical threshold (minutes)
+const VE_CONNECTION_CURVE_OFFSET = 30;        // SVG quadratic curve offset (pixels)
 
 // ==================== INIT ====================
 
@@ -118,8 +122,8 @@ function veRenderTimer() {
   const s  = veState.timeRemaining % 60;
   el.textContent = String(m).padStart(3, '0') + ':' + String(s).padStart(2, '0');
   el.className = 've-timer-display';
-  if (veState.timeRemaining <= 15 * 60) el.classList.add('ve-timer-red');
-  else if (veState.timeRemaining <= 60 * 60) el.classList.add('ve-timer-yellow');
+  if (veState.timeRemaining <= VE_TIMER_CRITICAL_MINS * 60) el.classList.add('ve-timer-red');
+  else if (veState.timeRemaining <= VE_TIMER_WARNING_MINS * 60) el.classList.add('ve-timer-yellow');
 }
 
 function vePauseExam() {
@@ -363,8 +367,6 @@ function veShowFeedback(idx, animate) {
   const archFeedback = q.architectures && sel !== null && q.architectures[sel]
     ? q.architectures[sel].feedback
     : '';
-
-  const archIssues = ans.archResult ? ans.archResult.feedback : [];
 
   // Re-validate to get issue list
   const archValidation = veValidateArchitecture(idx);
@@ -751,7 +753,7 @@ function veRenderConnections() {
     const x2  = (tr.left + tr.width  / 2 - cr.left) / veState.zoom;
     const y2  = (tr.top  + tr.height / 2 - cr.top)  / veState.zoom;
     const cx  = (x1 + x2) / 2;
-    const cy  = (y1 + y2) / 2 - 30;
+    const cy  = (y1 + y2) / 2 - VE_CONNECTION_CURVE_OFFSET;
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.setAttribute('d', `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`);
     line.setAttribute('stroke', '#0073BB');
