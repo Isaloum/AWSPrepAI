@@ -113,33 +113,47 @@
     .footer-link:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
     .tech-badge{display:inline-block;padding:.25rem .75rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;font-size:.75rem;color:#d5dbdb;font-weight:600}
     @media(max-width:768px){.footer-content{flex-direction:column;text-align:center}.footer-right{justify-content:center}}
-    /* Adaptive Learning Styles */
-    @keyframes successPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-    @keyframes checkmarkPop{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
-    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+    /* Architecture Builder Styles */
     @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-    .adaptive-diff-btn{flex:1;min-width:140px;padding:1.25rem;border-radius:12px;cursor:pointer;border:2px solid var(--border);background:#fff;transition:all .25s;text-align:center}
-    .adaptive-diff-btn:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.12)}
-    .adaptive-diff-btn.beginner-btn.active{border-color:#10b981;background:rgba(16,185,129,.08)}
-    .adaptive-diff-btn.intermediate-btn.active{border-color:#f59e0b;background:rgba(245,158,11,.08)}
-    .adaptive-diff-btn.advanced-btn.active{border-color:#ef4444;background:rgba(239,68,68,.08)}
-    .attempt-dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--border);margin:0 3px;transition:background .3s}
-    .attempt-dot.filled.beginner{background:#10b981}
-    .attempt-dot.filled.intermediate{background:#f59e0b}
-    .attempt-dot.filled.advanced{background:#ef4444}
-    .adaptive-option{background:#fff;padding:1rem;border-radius:10px;cursor:pointer;border:2px solid var(--border);transition:all .2s;display:flex;flex-direction:column;gap:.5rem}
-    .adaptive-option:hover:not([disabled]){border-color:var(--aws-blue);background:#f8f9fa;transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.1)}
-    .adaptive-option[disabled]{cursor:default}
-    .adaptive-option.correct{border-color:#10b981;background:rgba(16,185,129,.12);animation:successPulse .5s ease}
-    .adaptive-option.incorrect{border-color:#ef4444;background:rgba(239,68,68,.1);animation:shake .4s ease}
-    .adaptive-option-img{width:100%;border-radius:6px;background:#f0f4f8;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:80px}
-    .adaptive-options-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
-    @media(max-width:600px){.adaptive-options-grid{grid-template-columns:1fr}}
-    .adaptive-hint-box{background:linear-gradient(135deg,#fffde7,#fff8e1);border:1px solid #f59e0b;border-left:4px solid #f59e0b;border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
-    .adaptive-success-box{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #10b981;border-left:4px solid #10b981;border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
-    .adaptive-explain-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue);border-radius:8px;padding:1rem;margin-top:.75rem;animation:slideDown .3s ease}
-    .adaptive-console-path{background:rgba(35,47,62,.06);border-radius:6px;padding:.5rem .75rem;font-size:.8rem;font-family:monospace;color:var(--muted);margin-top:.5rem;display:inline-block}
-    .checkmark-anim{display:inline-block;font-size:1.75rem;animation:checkmarkPop .5s ease both}
+    .arch-layout{display:grid;grid-template-columns:220px 1fr;gap:1rem;align-items:start}
+    @media(max-width:900px){.arch-layout{grid-template-columns:1fr}}
+    .arch-palette{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;max-height:600px;overflow-y:auto;font-size:.85rem}
+    .arch-palette-search{width:100%;padding:.5rem .75rem;border:1px solid var(--border);border-radius:6px;margin-bottom:.75rem;font-size:.85rem}
+    .arch-palette-category{margin-bottom:.5rem}
+    .arch-palette-cat-header{display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;cursor:pointer;border-radius:5px;user-select:none}
+    .arch-palette-cat-header:hover{background:#f5f5f5}
+    .arch-palette-cat-body{display:flex;flex-wrap:wrap;gap:.4rem;padding:.4rem 0}
+    .arch-palette-item{display:flex;flex-direction:column;align-items:center;width:68px;padding:.4rem .25rem;border-radius:8px;cursor:grab;border:1.5px solid var(--border);background:#fafafa;transition:all .2s;text-align:center}
+    .arch-palette-item:hover{border-color:var(--aws-blue);background:#eef6ff;transform:translateY(-2px);box-shadow:0 3px 8px rgba(0,115,187,.15)}
+    .arch-palette-item.arch-palette-hint{border-color:#f59e0b;background:#fffde7}
+    .arch-palette-item.arch-palette-missing{border-color:#ef4444;background:#fff0f0;animation:pulse 1s infinite}
+    .arch-palette-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px}
+    .arch-palette-label{font-size:.65rem;color:var(--muted);margin-top:.2rem;line-height:1.2;word-break:break-word}
+    .arch-canvas-wrapper{position:relative;border:2px solid var(--border);border-radius:var(--radius);background:#f8f9fc;overflow:hidden;min-height:600px}
+    .arch-canvas-inner{position:relative;width:100%;min-height:600px;background-image:radial-gradient(circle,#c8d6e5 1px,transparent 1px);background-size:20px 20px}
+    #archConnectionsSvg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
+    #archConnectionsSvg path{pointer-events:stroke}
+    .arch-canvas-service{position:absolute;display:flex;flex-direction:column;align-items:center;width:80px;cursor:pointer;z-index:5;user-select:none}
+    .arch-svc-icon{width:56px;height:56px;background:#fff;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s}
+    .arch-canvas-service:hover .arch-svc-icon{border-color:var(--aws-blue);box-shadow:0 4px 10px rgba(0,115,187,.2)}
+    .arch-canvas-service.arch-connecting-source .arch-svc-icon{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.3)}
+    .arch-svc-label{font-size:.65rem;color:var(--muted);margin-top:.3rem;text-align:center;line-height:1.2;max-width:80px;word-wrap:break-word}
+    .arch-svc-remove{position:absolute;top:-6px;right:2px;width:18px;height:18px;border-radius:50%;background:#ef4444;color:#fff;border:none;cursor:pointer;font-size:.65rem;display:none;align-items:center;justify-content:center;line-height:1}
+    .arch-canvas-service:hover .arch-svc-remove{display:flex}
+    .arch-canvas-controls{display:flex;gap:.5rem;align-items:center;padding:.5rem;background:rgba(255,255,255,.9);border-top:1px solid var(--border);flex-wrap:wrap}
+    .arch-connect-hint{background:#fff8e1;border:1px solid #f59e0b;border-radius:6px;padding:.4rem .75rem;font-size:.8rem;color:#b45309;display:none;margin:.5rem 0}
+    .arch-diff-btn{padding:.6rem 1.2rem;border-radius:6px;cursor:pointer;border:2px solid var(--border);background:#fff;font-weight:600;font-size:.85rem;transition:all .2s}
+    .arch-diff-btn:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.1)}
+    .arch-diff-btn.active.beginner-btn{border-color:#10b981;background:rgba(16,185,129,.08);color:#065f46}
+    .arch-diff-btn.active.intermediate-btn{border-color:#f59e0b;background:rgba(245,158,11,.08);color:#92400e}
+    .arch-diff-btn.active.advanced-btn{border-color:#ef4444;background:rgba(239,68,68,.08);color:#991b1b}
+    .arch-feedback{padding:1rem;border-radius:8px;margin-top:1rem;animation:slideDown .3s ease;display:none}
+    .arch-feedback-success{background:#ecfdf5;border:1px solid #10b981;border-left:4px solid #10b981}
+    .arch-feedback-warning{background:#fffde7;border:1px solid #f59e0b;border-left:4px solid #f59e0b}
+    .arch-feedback-error{background:#fff0f0;border:1px solid #ef4444;border-left:4px solid #ef4444}
+    .arch-feedback-hint{background:#eff6ff;border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue)}
+    .arch-feedback-solution{background:#f0fdf4;border:1px solid #10b981;border-left:4px solid #10b981}
+    .arch-btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
   </style>
 </head>
 <body>
@@ -170,7 +184,7 @@
           <button class="nav-tab" data-tab="study-guide"><span class="icon">🎓</span><span>Study Guide</span></button>
           <button class="nav-tab" data-tab="hints-keywords"><span class="icon">💡</span><span>Hint / Keywords</span></button>
           <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
-          <button class="nav-tab" data-tab="adaptive"><span class="icon">🎓</span><span>Adaptive Learning</span></button>
+          <button class="nav-tab" data-tab="adaptive"><span class="icon">🏗️</span><span>Architecture Builder</span></button>
         </nav>
       </div>
     </div>
@@ -1119,51 +1133,81 @@
       <div class="service-grid" id="serviceGrid"></div>
     </section>
 
-    <!-- Adaptive Learning -->
+    <!-- Architecture Builder -->
     <section id="adaptive" class="app-section">
-      <h1 class="section-heading">🎓 Adaptive Learning</h1>
+      <h1 class="section-heading">🏗️ Architecture Builder</h1>
 
-      <!-- Difficulty Selector -->
-      <div class="card" id="adaptiveDiffCard">
-        <div class="card-title">🎯 Choose Your Difficulty Level</div>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem">
-          <button class="adaptive-diff-btn beginner-btn" onclick="setDifficulty('beginner')" id="btnBeginner" aria-label="Beginner mode">
-            <div style="font-size:2rem">🟢</div>
-            <div style="font-weight:700;font-size:1.1rem;color:#10b981">Beginner</div>
-            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">3 attempts • Progressive hints • Visual aids • Console paths</div>
-          </button>
-          <button class="adaptive-diff-btn intermediate-btn" onclick="setDifficulty('intermediate')" id="btnIntermediate" aria-label="Intermediate mode">
-            <div style="font-size:2rem">🟡</div>
-            <div style="font-weight:700;font-size:1.1rem;color:#f59e0b">Intermediate</div>
-            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">2 attempts • One hint • Explanation after answer</div>
-          </button>
-          <button class="adaptive-diff-btn advanced-btn" onclick="setDifficulty('advanced')" id="btnAdvanced" aria-label="Advanced mode">
-            <div style="font-size:2rem">🔴</div>
-            <div style="font-weight:700;font-size:1.1rem;color:#ef4444">Advanced</div>
-            <div style="font-size:.85rem;color:var(--muted);margin-top:.25rem">1 attempt • No hints • Exam simulation</div>
-          </button>
+      <!-- Difficulty + Stats -->
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">🎯 Difficulty Level</div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+          <button class="arch-diff-btn beginner-btn active" id="archDiffBtn_beginner" onclick="setArchDifficulty('beginner')">🟢 Beginner</button>
+          <button class="arch-diff-btn intermediate-btn" id="archDiffBtn_intermediate" onclick="setArchDifficulty('intermediate')">🟡 Intermediate</button>
+          <button class="arch-diff-btn advanced-btn" id="archDiffBtn_advanced" onclick="setArchDifficulty('advanced')">🔴 Advanced</button>
         </div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-value" id="adaptStatBeginner" style="color:#10b981">--</div><div class="stat-label">🟢 Beginner Score</div></div>
-          <div class="stat-card"><div class="stat-value" id="adaptStatIntermediate" style="color:#f59e0b">--</div><div class="stat-label">🟡 Intermediate Score</div></div>
-          <div class="stat-card"><div class="stat-value" id="adaptStatAdvanced" style="color:#ef4444">--</div><div class="stat-label">🔴 Advanced Score</div></div>
+          <div class="stat-card"><div class="stat-value" id="archStat_beginner" style="color:#10b981">0/10</div><div class="stat-label">🟢 Beginner Completed</div></div>
+          <div class="stat-card"><div class="stat-value" id="archStat_intermediate" style="color:#f59e0b">0/0</div><div class="stat-label">🟡 Intermediate Completed</div></div>
+          <div class="stat-card"><div class="stat-value" id="archStat_advanced" style="color:#ef4444">0/0</div><div class="stat-label">🔴 Advanced Completed</div></div>
         </div>
       </div>
 
-      <!-- Question Card -->
-      <div class="card card-orange" id="adaptiveQuestionCard">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
-          <span id="adaptiveDiffBadge"></span>
-          <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted)">
-            Attempts: <span id="adaptiveAttemptDots"></span>
+      <!-- Scenario Card -->
+      <div class="card card-orange" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
+          <span id="archQuestionTitle" style="font-weight:700;font-size:1.1rem;color:var(--aws-dark)">Loading…</span>
+          <span id="archQuestionProgress" style="font-size:.85rem;color:var(--muted)"></span>
+        </div>
+        <p style="margin-bottom:.75rem;color:var(--text)" id="archScenario"></p>
+        <div style="font-weight:600;margin-bottom:.5rem;color:var(--aws-dark)">Requirements:</div>
+        <ul id="archRequirements" style="margin-left:1.25rem;color:var(--muted);font-size:.9rem;line-height:1.8"></ul>
+      </div>
+
+      <!-- Builder Layout -->
+      <div class="arch-layout">
+
+        <!-- Service Palette -->
+        <div>
+          <div class="card" style="padding:.75rem">
+            <div style="font-weight:700;margin-bottom:.5rem;font-size:.9rem">🗂️ Service Palette</div>
+            <input type="text" class="arch-palette-search" id="archSearchInput" placeholder="Search services…" oninput="filterPalette()" aria-label="Search services">
+            <div id="archPalette" class="arch-palette" style="max-height:480px;border:none;padding:0"></div>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted);margin-top:.5rem;padding:0 .25rem">
+            🟡 Highlighted = recommended for this scenario<br>
+            Drag or double-click to add to canvas
           </div>
         </div>
-        <div class="quiz-question" id="adaptiveQuestion">Select a difficulty level to begin.</div>
-        <div id="adaptiveOptions"></div>
-        <div id="adaptiveFeedback"></div>
-        <div id="adaptiveConsolePath" style="display:none;margin-top:.75rem"></div>
-        <div style="margin-top:1.25rem">
-          <button class="btn btn-primary" id="adaptiveNextBtn" onclick="nextAdaptiveQuestion()" style="display:none">Next Question →</button>
+
+        <!-- Canvas -->
+        <div>
+          <div class="arch-canvas-wrapper">
+            <div id="archCanvasInner" class="arch-canvas-inner arch-canvas" data-canvas="true">
+              <svg id="archConnectionsSvg" aria-hidden="true"></svg>
+            </div>
+            <div class="arch-connect-hint" id="archConnectHint">
+              🔗 Click another service to draw a connection, or click the same service to cancel
+            </div>
+            <div class="arch-canvas-controls">
+              <button class="btn btn-secondary" onclick="archZoom(-0.1)" aria-label="Zoom out" style="padding:.4rem .75rem">−</button>
+              <span id="archZoomPct" style="font-size:.85rem;min-width:42px;text-align:center">100%</span>
+              <button class="btn btn-secondary" onclick="archZoom(0.1)" aria-label="Zoom in" style="padding:.4rem .75rem">+</button>
+              <button class="btn btn-secondary" onclick="clearCanvas()" style="padding:.4rem .75rem">🗑️ Clear</button>
+              <span style="font-size:.75rem;color:var(--muted);margin-left:auto">Click service → click another to connect • Click arrow to delete</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="arch-btn-group">
+            <button class="btn btn-secondary" onclick="prevArchQuestion()">← Prev</button>
+            <button class="btn btn-secondary" onclick="showArchHint()">💡 Get Hint</button>
+            <button class="btn btn-primary" onclick="checkArchSolution()">✅ Check Solution</button>
+            <button class="btn btn-secondary" id="archShowSolBtn" onclick="showArchSolution()" style="display:none">👁️ Show Answer</button>
+            <button class="btn btn-secondary" onclick="nextArchQuestion()">Next →</button>
+          </div>
+
+          <!-- Feedback Panel -->
+          <div id="archFeedback" class="arch-feedback"></div>
         </div>
       </div>
     </section>
@@ -1210,7 +1254,7 @@
       'study-guide': '🎓 Study Guide',
       'hints-keywords': '💡 Hint / Keywords',
       'services': '📚 Services',
-      'adaptive': '🎓 Adaptive Learning'
+      'adaptive': '🏗️ Architecture Builder'
     };
 
     function updatePageTitle(tabName) {
@@ -1222,6 +1266,8 @@
         document.title = baseTitle;
       }
     }
+
+    let adaptiveInitialized = false;
 
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1246,9 +1292,9 @@
           document.getElementById('floatingTips').style.display = 'none';
         }
 
-        // Initialize adaptive learning on first visit
+        // Initialize architecture builder on first visit
         if (tab.dataset.tab === 'adaptive' && !adaptiveInitialized) {
-          initAdaptive();
+          initArchitectureBuilder();
           adaptiveInitialized = true;
         }
 
@@ -2265,239 +2311,8 @@
       `).join('');
     }
 
-    // ==================== Adaptive Learning ====================
-
-    // Adaptive Learning State
-    let currentDifficulty = localStorage.getItem('awsprep_adaptive_difficulty') || 'beginner';
-    let adaptiveAttemptCount = 0;
-    let adaptiveAnswered = false;
-    let adaptiveCurrentQ = null;
-    let adaptiveFilteredQuestions = [];
-    let adaptiveCurrentIndex = 0;
-    let adaptiveInitialized = false;
-    const adaptiveMaxAttempts = { beginner: 3, intermediate: 2, advanced: 1 };
-    const ADAPTIVE_DEFAULT_HINT1 = 'Think carefully about the core requirement in the question. Consider what the question is really asking for.';
-    const ADAPTIVE_DEFAULT_HINT2 = 'Consider the option that is the most specific AWS-managed solution for this scenario.';
-
-    function getDiffBtnId(diff) {
-      return 'btn' + diff.charAt(0).toUpperCase() + diff.slice(1);
-    }
-
-    function handleAdaptiveImgError(el) {
-      el.parentElement.innerHTML = '<div style="padding:.75rem;text-align:center;color:var(--muted);font-size:.8rem">📸 AWS Console View</div>';
-    }
-
-    function setDifficulty(level) {
-      currentDifficulty = level;
-      localStorage.setItem('awsprep_adaptive_difficulty', level);
-      ['beginner', 'intermediate', 'advanced'].forEach(d => {
-        const btn = document.getElementById(getDiffBtnId(d));
-        if (btn) btn.classList.toggle('active', d === level);
-      });
-      loadAdaptiveQuestion();
-      updateAdaptiveStats();
-    }
-
-    function loadAdaptiveQuestion() {
-      if (adaptiveFilteredQuestions.length === 0) {
-        adaptiveFilteredQuestions = [...saaQuestions];
-        shuffleArray(adaptiveFilteredQuestions);
-        adaptiveCurrentIndex = 0;
-      }
-      adaptiveCurrentQ = adaptiveFilteredQuestions[adaptiveCurrentIndex % adaptiveFilteredQuestions.length];
-      adaptiveAttemptCount = 0;
-      adaptiveAnswered = false;
-      renderAdaptiveQuestion();
-    }
-
-    function renderAdaptiveQuestion() {
-      const q = adaptiveCurrentQ;
-      const diff = currentDifficulty;
-      const maxAttempts = adaptiveMaxAttempts[diff];
-      const diffColors = { beginner: '#10b981', intermediate: '#f59e0b', advanced: '#ef4444' };
-      const diffEmoji = { beginner: '🟢', intermediate: '🟡', advanced: '🔴' };
-      const diffLabel = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
-
-      document.getElementById('adaptiveDiffBadge').innerHTML =
-        `<span style="background:${diffColors[diff]};color:#fff;padding:.25rem .75rem;border-radius:999px;font-size:.85rem">${diffEmoji[diff]} ${diffLabel[diff]}</span>`;
-
-      renderAttemptDots(diff, maxAttempts, 0);
-      document.getElementById('adaptiveQuestion').textContent = q.q;
-
-      const optionsContainer = document.getElementById('adaptiveOptions');
-      if (diff === 'advanced') {
-        optionsContainer.className = 'quiz-options';
-        optionsContainer.innerHTML = q.options.map((opt, i) => `
-          <div class="adaptive-option" onclick="selectAdaptiveAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</div>
-        `).join('');
-      } else {
-        optionsContainer.className = 'adaptive-options-grid';
-        optionsContainer.innerHTML = q.options.map((opt, i) => `
-          <div class="adaptive-option" onclick="selectAdaptiveAnswer(${i})">
-            <div class="adaptive-option-img">
-              <img src="screenshots/placeholder.svg" alt="AWS Console View"
-                style="width:100%;height:auto;max-height:90px;object-fit:contain"
-                onerror="handleAdaptiveImgError(this)" />
-            </div>
-            <div>${String.fromCharCode(65 + i)}. ${opt}</div>
-          </div>
-        `).join('');
-      }
-
-      document.getElementById('adaptiveFeedback').innerHTML = '';
-      document.getElementById('adaptiveConsolePath').style.display = 'none';
-      document.getElementById('adaptiveNextBtn').style.display = 'none';
-    }
-
-    function renderAttemptDots(diff, maxAttempts, usedAttempts) {
-      let dots = '';
-      for (let i = 0; i < maxAttempts; i++) {
-        const filled = i < usedAttempts;
-        dots += `<span class="attempt-dot ${filled ? 'filled ' + diff : ''}" aria-hidden="true"></span>`;
-      }
-      const dotsEl = document.getElementById('adaptiveAttemptDots');
-      if (dotsEl) dotsEl.innerHTML = dots;
-    }
-
-    function selectAdaptiveAnswer(selected) {
-      if (adaptiveAnswered) return;
-      const q = adaptiveCurrentQ;
-      const diff = currentDifficulty;
-      const maxAttempts = adaptiveMaxAttempts[diff];
-      const isCorrect = selected === q.answer;
-
-      adaptiveAttemptCount++;
-      const remaining = maxAttempts - adaptiveAttemptCount;
-
-      const options = document.querySelectorAll('#adaptiveOptions .adaptive-option');
-
-      if (isCorrect) {
-        adaptiveAnswered = true;
-        options[selected].classList.add('correct');
-        options.forEach(opt => { opt.setAttribute('disabled', ''); opt.style.pointerEvents = 'none'; });
-        renderAttemptDots(diff, maxAttempts, adaptiveAttemptCount);
-
-        const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
-        stats.correct++;
-        stats.total++;
-        DB.setOne('adaptive_stats_' + diff, stats);
-
-        showAdaptiveSuccess(q);
-        document.getElementById('adaptiveNextBtn').style.display = 'inline-block';
-      } else {
-        options[selected].classList.add('incorrect');
-        setTimeout(() => options[selected].classList.remove('incorrect'), 500);
-        renderAttemptDots(diff, maxAttempts, adaptiveAttemptCount);
-
-        if (remaining <= 0) {
-          adaptiveAnswered = true;
-          options.forEach(opt => { opt.style.pointerEvents = 'none'; });
-          options[q.answer].classList.add('correct');
-
-          const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
-          stats.total++;
-          DB.setOne('adaptive_stats_' + diff, stats);
-
-          showAdaptiveExplanation(q, selected);
-          document.getElementById('adaptiveNextBtn').style.display = 'inline-block';
-        } else {
-          if (diff === 'beginner') {
-            showAdaptiveHint(q, adaptiveAttemptCount);
-          } else if (diff === 'intermediate' && adaptiveAttemptCount >= 1) {
-            showAdaptiveHint(q, 1);
-          }
-        }
-      }
-      updateAdaptiveStats();
-    }
-
-    function showAdaptiveHint(q, attemptNum) {
-      const feedback = document.getElementById('adaptiveFeedback');
-      let hintText = '';
-      if (attemptNum === 1 && q.hint1) {
-        hintText = q.hint1;
-      } else if (attemptNum >= 2 && q.hint2) {
-        hintText = q.hint2;
-      } else if (attemptNum === 1) {
-        hintText = ADAPTIVE_DEFAULT_HINT1;
-      } else {
-        hintText = ADAPTIVE_DEFAULT_HINT2;
-      }
-      feedback.innerHTML += `
-        <div class="adaptive-hint-box">
-          <strong>💡 Hint ${attemptNum}:</strong> ${hintText}
-        </div>
-      `;
-    }
-
-    function showAdaptiveSuccess(q) {
-      document.getElementById('adaptiveFeedback').innerHTML = `
-        <div class="adaptive-success-box">
-          <span class="checkmark-anim">✅</span> <strong>Excellent! That's correct!</strong>
-          <div style="margin-top:.5rem;font-size:.9rem;color:#065f46">${q.explain}</div>
-        </div>
-      `;
-      if (q.awsConsolePath && currentDifficulty === 'beginner') {
-        document.getElementById('adaptiveConsolePath').innerHTML = `
-          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">📍 Find it in the AWS Console:</div>
-          <span class="adaptive-console-path">${q.awsConsolePath}</span>
-        `;
-        document.getElementById('adaptiveConsolePath').style.display = 'block';
-      }
-    }
-
-    function showAdaptiveExplanation(q, selected) {
-      const wrongExplain = q.wrongExplanations && q.wrongExplanations[selected]
-        ? `<div style="margin-top:.5rem;font-size:.9rem;color:var(--muted)"><strong>Why your answer was incorrect:</strong> ${q.wrongExplanations[selected]}</div>`
-        : '';
-      document.getElementById('adaptiveFeedback').innerHTML = `
-        <div class="adaptive-explain-box">
-          <strong>📚 Explanation:</strong>
-          <div style="margin-top:.5rem">${q.explain}</div>
-          ${wrongExplain}
-        </div>
-      `;
-      if (q.awsConsolePath && currentDifficulty === 'beginner') {
-        document.getElementById('adaptiveConsolePath').innerHTML = `
-          <div style="font-size:.85rem;color:var(--muted);margin-bottom:.25rem">📍 Find it in the AWS Console:</div>
-          <span class="adaptive-console-path">${q.awsConsolePath}</span>
-        `;
-        document.getElementById('adaptiveConsolePath').style.display = 'block';
-      }
-    }
-
-    function nextAdaptiveQuestion() {
-      adaptiveCurrentIndex = (adaptiveCurrentIndex + 1) % adaptiveFilteredQuestions.length;
-      if (adaptiveCurrentIndex === 0) shuffleArray(adaptiveFilteredQuestions);
-      loadAdaptiveQuestion();
-    }
-
-    function updateAdaptiveStats() {
-      ['beginner', 'intermediate', 'advanced'].forEach(diff => {
-        const stats = DB.getOne('adaptive_stats_' + diff) || { correct: 0, total: 0 };
-        const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-        const elId = 'adaptStat' + diff.charAt(0).toUpperCase() + diff.slice(1);
-        const el = document.getElementById(elId);
-        if (el) el.textContent = stats.total > 0 ? pct + '%' : '--';
-      });
-    }
-
-    function initAdaptive() {
-      adaptiveFilteredQuestions = [...saaQuestions];
-      shuffleArray(adaptiveFilteredQuestions);
-      adaptiveCurrentIndex = 0;
-
-      const saved = localStorage.getItem('awsprep_adaptive_difficulty');
-      if (saved) currentDifficulty = saved;
-
-      ['beginner', 'intermediate', 'advanced'].forEach(d => {
-        const btn = document.getElementById(getDiffBtnId(d));
-        if (btn) btn.classList.toggle('active', d === currentDifficulty);
-      });
-
-      loadAdaptiveQuestion();
-      updateAdaptiveStats();
-    }
+    // ==================== Architecture Builder (loaded from external files) ====================
+    // Architecture builder logic is in architecture-builder.js and aws-service-icons.js
 
     // Initialize
     shuffleArray(filteredQuestions);
@@ -2506,5 +2321,7 @@
     loadServices();
     updatePageTitle('dashboard'); // Set initial page title
   </script>
+  <script src="aws-service-icons.js"></script>
+  <script src="architecture-builder.js"></script>
 </body>
 </html>
