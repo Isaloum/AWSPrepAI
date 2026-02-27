@@ -62,8 +62,25 @@ function veShowStartScreen() {
   document.getElementById('veResultsScreen').style.display = 'none';
   document.getElementById('veExamInfo_total').textContent = VE_TOTAL_QUESTIONS;
   document.getElementById('veExamInfo_points').textContent = VE_MAX_POINTS;
-  document.getElementById('veExamInfo_pass').textContent  = VE_PASS_POINTS + ' (' + Math.round(VE_PASS_POINTS / VE_MAX_POINTS * 100) + '%)';
-  document.getElementById('veExamInfo_time').textContent  = VE_TOTAL_QUESTIONS + ' min';
+  const passPct = Math.round(VE_PASS_POINTS / VE_MAX_POINTS * 100);
+  document.getElementById('veExamInfo_pass').textContent  = VE_PASS_POINTS + ' (' + passPct + '%)';
+  const subLabel = document.getElementById('veExamInfo_pass_sub');
+  if (subLabel) subLabel.textContent = '(' + passPct + '% = ' + VE_PASS_POINTS + '/' + VE_MAX_POINTS + ')';
+
+  // Show progress card if a saved session exists
+  const saved = veLoadSession();
+  const progressCard = document.getElementById('veProgressCard');
+  if (progressCard) {
+    if (saved && saved.mode) {
+      const answeredCount = (saved.answers || []).filter(a => a.checked).length;
+      const total         = (saved.answers || []).reduce((s, a) => s + (a.totalScore || 0), 0);
+      document.getElementById('veProgressCompleted').textContent = answeredCount + '/' + VE_TOTAL_QUESTIONS;
+      document.getElementById('veProgressScore').textContent     = total.toFixed(1) + '/' + VE_MAX_POINTS;
+      progressCard.style.display = 'block';
+    } else {
+      progressCard.style.display = 'none';
+    }
+  }
 }
 
 function veStartExam(mode) {
@@ -701,6 +718,19 @@ function veRestoreSession() {
   veState.timeRemaining = saved.timeRemaining || VE_TIMED_SECONDS;
   veState.startTime     = saved.startTime || Date.now();
   return true;
+}
+
+function veResumeSession() {
+  if (!veRestoreSession()) return;
+  document.getElementById('veStartScreen').style.display   = 'none';
+  document.getElementById('veQuestionArea').style.display  = 'block';
+  document.getElementById('veResultsScreen').style.display = 'none';
+  const mode = veState.mode;
+  document.getElementById('veTimerBar').style.display     = mode === 'timed' ? 'flex' : 'none';
+  document.getElementById('vePauseBtnWrap').style.display = mode === 'timed' ? 'inline-block' : 'none';
+  if (mode === 'timed') veStartTimer();
+  veLoadQuestion(veState.currentIndex);
+  veUpdateProgress();
 }
 
 // ==================== HINT ====================
