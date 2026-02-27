@@ -6,6 +6,7 @@
   <title>AWSPrepAI - AWS Certification Study Tool</title>
   <meta name="description" content="Master AWS Solutions Architect Associate (SAA-C03) certification with 506 practice questions, AI-powered study guide, and mock exams.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="landing.css">
   <style>
     :root{--bg:#f5f5f5;--card:#ffffff;--accent:#0073BB;--accent-2:#005A9C;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#232F3E;--aws-blue:#0073BB;--light-bg:#fafafa;--light-aqua:#7DD3C0;--mint:#A8E6CF}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -254,22 +255,234 @@
     </div>
   </header>
 
-  <main class="container">
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-      <div class="hero-badge">
-        <span style="font-size:2.5rem">☁️</span>
-        <div style="text-align:left">
-          <div style="font-weight:800;color:#fff">AWS SAA-C03 Certified</div>
-          <div style="font-size:.75rem;color:#d5dbdb">Solutions Architect Associate</div>
+  <!-- Landing Page Sections (full-width, outside container) -->
+  <!-- Hero Section (Redesigned) -->
+  <section id="hero" class="hero-new" aria-label="Hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <!-- Trust Signal Badge -->
+        <div class="certification-badge" role="img" aria-label="AWS Certified Solutions Architect Associate">
+          <div class="cert-icon" aria-hidden="true">☁️</div>
+          <div class="cert-text">
+            <div class="cert-title">AWS Certified</div>
+            <div class="cert-subtitle">Solutions Architect Associate</div>
+          </div>
+        </div>
+
+        <!-- Clear Value Proposition (Hick's Law: single focus) -->
+        <h1 class="hero-headline">
+          Master AWS SAA-C03 Certification
+          <span class="headline-highlight">with Interactive Practice</span>
+        </h1>
+
+        <p class="hero-description">
+          The only platform that tests BOTH your knowledge AND your ability to build AWS architectures.
+          506 real exam questions + visual architecture builder.
+        </p>
+
+        <!-- Social Proof - Miller's Law (3 items, chunked) -->
+        <div class="social-proof" aria-label="Key statistics">
+          <div class="proof-stat">
+            <span class="stat-number">506+</span>
+            <span class="stat-label">Practice Questions</span>
+          </div>
+          <div class="proof-stat">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">SAA-C03 Coverage</span>
+          </div>
+          <div class="proof-stat">
+            <span class="stat-number">Free</span>
+            <span class="stat-label">Forever</span>
+          </div>
+        </div>
+
+        <!-- Primary CTA - Fitts's Law (large, prominent target) -->
+        <div class="hero-cta-group">
+          <button class="btn-primary-lg" onclick="startPractice()" aria-label="Start practicing AWS questions now">
+            <span aria-hidden="true">🚀</span>
+            <span>Start Practicing Now</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <button class="btn-secondary-lg" onclick="scrollToFeatures()" aria-label="Explore platform features">
+            <span>Explore Features</span>
+          </button>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="trust-badges" aria-label="Trust indicators">
+          <span class="trust-badge">✅ No signup required</span>
+          <span class="trust-badge">✅ 100% offline capable</span>
+          <span class="trust-badge">✅ Open source</span>
         </div>
       </div>
-      <h1>Master AWS Solutions Architect Associate</h1>
-      <p>506 curated practice questions, AI-powered study guide, and full mock exams for SAA-C03 certification</p>
-      <button class="cta-button" onclick="document.querySelector('[data-tab=quiz]').click()">Start Practicing Now →</button>
-    </section>
 
-    <!-- Dashboard -->
+      <!-- Hero Visual: AWS Architecture Preview -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="architecture-preview">
+          <div class="arch-preview-title">Sample AWS Architecture</div>
+          <svg class="arch-preview-svg" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="400" height="260" fill="rgba(255,255,255,0.05)" rx="8"/>
+            <rect x="20" y="20" width="360" height="220" rx="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
+            <text x="30" y="38" fill="rgba(255,255,255,0.6)" font-size="10" font-family="sans-serif">VPC</text>
+            <circle cx="200" cy="52" r="22" fill="#FF9900" opacity="0.9"/>
+            <text x="200" y="57" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">Internet</text>
+            <rect x="155" y="98" width="90" height="32" rx="6" fill="#0073BB" opacity="0.9"/>
+            <text x="200" y="119" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">Load Balancer</text>
+            <rect x="70" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="105" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
+            <rect x="165" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="200" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
+            <rect x="260" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="295" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
+            <rect x="155" y="215" width="90" height="28" rx="6" fill="#10B981" opacity="0.9"/>
+            <text x="200" y="233" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">RDS Database</text>
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                <path d="M0,0 L0,8 L8,4 z" fill="rgba(255,255,255,0.5)"/>
+              </marker>
+            </defs>
+            <line x1="200" y1="74" x2="200" y2="98" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <line x1="160" y1="130" x2="122" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <line x1="200" y1="130" x2="200" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <line x1="240" y1="130" x2="278" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <line x1="200" y1="190" x2="200" y2="215" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section (Law of Proximity - grouped related items) -->
+  <section id="features" class="features-section" aria-labelledby="features-heading">
+    <div class="section-header">
+      <h2 id="features-heading" class="section-title">Everything You Need to Pass SAA-C03</h2>
+      <p class="section-subtitle">Comprehensive exam prep with interactive learning tools</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card feature-highlight">
+        <span class="feature-icon" aria-hidden="true">🏗️</span>
+        <h3 class="feature-title">Interactive Architecture Builder</h3>
+        <p class="feature-description">Build AWS architectures by dragging and connecting services. Get real-time validation on your designs.</p>
+        <button class="feature-link" onclick="showTab('adaptive')" aria-label="Try the architecture builder">Try it now →</button>
+      </article>
+      <article class="feature-card feature-highlight">
+        <span class="feature-icon" aria-hidden="true">🎯</span>
+        <h3 class="feature-title">Visual Exam Mode</h3>
+        <p class="feature-description">Answer questions by BUILDING architectures. Proves you understand, not just memorize.</p>
+        <button class="feature-link" onclick="showTab('visual-exam')" aria-label="Take a visual exam">Take exam →</button>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon" aria-hidden="true">📝</span>
+        <h3 class="feature-title">506 Practice Questions</h3>
+        <p class="feature-description">Real SAA-C03 exam scenarios with detailed explanations and hints covering all four domains.</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon" aria-hidden="true">⏱️</span>
+        <h3 class="feature-title">Timed Mock Exams</h3>
+        <p class="feature-description">Full-length practice exams matching the real certification format with 65 questions.</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon" aria-hidden="true">📊</span>
+        <h3 class="feature-title">Smart Progress Tracking</h3>
+        <p class="feature-description">Track accuracy by domain, identify weak areas, and monitor your exam readiness score.</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon" aria-hidden="true">📚</span>
+        <h3 class="feature-title">Complete Study Guide</h3>
+        <p class="feature-description">AI-analyzed tips, common traps, and reference for 40+ AWS services and patterns.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works" aria-labelledby="how-heading">
+    <div class="section-header">
+      <h2 id="how-heading" class="section-title">How AWSPrepAI Works</h2>
+      <p class="section-subtitle">A simple path from beginner to certified</p>
+    </div>
+    <div class="steps-container" role="list">
+      <div class="step" role="listitem">
+        <div class="step-number" aria-hidden="true">1</div>
+        <div class="step-content">
+          <h3 class="step-title">Choose Your Mode</h3>
+          <p class="step-description">Practice questions, mock exams, or interactive architecture builder.</p>
+        </div>
+      </div>
+      <div class="step-connector" aria-hidden="true">→</div>
+      <div class="step" role="listitem">
+        <div class="step-number" aria-hidden="true">2</div>
+        <div class="step-content">
+          <h3 class="step-title">Learn by Building</h3>
+          <p class="step-description">Answer questions AND construct AWS architectures visually.</p>
+        </div>
+      </div>
+      <div class="step-connector" aria-hidden="true">→</div>
+      <div class="step" role="listitem">
+        <div class="step-number" aria-hidden="true">3</div>
+        <div class="step-content">
+          <h3 class="step-title">Track Progress</h3>
+          <p class="step-description">Monitor weak areas and get exam-ready with detailed analytics.</p>
+        </div>
+      </div>
+      <div class="step-connector" aria-hidden="true">→</div>
+      <div class="step" role="listitem">
+        <div class="step-number" aria-hidden="true">4</div>
+        <div class="step-content">
+          <h3 class="step-title">Pass SAA-C03</h3>
+          <p class="step-description">Take the exam with confidence knowing you truly understand AWS.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section id="stats" class="stats-section" aria-labelledby="stats-heading">
+    <div class="section-header">
+      <h2 id="stats-heading" class="section-title">Built for Real Results</h2>
+      <p class="section-subtitle">Everything you need in one free platform</p>
+    </div>
+    <div class="stats-grid-lp">
+      <div class="stat-card-lp">
+        <span class="stat-card-icon" aria-hidden="true">📝</span>
+        <div class="stat-card-number">506</div>
+        <div class="stat-card-label">Practice Questions</div>
+        <div class="stat-card-detail">Covering all 4 SAA-C03 domains</div>
+      </div>
+      <div class="stat-card-lp">
+        <span class="stat-card-icon" aria-hidden="true">🏗️</span>
+        <div class="stat-card-number">40+</div>
+        <div class="stat-card-label">AWS Services</div>
+        <div class="stat-card-detail">Visual icons and architecture patterns</div>
+      </div>
+      <div class="stat-card-lp">
+        <span class="stat-card-icon" aria-hidden="true">⏱️</span>
+        <div class="stat-card-number">65</div>
+        <div class="stat-card-label">Mock Exam Questions</div>
+        <div class="stat-card-detail">Timed to match real certification</div>
+      </div>
+      <div class="stat-card-lp">
+        <span class="stat-card-icon" aria-hidden="true">🎯</span>
+        <div class="stat-card-number">100%</div>
+        <div class="stat-card-label">Free &amp; Open Source</div>
+        <div class="stat-card-detail">No paywalls, no subscriptions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section id="cta" class="cta-section" aria-labelledby="cta-heading">
+    <div class="cta-content">
+      <h2 id="cta-heading" class="cta-title">Ready to Pass SAA-C03?</h2>
+      <p class="cta-description">Start practicing with the most interactive AWS certification prep platform.</p>
+      <button class="btn-cta-lg" onclick="startPractice()" aria-label="Start practicing for free">
+        Start Your Practice Now — It's Free
+      </button>
+      <p class="cta-note">No signup required &bull; Works offline &bull; 100% free forever</p>
+    </div>
+  </section>
+
+  <main class="container">
+
     <section id="dashboard" class="app-section active">
       <h1 class="section-heading">📊 Dashboard</h1>
       <div class="card card-orange">
@@ -1629,6 +1842,20 @@
 
     function showDashboard() {
       document.querySelector('[data-tab="dashboard"]').click();
+    }
+
+    function startPractice() {
+      document.querySelector('[data-tab="quiz"]').click();
+      document.querySelector('main.container').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function scrollToFeatures() {
+      document.querySelector('#features').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function showTab(tabName) {
+      const tab = document.querySelector('[data-tab="' + tabName + '"]');
+      if (tab) tab.click();
     }
 
     // Study Guide Domain Switching
