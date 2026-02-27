@@ -364,12 +364,31 @@ function veShowFeedback(idx, animate) {
                     archScore >  0    ? '⚠️ Minimal' :
                                         '❌ Incorrect';
 
+  const correctArchData = q.architectures && q.architectures[q.answer];
   const archFeedback = q.architectures && sel !== null && q.architectures[sel]
     ? q.architectures[sel].feedback
     : '';
 
   // Re-validate to get issue list
   const archValidation = veValidateArchitecture(idx);
+
+  // Build side-by-side architecture diagrams
+  const userServices    = veState.placedServices.map(p => p.serviceId);
+  const correctServices = correctArchData ? (correctArchData.requiredServices || []) : [];
+  const missingServices = correctServices.filter(s => !userServices.includes(s));
+
+  const userDiagram    = veRenderArchDiagram(
+    { services: userServices, connections: veState.connections.map(c => ({ from: c.fromInstanceId, to: c.toInstanceId })) },
+    missingServices,
+    false
+  );
+  const correctDiagram = veRenderArchDiagram(
+    correctArchData
+      ? { services: correctArchData.requiredServices || [], connections: correctArchData.requiredConnections || [] }
+      : { services: [], connections: [] },
+    missingServices,
+    true
+  );
 
   const html = `
     <div class="ve-feedback-inner">
@@ -389,6 +408,19 @@ function veShowFeedback(idx, animate) {
         ${archFeedback ? '<br><em>' + archFeedback + '</em>' : ''}
       </div>
 
+      <div class="ve-arch-comparison">
+        <div class="ve-arch-panel">
+          <div class="ve-arch-panel-title">🖊️ Your Architecture</div>
+          ${userDiagram}
+          ${missingServices.length > 0 ? '<div class="ve-arch-missing">❌ Missing: ' + missingServices.map(s => veEscapeHtml(AWS_SERVICES[s] ? AWS_SERVICES[s].name : s)).join(', ') + '</div>' : '<div class="ve-arch-ok">✅ All required services placed</div>'}
+        </div>
+        <div class="ve-arch-panel">
+          <div class="ve-arch-panel-title">✅ Correct Architecture</div>
+          ${correctDiagram}
+          <div class="ve-arch-ok" style="color:var(--muted);font-size:.8rem">Required services shown above</div>
+        </div>
+      </div>
+
       <div class="ve-fb-explain">
         <strong>💡 Explanation:</strong><br>${q.explain}
       </div>
@@ -399,6 +431,108 @@ function veShowFeedback(idx, animate) {
   fb.innerHTML = html;
   fb.style.display = 'block';
   if (animate) fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * Escape a string for safe use inside SVG/HTML text content.
+ */
+function veEscapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/**
+ * Render a mini architecture diagram as an HTML string.
+ * @param {object} archData       - { services: string[], connections: {from,to}[] }
+ * @param {Array}  missingServices - services to highlight as missing (red)
+ * @param {boolean} isCorrect     - if true, show all services as green
+ * @returns {string} HTML string containing the diagram
+ */
+function veRenderArchDiagram(archData, missingServices, isCorrect) {
+  if (!archData || !archData.services || archData.services.length === 0) {
+    return '<div class="ve-arch-empty">No services placed</div>';
+  }
+  const missing = new Set(missingServices || []);
+  const svcs    = archData.services;
+  const conns   = archData.connections || [];
+
+  // Layout: arrange services in a grid (up to 4 per row)
+  const cols      = Math.min(4, svcs.length);
+  const rows      = Math.ceil(svcs.length / cols);
+  const cellW     = 64;
+  const cellH     = 72;
+  const padding   = 12;
+  const svgW      = cols * cellW + padding * 2;
+  const svgH      = rows * cellH + padding * 2;
+
+  // Compute service positions
+  const positions = {};
+  svcs.forEach((sid, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    positions[sid] = {
+      x: padding + col * cellW + cellW / 2,
+      y: padding + row * cellH + 24
+    };
+  });
+
+  // Draw service nodes
+  let nodesHtml = '';
+  svcs.forEach((sid, i) => {
+    const svc = AWS_SERVICES[sid];
+    if (!svc) return;
+    const pos = positions[sid];
+    const isMissing   = !isCorrect && missing.has(sid);
+    const isHighlight = isCorrect && missing.has(sid);
+    const opacity = isMissing ? '0.35' : '1';
+    const labelColor = isMissing ? '#ef4444' : isHighlight ? '#22c55e' : svc.color;
+    const borderColor = isMissing ? '#ef4444' : isHighlight ? '#22c55e' : svc.color;
+    nodesHtml += `
+      <g opacity="${opacity}">
+        <circle cx="${pos.x}" cy="${pos.y}" r="20" fill="${borderColor}22" stroke="${borderColor}" stroke-width="1.5"/>
+        <text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-size="14">${veEscapeHtml(svc.emoji || '☁️')}</text>
+        <text x="${pos.x}" y="${pos.y + 32}" text-anchor="middle" font-size="7" fill="${labelColor}" font-weight="600">${veEscapeHtml(svc.name.length > 10 ? svc.name.substring(0, 10) + '\u2026' : svc.name)}</text>
+        ${isMissing ? '<text x="' + pos.x + '" y="' + (pos.y - 24) + '" text-anchor="middle" font-size="9" fill="#ef4444">❌</text>' : ''}
+        ${isHighlight ? '<text x="' + pos.x + '" y="' + (pos.y - 24) + '" text-anchor="middle" font-size="9" fill="#22c55e">✅</text>' : ''}
+      </g>`;
+  });
+
+  // Draw connections using IDs (for user arch) or service names (for correct arch)
+  let connLines = '';
+  conns.forEach(conn => {
+    // For correct architecture, conn.from/to are service IDs
+    // For user architecture, they may be instance IDs — map back to serviceId
+    let fromSid = conn.from;
+    let toSid   = conn.to;
+    if (!positions[fromSid]) {
+      const inst = veState.placedServices.find(p => p.instanceId === conn.from);
+      if (inst) fromSid = inst.serviceId;
+    }
+    if (!positions[toSid]) {
+      const inst = veState.placedServices.find(p => p.instanceId === conn.to);
+      if (inst) toSid = inst.serviceId;
+    }
+    const fromPos = positions[fromSid];
+    const toPos   = positions[toSid];
+    if (!fromPos || !toPos) return;
+    const mx = (fromPos.x + toPos.x) / 2;
+    const my = (fromPos.y + toPos.y) / 2 - 15;
+    connLines += `<path d="M ${fromPos.x} ${fromPos.y} Q ${mx} ${my} ${toPos.x} ${toPos.y}"
+      stroke="#0073BB" stroke-width="1.5" fill="none" marker-end="url(#ve-mini-arrow)" opacity="0.7"/>`;
+  });
+
+  return `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" class="ve-arch-svg">
+    <defs>
+      <marker id="ve-mini-arrow" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+        <polygon points="0 0, 6 2.5, 0 5" fill="#0073BB"/>
+      </marker>
+    </defs>
+    ${connLines}
+    ${nodesHtml}
+  </svg>`;
 }
 
 function veSetFeedback(type, msg) {
