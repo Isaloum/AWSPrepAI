@@ -7,6 +7,7 @@
   <meta name="description" content="Master AWS Solutions Architect Associate (SAA-C03) certification with 506 practice questions, AI-powered study guide, and mock exams.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="landing.css">
+  <link rel="stylesheet" href="navigation.css">
   <style>
     :root{--bg:#f5f5f5;--card:#ffffff;--accent:#0073BB;--accent-2:#005A9C;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#232F3E;--aws-blue:#0073BB;--light-bg:#fafafa;--light-aqua:#7DD3C0;--mint:#A8E6CF}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -221,39 +222,126 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-content">
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;width:100%;justify-content:space-between">
-          <a href="#" class="logo" onclick="showDashboard(); return false;">
-            <img src="logo.svg" alt="AWSPrepAI">
-          </a>
-          <div class="hamburger" onclick="toggleMobileMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="page-links">
-            <a href="index.html" class="page-link active">Home</a>
-            <a href="about.html" class="page-link">About</a>
-            <a href="glossary.html" class="page-link">Glossary</a>
-            <a href="resources.html" class="page-link">Resources</a>
-            <a href="contact.html" class="page-link">Contact</a>
+  <!-- Professional Navigation Bar -->
+  <nav class="main-nav" role="navigation">
+    <div class="nav-container">
+      <a href="#" class="nav-logo" aria-label="AWSPrepAI Home" onclick="showTab('dashboard'); return false;">
+        <img src="logo.svg" alt="AWSPrepAI">
+        <span class="logo-text">AWSPrepAI</span>
+      </a>
+
+      <div class="nav-menu" id="navMenu">
+        <!-- Practice Dropdown -->
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">
+            Practice
+            <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="#" class="dropdown-item" onclick="showTab('quiz'); return false;">
+              <span class="item-icon">📝</span>
+              <div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">505 SAA-C03 questions</div></div>
+            </a>
+            <a href="#" class="dropdown-item" onclick="showTab('exam'); return false;">
+              <span class="item-icon">⏱️</span>
+              <div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div>
+            </a>
+            <a href="#" class="dropdown-item" onclick="showTab('adaptive'); return false;">
+              <span class="item-icon">🏗️</span>
+              <div class="item-content"><div class="item-title">Architecture Builder</div><div class="item-desc">Drag &amp; drop AWS services</div></div>
+            </a>
+            <a href="#" class="dropdown-item" onclick="showTab('visual-exam'); return false;">
+              <span class="item-icon">🎯</span>
+              <div class="item-content"><div class="item-title">Visual Exam</div><div class="item-desc">Build your answers</div></div>
+            </a>
           </div>
         </div>
-        <nav class="nav-tabs">
-          <button class="nav-tab active" data-tab="dashboard"><span class="icon">📊</span><span>Dashboard</span></button>
-          <button class="nav-tab" data-tab="quiz"><span class="icon">❓</span><span>Practice</span></button>
-          <button class="nav-tab" data-tab="exam"><span class="icon">📝</span><span>Mock Exam</span></button>
-          <button class="nav-tab" data-tab="study-guide"><span class="icon">🎓</span><span>Study Guide</span></button>
-          <button class="nav-tab" data-tab="hints-keywords"><span class="icon">💡</span><span>Hint / Keywords</span></button>
-          <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
-          <button class="nav-tab" data-tab="adaptive"><span class="icon">🏗️</span><span>Architecture Builder</span></button>
-          <button class="nav-tab" data-tab="visual-exam"><span class="icon">🎯</span><span>Visual Exam</span></button>
-        </nav>
+
+        <!-- Study Dropdown -->
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">
+            Study
+            <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="#" class="dropdown-item" onclick="showTab('study-guide'); return false;">
+              <span class="item-icon">📚</span>
+              <div class="item-content"><div class="item-title">Study Guide</div><div class="item-desc">Exam tips &amp; strategies</div></div>
+            </a>
+            <a href="#" class="dropdown-item" onclick="showTab('hints-keywords'); return false;">
+              <span class="item-icon">💡</span>
+              <div class="item-content"><div class="item-title">Keywords &amp; Hints</div><div class="item-desc">Scenario identifiers</div></div>
+            </a>
+            <a href="#" class="dropdown-item" onclick="showTab('services'); return false;">
+              <span class="item-icon">☁️</span>
+              <div class="item-content"><div class="item-title">AWS Services</div><div class="item-desc">40+ service reference</div></div>
+            </a>
+            <a href="glossary.html" class="dropdown-item">
+              <span class="item-icon">📖</span>
+              <div class="item-content"><div class="item-title">Glossary</div><div class="item-desc">AWS terminology</div></div>
+            </a>
+          </div>
+        </div>
+
+        <a href="#" class="nav-link" onclick="showTab('dashboard'); return false;">Dashboard</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </div>
+
+      <button class="nav-cta" onclick="showTab('quiz')">Start Practicing</button>
+
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay">
+    <div class="mobile-nav-content">
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
+      <div class="mobile-nav-menu">
+        <div class="mobile-nav-section">
+          <div class="mobile-nav-title">Practice</div>
+          <a href="#" class="mobile-nav-link" onclick="showTab('quiz'); return false;">📝 Practice Quiz</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('exam'); return false;">⏱️ Mock Exam</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('adaptive'); return false;">🏗️ Architecture Builder</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('visual-exam'); return false;">🎯 Visual Exam</a>
+        </div>
+        <div class="mobile-nav-section">
+          <div class="mobile-nav-title">Study</div>
+          <a href="#" class="mobile-nav-link" onclick="showTab('study-guide'); return false;">📚 Study Guide</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('hints-keywords'); return false;">💡 Keywords &amp; Hints</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('services'); return false;">☁️ AWS Services</a>
+          <a href="glossary.html" class="mobile-nav-link">📖 Glossary</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="#" class="mobile-nav-link" onclick="showTab('dashboard'); return false;">📊 Dashboard</a>
+          <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
+          <a href="resources.html" class="mobile-nav-link">📚 Resources</a>
+          <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+        </div>
+        <button class="mobile-nav-cta" onclick="showTab('quiz')">Start Practicing</button>
       </div>
     </div>
-  </header>
+  </div>
+
+  <!-- Hidden tab buttons for programmatic section switching (used by showTab) -->
+  <div style="display:none" aria-hidden="true">
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="dashboard"></button>
+      <button class="nav-tab" data-tab="quiz"></button>
+      <button class="nav-tab" data-tab="exam"></button>
+      <button class="nav-tab" data-tab="study-guide"></button>
+      <button class="nav-tab" data-tab="hints-keywords"></button>
+      <button class="nav-tab" data-tab="services"></button>
+      <button class="nav-tab" data-tab="adaptive"></button>
+      <button class="nav-tab" data-tab="visual-exam"></button>
+    </nav>
+  </div>
 
   <!-- Landing Page Sections (full-width, outside container) -->
   <!-- Hero Section (Redesigned) -->
@@ -1725,23 +1813,12 @@
 
     // Mobile Menu Functions
     function toggleMobileMenu() {
-      const hamburger = document.querySelector('.hamburger');
-      const navTabs = document.querySelector('.nav-tabs');
-      const pageLinks = document.querySelector('.page-links');
-      
-      hamburger.classList.toggle('active');
-      navTabs.classList.toggle('active');
-      pageLinks.classList.toggle('active');
+      // Delegated to navigation.js closeMobileNav / mobileMenuToggle click
+      if (typeof closeMobileNav === 'function') closeMobileNav();
     }
 
     function closeMobileMenu() {
-      const hamburger = document.querySelector('.hamburger');
-      const navTabs = document.querySelector('.nav-tabs');
-      const pageLinks = document.querySelector('.page-links');
-      
-      hamburger.classList.remove('active');
-      navTabs.classList.remove('active');
-      pageLinks.classList.remove('active');
+      if (typeof closeMobileNav === 'function') closeMobileNav();
     }
 
     function showDashboard() {
@@ -2754,7 +2831,16 @@
     loadQuestion();
     loadServices();
     updatePageTitle('dashboard'); // Set initial page title
+
+    // Handle deep linking from other pages (e.g. index.html#quiz)
+    if (window.location.hash) {
+      // Sanitize: only allow alphanumeric characters and hyphens
+      const hashTab = window.location.hash.replace('#', '').replace(/[^a-zA-Z0-9-]/g, '');
+      const hashTabEl = hashTab ? document.querySelector('[data-tab="' + hashTab + '"]') : null;
+      if (hashTabEl) hashTabEl.click();
+    }
   </script>
+  <script src="navigation.js"></script>
   <script src="aws-service-icons.js"></script>
   <script src="architecture-builder.js"></script>
   <script src="visual-exam-questions.js"></script>
