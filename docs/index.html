@@ -154,6 +154,61 @@
     .arch-feedback-hint{background:#eff6ff;border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue)}
     .arch-feedback-solution{background:#f0fdf4;border:1px solid #10b981;border-left:4px solid #10b981}
     .arch-btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+    /* ===== Visual Architecture Exam Styles ===== */
+    .ve-start-card{background:linear-gradient(135deg,#e8f4fd 0%,#fff 100%);border:2px solid var(--aws-blue);border-radius:12px;padding:2rem;text-align:center;max-width:700px;margin:0 auto}
+    .ve-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem}
+    @media(max-width:600px){.ve-mode-grid{grid-template-columns:1fr}}
+    .ve-mode-card{background:#fff;border:2px solid var(--border);border-radius:10px;padding:1.5rem;cursor:pointer;transition:all .2s;text-align:left}
+    .ve-mode-card:hover{border-color:var(--aws-blue);box-shadow:0 4px 14px rgba(0,115,187,.18);transform:translateY(-2px)}
+    .ve-mode-title{font-size:1.15rem;font-weight:800;color:var(--aws-dark);margin-bottom:.5rem}
+    .ve-mode-desc{font-size:.88rem;color:var(--muted);line-height:1.6}
+    .ve-mode-btn{display:inline-block;margin-top:1rem;padding:.6rem 1.2rem;background:var(--aws-blue);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:.9rem;transition:background .2s}
+    .ve-mode-btn:hover{background:var(--accent-2)}
+    .ve-timer-bar{display:flex;align-items:center;gap:.75rem;background:#fff;border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;margin-bottom:1rem;flex-wrap:wrap}
+    .ve-timer-display{font-size:1.6rem;font-weight:800;color:var(--aws-blue);font-variant-numeric:tabular-nums;min-width:6ch}
+    .ve-timer-yellow{color:var(--warning)}
+    .ve-timer-red{color:var(--danger);animation:pulse 1s infinite}
+    .ve-question-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+    .ve-q-num{font-weight:700;color:var(--aws-blue);font-size:1rem}
+    .ve-q-cat{font-size:.85rem;color:var(--muted);background:#f0f6ff;padding:.2rem .6rem;border-radius:4px}
+    .ve-options{display:grid;gap:.6rem;margin:1rem 0}
+    .ve-option{display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 1rem;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;line-height:1.4;background:#fff}
+    .ve-option:hover{border-color:var(--aws-blue);background:#f0f6ff}
+    .ve-option-selected{border-color:var(--aws-blue);background:#e8f4fd;font-weight:600}
+    .ve-option input[type=radio]{margin-top:.15rem;flex-shrink:0;accent-color:var(--aws-blue)}
+    .ve-option-text{flex:1}
+    .ve-canvas-instruction{font-size:.95rem;font-weight:600;color:var(--aws-dark);margin:.75rem 0 .4rem;padding:.5rem .75rem;background:#fffbea;border:1px solid #f59e0b;border-radius:6px}
+    .ve-exam-layout{display:grid;grid-template-columns:1fr 220px;gap:1rem;align-items:start}
+    @media(max-width:1000px){.ve-exam-layout{grid-template-columns:1fr}}
+    .ve-progress-sidebar{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-size:.88rem;position:sticky;top:80px}
+    .ve-progress-sidebar h3{font-weight:700;margin-bottom:.75rem;color:var(--aws-dark)}
+    .ve-progress-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border)}
+    .ve-progress-row:last-child{border-bottom:none}
+    .ve-progress-label{color:var(--muted)}
+    .ve-progress-val{font-weight:700;color:var(--aws-dark)}
+    .ve-feedback{padding:1rem;border-radius:8px;margin-top:1rem;animation:slideDown .3s ease;display:none;font-size:.92rem;line-height:1.6}
+    .ve-feedback-inner{}
+    .ve-fb-header{font-size:1.05rem;font-weight:800;color:var(--aws-dark);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+    .ve-fb-row{padding:.75rem;border-radius:7px;margin-bottom:.5rem;line-height:1.5}
+    .ve-fb-correct{background:#ecfdf5;border:1px solid #10b981;border-left:4px solid #10b981}
+    .ve-fb-wrong{background:#fff0f0;border:1px solid #ef4444;border-left:4px solid #ef4444}
+    .ve-fb-partial{background:#fffde7;border:1px solid #f59e0b;border-left:4px solid #f59e0b}
+    .ve-fb-explain{background:#f0f6ff;border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue);padding:.75rem;border-radius:7px;margin-top:.5rem}
+    .ve-fb-warning{background:#fffde7;border:1px solid #f59e0b;border-left:4px solid #f59e0b;padding:.75rem;border-radius:7px}
+    .ve-fb-hint{background:#eff6ff;border:1px solid var(--aws-blue);border-left:4px solid var(--aws-blue);padding:.75rem;border-radius:7px}
+    #veFlagBtn.ve-flagged{background:#fff7ed;border-color:#f59e0b;color:#b45309}
+    .ve-results-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem}
+    .ve-results-score{font-size:2.5rem;font-weight:800;color:var(--aws-blue);text-align:center}
+    .ve-result-pass{color:var(--success);font-weight:800;font-size:1.2rem}
+    .ve-result-fail{color:var(--danger);font-weight:800;font-size:1.2rem}
+    .ve-cat-table{width:100%;border-collapse:collapse;font-size:.9rem}
+    .ve-cat-table th{background:#f0f6ff;padding:.6rem .75rem;text-align:left;font-weight:700;color:var(--aws-dark)}
+    .ve-cat-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+    .ve-cat-table tr:last-child td{border-bottom:none}
+    .ve-pause-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:3000;display:none;align-items:center;justify-content:center}
+    .ve-pause-box{background:#fff;border-radius:12px;padding:2.5rem 3rem;text-align:center;max-width:360px}
+    #veConnectionsSvg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
+    #veConnectionsSvg path{pointer-events:stroke}
   </style>
 </head>
 <body>
@@ -185,6 +240,7 @@
           <button class="nav-tab" data-tab="hints-keywords"><span class="icon">💡</span><span>Hint / Keywords</span></button>
           <button class="nav-tab" data-tab="services"><span class="icon">📚</span><span>Services</span></button>
           <button class="nav-tab" data-tab="adaptive"><span class="icon">🏗️</span><span>Architecture Builder</span></button>
+          <button class="nav-tab" data-tab="visual-exam"><span class="icon">🎯</span><span>Visual Exam</span></button>
         </nav>
       </div>
     </div>
@@ -1211,6 +1267,237 @@
         </div>
       </div>
     </section>
+
+    <!-- ===== VISUAL ARCHITECTURE EXAM ===== -->
+    <section id="visual-exam" class="app-section">
+      <h1 class="section-heading">🎯 Visual Architecture Exam</h1>
+
+      <!-- Pause Overlay -->
+      <div class="ve-pause-overlay" id="vePauseOverlay">
+        <div class="ve-pause-box">
+          <div style="font-size:3rem;margin-bottom:1rem">⏸️</div>
+          <div style="font-size:1.5rem;font-weight:800;margin-bottom:.5rem">Exam Paused</div>
+          <p style="color:var(--muted);margin-bottom:1.5rem">Your progress is saved. Click Resume when you're ready.</p>
+          <button class="btn btn-primary" onclick="veResumeExam()" style="width:100%">▶ Resume Exam</button>
+        </div>
+      </div>
+
+      <!-- Timer Bar (timed mode only) -->
+      <div class="ve-timer-bar" id="veTimerBar" style="display:none">
+        <span style="font-size:.9rem;font-weight:600;color:var(--muted)">⏱️ Time Remaining:</span>
+        <span class="ve-timer-display" id="veTimerDisplay">000:00</span>
+        <span id="vePauseBtnWrap" style="display:none">
+          <button class="btn btn-secondary" id="vePauseBtn" onclick="vePauseExam()" style="padding:.4rem .8rem;font-size:.85rem">⏸ Pause</button>
+        </span>
+        <span style="margin-left:auto;font-size:.8rem;color:var(--muted)" id="veTimerModeLabel">Timed Mode</span>
+      </div>
+
+      <!-- ========== START SCREEN ========== -->
+      <div id="veStartScreen">
+        <div class="ve-start-card">
+          <div style="font-size:3rem;margin-bottom:.5rem">🏗️</div>
+          <h2 style="font-size:1.75rem;font-weight:800;color:var(--aws-dark);margin-bottom:.5rem">Visual Architecture Exam</h2>
+          <p style="color:var(--muted);margin-bottom:1.5rem;font-size:1rem">Test BOTH your knowledge AND your ability to build correct AWS architectures.</p>
+
+          <div class="stats-grid" style="max-width:500px;margin:0 auto 1.5rem">
+            <div class="stat-card">
+              <div class="stat-value" id="veExamInfo_total">20</div>
+              <div class="stat-label">Questions</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="veExamInfo_points">40</div>
+              <div class="stat-label">Total Points</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="veExamInfo_pass">--</div>
+              <div class="stat-label">Pass Score</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="veExamInfo_time">20 min</div>
+              <div class="stat-label">Timed Mode</div>
+            </div>
+          </div>
+
+          <div style="background:#f0f6ff;border:1px solid var(--aws-blue);border-radius:8px;padding:1rem;text-align:left;margin-bottom:1.5rem;font-size:.9rem">
+            <strong>For each question you will:</strong>
+            <ol style="margin:.5rem 0 0 1.25rem;line-height:1.8">
+              <li>Read the scenario</li>
+              <li>Select your answer (A, B, C, or D) — <strong>1 point</strong></li>
+              <li>Build the architecture for your answer on the canvas — <strong>up to 1 point</strong></li>
+              <li>Get dual scoring and detailed feedback</li>
+            </ol>
+          </div>
+
+          <div class="ve-mode-grid">
+            <div class="ve-mode-card">
+              <div class="ve-mode-title">⏱️ Timed Mode</div>
+              <div class="ve-mode-desc">
+                <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
+                  <li>1 minute per question</li>
+                  <li>Simulates real exam pressure</li>
+                  <li>Up to 2 pauses (5 min each)</li>
+                  <li>Auto-submits when time expires</li>
+                </ul>
+              </div>
+              <button class="ve-mode-btn" onclick="veStartExam('timed')">Start Timed Exam →</button>
+            </div>
+            <div class="ve-mode-card">
+              <div class="ve-mode-title">⏸️ Practice Mode</div>
+              <div class="ve-mode-desc">
+                <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
+                  <li>No time limit</li>
+                  <li>Review any question anytime</li>
+                  <li>Can revisit previous questions</li>
+                  <li>Best for learning</li>
+                </ul>
+              </div>
+              <button class="ve-mode-btn" onclick="veStartExam('practice')">Start Practice Mode →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== QUESTION AREA ========== -->
+      <div id="veQuestionArea" style="display:none">
+        <div class="ve-exam-layout">
+
+          <!-- Main Content -->
+          <div>
+            <!-- Question Card -->
+            <div class="card" style="margin-bottom:1rem">
+              <div class="ve-question-header">
+                <span class="ve-q-num" id="veQuestionNum">Question 1 of 20</span>
+                <span class="ve-q-cat" id="veCategory"></span>
+                <div style="display:flex;gap:.5rem;margin-left:auto">
+                  <button class="btn btn-secondary" id="veFlagBtn" onclick="veToggleFlag()" style="padding:.4rem .8rem;font-size:.85rem">🚩 Flag</button>
+                </div>
+              </div>
+              <div class="quiz-question" id="veQuestionText" style="font-size:1.05rem;margin-bottom:1rem"></div>
+              <div class="ve-options" id="veOptions"></div>
+            </div>
+
+            <!-- Architecture Canvas Card -->
+            <div class="card">
+              <div id="veCanvasInstruction" class="ve-canvas-instruction">Build the architecture for your selected answer:</div>
+
+              <div class="arch-layout" style="margin-top:.75rem">
+                <!-- Palette -->
+                <div>
+                  <div style="padding:.75rem;background:#fafafa;border:1px solid var(--border);border-radius:8px">
+                    <div style="font-weight:700;margin-bottom:.5rem;font-size:.9rem">🗂️ Service Palette</div>
+                    <input type="text" class="arch-palette-search" id="veSearchInput" placeholder="Search services…" oninput="veFilterPalette()" aria-label="Search services">
+                    <div id="vePalette" class="arch-palette" style="max-height:440px;border:none;padding:0"></div>
+                  </div>
+                  <div style="font-size:.75rem;color:var(--muted);margin-top:.4rem">Drag or double-click to add to canvas</div>
+                </div>
+
+                <!-- Canvas -->
+                <div>
+                  <div class="arch-canvas-wrapper">
+                    <div id="veCanvasInner" class="arch-canvas-inner arch-canvas" data-canvas="true">
+                      <svg id="veConnectionsSvg" aria-hidden="true"></svg>
+                    </div>
+                    <div class="arch-connect-hint" id="veConnectHint">
+                      🔗 Click another service to draw a connection, or click the same service to cancel
+                    </div>
+                    <div class="arch-canvas-controls">
+                      <button class="btn btn-secondary" onclick="veZoom(-0.1)" aria-label="Zoom out" style="padding:.4rem .75rem">−</button>
+                      <span id="veZoomPct" style="font-size:.85rem;min-width:42px;text-align:center">100%</span>
+                      <button class="btn btn-secondary" onclick="veZoom(0.1)" aria-label="Zoom in" style="padding:.4rem .75rem">+</button>
+                      <button class="btn btn-secondary" onclick="veClearCanvas()" style="padding:.4rem .75rem">🗑️ Clear</button>
+                      <span style="font-size:.75rem;color:var(--muted);margin-left:auto">Click service → click another to connect • Click arrow to delete</span>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="arch-btn-group">
+                    <button class="btn btn-secondary" id="vePrevBtn" onclick="vePrevQuestion()" style="display:none">← Prev</button>
+                    <button class="btn btn-secondary" onclick="veShowHint()">💡 Hint</button>
+                    <button class="btn btn-primary" id="veCheckBtn" onclick="veCheckAnswer()">✅ Check Answer &amp; Architecture</button>
+                    <button class="btn btn-secondary" onclick="veSkipQuestion()">Skip →</button>
+                    <button class="btn btn-secondary" onclick="veNextQuestion()">Next →</button>
+                  </div>
+
+                  <!-- Feedback Panel -->
+                  <div id="veFeedback" class="ve-feedback"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Sidebar -->
+          <div class="ve-progress-sidebar">
+            <h3>📊 Progress</h3>
+            <div class="ve-progress-row">
+              <span class="ve-progress-label">Completed</span>
+              <span class="ve-progress-val" id="veProgressAnswered">0/20</span>
+            </div>
+            <div class="ve-progress-row">
+              <span class="ve-progress-label">Score</span>
+              <span class="ve-progress-val" id="veProgressScore">0/0</span>
+            </div>
+            <div class="ve-progress-row">
+              <span class="ve-progress-label">Accuracy</span>
+              <span class="ve-progress-val" id="veProgressAccuracy">--%</span>
+            </div>
+            <div class="ve-progress-row">
+              <span class="ve-progress-label">Flagged</span>
+              <span class="ve-progress-val" id="veProgressFlagged">0</span>
+            </div>
+            <div class="ve-progress-row">
+              <span class="ve-progress-label">Skipped</span>
+              <span class="ve-progress-val" id="veProgressSkipped">0</span>
+            </div>
+            <div style="margin-top:1rem">
+              <button class="btn btn-secondary" onclick="veReturnToDashboard()" style="width:100%;margin-bottom:.5rem;font-size:.85rem">🏠 Dashboard</button>
+              <button class="btn btn-danger" onclick="veRestartExam()" style="width:100%;font-size:.85rem">🔄 Restart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== RESULTS SCREEN ========== -->
+      <div id="veResultsScreen" style="display:none;max-width:800px;margin:0 auto">
+        <div class="ve-results-card" style="text-align:center">
+          <div style="font-size:3rem;margin-bottom:.5rem">🎉</div>
+          <h2 style="font-size:1.75rem;font-weight:800;color:var(--aws-dark);margin-bottom:.75rem">Exam Complete!</h2>
+          <div class="ve-results-score" id="veResult_score">--</div>
+          <div style="font-size:1.5rem;font-weight:700;color:var(--muted);margin:.25rem 0" id="veResult_pct">--%</div>
+          <div id="veResult_status" style="margin-top:.5rem">--</div>
+          <div style="color:var(--muted);font-size:.85rem;margin-top:.25rem">Pass threshold: <strong id="veResultPassNote"></strong></div>
+        </div>
+
+        <div class="ve-results-card">
+          <div class="card-title">📊 Score Breakdown</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="veResult_ansAcc" style="font-size:1.3rem">--</div>
+              <div class="stat-label">Answer Accuracy</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="veResult_archAcc" style="font-size:1.3rem">--</div>
+              <div class="stat-label">Architecture Accuracy</div>
+            </div>
+          </div>
+          <table class="ve-cat-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th style="text-align:center;color:var(--success)">✅ Full</th>
+                <th style="text-align:center;color:var(--warning)">⚠️ Partial</th>
+                <th style="text-align:center;color:var(--danger)">❌ Wrong</th>
+              </tr>
+            </thead>
+            <tbody id="veResult_catTable"></tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn-primary" onclick="veRestartExam()">🔄 Retake Exam</button>
+          <button class="btn btn-secondary" onclick="veReturnToDashboard()">🏠 Dashboard</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1254,7 +1541,8 @@
       'study-guide': '🎓 Study Guide',
       'hints-keywords': '💡 Hint / Keywords',
       'services': '📚 Services',
-      'adaptive': '🏗️ Architecture Builder'
+      'adaptive': '🏗️ Architecture Builder',
+      'visual-exam': '🎯 Visual Architecture Exam'
     };
 
     function updatePageTitle(tabName) {
@@ -1268,6 +1556,7 @@
     }
 
     let architectureBuilderInitialized = false;
+    let visualExamInitialized = false;
 
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1296,6 +1585,12 @@
         if (tab.dataset.tab === 'adaptive' && !architectureBuilderInitialized) {
           initArchitectureBuilder();
           architectureBuilderInitialized = true;
+        }
+
+        // Initialize visual exam on first visit
+        if (tab.dataset.tab === 'visual-exam' && !visualExamInitialized) {
+          initVisualExam();
+          visualExamInitialized = true;
         }
 
         // Close mobile menu after navigation
@@ -2323,5 +2618,7 @@
   </script>
   <script src="aws-service-icons.js"></script>
   <script src="architecture-builder.js"></script>
+  <script src="visual-exam-questions.js"></script>
+  <script src="visual-exam.js"></script>
 </body>
 </html>
