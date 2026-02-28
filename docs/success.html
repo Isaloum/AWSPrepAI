@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payment Successful - AWSPrepAI</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .success-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, #F0F9FF 0%, #E0E7FF 100%);
+    }
+
+    .success-card {
+      background: white;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    .success-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .success-card h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+
+    .success-card p {
+      font-size: 1.125rem;
+      color: #6B7280;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .success-features {
+      background: #F9FAFB;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .success-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.9375rem;
+      color: #374151;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <h1>Welcome to Premium!</h1>
+      <p>
+        Your payment was successful. You now have <strong>lifetime access</strong>
+        to all 505 SAA-C03 practice questions.
+      </p>
+
+      <div class="success-features">
+        <div class="success-feature">
+          ✅ All 505 questions unlocked
+        </div>
+        <div class="success-feature">
+          ✅ Visual architecture exam enabled
+        </div>
+        <div class="success-feature">
+          ✅ Mock exam mode activated
+        </div>
+        <div class="success-feature">
+          ✅ Progress tracking available
+        </div>
+        <div class="success-feature">
+          ✅ Offline access granted
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="startPracticing()">
+        🚀 Start Practicing Now
+      </button>
+    </div>
+  </div>
+
+  <script src="payment-system.js"></script>
+  <script>
+    // Verify payment with server before granting access
+    async function verifyAndGrant() {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+
+      if (sessionId) {
+        try {
+          const response = await fetch('/.netlify/functions/verify-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId }),
+          });
+          const data = await response.json();
+          if (data.verified) {
+            grantPremiumAccess();
+          }
+        } catch (e) {
+          console.error('Verification failed:', e);
+        }
+      }
+    }
+
+    // Auto-unlock premium access after server-side verification
+    function startPracticing() {
+      grantPremiumAccess();
+      window.location.href = 'index.html#quiz';
+    }
+
+    // Verify on page load
+    verifyAndGrant();
+  </script>
+</body>
+</html>
