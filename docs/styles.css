@@ -4,6 +4,16 @@
    ============================================================ */
 
 :root {
+  /* Tight Spacing System */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 0.75rem;   /* 12px */
+  --space-lg: 1rem;      /* 16px */
+  --space-xl: 1.5rem;    /* 24px */
+  --space-2xl: 2rem;     /* 32px */
+  --space-3xl: 2.5rem;   /* 40px */
+  --space-4xl: 3rem;     /* 48px */
+
   /* Primary Colors - Vibrant Blues & Purples */
   --primary-50: #EFF6FF;
   --primary-100: #DBEAFE;
@@ -200,5 +210,102 @@ h1, h2, h3, h4, h5, h6 {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   GLOBAL TIGHT SPACING - SITE WIDE
+   ============================================================ */
+
+/* Global Body */
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* All Sections */
+section {
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+/* All Containers */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+/* All Cards */
+.card,
+.content-card,
+.feature-card,
+.mode-card,
+.stat-card {
+  padding: var(--space-xl);
+  border-radius: 12px;
+  margin-bottom: var(--space-lg);
+}
+
+/* All Headings */
+h1 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  margin-bottom: var(--space-xl);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: var(--space-lg);
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: clamp(1.125rem, 2vw, 1.25rem);
+  margin-bottom: var(--space-md);
+  line-height: 1.4;
+}
+
+/* All Paragraphs */
+p {
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+}
+
+/* All Grids */
+.grid,
+.features-grid,
+.stats-grid,
+.resource-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+/* All Buttons */
+button,
+.btn,
+.cta-btn {
+  padding: var(--space-md) var(--space-xl);
+  border-radius: 8px;
+}
+
+/* All Tabs */
+[data-tab] {
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  section {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .container {
+    padding: var(--space-lg);
+  }
+
+  .card,
+  .content-card {
+    padding: var(--space-lg);
   }
 }
