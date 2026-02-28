@@ -45,15 +45,6 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter',
                'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Spacing */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 4rem;
-  --space-3xl: 6rem;
-
   /* Border Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -70,7 +61,7 @@
 .hero-new {
   background: linear-gradient(135deg, #1E3A5F 0%, #2D1B69 50%, #1a1a3e 100%);
   color: white;
-  padding: 5rem 2rem 4rem;
+  padding: 3rem 2rem 2rem;
   position: relative;
   overflow: hidden;
   margin-bottom: 0;
