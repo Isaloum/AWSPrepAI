@@ -395,13 +395,13 @@
 
 /* ===== Features Section - Bento Grid ===== */
 .features-section {
-  padding: var(--space-3xl) 2rem;
-  background: white;
+  padding: 3rem 2rem;
+  background: #F9FAFB;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: 1.5rem;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -428,18 +428,21 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto;
   gap: 1.25rem;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .feature-card {
   background: white;
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
+  border-radius: 12px;
+  padding: 1.5rem;
   transition: var(--transition-base);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .feature-card::before {
@@ -453,9 +456,9 @@
 }
 
 .feature-card:hover {
-  border-color: #93C5FD;
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  border-color: #3B82F6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
 }
 
 .feature-card:hover::before {
@@ -468,8 +471,8 @@
 }
 
 .feature-icon {
-  font-size: 2.25rem;
-  margin-bottom: var(--space-md);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
   display: block;
   position: relative;
   z-index: 1;
@@ -479,7 +482,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--gray-900);
-  margin-bottom: 0.625rem;
+  margin-bottom: 0.5rem;
   position: relative;
   z-index: 1;
 }
@@ -487,8 +490,8 @@
 .feature-description {
   font-size: 0.9375rem;
   color: var(--gray-600);
-  line-height: 1.65;
-  margin-bottom: var(--space-md);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
   position: relative;
   z-index: 1;
 }
@@ -525,12 +528,33 @@
 @media (max-width: 1024px) {
   .features-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .features-section {
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card {
+    padding: 1.25rem;
   }
 }
 
 @media (max-width: 640px) {
   .features-section {
-    padding: var(--space-xl) var(--space-sm);
+    padding: 2rem var(--space-sm);
   }
 
   .section-title {
@@ -540,8 +564,9 @@
 
 /* ===== Stats Section ===== */
 .stats-section {
-  padding: 2.5rem var(--space-md);
-  background: linear-gradient(135deg, #F9FAFB 0%, #EFF6FF 100%);
+  padding: 2rem 2rem 3rem;
+  margin-top: 2rem;
+  background: white;
   border-top: 1px solid var(--gray-200);
   border-bottom: 1px solid var(--gray-200);
 }
@@ -550,7 +575,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-lg);
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   text-align: center;
 }
@@ -563,7 +588,7 @@
 }
 
 .stat-item-number {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 800;
   background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
   -webkit-background-clip: text;
@@ -592,6 +617,14 @@
 @media (max-width: 640px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-section {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .stat-item-number {
+    font-size: 2rem;
   }
 }
 
