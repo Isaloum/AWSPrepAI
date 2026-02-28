@@ -45,12 +45,12 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter',
                'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-full: 9999px;
+  /* CONSISTENT BORDER RADIUS - 12px EVERYWHERE */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-full: 100px;
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,7 +61,7 @@
 .hero-new {
   background: linear-gradient(135deg, #1E3A5F 0%, #2D1B69 50%, #1a1a3e 100%);
   color: white;
-  padding: 3rem 2rem 2rem;
+  padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
   position: relative;
   overflow: hidden;
   margin-bottom: 0;
@@ -386,7 +386,7 @@
 
 /* ===== Features Section - Bento Grid ===== */
 .features-section {
-  padding: 3rem 2rem;
+  padding: var(--space-2xl) var(--space-xl);
   background: #F9FAFB;
 }
 
@@ -418,7 +418,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto;
-  gap: 1.25rem;
+  gap: var(--space-lg);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -426,14 +426,14 @@
 .feature-card {
   background: white;
   border: 1px solid var(--gray-200);
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
   transition: var(--transition-base);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .feature-card::before {
@@ -530,22 +530,22 @@
 
 @media (max-width: 768px) {
   .features-section {
-    padding: 2rem 1rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .section-title {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
   }
 
   .feature-card {
-    padding: 1.25rem;
+    padding: var(--space-lg);
   }
 }
 
 @media (max-width: 640px) {
   .features-section {
-    padding: 2rem var(--space-sm);
+    padding: var(--space-xl) var(--space-sm);
   }
 
   .section-title {
@@ -555,8 +555,8 @@
 
 /* ===== Stats Section ===== */
 .stats-section {
-  padding: 2rem 2rem 3rem;
-  margin-top: 2rem;
+  padding: var(--space-2xl) var(--space-xl);
+  margin-top: 0;
   background: white;
   border-top: 1px solid var(--gray-200);
   border-bottom: 1px solid var(--gray-200);
@@ -611,7 +611,7 @@
   }
 
   .stats-section {
-    padding: 1.5rem 1rem 2rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .stat-item-number {

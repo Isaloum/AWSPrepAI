@@ -189,7 +189,7 @@
   color: #FFFFFF;
   padding: 0.625rem 1.375rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 0.9375rem;
   cursor: pointer;
@@ -343,7 +343,7 @@
   color: white;
   padding: 0.875rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 0.9375rem;
   cursor: pointer;
