@@ -288,6 +288,10 @@
               <span class="item-icon">🎯</span>
               <div class="item-content"><div class="item-title">Visual Exam</div><div class="item-desc">Build your answers</div></div>
             </a>
+            <a href="#" class="dropdown-item" onclick="showTab('sample'); return false;">
+              <span class="item-icon">📄</span>
+              <div class="item-content"><div class="item-title">Sample Questions</div><div class="item-desc">10 free preview questions</div></div>
+            </a>
           </div>
         </div>
 
@@ -346,6 +350,7 @@
           <a href="#" class="mobile-nav-link" onclick="showTab('exam'); return false;">⏱️ Mock Exam</a>
           <a href="#" class="mobile-nav-link" onclick="showTab('adaptive'); return false;">🏗️ Architecture Builder</a>
           <a href="#" class="mobile-nav-link" onclick="showTab('visual-exam'); return false;">🎯 Visual Exam</a>
+          <a href="#" class="mobile-nav-link" onclick="showTab('sample'); return false;">📄 Sample Questions</a>
         </div>
         <div class="mobile-nav-section">
           <div class="mobile-nav-title">Study</div>
@@ -376,6 +381,7 @@
       <button class="nav-tab" data-tab="services"></button>
       <button class="nav-tab" data-tab="adaptive"></button>
       <button class="nav-tab" data-tab="visual-exam"></button>
+      <button class="nav-tab" data-tab="sample"></button>
     </nav>
   </div>
 
@@ -412,6 +418,10 @@
             <span aria-hidden="true">🚀</span>
             <span>Start Free Practice</span>
             <span aria-hidden="true">→</span>
+          </button>
+          <button class="btn-secondary-lg" onclick="showTab('sample')" aria-label="Try 10 free sample questions">
+            <span aria-hidden="true">📄</span>
+            <span>Try Sample Questions</span>
           </button>
           <button class="btn-secondary-lg" onclick="scrollToFeatures()" aria-label="Explore platform features">
             <span>Explore Features</span>
@@ -1533,6 +1543,99 @@
       </div>
     </section>
 
+    <!-- ==================== SAMPLE QUESTIONS TAB ==================== -->
+    <section id="sample" class="app-section" aria-label="Sample Questions">
+      <div class="sample-header">
+        <h1>📄 Sample Questions</h1>
+        <p class="sample-subtitle">
+          Try these 10 hand-picked questions to experience the quality of our content.
+          No signup required!
+        </p>
+        <div class="sample-stats">
+          <div class="sample-stat">
+            <strong>10</strong>
+            <span>Sample Questions</span>
+          </div>
+          <div class="sample-stat">
+            <strong>5</strong>
+            <span>AWS Domains</span>
+          </div>
+          <div class="sample-stat">
+            <strong>100%</strong>
+            <span>Free Forever</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample Quiz Container -->
+      <div class="sample-quiz-container">
+        <div class="sample-progress-bar">
+          <div class="sample-progress-fill" id="sample-progress" style="width: 10%;"></div>
+        </div>
+
+        <div class="sample-question-header">
+          <span id="sample-question-number">Question 1 of 10</span>
+          <span id="sample-domain-badge" class="domain-badge"></span>
+        </div>
+
+        <div id="sample-question-content">
+          <!-- Question rendered by sample-questions.js -->
+        </div>
+
+        <div class="sample-navigation">
+          <button id="sample-prev-btn" class="btn-secondary" onclick="previousSampleQuestion()" disabled>
+            ← Previous
+          </button>
+          <div>
+            <button id="sample-submit-btn" class="btn-primary" onclick="submitSampleAnswer()">
+              Submit Answer
+            </button>
+            <p id="sample-error-msg" class="sample-error-msg" role="alert">Please select an answer before submitting.</p>
+          </div>
+          <button id="sample-next-btn" class="btn-primary" onclick="nextSampleQuestion()" style="display: none;">
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <!-- Completion CTA -->
+      <div id="sample-completion" class="sample-completion" style="display: none;">
+        <div class="completion-icon">🎉</div>
+        <h2>Great Job!</h2>
+        <p>You've completed all 10 sample questions.</p>
+
+        <div class="sample-score">
+          <div class="score-circle">
+            <span id="sample-score-text">0/10</span>
+            <span class="score-label">Correct</span>
+          </div>
+        </div>
+
+        <div class="completion-cta">
+          <h3>Ready for More?</h3>
+          <p>Get access to <strong>20 FREE questions</strong> with full quiz features!</p>
+          <button class="btn-cta-large" onclick="showTab('quiz')">
+            🚀 Start Full Quiz (20 Free Questions)
+          </button>
+          <button class="btn-restart-sample" onclick="restartSampleQuiz()">
+            🔄 Retry Sample Questions
+          </button>
+        </div>
+
+        <div class="feature-highlight">
+          <h4>Full Quiz Includes:</h4>
+          <div class="feature-grid">
+            <div class="feature-item">✅ 20 free questions</div>
+            <div class="feature-item">✅ Visual architecture builder</div>
+            <div class="feature-item">✅ Mock exam mode</div>
+            <div class="feature-item">✅ Progress tracking</div>
+            <div class="feature-item">✅ Detailed explanations</div>
+            <div class="feature-item">✅ Works offline</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== VISUAL ARCHITECTURE EXAM ===== -->
     <section id="visual-exam" class="app-section">
 
@@ -1863,7 +1966,8 @@
       'hints-keywords': '💡 Hint / Keywords',
       'services': '📚 Services',
       'adaptive': '🏗️ Architecture Builder',
-      'visual-exam': '🎯 Visual Architecture Exam'
+      'visual-exam': '🎯 Visual Architecture Exam',
+      'sample': '📄 Sample Questions'
     };
 
     function updatePageTitle(tabName) {
@@ -1904,6 +2008,11 @@
         if (tab.dataset.tab === 'visual-exam' && !visualExamInitialized) {
           initVisualExam();
           visualExamInitialized = true;
+        }
+
+        // Initialize sample quiz when navigating to it
+        if (tab.dataset.tab === 'sample') {
+          if (typeof initSampleQuiz === 'function') initSampleQuiz();
         }
 
         // Scroll to top so content change is immediately visible
@@ -3121,5 +3230,7 @@
 
   <!-- Include payment system script -->
   <script src="payment-system.js"></script>
+  <!-- Include sample questions script -->
+  <script src="sample-questions.js"></script>
 </body>
 </html>
