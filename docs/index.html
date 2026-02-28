@@ -2760,6 +2760,17 @@
         document.getElementById('floatingTips').style.display = 'none';
         return;
       }
+
+      // Check if this question is locked (freemium gate)
+      if (typeof isQuestionLocked === 'function' && isQuestionLocked(currentQuestionIndex)) {
+        document.getElementById('quizQuestion').textContent = '';
+        document.getElementById('quizOptions').innerHTML = getLockedQuestionHTML(currentQuestionIndex);
+        document.getElementById('quizExplanation').style.display = 'none';
+        document.getElementById('nextQuizBtn').style.display = 'none';
+        document.getElementById('floatingTips').style.display = 'none';
+        return;
+      }
+
       const q = filteredQuestions[currentQuestionIndex];
       const cert = certifications[currentCert];
 
@@ -2815,8 +2826,15 @@
     }
 
     function nextQuestion() {
-      currentQuestionIndex = (currentQuestionIndex + 1) % filteredQuestions.length;
-      if (currentQuestionIndex === 0) shuffleArray(filteredQuestions);
+      const nextIndex = (currentQuestionIndex + 1) % filteredQuestions.length;
+      if (nextIndex === 0) shuffleArray(filteredQuestions);
+
+      // Check paywall before advancing
+      if (typeof checkQuestionAccess === 'function' && !checkQuestionAccess(nextIndex)) {
+        return; // Blocked by paywall
+      }
+
+      currentQuestionIndex = nextIndex;
       loadQuestion();
     }
 
@@ -2986,5 +3004,122 @@
   <script src="architecture-builder.js"></script>
   <script src="visual-exam-questions.js"></script>
   <script src="visual-exam.js"></script>
+
+  <!-- ==================== PAYWALL MODAL ==================== -->
+  <div id="paywall-modal" class="paywall-modal" style="display: none;">
+    <div class="paywall-overlay" onclick="closePaywall()"></div>
+
+    <div class="paywall-content">
+      <button class="paywall-close" onclick="closePaywall()" aria-label="Close">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 6L18 18M6 18L18 6"/>
+        </svg>
+      </button>
+
+      <div class="paywall-header">
+        <div class="paywall-icon">🚀</div>
+        <h2>Unlock All 505 Questions</h2>
+        <p class="paywall-subtitle">
+          You've completed the <span id="free-question-count">20</span> free questions.
+          Upgrade to access all <strong>505 SAA-C03 practice questions</strong>!
+        </p>
+      </div>
+
+      <div class="paywall-features">
+        <div class="feature-item">
+          <div class="feature-icon">✅</div>
+          <div class="feature-text">
+            <strong>All 505 Questions</strong>
+            <span>Complete SAA-C03 question bank</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🏗️</div>
+          <div class="feature-text">
+            <strong>Visual Architecture Exam</strong>
+            <span>Build AWS diagrams to prove understanding</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📝</div>
+          <div class="feature-text">
+            <strong>Mock Exam Mode</strong>
+            <span>Simulate real exam conditions</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div class="feature-text">
+            <strong>Progress Tracking</strong>
+            <span>Track performance by domain</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">💾</div>
+          <div class="feature-text">
+            <strong>Works Offline</strong>
+            <span>Practice anywhere, anytime</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">♾️</div>
+          <div class="feature-text">
+            <strong>Lifetime Access</strong>
+            <span>One-time payment, no subscription</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="paywall-pricing">
+        <div class="price-card">
+          <div class="price-header">
+            <span class="price-label">One-Time Payment</span>
+          </div>
+          <div class="price-amount">
+            <span class="currency">$</span>
+            <span class="amount">14.99</span>
+          </div>
+          <div class="price-description">
+            Unlock <span id="locked-question-count">485</span> additional questions
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-premium" onclick="initiatePayment()">
+        🔓 Unlock Full Access Now
+      </button>
+
+      <div class="paywall-footer">
+        <div class="security-badges">
+          <span class="badge-item">
+            <svg width="16" height="16" fill="currentColor">
+              <path d="M8 0L2 3v5c0 3.5 2.5 6.5 6 7 3.5-.5 6-3.5 6-7V3L8 0z"/>
+            </svg>
+            Secure Payment
+          </span>
+          <span class="badge-item">
+            <svg width="16" height="16" fill="currentColor">
+              <path d="M2 4h12v8H2V4zm0-2a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H2z"/>
+            </svg>
+            Stripe Protected
+          </span>
+          <span class="badge-item">
+            <svg width="16" height="16" fill="currentColor">
+              <circle cx="8" cy="8" r="6"/>
+            </svg>
+            No Subscription
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include payment system script -->
+  <script src="payment-system.js"></script>
 </body>
 </html>
