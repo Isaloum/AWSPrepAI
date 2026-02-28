@@ -34,12 +34,12 @@
     .card-orange{border-left:4px solid var(--light-aqua)}
     .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
     .btn{padding:.75rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer;transition:all .2s;border:none;font-size:.9rem}
-    .btn-primary{background:var(--aws-blue);color:#fff}
-    .btn-primary:hover{background:var(--accent-2);box-shadow:0 2px 4px rgba(0,115,187,.3)}
+    .btn.btn-primary{background:var(--aws-blue);color:#fff}
+    .btn.btn-primary:hover{background:var(--accent-2);box-shadow:0 2px 4px rgba(0,115,187,.3)}
     .btn-success{background:var(--success);color:#fff}
     .btn-danger{background:var(--danger);color:#fff}
-    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
-    .btn-secondary:hover{background:#f0f0f0;border-color:var(--aws-blue)}
+    .btn.btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+    .btn.btn-secondary:hover{background:#f0f0f0;border-color:var(--aws-blue)}
     .btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
     .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem}
     .stat-card{background:#fff;padding:1.25rem;border-radius:var(--radius);text-align:center;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.08)}
@@ -76,8 +76,6 @@
     .hero{background:var(--aws-dark);padding:2.5rem 1rem;text-align:center;margin:0 0 1.5rem 0;border-radius:var(--radius);box-shadow:0 2px 8px rgba(0,0,0,.1)}
     .hero h1{font-size:3rem;color:#fff;margin-bottom:1rem;font-weight:900}
     .hero p{font-size:1.25rem;color:#d5dbdb;margin-bottom:2rem;max-width:800px;margin-left:auto;margin-right:auto}
-    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);padding:.75rem 1.5rem;border-radius:999px;margin-bottom:2rem;border:2px solid var(--aws-blue)}
-    .hero-badge img{width:50px;height:50px}
     .cta-button{display:inline-block;padding:1rem 2.5rem;background:var(--aws-blue);color:#fff;border-radius:8px;font-weight:800;font-size:1.1rem;text-decoration:none;transition:all .3s;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,115,187,.3)}
     .cta-button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,115,187,.4);background:var(--accent-2)}
     .section-heading{font-size:2rem;font-weight:800;color:var(--aws-dark);margin-bottom:1.5rem;border-bottom:3px solid var(--aws-blue);padding-bottom:.5rem;display:inline-block}
@@ -389,84 +387,95 @@
   <section id="home" class="app-section active" aria-label="Home">
 
   <!-- Hero Section (Redesigned) -->
-  <section id="hero" class="hero-new" aria-label="Hero">
+  <section class="hero-section" aria-label="Hero">
     <div class="hero-container">
+      <!-- Left Side: Content -->
       <div class="hero-content">
-        <!-- Trust Signal Badge -->
-        <div class="certification-badge" role="img" aria-label="AWS Certified Solutions Architect Associate">
-          <div class="cert-icon" aria-hidden="true">☁️</div>
-          <div class="cert-text">
-            <div class="cert-title">AWS Certified</div>
-            <div class="cert-subtitle">Solutions Architect Associate</div>
-          </div>
+        <!-- Badge -->
+        <div class="hero-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+          </svg>
+          <span>AWS Certified Solutions Architect Associate</span>
         </div>
 
-        <!-- Clear Value Proposition -->
-        <h1 class="hero-headline">
-          Pass AWS SAA-C03 by Building,
-          <span class="headline-highlight">Not Memorizing</span>
+        <!-- Main Heading -->
+        <h1 class="hero-title">
+          Pass AWS SAA-C03 by Building,<br>
+          <span class="gradient-text">Not Memorizing</span>
         </h1>
 
-        <p class="hero-description">
-          The only platform that tests if you can BUILD AWS solutions.
+        <!-- Subtitle -->
+        <p class="hero-subtitle">
+          The only platform that tests if you can <strong>BUILD AWS solutions</strong>.
           505 interactive questions + visual architecture builder.
         </p>
 
-        <!-- Primary CTA - Fitts's Law (large, prominent target) -->
-        <div class="hero-cta-group">
-          <button class="btn-primary-lg" onclick="startPractice()" aria-label="Start free practice">
-            <span aria-hidden="true">🚀</span>
-            <span>Start Free Practice</span>
-            <span aria-hidden="true">→</span>
+        <!-- CTA Buttons -->
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="startPractice()" aria-label="Start free practice">
+            🚀 Start Free Practice
           </button>
-          <button class="btn-secondary-lg" onclick="showTab('sample')" aria-label="Try 10 free sample questions">
-            <span aria-hidden="true">📄</span>
-            <span>Try Sample Questions</span>
-          </button>
-          <button class="btn-secondary-lg" onclick="scrollToFeatures()" aria-label="Explore platform features">
-            <span>Explore Features</span>
+          <button class="btn-secondary" onclick="showTab('sample')" aria-label="Try sample questions">
+            📄 Try Sample Questions
           </button>
         </div>
 
-        <!-- Trust Badges -->
-        <div class="trust-badges" aria-label="Trust indicators">
-          <span class="trust-badge">✅ 505 Questions</span>
-          <span class="trust-badge">✅ Always Free</span>
-          <span class="trust-badge">✅ Works Offline</span>
+        <!-- Feature Badges -->
+        <div class="hero-badges" aria-label="Trust indicators">
+          <span class="badge">✅ 505 Questions</span>
+          <span class="badge">💚 Always Free</span>
+          <span class="badge">📴 Works Offline</span>
         </div>
       </div>
 
-      <!-- Hero Visual: AWS Architecture Preview -->
+      <!-- Right Side: Architecture Diagram -->
       <div class="hero-visual" aria-hidden="true">
-        <div class="architecture-preview">
-          <div class="arch-preview-title">Sample AWS Architecture</div>
-          <svg class="arch-preview-svg" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect width="400" height="260" fill="rgba(255,255,255,0.05)" rx="8"/>
-            <rect x="20" y="20" width="360" height="220" rx="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
-            <text x="30" y="38" fill="rgba(255,255,255,0.6)" font-size="10" font-family="sans-serif">VPC</text>
-            <circle cx="200" cy="52" r="22" fill="#FF9900" opacity="0.9"/>
-            <text x="200" y="57" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">Internet</text>
-            <rect x="155" y="98" width="90" height="32" rx="6" fill="#0073BB" opacity="0.9"/>
-            <text x="200" y="119" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">Load Balancer</text>
-            <rect x="70" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-            <text x="105" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
-            <rect x="165" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-            <text x="200" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
-            <rect x="260" y="158" width="70" height="32" rx="6" fill="#232F3E" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-            <text x="295" y="179" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">EC2</text>
-            <rect x="155" y="215" width="90" height="28" rx="6" fill="#10B981" opacity="0.9"/>
-            <text x="200" y="233" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif" font-weight="bold">RDS Database</text>
-            <defs>
-              <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-                <path d="M0,0 L0,8 L8,4 z" fill="rgba(255,255,255,0.5)"/>
-              </marker>
-            </defs>
-            <line x1="200" y1="74" x2="200" y2="98" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" marker-end="url(#arrow)"/>
-            <line x1="160" y1="130" x2="122" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-            <line x1="200" y1="130" x2="200" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-            <line x1="240" y1="130" x2="278" y2="158" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-            <line x1="200" y1="190" x2="200" y2="215" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-          </svg>
+        <div class="architecture-card">
+          <div class="architecture-header">
+            <span class="architecture-label">SAMPLE AWS ARCHITECTURE</span>
+          </div>
+
+          <div class="architecture-diagram">
+            <!-- VPC Container -->
+            <div class="vpc-container">
+              <span class="vpc-label">VPC</span>
+
+              <!-- Internet -->
+              <div class="aws-service internet">
+                <span>🌐</span>
+                <span>Internet</span>
+              </div>
+
+              <!-- Load Balancer -->
+              <div class="aws-service load-balancer">
+                <span>⚖️</span>
+                <span>Load Balancer</span>
+              </div>
+
+              <!-- EC2 Instances -->
+              <div class="ec2-row">
+                <div class="aws-service ec2">
+                  <span>🖥️</span>
+                  <span>EC2</span>
+                </div>
+                <div class="aws-service ec2">
+                  <span>🖥️</span>
+                  <span>EC2</span>
+                </div>
+                <div class="aws-service ec2">
+                  <span>🖥️</span>
+                  <span>EC2</span>
+                </div>
+              </div>
+
+              <!-- RDS Database -->
+              <div class="aws-service rds">
+                <span>🗄️</span>
+                <span>RDS Database</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
