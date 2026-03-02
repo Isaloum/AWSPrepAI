@@ -255,6 +255,7 @@
 
 .stat-item {
   text-align: center;
+  border-radius: 12px;
 }
 
 .stat-item-number {
