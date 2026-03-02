@@ -307,6 +307,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .feature-card {
@@ -326,6 +327,8 @@
 .feature-card.feature-highlight {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
   border-color: rgba(59, 130, 246, 0.3);
+  margin-top: 0;
+  padding: 1.75rem;
 }
 
 .feature-icon {
