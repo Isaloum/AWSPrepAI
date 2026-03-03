@@ -160,6 +160,91 @@
     </div>
   </section>
 
+  <!-- Pricing Section -->
+  <section class="pricing-section" id="pricing">
+    <div class="section-header">
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <p class="section-subtitle">Choose the plan that works for you. Upgrade or cancel anytime.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="pricing-card">
+        <div class="pricing-card-header">
+          <div class="pricing-tier-name">Free</div>
+          <div class="pricing-price"><span class="pricing-currency">$</span><span class="pricing-amount">0</span></div>
+          <div class="pricing-period">forever</div>
+        </div>
+        <ul class="pricing-features-list">
+          <li>✓ 50 practice questions (10% of 505)</li>
+          <li>✓ 1 mock exam attempt</li>
+          <li>✓ Study guide (read-only)</li>
+          <li>✓ Keywords &amp; hints</li>
+          <li class="pricing-feature-locked">✗ Full question bank</li>
+          <li class="pricing-feature-locked">✗ Unlimited mock exams</li>
+          <li class="pricing-feature-locked">✗ Visual scenarios</li>
+          <li class="pricing-feature-locked">✗ Progress tracking</li>
+        </ul>
+        <a href="index.html#quiz" class="pricing-cta pricing-cta--secondary">Start Free</a>
+      </div>
+
+      <!-- MONTHLY -->
+      <div class="pricing-card">
+        <div class="pricing-card-header">
+          <div class="pricing-tier-name">Monthly</div>
+          <div class="pricing-price"><span class="pricing-currency">$</span><span class="pricing-amount">10</span></div>
+          <div class="pricing-period">/month • cancel anytime</div>
+        </div>
+        <ul class="pricing-features-list">
+          <li>✓ All 505 questions</li>
+          <li>✓ Unlimited mock exams</li>
+          <li>✓ 20 visual scenarios</li>
+          <li>✓ Progress tracking</li>
+          <li>✓ All future updates</li>
+        </ul>
+        <button class="pricing-cta pricing-cta--secondary" onclick="initiatePaymentFromLanding('monthly')">Get Monthly</button>
+      </div>
+
+      <!-- YEARLY — best value -->
+      <div class="pricing-card pricing-card--featured">
+        <div class="pricing-badge">Save $61/year</div>
+        <div class="pricing-card-header">
+          <div class="pricing-tier-name">Yearly</div>
+          <div class="pricing-price"><span class="pricing-currency">$</span><span class="pricing-amount">59</span></div>
+          <div class="pricing-period">/year (~$4.92/month)</div>
+        </div>
+        <ul class="pricing-features-list">
+          <li>✓ Everything in Monthly</li>
+          <li>✓ ~50% off vs monthly</li>
+          <li>✓ All 505 questions</li>
+          <li>✓ Unlimited mock exams</li>
+          <li>✓ 20 visual scenarios</li>
+          <li>✓ Progress tracking</li>
+        </ul>
+        <button class="pricing-cta pricing-cta--primary" onclick="initiatePaymentFromLanding('yearly')">Get Yearly</button>
+      </div>
+
+      <!-- LIFETIME — most popular -->
+      <div class="pricing-card pricing-card--popular">
+        <div class="pricing-badge pricing-badge--popular">⭐ Most Popular</div>
+        <div class="pricing-card-header">
+          <div class="pricing-tier-name">Lifetime</div>
+          <div class="pricing-price"><span class="pricing-currency">$</span><span class="pricing-amount">99</span></div>
+          <div class="pricing-period">one-time payment</div>
+        </div>
+        <ul class="pricing-features-list">
+          <li>✓ Everything forever</li>
+          <li>✓ All future updates included</li>
+          <li>✓ All 505 questions</li>
+          <li>✓ Unlimited mock exams</li>
+          <li>✓ 20 visual scenarios</li>
+          <li>✓ Progress tracking</li>
+        </ul>
+        <button class="pricing-cta pricing-cta--primary" onclick="initiatePaymentFromLanding('lifetime')">Get Lifetime Access</button>
+      </div>
+    </div>
+  </section>
+
   <!-- How It Works -->
   <section class="how-it-works">
     <div class="section-header">
@@ -172,7 +257,7 @@
         <div class="step-number">1</div>
         <h3 class="step-title">Start Free</h3>
         <p class="step-description">
-          Begin with 20 free practice questions to test your knowledge
+          Begin with 50 free practice questions to test your knowledge
         </p>
       </div>
       
@@ -218,8 +303,16 @@
       <a href="index.html#quiz" class="btn-cta-lg">
         Start Practicing Now →
       </a>
-      <p class="cta-note">Try 20 questions free • No credit card required</p>
+      <p class="cta-note">Try 50 questions free • No credit card required</p>
     </div>
   </section>
 </body>
+<!-- Stripe JS + payment-system for landing page CTAs -->
+<script src="https://js.stripe.com/v3/"></script>
+<script src="payment-system.js"></script>
+<script>
+  function initiatePaymentFromLanding(tier) {
+    initiatePayment(tier);
+  }
+</script>
 </html>

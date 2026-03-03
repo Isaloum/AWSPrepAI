@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="landing.css">
   <link rel="stylesheet" href="navigation.css">
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     :root{--bg:#F9FAFB;--card:#ffffff;--accent:#3B82F6;--accent-2:#2563EB;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#1F2937;--aws-blue:#3B82F6;--light-bg:#fafafa;--light-aqua:#7DD3C0;--mint:#A8E6CF}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -3205,7 +3206,7 @@
         <div class="paywall-icon">🚀</div>
         <h2>Unlock All 505 Questions</h2>
         <p class="paywall-subtitle">
-          You've completed the <span id="free-question-count">20</span> free questions.
+          You've completed the <span id="free-question-count">50</span> free questions.
           Upgrade to access all <strong>505 SAA-C03 practice questions</strong>!
         </p>
       </div>
@@ -3261,23 +3262,32 @@
       </div>
 
       <div class="paywall-pricing">
-        <div class="price-card">
-          <div class="price-header">
-            <span class="price-label">One-Time Payment</span>
-          </div>
-          <div class="price-amount">
-            <span class="currency">$</span>
-            <span class="amount">14.99</span>
-          </div>
-          <div class="price-description">
-            Unlock <span id="locked-question-count">485</span> additional questions
-          </div>
+        <!-- Monthly -->
+        <div class="price-tier-card">
+          <div class="price-tier-label">Monthly</div>
+          <div class="price-tier-amount"><span class="currency">$</span><span class="amount">10</span><span class="price-tier-period">/month</span></div>
+          <div class="price-tier-desc">All 505 questions · Unlimited exams · Cancel anytime</div>
+          <button class="btn-tier btn-tier-secondary" data-tier="monthly" onclick="initiatePayment('monthly')">Get Monthly</button>
+        </div>
+
+        <!-- Yearly — best value -->
+        <div class="price-tier-card price-tier-card--featured">
+          <div class="price-tier-badge">Save $61/year</div>
+          <div class="price-tier-label">Yearly</div>
+          <div class="price-tier-amount"><span class="currency">$</span><span class="amount">59</span><span class="price-tier-period">/year</span></div>
+          <div class="price-tier-desc">Everything in Monthly · ~50% off</div>
+          <button class="btn-tier btn-tier-primary" data-tier="yearly" onclick="initiatePayment('yearly')">Get Yearly</button>
+        </div>
+
+        <!-- Lifetime — most popular -->
+        <div class="price-tier-card price-tier-card--popular">
+          <div class="price-tier-badge price-tier-badge--popular">⭐ Most Popular</div>
+          <div class="price-tier-label">Lifetime</div>
+          <div class="price-tier-amount"><span class="currency">$</span><span class="amount">99</span><span class="price-tier-period"> once</span></div>
+          <div class="price-tier-desc">Everything forever · All future updates</div>
+          <button class="btn-tier btn-tier-primary" data-tier="lifetime" onclick="initiatePayment('lifetime')">Get Lifetime</button>
         </div>
       </div>
-
-      <button class="btn-premium" onclick="initiatePayment()">
-        🔓 Unlock Full Access Now
-      </button>
 
       <div class="paywall-footer">
         <div class="security-badges">
