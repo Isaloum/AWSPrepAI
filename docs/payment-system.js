@@ -1,13 +1,4 @@
 // ==================== PAYMENT SYSTEM ====================
-copilot/update-payment-system-pricing
-// Freemium model: First 50 questions free, then choose a plan
-
-const FREE_QUESTION_LIMIT = 50;
-const PRICING = {
-  monthly:  { price: 10,  label: 'Monthly',  period: '/month' },
-  yearly:   { price: 59,  label: 'Yearly',   period: '/year', savings: 61 },
-  lifetime: { price: 99,  label: 'Lifetime', period: '',      popular: true }
-};
 // Freemium model: First 50 questions free, then paid tiers for full access
 
 const FREE_QUESTION_LIMIT = 50;
@@ -34,7 +25,7 @@ const PRICING = {
     interval: 'one-time'
   }
 };
-main
+
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE'; // Replace with your Stripe publishable key (safe to commit - not a secret)
 
 // Initialize Stripe
@@ -148,29 +139,37 @@ function updatePaywallStats() {
  * Initiate Stripe payment for a given pricing tier
  * @param {string} tier - 'monthly', 'yearly', or 'lifetime'
  */
-async function initiatePayment(tier) {
-  const selectedTier = tier || 'lifetime';
-
+async function initiatePayment(tier = 'lifetime') {
   if (!stripe) {
     alert('Payment system not initialized. Please refresh the page.');
     return;
   }
 
-  const button = document.querySelector(`.btn-tier[data-tier="${selectedTier}"]`) ||
-                 document.querySelector('.btn-premium');
+  const pricing = PRICING[tier];
+  if (!pricing) {
+    alert('Invalid pricing tier selected.');
+    return;
+  }
+
+  const button = document.querySelector(`.btn-premium[data-tier="${tier}"]`);
 
   try {
+    // Show loading state
     if (button) {
       button.disabled = true;
       button.textContent = '⏳ Processing...';
     }
 
+    // Call Netlify function to create Stripe Checkout session
     const response = await fetch('/.netlify/functions/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tier: selectedTier }),
+      body: JSON.stringify({
+        priceId: pricing.stripePriceId,
+        tier: tier
+      }),
     });
 
     if (!response.ok) {
@@ -179,6 +178,7 @@ async function initiatePayment(tier) {
 
     const session = await response.json();
 
+    // Redirect to Stripe Checkout
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
     });
@@ -187,7 +187,7 @@ async function initiatePayment(tier) {
       alert(result.error.message);
       if (button) {
         button.disabled = false;
-        button.textContent = '🔓 Get ' + (PRICING[selectedTier] ? PRICING[selectedTier].label : 'Premium');
+        button.textContent = pricing.label || '🔓 Unlock';
       }
     }
   } catch (error) {
@@ -196,7 +196,7 @@ async function initiatePayment(tier) {
 
     if (button) {
       button.disabled = false;
-      button.textContent = '🔓 Get ' + (PRICING[selectedTier] ? PRICING[selectedTier].label : 'Premium');
+      button.textContent = pricing.label || '🔓 Unlock';
     }
   }
 }
