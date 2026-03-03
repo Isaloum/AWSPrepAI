@@ -1,8 +1,12 @@
 // ==================== PAYMENT SYSTEM ====================
-// Freemium model: First 20 questions free, $14.99 for full access
+// Freemium model: First 50 questions free, then choose a plan
 
-const FREE_QUESTION_LIMIT = 20;
-const PREMIUM_PRICE = 14.99;
+const FREE_QUESTION_LIMIT = 50;
+const PRICING = {
+  monthly:  { price: 10,  label: 'Monthly',  period: '/month' },
+  yearly:   { price: 59,  label: 'Yearly',   period: '/year', savings: 61 },
+  lifetime: { price: 99,  label: 'Lifetime', period: '',      popular: true }
+};
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE'; // Replace with your Stripe publishable key (safe to commit - not a secret)
 
 // Initialize Stripe
@@ -113,29 +117,32 @@ function updatePaywallStats() {
 // ==================== STRIPE PAYMENT ====================
 
 /**
- * Initiate Stripe payment
+ * Initiate Stripe payment for a given pricing tier
+ * @param {string} tier - 'monthly', 'yearly', or 'lifetime'
  */
-async function initiatePayment() {
+async function initiatePayment(tier) {
+  const selectedTier = tier || 'lifetime';
+
   if (!stripe) {
     alert('Payment system not initialized. Please refresh the page.');
     return;
   }
 
+  const button = document.querySelector(`.btn-tier[data-tier="${selectedTier}"]`) ||
+                 document.querySelector('.btn-premium');
+
   try {
-    // Show loading state
-    const button = document.querySelector('.btn-premium');
     if (button) {
       button.disabled = true;
       button.textContent = '⏳ Processing...';
     }
 
-    // Call backend to create Stripe Checkout session
     const response = await fetch('/.netlify/functions/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ tier: selectedTier }),
     });
 
     if (!response.ok) {
@@ -144,7 +151,6 @@ async function initiatePayment() {
 
     const session = await response.json();
 
-    // Redirect to Stripe Checkout
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
     });
@@ -153,19 +159,52 @@ async function initiatePayment() {
       alert(result.error.message);
       if (button) {
         button.disabled = false;
-        button.textContent = '🔓 Unlock Full Access';
+        button.textContent = '🔓 Get ' + (PRICING[selectedTier] ? PRICING[selectedTier].label : 'Premium');
       }
     }
   } catch (error) {
     console.error('Payment error:', error);
     alert('Payment failed. Please try again or contact support.');
 
-    const button = document.querySelector('.btn-premium');
     if (button) {
       button.disabled = false;
-      button.textContent = '🔓 Unlock Full Access';
+      button.textContent = '🔓 Get ' + (PRICING[selectedTier] ? PRICING[selectedTier].label : 'Premium');
     }
   }
+}
+
+// ==================== SUBSCRIPTION MANAGEMENT ====================
+
+/**
+ * Get the current subscription tier from local storage
+ */
+function getSubscriptionTier() {
+  return localStorage.getItem('subscription_tier') || null;
+}
+
+/**
+ * Grant premium access with a specific tier
+ * @param {string} tier - 'monthly', 'yearly', or 'lifetime'
+ */
+function grantPremiumAccessWithTier(tier) {
+  grantPremiumAccess();
+  if (tier) {
+    localStorage.setItem('subscription_tier', tier);
+  }
+}
+
+/**
+ * Check if the user's subscription is still active (for monthly/yearly)
+ * For lifetime, always returns true if premium_access is set.
+ */
+function isSubscriptionActive() {
+  if (!hasPremiumAccess()) return false;
+  const tier = getSubscriptionTier();
+  if (tier === 'lifetime' || !tier) return true;
+  // Monthly/yearly: check expiry if stored
+  const expiry = localStorage.getItem('subscription_expiry');
+  if (!expiry) return true; // No expiry stored → assume active
+  return new Date(expiry) > new Date();
 }
 
 // ==================== QUESTION NAVIGATION HOOKS ====================
@@ -192,12 +231,12 @@ function getLockedQuestionHTML(questionIndex) {
       <h3>Question ${questionIndex + 1} is Locked</h3>
       <p class="lock-description">
         You've completed the <strong>${FREE_QUESTION_LIMIT} free questions</strong>. 
-        Unlock all <strong>${totalQuestions} questions</strong> for just <strong>$${PREMIUM_PRICE}</strong>!
+        Unlock all <strong>${totalQuestions} questions</strong> — plans start at <strong>$${PRICING.monthly.price}/month</strong>!
       </p>
       <button class="btn-unlock" onclick="showPaywall()">
         🚀 Unlock All Questions
       </button>
-      <p class="lock-note">One-time payment • Lifetime access</p>
+      <p class="lock-note">Monthly, yearly, or lifetime access available</p>
     </div>
   `;
 }
