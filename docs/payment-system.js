@@ -1,4 +1,5 @@
 // ==================== PAYMENT SYSTEM ====================
+copilot/update-payment-system-pricing
 // Freemium model: First 50 questions free, then choose a plan
 
 const FREE_QUESTION_LIMIT = 50;
@@ -7,6 +8,33 @@ const PRICING = {
   yearly:   { price: 59,  label: 'Yearly',   period: '/year', savings: 61 },
   lifetime: { price: 99,  label: 'Lifetime', period: '',      popular: true }
 };
+// Freemium model: First 50 questions free, then paid tiers for full access
+
+const FREE_QUESTION_LIMIT = 50;
+
+const PRICING = {
+  monthly: {
+    price: 10,
+    stripePriceId: 'price_1T6jlRE9neqrFM5LVWXZn0Yy',
+    label: 'Monthly',
+    interval: 'month'
+  },
+  yearly: {
+    price: 59,
+    stripePriceId: 'price_1T6jssE9neqrFM5LWiY47vY',
+    label: 'Yearly',
+    savings: 61,
+    interval: 'year'
+  },
+  lifetime: {
+    price: 99,
+    stripePriceId: 'price_1T613AE9neqrFM5LpyMp8M69',
+    label: 'Lifetime',
+    popular: true,
+    interval: 'one-time'
+  }
+};
+main
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE'; // Replace with your Stripe publishable key (safe to commit - not a secret)
 
 // Initialize Stripe
