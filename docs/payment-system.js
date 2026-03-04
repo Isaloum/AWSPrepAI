@@ -26,7 +26,7 @@ const PRICING = {
   }
 };
 
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE'; // Replace with your Stripe publishable key (safe to commit - not a secret)
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_51T0D2ZE9neqrFM5LGdEoLrxxjlOMSwRrwgQTqWYHDM8J163XrRZlo7jAIzp4WDj2nNqq1sSCGJH2JXtzkbzswGAm003fvoymSl'; // Stripe publishable key (safe to commit - not a secret)
 
 // Initialize Stripe
 let stripe;

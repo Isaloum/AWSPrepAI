@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contact - AWSPrepAI</title>
+  <title>Pricing - AWSPrepAI</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
@@ -12,35 +12,32 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     .container{max-width:1200px;margin:0 auto;padding:1rem}
-    header{background:var(--aws-dark);border-bottom:2px solid var(--border);padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 4px rgba(0,0,0,.1)}
-    .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-    .logo{display:flex;align-items:center;gap:.75rem;font-size:1.5rem;font-weight:800;color:#fff;text-decoration:none}
-    .logo img{height:40px}
-    .nav-links{display:flex;gap:.5rem;flex-wrap:wrap}
-    .nav-link{color:#fff;text-decoration:none;padding:.5rem 1rem;border-radius:6px;font-weight:600;transition:all .2s;border:1px solid transparent;background:rgba(255,255,255,.1)}
-    .nav-link:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
-    .nav-link.active{background:var(--aws-blue);color:#fff;border-color:var(--aws-blue)}
     main{padding:2rem 0;min-height:calc(100vh - 200px)}
-    .content-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-    h1{font-size:2.5rem;color:var(--aws-dark);margin-bottom:1rem}
-    h2{font-size:1.75rem;color:var(--aws-dark);margin-top:1.5rem;margin-bottom:.75rem}
-    p{margin-bottom:.75rem;color:var(--muted)}
-    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.5rem 0}
-    .contact-card{background:#f8f9fa;padding:1.5rem;border-radius:var(--radius);border-left:4px solid #3B82F6;text-align:center}
-    .contact-icon{font-size:2.5rem;margin-bottom:.75rem}
-    .contact-card h3{color:var(--aws-blue);margin-bottom:.5rem}
-    .contact-card a{color:var(--text);text-decoration:none;transition:color .2s}
-    .contact-card a:hover{color:var(--aws-blue)}
-    footer{background:var(--aws-dark);border-top:2px solid var(--border);padding:1.5rem 0;margin-top:2rem}
-    .footer-content{max-width:1200px;margin:0 auto;padding:0 1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem}
-    .footer-left{display:flex;flex-direction:column;gap:.5rem}
-    .footer-title{font-size:1.25rem;font-weight:700;color:#fff}
-    .footer-subtitle{color:#d5dbdb;font-size:.9rem}
-    .footer-right{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-    .footer-link{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;background:rgba(255,255,255,.1);border:1px solid transparent;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;transition:all .2s;font-size:.9rem}
-    .footer-link:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
-    .tech-badge{display:inline-block;padding:.25rem .75rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;font-size:.75rem;color:#d5dbdb;font-weight:600}
-    @media(max-width:768px){.nav-links{width:100%;justify-content:center}h1{font-size:2rem}.footer-content{flex-direction:column;text-align:center}.footer-right{justify-content:center}}
+    h1{font-size:2.5rem;color:var(--aws-dark);margin-bottom:.5rem;text-align:center}
+    .page-subtitle{text-align:center;color:var(--muted);font-size:1.1rem;margin-bottom:2.5rem}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3rem}
+    .pricing-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);position:relative;display:flex;flex-direction:column}
+    .pricing-card--popular{border:2px solid var(--aws-orange);box-shadow:0 8px 24px rgba(255,153,0,.2)}
+    .popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--aws-orange);color:#fff;font-size:.75rem;font-weight:700;padding:.35rem 1rem;border-radius:999px;white-space:nowrap}
+    .tier-name{font-size:1.25rem;font-weight:700;color:var(--aws-dark);margin-bottom:.5rem}
+    .tier-price{font-size:3rem;font-weight:900;color:var(--aws-blue);line-height:1}
+    .tier-price span.currency{font-size:1.5rem;vertical-align:top;margin-top:.5rem;display:inline-block}
+    .tier-period{color:var(--muted);font-size:.9rem;margin-bottom:.5rem}
+    .tier-savings{display:inline-block;background:#dcfce7;color:#166534;font-size:.8rem;font-weight:700;padding:.2rem .6rem;border-radius:6px;margin-bottom:1rem}
+    .features-list{list-style:none;margin:1.25rem 0 1.5rem;flex:1}
+    .features-list li{padding:.4rem 0;color:var(--muted);font-size:.95rem;border-bottom:1px solid #f3f4f6}
+    .features-list li:last-child{border-bottom:none}
+    .features-list li::before{content:'✓ ';color:var(--success);font-weight:700}
+    .btn-premium{display:block;width:100%;padding:.875rem;background:var(--aws-blue);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;margin-top:auto}
+    .btn-premium:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.4)}
+    .btn-premium--popular{background:var(--aws-orange)}
+    .btn-premium--popular:hover{background:#e08800;box-shadow:0 4px 12px rgba(255,153,0,.4)}
+    .secure-badges{text-align:center;margin-top:1.5rem;color:var(--muted);font-size:.85rem}
+    .secure-badges .badges-row{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+    .secure-badge{display:inline-flex;align-items:center;gap:.35rem;background:#f3f4f6;border:1px solid var(--border);border-radius:6px;padding:.3rem .75rem;font-size:.8rem;font-weight:600;color:var(--muted)}
+    footer{background:var(--aws-dark);border-top:2px solid var(--border);padding:1.5rem 0;margin-top:2rem;text-align:center;color:#d5dbdb}
+    @media(max-width:900px){.pricing-grid{grid-template-columns:1fr}}
+    @media(max-width:768px){h1{font-size:2rem}}
   </style>
 </head>
 <body>
@@ -105,8 +102,8 @@
 
         <a href="about.html" class="nav-link">About</a>
         <a href="resources.html" class="nav-link">Resources</a>
-        <a href="contact.html" class="nav-link active">Contact</a>
-        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="pricing.html" class="nav-link active">Pricing</a>
       </div>
 
       <a href="index.html" class="nav-cta">Start Practicing</a>
@@ -152,89 +149,75 @@
   </div>
 
   <main class="container">
-    <div class="content-card">
-      <h1>Get in Touch</h1>
-      
-      <p>We'd love to hear from you! Whether you have questions, feedback, or suggestions for improving AWSPrepAI, feel free to reach out through any of the channels below.</p>
+    <h1>Simple, Transparent Pricing</h1>
+    <p class="page-subtitle">Choose the plan that works for you. Upgrade or cancel anytime.</p>
 
-      <div class="contact-grid">
-        <div class="contact-card">
-          <div class="contact-icon">📧</div>
-          <h3>GitHub Issues</h3>
-          <p>Report bugs, request features, or ask questions</p>
-          <a href="https://github.com/Isaloum/AWSPrepAI/issues" target="_blank" rel="noopener">Open an Issue</a>
-        </div>
-
-        <div class="contact-card">
-          <div class="contact-icon">💬</div>
-          <h3>Discussions</h3>
-          <p>Join the community discussion</p>
-          <a href="https://github.com/Isaloum/AWSPrepAI/discussions" target="_blank" rel="noopener">Start a Discussion</a>
-        </div>
-
-        <div class="contact-card">
-          <div class="contact-icon">👨‍💻</div>
-          <h3>GitHub Profile</h3>
-          <p>Connect with the developer</p>
-          <a href="https://github.com/Isaloum" target="_blank" rel="noopener">@Isaloum</a>
-        </div>
+    <div class="pricing-grid">
+      <!-- Monthly -->
+      <div class="pricing-card">
+        <div class="tier-name">Monthly</div>
+        <div class="tier-price"><span class="currency">$</span>10</div>
+        <div class="tier-period">/month &bull; cancel anytime</div>
+        <ul class="features-list">
+          <li>All 505 practice questions</li>
+          <li>Unlimited mock exams</li>
+          <li>Visual architecture builder</li>
+          <li>Progress tracking</li>
+          <li>All future updates</li>
+        </ul>
+        <button class="btn-premium" data-tier="monthly" onclick="initiatePayment('monthly')">Get Premium</button>
       </div>
 
-      <h2>Contribute</h2>
-      <p>AWSPrepAI is open source and we welcome contributions! Here's how you can help:</p>
-      
-      <div style="background:#f8f9fa;padding:1.5rem;border-radius:var(--radius);margin:1.5rem 0">
-        <p><strong>📝 Submit Questions:</strong> Help expand our question bank with high-quality practice questions</p>
-        <p><strong>🐛 Report Bugs:</strong> Found an issue? Let us know on GitHub Issues</p>
-        <p><strong>💡 Suggest Features:</strong> Have ideas for new features? We'd love to hear them</p>
-        <p><strong>🔀 Pull Requests:</strong> Contribute code, fix typos, or improve documentation</p>
-        <p><strong>⭐ Star the Repo:</strong> Show your support and help others discover AWSPrepAI</p>
+      <!-- Yearly -->
+      <div class="pricing-card">
+        <div class="tier-name">Yearly</div>
+        <div class="tier-price"><span class="currency">$</span>59</div>
+        <div class="tier-period">/year (~$4.92/month)</div>
+        <span class="tier-savings">Save $61 vs monthly</span>
+        <ul class="features-list">
+          <li>All 505 practice questions</li>
+          <li>Unlimited mock exams</li>
+          <li>Visual architecture builder</li>
+          <li>Progress tracking</li>
+          <li>All future updates</li>
+        </ul>
+        <button class="btn-premium" data-tier="yearly" onclick="initiatePayment('yearly')">Get Premium</button>
       </div>
 
-      <h2>Follow Updates</h2>
-      <p>Stay updated with the latest features and improvements by:</p>
-      <ul style="margin-left:2rem;color:var(--muted)">
-        <li>Watching the <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-blue)">GitHub repository</a></li>
-        <li>Checking the releases page for version updates</li>
-        <li>Reading the changelog in the README</li>
-      </ul>
+      <!-- Lifetime -->
+      <div class="pricing-card pricing-card--popular">
+        <div class="popular-badge">⭐ POPULAR</div>
+        <div class="tier-name">Lifetime</div>
+        <div class="tier-price"><span class="currency">$</span>99</div>
+        <div class="tier-period">one-time payment</div>
+        <ul class="features-list">
+          <li>All 505 practice questions</li>
+          <li>Unlimited mock exams</li>
+          <li>Visual architecture builder</li>
+          <li>Progress tracking</li>
+          <li>All future updates included</li>
+        </ul>
+        <button class="btn-premium btn-premium--popular" data-tier="lifetime" onclick="initiatePayment('lifetime')">Get Premium</button>
+      </div>
+    </div>
 
-      <h2>Support the Project</h2>
-      <p>If AWSPrepAI has helped you in your AWS certification journey, consider:</p>
-      <ul style="margin-left:2rem;color:var(--muted)">
-        <li>⭐ Starring the repository on GitHub</li>
-        <li>🔀 Sharing it with others preparing for AWS exams</li>
-        <li>📝 Providing feedback to help us improve</li>
-        <li>🤝 Contributing to the project</li>
-      </ul>
+    <div class="secure-badges">
+      <div>🔒 Secure payments powered by Stripe</div>
+      <div class="badges-row">
+        <span class="secure-badge">🔐 SSL Encrypted</span>
+        <span class="secure-badge">💳 Stripe Secure</span>
+        <span class="secure-badge">🛡️ No Hidden Fees</span>
+      </div>
     </div>
   </main>
 
   <footer>
     <div class="container">
-      <div class="footer-content">
-        <div class="footer-left">
-          <div class="footer-title">☁️ AWSPrepAI</div>
-          <div class="footer-subtitle">Built by Ihab Saloum • Open Source Project</div>
-          <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
-            <span class="tech-badge">JavaScript</span>
-            <span class="tech-badge">HTML5</span>
-            <span class="tech-badge">CSS3</span>
-            <span class="tech-badge">LocalStorage</span>
-          </div>
-        </div>
-        <div class="footer-right">
-          <a href="https://github.com/Isaloum/AWSPrepAI" class="footer-link" target="_blank" rel="noopener">
-            <span>⭐</span>
-            <span>View Source Code</span>
-          </a>
-          <a href="https://github.com/Isaloum" class="footer-link" target="_blank" rel="noopener">
-            <span>More Projects →</span>
-          </a>
-        </div>
-      </div>
+      <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-blue)">GitHub</a></p>
     </div>
   </footer>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="payment-system.js"></script>
   <script src="navigation.js"></script>
 </body>
 </html>
