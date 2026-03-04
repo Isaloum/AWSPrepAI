@@ -12,7 +12,7 @@ const PRICING = {
   },
   yearly: {
     price: 59,
-    stripePriceId: 'price_1T6jssE9neqrFM5LWiY47vY',
+    stripePriceId: 'price_1T6jssE9neqrFM5LWiY47vYy',
     label: 'Yearly',
     savings: 61,
     interval: 'year'
