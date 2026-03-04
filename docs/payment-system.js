@@ -22,7 +22,11 @@ const PRICING = {
   },
   yearly: {
     price: 59,
+<<<<<<< copilot/fix-stripe-test-mode-price-ids
     stripePriceId: 'price_YEARLY_TEST_ID_HERE', // TODO: Replace with your Stripe TEST price ID for $59/year
+=======
+    stripePriceId: 'price_1T6jssE9neqrFM5LWiY47vYv',
+>>>>>>> main
     label: 'Yearly',
     savings: 61,
     interval: 'year'
