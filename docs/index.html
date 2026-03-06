@@ -2960,18 +2960,10 @@
       });
       const _tab_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
       if (!_tab_isPremium) {
-        // Free users: clicking a domain tab restarts tour from that domain
-        const domIdx = FREE_TOUR_DOMAINS.indexOf(cat);
-        if (domIdx >= 0) {
-          freeTourDomainIndex = domIdx;
-          freeQuestionsAnswered = 0;
-          loadFreeTourDomain(domIdx);
-        } else {
-          // "All Domains" clicked — restart from beginning
-          freeTourDomainIndex = 0;
-          freeQuestionsAnswered = 0;
-          loadFreeTourDomain(0);
-        }
+        // Free users: ALWAYS start guided tour from domain 0 regardless of tab clicked
+        freeTourDomainIndex = 0;
+        freeQuestionsAnswered = 0;
+        loadFreeTourDomain(0);
         return;
       }
       // Premium: normal filter
@@ -3172,6 +3164,12 @@
 
     // Exam Functions
     function startExam() {
+      // Mock Exam is premium only
+      const _exam_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+      if (!_exam_isPremium) {
+        if (typeof showPaywall === 'function') showPaywall();
+        return;
+      }
       const cert = certifications[currentCert];
       examQuestions = [...questions];
       shuffleArray(examQuestions);
