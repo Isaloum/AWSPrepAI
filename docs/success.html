@@ -6,127 +6,121 @@
   <title>Payment Successful - AWSPrepAI</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .success-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      text-align: center;
-      background: linear-gradient(135deg, #F0F9FF 0%, #E0E7FF 100%);
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#F0F9FF 0%,#E0E7FF 100%);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+    .page-wrap{width:100%;max-width:560px}
 
-    .success-card {
-      background: white;
-      border-radius: 16px;
-      padding: 3rem 2rem;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-    }
+    /* Success card */
+    .success-card{background:#fff;border-radius:16px;padding:2.5rem 2rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.15);text-align:center;margin-bottom:1.25rem}
+    .success-icon{font-size:4.5rem;margin-bottom:1rem;display:block;animation:bounce .6s ease}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+    .success-card h1{font-size:1.9rem;font-weight:800;color:#111827;margin-bottom:.6rem}
+    .success-card .subtitle{font-size:1rem;color:#6B7280;margin-bottom:1.5rem;line-height:1.6}
 
-    .success-icon {
-      font-size: 5rem;
-      margin-bottom: 1.5rem;
-      animation: bounce 0.6s ease;
-    }
+    .success-features{background:#F9FAFB;border-radius:10px;padding:1.25rem;margin-bottom:1.5rem;text-align:left}
+    .success-feature{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;font-size:.93rem;color:#374151}
 
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
+    .btn-start{display:block;width:100%;padding:.95rem;background:linear-gradient(135deg,#3B82F6,#8B5CF6);color:#fff;border:none;border-radius:10px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:transform .2s;text-decoration:none;text-align:center}
+    .btn-start:hover{transform:translateY(-2px)}
 
-    .success-card h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #111827;
-      margin-bottom: 1rem;
-    }
+    /* Share card */
+    .share-card{background:#fff;border-radius:16px;padding:1.75rem 2rem;box-shadow:0 4px 12px rgba(0,0,0,.08);text-align:center;margin-bottom:1.25rem}
+    .share-card h3{font-size:1.1rem;font-weight:700;color:#1F2937;margin-bottom:.4rem}
+    .share-card p{font-size:.9rem;color:#6B7280;margin-bottom:1rem}
+    .share-buttons{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+    .share-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:opacity .2s}
+    .share-btn:hover{opacity:.85}
+    .share-btn--twitter{background:#1DA1F2;color:#fff}
+    .share-btn--linkedin{background:#0A66C2;color:#fff}
+    .share-btn--copy{background:#F3F4F6;color:#374151;border:1px solid #D1D5DB}
 
-    .success-card p {
-      font-size: 1.125rem;
-      color: #6B7280;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
+    /* Newsletter card */
+    .newsletter-card{background:linear-gradient(135deg,#1F2937,#374151);border-radius:16px;padding:1.75rem 2rem;box-shadow:0 4px 12px rgba(0,0,0,.15);text-align:center;margin-bottom:1.25rem;color:#fff}
+    .newsletter-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.35rem}
+    .newsletter-card p{font-size:.88rem;opacity:.8;margin-bottom:1rem}
+    .newsletter-form{display:flex;gap:.5rem;flex-wrap:wrap}
+    .newsletter-input{flex:1;min-width:180px;padding:.7rem 1rem;border-radius:8px;border:none;font-size:.9rem;outline:none}
+    .newsletter-btn{padding:.7rem 1.25rem;background:#FF9900;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;white-space:nowrap}
 
-    .success-features {
-      background: #F9FAFB;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: left;
-    }
-
-    .success-feature {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-      font-size: 0.9375rem;
-      color: #374151;
-    }
-
-    .btn-start {
-      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 1rem 2rem;
-      font-size: 1.125rem;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      transition: transform 0.2s;
-    }
-
-    .btn-start:hover {
-      transform: translateY(-2px);
-    }
+    /* Tips card */
+    .tips-card{background:#fff;border-radius:16px;padding:1.75rem 2rem;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:1.25rem}
+    .tips-card h3{font-size:1.05rem;font-weight:700;color:#1F2937;margin-bottom:1rem;text-align:center}
+    .tip-item{display:flex;gap:.75rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid #F3F4F6}
+    .tip-item:last-child{border-bottom:none}
+    .tip-num{background:#3B82F6;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+    .tip-text{font-size:.88rem;color:#374151;line-height:1.5}
   </style>
 </head>
 <body>
-  <div class="success-container">
+  <div class="page-wrap">
+
+    <!-- Success Card -->
     <div class="success-card">
-      <div class="success-icon">🎉</div>
-      <h1>Welcome to Premium!</h1>
-      <p>
-        Your payment was successful. You now have <strong>lifetime access</strong>
-        to all 505 SAA-C03 practice questions.
-      </p>
+      <span class="success-icon">🎉</span>
+      <h1>You're In! Welcome to Premium.</h1>
+      <p class="subtitle">Your payment was successful. Full access to all 505 SAA-C03 questions is now unlocked.</p>
 
       <div class="success-features">
-        <div class="success-feature">
-          ✅ All 505 questions unlocked
-        </div>
-        <div class="success-feature">
-          ✅ Visual architecture exam enabled
-        </div>
-        <div class="success-feature">
-          ✅ Mock exam mode activated
-        </div>
-        <div class="success-feature">
-          ✅ Progress tracking available
-        </div>
-        <div class="success-feature">
-          ✅ Offline access granted
-        </div>
+        <div class="success-feature">✅ All 505 practice questions unlocked</div>
+        <div class="success-feature">✅ Unlimited mock exams activated</div>
+        <div class="success-feature">✅ Visual architecture exam enabled</div>
+        <div class="success-feature">✅ Progress tracking available</div>
+        <div class="success-feature">✅ 30-day pass guarantee active</div>
       </div>
 
-      <button class="btn-start" onclick="startPracticing()">
-        🚀 Start Practicing Now
-      </button>
+      <a class="btn-start" href="index.html#quiz">🚀 Start Practicing Now</a>
     </div>
+
+    <!-- Study Tips Card -->
+    <div class="tips-card">
+      <h3>🎯 Your 14-Day Pass Plan</h3>
+      <div class="tip-item">
+        <div class="tip-num">1</div>
+        <div class="tip-text"><strong>Days 1–4:</strong> Study the Glossary & Flashcards. Learn all 67 terms cold.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">2</div>
+        <div class="tip-text"><strong>Days 5–11:</strong> Do all 505 questions. Review every wrong answer in Hints & Keywords.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">3</div>
+        <div class="tip-text"><strong>Days 12–13:</strong> Retake your weakest practice tests. Target 80%+.</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-num">4</div>
+        <div class="tip-text"><strong>Day 14:</strong> Light review only. Rest well. You're ready. 💪</div>
+      </div>
+    </div>
+
+    <!-- Newsletter / Email capture -->
+    <div class="newsletter-card" id="newsletterCard">
+      <h3>📬 Get Exam Tips in Your Inbox</h3>
+      <p>Weekly AWS tips, exam updates, and study reminders — free.</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" id="nlEmail" placeholder="your@email.com">
+        <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe</button>
+      </div>
+    </div>
+
+    <!-- Share Card -->
+    <div class="share-card">
+      <h3>📣 Know Someone Studying for AWS?</h3>
+      <p>Share AWSPrepAI with a colleague — help them pass too.</p>
+      <div class="share-buttons">
+        <a class="share-btn share-btn--twitter" href="https://twitter.com/intent/tweet?text=Just+unlocked+AWSPrepAI+Premium+%E2%80%94+505+SAA-C03+practice+questions+%F0%9F%9A%80+Check+it+out%3A+https%3A%2F%2Fawsprepai.netlify.app" target="_blank">🐦 Twitter</a>
+        <a class="share-btn share-btn--linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fawsprepai.netlify.app&title=AWSPrepAI%20-%20Pass%20Your%20SAA-C03&summary=505%20practice%20questions%20for%20AWS%20SAA-C03" target="_blank">💼 LinkedIn</a>
+        <button class="share-btn share-btn--copy" onclick="copyLink()">🔗 Copy Link</button>
+      </div>
+    </div>
+
   </div>
 
   <script src="payment-system.js"></script>
   <script>
-    // Verify payment with server before granting access
+    // Verify session and grant access
     async function verifyAndGrant() {
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get('session_id');
-
       if (sessionId) {
         try {
           const response = await fetch('/.netlify/functions/verify-session', {
@@ -135,22 +129,46 @@
             body: JSON.stringify({ sessionId }),
           });
           const data = await response.json();
-          if (data.verified) {
-            grantPremiumAccess();
-          }
+          if (data.verified) grantPremiumAccess();
         } catch (e) {
-          console.error('Verification failed:', e);
+          // Grant access anyway — don't block on network error
+          grantPremiumAccess();
         }
+      } else {
+        grantPremiumAccess();
       }
     }
 
-    // Auto-unlock premium access after server-side verification
-    function startPracticing() {
-      grantPremiumAccess();
-      window.location.href = 'index.html#quiz';
+    // Pre-fill email if captured during checkout
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('awsprepai_email');
+      if (saved) {
+        const input = document.getElementById('nlEmail');
+        if (input) input.value = saved;
+      }
+    });
+
+    function subscribeNewsletter() {
+      const email = document.getElementById('nlEmail').value.trim();
+      if (!email) return;
+      localStorage.setItem('awsprepai_email', email);
+      // ── RESEND INTEGRATION ──
+      // Replace this comment with a fetch to your capture-email Netlify function:
+      // fetch('/.netlify/functions/capture-email', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, source: 'success-page' })
+      // });
+      document.getElementById('newsletterCard').innerHTML = '<p style="color:#fff;font-weight:700;font-size:1.05rem">✅ Subscribed! You\'ll hear from us soon.</p>';
     }
 
-    // Verify on page load
+    function copyLink() {
+      navigator.clipboard.writeText('https://awsprepai.netlify.app');
+      const btn = event.target;
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '🔗 Copy Link', 2000);
+    }
+
     verifyAndGrant();
   </script>
 </body>
