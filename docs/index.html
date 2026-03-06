@@ -2922,25 +2922,14 @@
       document.getElementById('examTCount').textContent = cert.time;
       document.getElementById('examPScore').textContent = cert.passScore + '%';
 
-      // Update category buttons
+      // Update category buttons — use currentActiveCat to keep correct tab highlighted
       const btnContainer = document.getElementById('categoryBtns');
-      btnContainer.innerHTML = `<button class="btn btn-primary category-btn" data-cat="all" onclick="setCategory('all')">All Domains</button>`;
+      const _activeDomain = window._currentActiveCat || 'all';
+      btnContainer.innerHTML = `<button class="btn ${_activeDomain==='all'?'btn-primary':'btn-secondary'} category-btn" data-cat="all" onclick="setCategory('all')">All Domains</button>`;
       cert.domains.forEach(d => {
-        btnContainer.innerHTML += `<button class="btn btn-secondary category-btn" data-cat="${d}" onclick="setCategory('${d}')">${cert.domainLabels[d]}</button>`;
+        const isActive = _activeDomain === d;
+        btnContainer.innerHTML += `<button class="btn ${isActive?'btn-primary':'btn-secondary'} category-btn" data-cat="${d}" onclick="setCategory('${d}')">${cert.domainLabels[d]}</button>`;
       });
-      // Re-apply active tab for free tour (updateUI rebuilds buttons, so we re-highlight)
-      const _activeCat = typeof FREE_TOUR_DOMAINS !== 'undefined' && typeof freeTourDomainIndex !== 'undefined'
-        ? FREE_TOUR_DOMAINS[freeTourDomainIndex] : null;
-      if (_activeCat) {
-        document.querySelectorAll('.category-btn').forEach(btn => {
-          btn.classList.remove('btn-primary');
-          btn.classList.add('btn-secondary');
-          if (btn.dataset.cat === _activeCat) {
-            btn.classList.add('btn-primary');
-            btn.classList.remove('btn-secondary');
-          }
-        });
-      }
 
       // Update domain progress
       const progContainer = document.getElementById('domainProgress');
@@ -3069,19 +3058,12 @@
       freeTourDomainIndex   = domainIndex;
       freeQuestionsAnswered = 0;
       const cat = FREE_TOUR_DOMAINS[domainIndex];
+      window._currentActiveCat = cat; // keep updateUI in sync
       window.currentFreeLimit = FREE_PER_DOMAIN;
       filteredQuestions = questions.filter(q => q.cat === cat);
       shuffleArray(filteredQuestions);
       currentQuestionIndex = 0;
-      // Highlight the correct tab button
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('btn-primary');
-        btn.classList.add('btn-secondary');
-        if (btn.dataset.cat === cat) {
-          btn.classList.add('btn-primary');
-          btn.classList.remove('btn-secondary');
-        }
-      });
+      updateUI(); // rebuild buttons with correct active tab
       loadQuestion();
     }
 
