@@ -492,7 +492,7 @@ img:not([class*="logo"]):not([class*="icon"]):not([class*="avatar"]) {
   align-items: flex-start;
   gap: 1rem;
   padding: 0.75rem;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 0.5rem;
   transition: background 0.2s;
 }
@@ -531,7 +531,7 @@ img:not([class*="logo"]):not([class*="icon"]):not([class*="avatar"]) {
   background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
   color: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
 }
 
@@ -573,7 +573,7 @@ img:not([class*="logo"]):not([class*="icon"]):not([class*="avatar"]) {
   background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1rem 2rem;
   font-size: 1.125rem;
   font-weight: 700;
@@ -795,7 +795,7 @@ img:not([class*="logo"]):not([class*="icon"]):not([class*="avatar"]) {
   background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1rem 2rem;
   font-size: 1.125rem;
   font-weight: 700;

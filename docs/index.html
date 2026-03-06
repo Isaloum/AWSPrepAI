@@ -3204,7 +3204,8 @@
     // Architecture builder logic is in architecture-builder.js and aws-service-icons.js
 
     // Initialize — free users see fixed first 20, premium users see shuffled
-    if (!hasPremiumAccess()) {
+    const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+    if (!_isPremium) {
       const free = filteredQuestions.slice(0, FREE_QUESTION_LIMIT);
       const rest = filteredQuestions.slice(FREE_QUESTION_LIMIT);
       shuffleArray(rest);
