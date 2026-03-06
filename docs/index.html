@@ -2960,9 +2960,10 @@
       });
       filteredQuestions = cat === 'all' ? [...questions] : questions.filter(q => q.cat === cat);
       // Free users: keep first 20 questions fixed (same order every time), shuffle the rest
-      if (!hasPremiumAccess()) {
-        const free = filteredQuestions.slice(0, FREE_QUESTION_LIMIT);
-        const rest = filteredQuestions.slice(FREE_QUESTION_LIMIT);
+      const _cat_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+      if (!_cat_isPremium) {
+        const free = filteredQuestions.slice(0, 20);
+        const rest = filteredQuestions.slice(20);
         shuffleArray(rest);
         filteredQuestions = [...free, ...rest];
       } else {
@@ -3204,10 +3205,11 @@
     // Architecture builder logic is in architecture-builder.js and aws-service-icons.js
 
     // Initialize — free users see fixed first 20, premium users see shuffled
+    const _FREE_LIMIT = 20; // keep in sync with FREE_QUESTION_LIMIT in payment-system.js
     const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
     if (!_isPremium) {
-      const free = filteredQuestions.slice(0, FREE_QUESTION_LIMIT);
-      const rest = filteredQuestions.slice(FREE_QUESTION_LIMIT);
+      const free = filteredQuestions.slice(0, _FREE_LIMIT);
+      const rest = filteredQuestions.slice(_FREE_LIMIT);
       shuffleArray(rest);
       filteredQuestions = [...free, ...rest];
     } else {
