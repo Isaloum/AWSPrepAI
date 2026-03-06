@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async (event) => {
     const { body } = event;
-    const { priceId, quantity = 1 } = JSON.parse(body);
+    const { priceId, mode = 'payment', quantity = 1 } = JSON.parse(body);
 
     if (!priceId) {
         return {
@@ -18,7 +18,7 @@ exports.handler = async (event) => {
                 price: priceId,
                 quantity,
             }],
-            mode: 'payment',
+            mode: mode,
             success_url: `${process.env.SUCCESS_URL}?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CANCEL_URL}`,
         });

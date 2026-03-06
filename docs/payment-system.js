@@ -8,21 +8,24 @@ const PRICING = {
     price: 10,
     stripePriceId: 'price_1T7q2nE9neqrFM5L9ggfWy1i',
     label: 'Monthly',
-    interval: 'month'
+    interval: 'month',
+    mode: 'subscription'
   },
   yearly: {
     price: 59,
     stripePriceId: 'price_1T7q2vE9neqrFM5LjPQ25fZb',
     label: 'Yearly',
     savings: 61,
-    interval: 'year'
+    interval: 'year',
+    mode: 'subscription'
   },
   lifetime: {
     price: 99,
     stripePriceId: 'price_1T7q30E9neqrFM5LaLIoRQSy',
     label: 'Lifetime',
     popular: true,
-    interval: 'one-time'
+    interval: 'one-time',
+    mode: 'payment'
   }
 };
 
@@ -133,6 +136,7 @@ async function initiatePayment(tier = 'lifetime') {
       },
       body: JSON.stringify({
         priceId: pricing.stripePriceId,
+        mode: pricing.mode,
         tier: tier
       }),
     });
