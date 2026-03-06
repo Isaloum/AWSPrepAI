@@ -38,10 +38,11 @@ exports.handler = async (event) => {
       };
     }
 
+    const tier = (session.metadata && session.metadata.tier) ? session.metadata.tier : 'lifetime';
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verified: true }),
+      body: JSON.stringify({ verified: true, tier }),
     };
   } catch (error) {
     console.error('Stripe verification error:', error);

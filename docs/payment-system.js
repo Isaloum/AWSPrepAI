@@ -1,5 +1,4 @@
 // ==================== PAYMENT SYSTEM ====================
-// Freemium model: First 50 questions free, then paid tiers for full access
 
 const FREE_QUESTION_LIMIT = 20;
 
@@ -38,21 +37,68 @@ if (typeof Stripe !== 'undefined') {
 }
 
 // ==================== PREMIUM ACCESS MANAGEMENT ====================
+// Keys are obfuscated to prevent casual DevTools bypass
+const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts' };
+
+function _tok(d) {
+  // Simple token: base64 of "granted:" + date string
+  try { return btoa('granted:' + d); } catch(e) { return ''; }
+}
 
 function hasPremiumAccess() {
-  return localStorage.getItem('premium_access') === 'true';
+  try {
+    const token  = localStorage.getItem(_K.a);
+    const expiry = localStorage.getItem(_K.b);
+    const tier   = localStorage.getItem(_K.c);
+    const ts     = localStorage.getItem(_K.d);
+    if (!token || !ts) return false;
+    // Validate token integrity
+    if (token !== _tok(ts)) return false;
+    // Lifetime has no expiry
+    if (tier === 'lifetime') return true;
+    // Check expiry for monthly/yearly
+    if (expiry) {
+      return new Date(expiry) > new Date();
+    }
+    return true;
+  } catch(e) { return false; }
 }
 
 function grantPremiumAccess() {
-  localStorage.setItem('premium_access', 'true');
-  localStorage.setItem('premium_unlocked_at', new Date().toISOString());
-  console.log('✅ Premium access granted');
+  grantPremiumAccessWithTier('lifetime');
+}
+
+function grantPremiumAccessWithTier(tier) {
+  try {
+    const ts = new Date().toISOString();
+    localStorage.setItem(_K.a, _tok(ts));
+    localStorage.setItem(_K.c, tier || 'lifetime');
+    localStorage.setItem(_K.d, ts);
+    // Set expiry based on tier
+    if (tier === 'monthly') {
+      const exp = new Date(); exp.setDate(exp.getDate() + 32);
+      localStorage.setItem(_K.b, exp.toISOString());
+    } else if (tier === 'yearly') {
+      const exp = new Date(); exp.setDate(exp.getDate() + 366);
+      localStorage.setItem(_K.b, exp.toISOString());
+    } else {
+      localStorage.removeItem(_K.b); // lifetime = no expiry
+    }
+    console.log('✅ Premium access granted:', tier);
+  } catch(e) {}
+}
+
+function revokePremiumAccess() {
+  [_K.a, _K.b, _K.c, _K.d].forEach(k => localStorage.removeItem(k));
+  // Clean up old keys from previous version
+  localStorage.removeItem('premium_access');
+  localStorage.removeItem('premium_unlocked_at');
+  localStorage.removeItem('subscription_tier');
+  localStorage.removeItem('subscription_expiry');
 }
 
 function isQuestionLocked(questionIndex) {
-  if (hasPremiumAccess()) {
-    return false;
-  }
+  if (hasPremiumAccess()) return false;
   const limit = window.currentFreeLimit || FREE_QUESTION_LIMIT;
   return questionIndex >= limit;
 }
@@ -66,7 +112,7 @@ function getAvailableQuestionCount() {
 
 function getPremiumStatus() {
   const isPremium = hasPremiumAccess();
-  const totalQuestions = typeof questions !== 'undefined' ? questions.length : 505;
+  const totalQuestions = typeof questions !== 'undefined' ? questions.length : 533;
   const currentIndex = typeof currentQuestionIndex !== 'undefined' ? currentQuestionIndex : 0;
   return {
     isPremium,
@@ -75,6 +121,14 @@ function getPremiumStatus() {
     availableQuestions: getAvailableQuestionCount(),
     lockedQuestions: totalQuestions - FREE_QUESTION_LIMIT
   };
+}
+
+function getSubscriptionTier() {
+  try { return localStorage.getItem(_K.c) || null; } catch(e) { return null; }
+}
+
+function isSubscriptionActive() {
+  return hasPremiumAccess();
 }
 
 // ==================== PAYWALL UI ====================
@@ -99,13 +153,9 @@ function closePaywall() {
 function updatePaywallStats() {
   const status = getPremiumStatus();
   const lockedCountEl = document.getElementById('locked-question-count');
-  if (lockedCountEl) {
-    lockedCountEl.textContent = status.lockedQuestions;
-  }
+  if (lockedCountEl) lockedCountEl.textContent = status.lockedQuestions;
   const freeCountEl = document.getElementById('free-question-count');
-  if (freeCountEl) {
-    freeCountEl.textContent = FREE_QUESTION_LIMIT;
-  }
+  if (freeCountEl) freeCountEl.textContent = FREE_QUESTION_LIMIT;
 }
 
 // ==================== STRIPE PAYMENT ====================
@@ -115,120 +165,40 @@ async function initiatePayment(tier = 'lifetime') {
     alert('Payment system not initialized. Please refresh the page.');
     return;
   }
-
   const pricing = PRICING[tier];
-  if (!pricing) {
-    alert('Invalid pricing tier selected.');
-    return;
-  }
-
+  if (!pricing) { alert('Invalid pricing tier selected.'); return; }
   const button = document.querySelector(`.btn-premium[data-tier="${tier}"]`);
-
   try {
-    if (button) {
-      button.disabled = true;
-      button.textContent = '⏳ Processing...';
-    }
-
+    if (button) { button.disabled = true; button.textContent = '⏳ Processing...'; }
     const response = await fetch('/.netlify/functions/create-checkout-session', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        priceId: pricing.stripePriceId,
-        mode: pricing.mode,
-        tier: tier
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ priceId: pricing.stripePriceId, mode: pricing.mode, tier }),
     });
-
-    if (!response.ok) {
-      throw new Error('Failed to create checkout session');
-    }
-
+    if (!response.ok) throw new Error('Failed to create checkout session');
     const session = await response.json();
-
-    if (session.url) {
-      window.location.href = session.url;
-    } else {
-      throw new Error('No checkout URL returned');
-    }
+    if (session.url) { window.location.href = session.url; }
+    else throw new Error('No checkout URL returned');
   } catch (error) {
     console.error('Payment error:', error);
     alert('Payment failed. Please try again or contact support.');
-    if (button) {
-      button.disabled = false;
-      button.textContent = pricing.label || '🔓 Unlock';
-    }
+    if (button) { button.disabled = false; button.textContent = pricing.label || '🔓 Unlock'; }
   }
-}
-
-// ==================== SUBSCRIPTION MANAGEMENT ====================
-
-function getSubscriptionTier() {
-  return localStorage.getItem('subscription_tier') || null;
-}
-
-function grantPremiumAccessWithTier(tier) {
-  grantPremiumAccess();
-  if (tier) {
-    localStorage.setItem('subscription_tier', tier);
-  }
-}
-
-function isSubscriptionActive() {
-  if (!hasPremiumAccess()) return false;
-  const tier = getSubscriptionTier();
-  if (tier === 'lifetime' || !tier) return true;
-  const expiry = localStorage.getItem('subscription_expiry');
-  if (!expiry) return true;
-  return new Date(expiry) > new Date();
-}
-
-// ==================== QUESTION NAVIGATION HOOKS ====================
-
-function checkQuestionAccess(questionIndex) {
-  if (isQuestionLocked(questionIndex)) {
-    showPaywall();
-    return false;
-  }
-  return true;
-}
-
-function getLockedQuestionHTML(questionIndex) {
-  const totalQuestions = typeof questions !== 'undefined' ? questions.length : 505;
-  return `
-    <div class="question-locked">
-      <div class="lock-icon">🔒</div>
-      <h3>Question ${questionIndex + 1} is Locked</h3>
-      <p class="lock-description">
-        You've completed the <strong>${FREE_QUESTION_LIMIT} free questions</strong>. 
-        Unlock all <strong>${totalQuestions} questions</strong> — plans start at <strong>$${PRICING.monthly.price}/month</strong>!
-      </p>
-      <button class="btn-unlock" onclick="showPaywall()">
-        🚀 Unlock All Questions
-      </button>
-      <p class="lock-note">Monthly, yearly, or lifetime access available</p>
-    </div>
-  `;
 }
 
 // ==================== PREMIUM BADGE ====================
 
 function showPremiumBadge() {
   const badge = document.getElementById('premium-badge');
-  if (badge && hasPremiumAccess()) {
-    badge.style.display = 'inline-flex';
-  }
+  if (badge && hasPremiumAccess()) badge.style.display = 'inline-flex';
 }
 
 function updatePremiumUI() {
-  const isPremium = hasPremiumAccess();
   showPremiumBadge();
   const counterEl = document.getElementById('question-counter');
   if (counterEl) {
     const status = getPremiumStatus();
-    if (isPremium) {
+    if (hasPremiumAccess()) {
       counterEl.innerHTML = `<span class="premium-label">⭐ Premium</span> All ${status.totalQuestions} questions unlocked`;
     } else {
       counterEl.innerHTML = `${status.freeQuestionsRemaining} free questions remaining`;
@@ -239,5 +209,10 @@ function updatePremiumUI() {
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Migrate old-style premium_access key to new obfuscated format
+  if (localStorage.getItem('premium_access') === 'true' && !localStorage.getItem(_K.a)) {
+    const oldTier = localStorage.getItem('subscription_tier') || 'lifetime';
+    grantPremiumAccessWithTier(oldTier);
+  }
   updatePremiumUI();
 });

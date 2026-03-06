@@ -58,10 +58,10 @@
     <div class="success-card">
       <span class="success-icon">🎉</span>
       <h1>You're In! Welcome to Premium.</h1>
-      <p class="subtitle">Your payment was successful. Full access to all 505 SAA-C03 questions is now unlocked.</p>
+      <p class="subtitle">Your payment was successful. Full access to all 533 SAA-C03 questions is now unlocked.</p>
 
       <div class="success-features">
-        <div class="success-feature">✅ All 505 practice questions unlocked</div>
+        <div class="success-feature">✅ All 533 practice questions unlocked</div>
         <div class="success-feature">✅ Unlimited mock exams activated</div>
         <div class="success-feature">✅ Visual architecture exam enabled</div>
         <div class="success-feature">✅ Progress tracking available</div>
@@ -80,7 +80,7 @@
       </div>
       <div class="tip-item">
         <div class="tip-num">2</div>
-        <div class="tip-text"><strong>Days 5–11:</strong> Do all 505 questions. Review every wrong answer in Hints & Keywords.</div>
+        <div class="tip-text"><strong>Days 5–11:</strong> Do all 533 questions. Review every wrong answer in Hints & Keywords.</div>
       </div>
       <div class="tip-item">
         <div class="tip-num">3</div>
@@ -117,25 +117,31 @@
 
   <script src="payment-system.js"></script>
   <script>
-    // Verify session and grant access
+    // Verify session and grant access — only on confirmed Stripe payment
     async function verifyAndGrant() {
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get('session_id');
-      if (sessionId) {
-        try {
-          const response = await fetch('/.netlify/functions/verify-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sessionId }),
-          });
-          const data = await response.json();
-          if (data.verified) grantPremiumAccess();
-        } catch (e) {
-          // Grant access anyway — don't block on network error
-          grantPremiumAccess();
+      if (!sessionId) {
+        // No session ID means someone navigated here directly — do NOT grant
+        document.querySelector('.success-card h1').textContent = 'Verifying Payment...';
+        document.querySelector('.subtitle').textContent = 'If you just paid, your access will activate shortly.';
+        return;
+      }
+      try {
+        const response = await fetch('/.netlify/functions/verify-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId }),
+        });
+        const data = await response.json();
+        if (data.verified) {
+          grantPremiumAccessWithTier(data.tier || 'lifetime');
+        } else {
+          document.querySelector('.subtitle').textContent = 'Payment could not be verified. Please contact support@awsprepai.com.';
         }
-      } else {
-        grantPremiumAccess();
+      } catch (e) {
+        // Network error — show message, do NOT grant access
+        document.querySelector('.subtitle').textContent = 'Verification failed. Please refresh or contact support@awsprepai.com.';
       }
     }
 
