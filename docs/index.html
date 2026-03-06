@@ -271,23 +271,23 @@
             <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
           </button>
           <div class="dropdown-menu" role="menu">
-            <a href="#" class="dropdown-item" onclick="showTab('quiz'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('quiz'); return false;">
               <span class="item-icon">📝</span>
               <div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">505 SAA-C03 questions</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('exam'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('exam'); return false;">
               <span class="item-icon">⏱️</span>
               <div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('adaptive'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('adaptive'); return false;">
               <span class="item-icon">🏗️</span>
               <div class="item-content"><div class="item-title">Architecture Builder</div><div class="item-desc">Drag &amp; drop AWS services</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('visual-exam'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('visual-exam'); return false;">
               <span class="item-icon">🎯</span>
               <div class="item-content"><div class="item-title">Visual Exam</div><div class="item-desc">Build your answers</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('sample'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('sample'); return false;">
               <span class="item-icon">📄</span>
               <div class="item-content"><div class="item-title">Sample Questions</div><div class="item-desc">10 free preview questions</div></div>
             </a>
@@ -301,15 +301,15 @@
             <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
           </button>
           <div class="dropdown-menu" role="menu">
-            <a href="#" class="dropdown-item" onclick="showTab('study-guide'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('study-guide'); return false;">
               <span class="item-icon">📚</span>
               <div class="item-content"><div class="item-title">Study Guide</div><div class="item-desc">Exam tips &amp; strategies</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('hints-keywords'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('hints-keywords'); return false;">
               <span class="item-icon">💡</span>
               <div class="item-content"><div class="item-title">Keywords &amp; Hints</div><div class="item-desc">Scenario identifiers</div></div>
             </a>
-            <a href="#" class="dropdown-item" onclick="showTab('services'); return false;">
+            <a href="#" class="dropdown-item" onclick="closeDropdowns(); showTab('services'); return false;">
               <span class="item-icon">☁️</span>
               <div class="item-content"><div class="item-title">AWS Services</div><div class="item-desc">40+ service reference</div></div>
             </a>
@@ -2049,6 +2049,15 @@
       'sample': '📄 Sample Questions'
     };
 
+    function closeDropdowns() {
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        m.style.opacity = '0';
+        m.style.visibility = 'hidden';
+        m.style.pointerEvents = 'none';
+        setTimeout(() => { m.style.opacity = ''; m.style.visibility = ''; m.style.pointerEvents = ''; }, 400);
+      });
+    }
+
     function updatePageTitle(tabName) {
       const baseTitle = 'AWSPrepAI - AWS Certification Study Tool';
       const tabTitle = tabTitles[tabName];
@@ -2108,6 +2117,7 @@
         }
 
         // Update active nav link state
+        closeDropdowns();
         document.querySelectorAll('.nav-link, .dropdown-item, .mobile-nav-link').forEach(link => {
           link.classList.remove('active');
         });
