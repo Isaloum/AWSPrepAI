@@ -2958,18 +2958,25 @@
           btn.classList.remove('btn-secondary');
         }
       });
-      filteredQuestions = cat === 'all' ? [...questions] : questions.filter(q => q.cat === cat);
-      // Free limit: 20 for All Domains, 5 per specific domain
-      window.currentFreeLimit = (cat === 'all') ? 20 : 5;
-      const _cat_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
-      if (!_cat_isPremium) {
-        const free = filteredQuestions.slice(0, window.currentFreeLimit);
-        const rest = filteredQuestions.slice(window.currentFreeLimit);
-        shuffleArray(rest);
-        filteredQuestions = [...free, ...rest];
-      } else {
-        shuffleArray(filteredQuestions);
+      const _tab_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+      if (!_tab_isPremium) {
+        // Free users: clicking a domain tab restarts tour from that domain
+        const domIdx = FREE_TOUR_DOMAINS.indexOf(cat);
+        if (domIdx >= 0) {
+          freeTourDomainIndex = domIdx;
+          freeQuestionsAnswered = 0;
+          loadFreeTourDomain(domIdx);
+        } else {
+          // "All Domains" clicked — restart from beginning
+          freeTourDomainIndex = 0;
+          freeQuestionsAnswered = 0;
+          loadFreeTourDomain(0);
+        }
+        return;
       }
+      // Premium: normal filter
+      filteredQuestions = cat === 'all' ? [...questions] : questions.filter(q => q.cat === cat);
+      shuffleArray(filteredQuestions);
       currentQuestionIndex = 0;
       loadQuestion();
     }
@@ -3046,15 +3053,75 @@
       updateUI();
     }
 
-    function nextQuestion() {
-      const nextIndex = (currentQuestionIndex + 1) % filteredQuestions.length;
-      if (nextIndex === 0) shuffleArray(filteredQuestions);
+    // ===== FREE TOUR STATE =====
+    const FREE_TOUR_DOMAINS = ['design-secure','design-resilient','design-performant','design-cost'];
+    const FREE_TOUR_LABELS  = ['Secure Architectures','Resilient Architectures','High-Performing','Cost-Optimized'];
+    let freeTourDomainIndex   = 0; // which domain we're on (0-3)
+    let freeQuestionsAnswered = 0; // questions answered in current domain
+    const FREE_PER_DOMAIN     = 5;
 
-      // Check paywall before advancing
-      if (typeof checkQuestionAccess === 'function' && !checkQuestionAccess(nextIndex)) {
-        return; // Blocked by paywall
+    function loadFreeTourDomain(domainIndex) {
+      freeTourDomainIndex   = domainIndex;
+      freeQuestionsAnswered = 0;
+      const cat = FREE_TOUR_DOMAINS[domainIndex];
+      window.currentFreeLimit = FREE_PER_DOMAIN;
+      filteredQuestions = questions.filter(q => q.cat === cat);
+      shuffleArray(filteredQuestions);
+      currentQuestionIndex = 0;
+      // Highlight the correct tab button
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('btn-primary');
+          btn.classList.remove('btn-secondary');
+        }
+      });
+      loadQuestion();
+    }
+
+    function nextQuestion() {
+      const isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+
+      if (!isPremium) {
+        // ---- GUIDED FREE TOUR ----
+        freeQuestionsAnswered++;
+        const totalAnswered = freeTourDomainIndex * FREE_PER_DOMAIN + freeQuestionsAnswered;
+
+        if (freeQuestionsAnswered >= FREE_PER_DOMAIN) {
+          // Done with this domain
+          const nextDomain = freeTourDomainIndex + 1;
+          if (nextDomain < FREE_TOUR_DOMAINS.length) {
+            // Show brief message then move to next domain
+            document.getElementById('quizQuestion').innerHTML =
+              '<div style="text-align:center;padding:1rem">' +
+              '<div style="font-size:2rem">✅</div>' +
+              '<strong style="font-size:1.1rem">Section complete!</strong><br>' +
+              '<span style="color:var(--muted)">Moving to ' + FREE_TOUR_LABELS[nextDomain] + '...</span>' +
+              '</div>';
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizExplanation').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+            setTimeout(() => loadFreeTourDomain(nextDomain), 1800);
+          } else {
+            // All 20 free questions done → show paywall
+            if (typeof showPaywall === 'function') showPaywall();
+          }
+          return;
+        }
+
+        // Still within the 5 questions of this domain
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex < filteredQuestions.length) {
+          currentQuestionIndex = nextIndex;
+          loadQuestion();
+        }
+        return;
       }
 
+      // ---- PREMIUM: normal behavior ----
+      const nextIndex = (currentQuestionIndex + 1) % filteredQuestions.length;
+      if (nextIndex === 0) shuffleArray(filteredQuestions);
       currentQuestionIndex = nextIndex;
       loadQuestion();
     }
@@ -3206,19 +3273,15 @@
     // Architecture builder logic is in architecture-builder.js and aws-service-icons.js
 
     // Initialize — free users see fixed first 20, premium users see shuffled
-    const _FREE_LIMIT = 20; // keep in sync with FREE_QUESTION_LIMIT in payment-system.js
-    window.currentFreeLimit = _FREE_LIMIT; // default: All Domains
     const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
     if (!_isPremium) {
-      const free = filteredQuestions.slice(0, _FREE_LIMIT);
-      const rest = filteredQuestions.slice(_FREE_LIMIT);
-      shuffleArray(rest);
-      filteredQuestions = [...free, ...rest];
+      // Free users: start guided tour from domain 0 (Secure Architectures)
+      setTimeout(() => loadFreeTourDomain(0), 0);
     } else {
       shuffleArray(filteredQuestions);
+      loadQuestion();
     }
     updateUI();
-    loadQuestion();
     loadServices();
     updatePageTitle('home'); // Set initial page title
 
