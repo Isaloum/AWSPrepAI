@@ -1,7 +1,7 @@
 // ==================== PAYMENT SYSTEM ====================
 // Freemium model: First 50 questions free, then paid tiers for full access
 
-const FREE_QUESTION_LIMIT = 50;
+const FREE_QUESTION_LIMIT = 20;
 
 const PRICING = {
   monthly: {
