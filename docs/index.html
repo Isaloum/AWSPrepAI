@@ -2928,6 +2928,19 @@
       cert.domains.forEach(d => {
         btnContainer.innerHTML += `<button class="btn btn-secondary category-btn" data-cat="${d}" onclick="setCategory('${d}')">${cert.domainLabels[d]}</button>`;
       });
+      // Re-apply active tab for free tour (updateUI rebuilds buttons, so we re-highlight)
+      const _activeCat = typeof FREE_TOUR_DOMAINS !== 'undefined' && typeof freeTourDomainIndex !== 'undefined'
+        ? FREE_TOUR_DOMAINS[freeTourDomainIndex] : null;
+      if (_activeCat) {
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-secondary');
+          if (btn.dataset.cat === _activeCat) {
+            btn.classList.add('btn-primary');
+            btn.classList.remove('btn-secondary');
+          }
+        });
+      }
 
       // Update domain progress
       const progContainer = document.getElementById('domainProgress');
