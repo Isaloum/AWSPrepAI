@@ -109,8 +109,8 @@
     .chat-header-left { display: flex; align-items: center; gap: .75rem; }
     .bot-avatar {
       width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--aws-blue), #7c3aed);
-      border-radius: 50%;
+      background: #232F3E;
+      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.4rem;
     }
@@ -173,13 +173,13 @@
     .message { display: flex; gap: .75rem; max-width: 85%; }
     .message.user { align-self: flex-end; flex-direction: row-reverse; }
     .message-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 7px;
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem;
     }
-    .message.bot  .message-avatar { background: linear-gradient(135deg, var(--aws-blue), #7c3aed); }
-    .message.user .message-avatar { background: var(--aws-dark); color: #fff; }
+    .message.bot  .message-avatar { background: #232F3E; }
+    .message.user .message-avatar { background: var(--aws-dark); color: #fff; border-radius: 50%; }
     .message-bubble {
       padding: .875rem 1.125rem;
       border-radius: 12px;
@@ -425,7 +425,13 @@
     <!-- Header strip -->
     <div class="chat-header">
       <div class="chat-header-left">
-        <div class="bot-avatar">🤖</div>
+        <div class="bot-avatar">
+          <svg width="28" height="28" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+            <text x="4" y="28" font-size="18" font-weight="900" fill="#FFFFFF" font-family="Arial,sans-serif" letter-spacing="0.5">AWS</text>
+            <path d="M4 34 Q26 46 48 34" stroke="#FF9900" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <polygon points="44,29 50,35 44,38" fill="#FF9900"/>
+          </svg>
+        </div>
         <div>
           <div class="chat-header-title">AWS SAA-C03 AI Coach</div>
           <div class="chat-header-sub">Powered by GPT-4o · Always accurate, always exam-focused</div>
@@ -662,7 +668,11 @@ function appendMessage(role, text) {
 
   const avatar = document.createElement('div');
   avatar.classList.add('message-avatar');
-  avatar.textContent = role === 'bot' ? '🤖' : '👤';
+  if (role === 'bot') {
+    avatar.innerHTML = `<svg width="20" height="20" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><text x="2" y="26" font-size="17" font-weight="900" fill="#FFFFFF" font-family="Arial,sans-serif">AWS</text><path d="M2 32 Q26 44 50 32" stroke="#FF9900" stroke-width="4.5" fill="none" stroke-linecap="round"/><polygon points="46,27 52,33 46,36" fill="#FF9900"/></svg>`;
+  } else {
+    avatar.textContent = '👤';
+  }
 
   const bubble = document.createElement('div');
   bubble.classList.add('message-bubble');
@@ -703,7 +713,7 @@ function showTyping() {
   div.id = id;
   div.classList.add('message', 'bot');
   div.innerHTML = `
-    <div class="message-avatar">🤖</div>
+    <div class="message-avatar" style="background:#232F3E;border-radius:7px;"><svg width="20" height="20" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><text x="2" y="26" font-size="17" font-weight="900" fill="#FFFFFF" font-family="Arial,sans-serif">AWS</text><path d="M2 32 Q26 44 50 32" stroke="#FF9900" stroke-width="4.5" fill="none" stroke-linecap="round"/><polygon points="46,27 52,33 46,36" fill="#FF9900"/></svg></div>
     <div class="message-bubble">
       <div class="typing-indicator">
         <span></span><span></span><span></span>
