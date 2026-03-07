@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Coach — AWSPrepAI</title>
+  <meta name="description" content="Your personal AWS SAA-C03 AI Coach. Get instant explanations, practice questions, and study plans.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="navigation.css">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    :root {
+      --bg: #F9FAFB;
+      --card: #ffffff;
+      --accent: #3B82F6;
+      --accent-2: #2563EB;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #232F3E;
+      --muted: #545b64;
+      --border: #d5dbdb;
+      --radius: 8px;
+      --aws-orange: #FF9900;
+      --aws-dark: #1F2937;
+      --aws-blue: #3B82F6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    header {
+      background: var(--aws-dark);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+    }
+    .logo img { height: 40px; width: auto; }
+    .page-links { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .page-link {
+      color: #fff;
+      text-decoration: none;
+      padding: .5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all .2s;
+      font-size: .875rem;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,.1);
+    }
+    .page-link:hover { background: rgba(255,255,255,.2); }
+    .page-link.active { background: var(--aws-blue); border-color: var(--aws-blue); }
+
+    /* ── LAYOUT ── */
+    .chat-wrapper {
+      flex: 1;
+      max-width: 860px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* ── HEADER STRIP ── */
+    .chat-header {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .chat-header-left { display: flex; align-items: center; gap: .75rem; }
+    .bot-avatar {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--aws-blue), #7c3aed);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .chat-header-title { font-size: 1.1rem; font-weight: 700; }
+    .chat-header-sub { font-size: .8rem; color: var(--muted); }
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .35rem .85rem;
+      border-radius: 999px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+    .tier-badge.yearly   { background: #ede9fe; color: #7c3aed; }
+    .tier-badge.lifetime { background: #fef3c7; color: #92400e; }
+    .tier-badge.monthly  { background: #dbeafe; color: #1d4ed8; }
+
+    /* ── MSG COUNTER (monthly only) ── */
+    .msg-counter {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius);
+      padding: .75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+      font-size: .875rem;
+    }
+    .msg-counter strong { color: #c2410c; }
+    .msg-counter .upgrade-link {
+      color: var(--aws-blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .msg-counter .upgrade-link:hover { text-decoration: underline; }
+
+    /* ── CHAT BOX ── */
+    .chat-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .message { display: flex; gap: .75rem; max-width: 85%; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .message.bot  .message-avatar { background: linear-gradient(135deg, var(--aws-blue), #7c3aed); }
+    .message.user .message-avatar { background: var(--aws-dark); color: #fff; }
+    .message-bubble {
+      padding: .875rem 1.125rem;
+      border-radius: 12px;
+      font-size: .925rem;
+      line-height: 1.65;
+    }
+    .message.bot  .message-bubble {
+      background: #f1f5f9;
+      border-bottom-left-radius: 4px;
+    }
+    .message.user .message-bubble {
+      background: var(--aws-blue);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    /* Markdown-ish formatting inside bot bubbles */
+    .message-bubble strong { font-weight: 700; }
+    .message-bubble em     { font-style: italic; }
+    .message-bubble code {
+      background: rgba(0,0,0,.08);
+      padding: .1em .35em;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: .875em;
+    }
+    .message-bubble pre {
+      background: rgba(0,0,0,.06);
+      padding: .75rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: .5rem 0;
+      font-size: .85em;
+    }
+    .message-bubble ul, .message-bubble ol {
+      padding-left: 1.25rem;
+      margin: .35rem 0;
+    }
+    .message-bubble li { margin-bottom: .2rem; }
+    .message-bubble h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: .5rem 0 .25rem;
+      color: var(--aws-dark);
+    }
+    .message-bubble p { margin-bottom: .4rem; }
+
+    /* Typing dots */
+    .typing-indicator { display: flex; gap: 5px; align-items: center; padding: .5rem 0; }
+    .typing-indicator span {
+      width: 8px; height: 8px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: .2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-6px); }
+    }
+
+    /* ── INPUT ROW ── */
+    .input-row {
+      display: flex;
+      gap: .75rem;
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+    #chat-input {
+      flex: 1;
+      padding: .75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: .925rem;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      transition: border .2s;
+      max-height: 120px;
+    }
+    #chat-input:focus { border-color: var(--aws-blue); }
+    #send-btn {
+      padding: .75rem 1.25rem;
+      background: var(--aws-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: .925rem;
+      transition: background .2s;
+      align-self: flex-end;
+    }
+    #send-btn:hover:not(:disabled) { background: var(--accent-2); }
+    #send-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── QUICK STARTERS ── */
+    .quick-starters {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      padding: .75rem 1.25rem 0;
+    }
+    .quick-btn {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .4rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .15s;
+    }
+    .quick-btn:hover { background: var(--aws-blue); color: #fff; border-color: var(--aws-blue); }
+
+    /* ── PAYWALL / UPGRADE ── */
+    .paywall-card {
+      background: #fff;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .paywall-card .lock-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .paywall-card h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: .75rem; }
+    .paywall-card p { color: var(--muted); max-width: 420px; margin: 0 auto 1.5rem; }
+    .paywall-card .plan-cards {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .mini-plan {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      min-width: 160px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fff;
+    }
+    .mini-plan:hover { border-color: var(--aws-blue); transform: translateY(-2px); }
+    .mini-plan.popular { border-color: var(--aws-orange); background: #fff8ee; }
+    .mini-plan .plan-name { font-weight: 800; font-size: 1rem; margin-bottom: .25rem; }
+    .mini-plan .plan-price { font-size: 1.5rem; font-weight: 800; color: var(--aws-blue); }
+    .mini-plan .plan-sub { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
+    .mini-plan .popular-badge {
+      display: inline-block;
+      background: var(--aws-orange);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .15rem .6rem;
+      border-radius: 999px;
+      margin-bottom: .5rem;
+    }
+    .btn-primary {
+      background: var(--aws-blue);
+      color: #fff;
+      border: none;
+      padding: .875rem 2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--accent-2); }
+
+    /* ── LIMIT REACHED BANNER ── */
+    .limit-banner {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    .limit-banner h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; color: #c2410c; }
+    .limit-banner p { font-size: .875rem; color: var(--muted); margin-bottom: 1rem; }
+
+    @media (max-width: 600px) {
+      .message { max-width: 95%; }
+      .chat-wrapper { margin: 1rem auto; }
+      .paywall-card { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+  <div class="header-content">
+    <a href="index.html" class="logo">
+      <img src="logo.svg" alt="AWSPrepAI logo">
+      AWSPrepAI
+    </a>
+    <div class="page-links">
+      <a href="index.html" class="page-link">Practice</a>
+      <a href="chat.html"  class="page-link active">🤖 AI Coach</a>
+      <a href="pricing.html" class="page-link">Pricing</a>
+      <a href="resources.html" class="page-link">Resources</a>
+      <a href="contact.html" class="page-link">Contact</a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="chat-wrapper" id="chat-wrapper">
+
+  <!-- Paywall shown to non-premium users -->
+  <div id="paywall-view" class="paywall-card" style="display:none;">
+    <div class="lock-icon">🔒</div>
+    <h2>Unlock Your AI Coach</h2>
+    <p>Get instant concept explanations, SAA-C03 practice questions on demand, and a personalised study plan — all powered by GPT-4o.</p>
+    <div class="plan-cards">
+      <div class="mini-plan popular" onclick="initiatePayment('yearly')">
+        <div class="popular-badge">⭐ BEST VALUE</div>
+        <div class="plan-name">Yearly</div>
+        <div class="plan-price">$59</div>
+        <div class="plan-sub">/ year · AI Coach included</div>
+      </div>
+      <div class="mini-plan" onclick="initiatePayment('lifetime')">
+        <div class="plan-name">Lifetime</div>
+        <div class="plan-price">$99</div>
+        <div class="plan-sub">one-time · AI Coach included</div>
+      </div>
+      <div class="mini-plan" onclick="initiatePayment('monthly')">
+        <div class="plan-name">Monthly</div>
+        <div class="plan-price">$10</div>
+        <div class="plan-sub">/ mo · 5 free AI messages</div>
+      </div>
+    </div>
+    <a href="pricing.html" style="font-size:.85rem;color:var(--muted);">Compare all plans →</a>
+  </div>
+
+  <!-- Chat view (shown when access granted) -->
+  <div id="chat-view" style="display:none; flex-direction:column; gap:1rem; flex:1;">
+
+    <!-- Header strip -->
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="bot-avatar">🤖</div>
+        <div>
+          <div class="chat-header-title">AWS SAA-C03 AI Coach</div>
+          <div class="chat-header-sub">Powered by GPT-4o · Always accurate, always exam-focused</div>
+        </div>
+      </div>
+      <span class="tier-badge" id="tier-badge"></span>
+    </div>
+
+    <!-- Monthly counter -->
+    <div class="msg-counter" id="msg-counter" style="display:none;">
+      <span>Free AI messages used: <strong id="msg-used">0</strong> / 5</span>
+      <a href="pricing.html" class="upgrade-link">Upgrade for unlimited →</a>
+    </div>
+
+    <!-- Chat box -->
+    <div class="chat-box">
+      <div class="messages" id="messages"></div>
+
+      <!-- Quick starters (hidden after first message) -->
+      <div class="quick-starters" id="quick-starters">
+        <button class="quick-btn" onclick="quickStart('Explain a concept')">💡 Explain a concept</button>
+        <button class="quick-btn" onclick="quickStart('Give me a practice question')">📝 Practice question</button>
+        <button class="quick-btn" onclick="quickStart('Build me a study plan')">📅 Study plan</button>
+        <button class="quick-btn" onclick="quickStart('I\'m stuck on VPC vs VPN')">🤔 I\'m stuck on something</button>
+      </div>
+
+      <!-- Input -->
+      <div class="input-row">
+        <textarea
+          id="chat-input"
+          rows="1"
+          placeholder="Ask anything about AWS SAA-C03…"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button id="send-btn" onclick="sendMessage()">Send ↑</button>
+      </div>
+    </div>
+
+    <!-- Limit reached banner (monthly users) -->
+    <div class="limit-banner" id="limit-banner" style="display:none;">
+      <h3>🔒 You've used all 5 free AI Coach messages</h3>
+      <p>Upgrade to Yearly ($59/yr) or Lifetime ($99) for unlimited AI coaching.</p>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="initiatePayment('yearly')">⭐ Go Yearly — $59/yr</button>
+        <button class="btn-primary" style="background:#92400e;" onclick="initiatePayment('lifetime')">🏆 Lifetime — $99</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="payment-system.js"></script>
+<script>
+// ── State ──
+const MONTHLY_LIMIT = 5;
+const MONTHLY_COUNT_KEY = '_apa_mc'; // monthly chat count
+let conversationHistory = [];
+let currentTier = null;
+let monthlyCount = 0;
+let isLoading = false;
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  currentTier = getSubscriptionTier();
+  const hasPremium = hasPremiumAccess();
+
+  if (!hasPremium) {
+    // No access at all
+    document.getElementById('paywall-view').style.display = 'block';
+    return;
+  }
+
+  // Has premium — show chat
+  document.getElementById('chat-view').style.display = 'flex';
+
+  // Set tier badge
+  const badge = document.getElementById('tier-badge');
+  if (currentTier === 'yearly') {
+    badge.textContent = '⭐ Yearly';
+    badge.classList.add('yearly');
+  } else if (currentTier === 'lifetime') {
+    badge.textContent = '🏆 Lifetime';
+    badge.classList.add('lifetime');
+  } else {
+    badge.textContent = '🔵 Monthly';
+    badge.classList.add('monthly');
+  }
+
+  // Monthly: load & show counter
+  if (currentTier === 'monthly') {
+    try { monthlyCount = parseInt(localStorage.getItem(MONTHLY_COUNT_KEY), 10) || 0; } catch(e) {}
+    updateMonthlyCounter();
+    if (monthlyCount >= MONTHLY_LIMIT) {
+      showLimitReached();
+      return;
+    }
+  }
+
+  // Send greeting
+  sendGreeting();
+});
+
+function updateMonthlyCounter() {
+  const counter = document.getElementById('msg-counter');
+  const used = document.getElementById('msg-used');
+  if (currentTier === 'monthly') {
+    counter.style.display = 'flex';
+    used.textContent = monthlyCount;
+  }
+}
+
+function showLimitReached() {
+  document.getElementById('limit-banner').style.display = 'block';
+  document.getElementById('chat-input').disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('quick-starters').style.display = 'none';
+}
+
+// ── Greeting ──
+function sendGreeting() {
+  appendMessage('bot', 'Hey! 👋 I\'m your AWS SAA-C03 AI Coach.\n\n**What would you like to work on today?**\n\n- 💡 **Concept explanation** — I\'ll break down any AWS service\n- 📝 **Practice questions** — SAA-C03 style, one at a time\n- 📅 **Study plan** — personalised week-by-week schedule\n- 🤔 **Stuck on something** — I\'ll diagnose the confusion\n\nJust tell me what you need!');
+}
+
+// ── Quick starters ──
+function quickStart(text) {
+  document.getElementById('chat-input').value = text;
+  document.getElementById('quick-starters').style.display = 'none';
+  sendMessage();
+}
+
+// ── Key handler ──
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// ── Send message ──
+async function sendMessage() {
+  if (isLoading) return;
+
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // Monthly limit check
+  if (currentTier === 'monthly' && monthlyCount >= MONTHLY_LIMIT) {
+    showLimitReached();
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('quick-starters').style.display = 'none';
+
+  appendMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  // Show typing
+  const typingId = showTyping();
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: conversationHistory,
+        tier: currentTier,
+        monthlyCount,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      removeTyping(typingId);
+      if (data.error === 'limit_reached') {
+        // Increment to show accurate count
+        incrementMonthlyCount();
+        showLimitReached();
+        return;
+      }
+      if (data.error === 'no_access') {
+        document.getElementById('chat-view').style.display = 'none';
+        document.getElementById('paywall-view').style.display = 'block';
+        return;
+      }
+      appendMessage('bot', '⚠️ Sorry, something went wrong. Please try again.');
+      return;
+    }
+
+    removeTyping(typingId);
+    const reply = data.reply;
+    appendMessage('bot', reply);
+    conversationHistory.push({ role: 'assistant', content: reply });
+
+    // Increment monthly count
+    if (currentTier === 'monthly') {
+      incrementMonthlyCount();
+      if (monthlyCount >= MONTHLY_LIMIT) {
+        showLimitReached();
+      }
+    }
+
+  } catch (err) {
+    removeTyping(typingId);
+    appendMessage('bot', '⚠️ Connection error. Please check your internet and try again.');
+  } finally {
+    isLoading = false;
+    document.getElementById('send-btn').disabled = false;
+  }
+}
+
+function incrementMonthlyCount() {
+  monthlyCount++;
+  try { localStorage.setItem(MONTHLY_COUNT_KEY, monthlyCount); } catch(e) {}
+  updateMonthlyCounter();
+}
+
+// ── Append message ──
+function appendMessage(role, text) {
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.classList.add('message', role);
+
+  const avatar = document.createElement('div');
+  avatar.classList.add('message-avatar');
+  avatar.textContent = role === 'bot' ? '🤖' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.classList.add('message-bubble');
+  bubble.innerHTML = formatText(text);
+
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// ── Simple markdown-ish formatter ──
+function formatText(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^(.+)$/, '<p>$1</p>');
+}
+
+// ── Typing indicator ──
+let typingCounter = 0;
+function showTyping() {
+  const id = 'typing-' + typingCounter++;
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.id = id;
+  div.classList.add('message', 'bot');
+  div.innerHTML = `
+    <div class="message-avatar">🤖</div>
+    <div class="message-bubble">
+      <div class="typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+    </div>`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return id;
+}
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+</script>
+</body>
+</html>

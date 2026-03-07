@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AWS SAA-C03 Practice Platform",
   "dependencies": {
-    "stripe": "^14.0.0"
+    "stripe": "^14.0.0",
+    "openai": "^4.0.0"
   }
 }
