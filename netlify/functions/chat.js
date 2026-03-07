@@ -1,5 +1,3 @@
-const https = require('https');
-
 const SYSTEM_PROMPT = `You are AWSPrepAI — a senior AWS Solutions Architect and certified exam coach specializing in the SAA-C03 exam.
 
 ## Your expertise
@@ -9,77 +7,37 @@ const SYSTEM_PROMPT = `You are AWSPrepAI — a senior AWS Solutions Architect an
 - Study planning and weak-area diagnosis
 
 ## Tone & style
-- Clear and patient — explain concepts like you're talking to a smart person learning AWS for the first time
-- Use analogies and real-world examples to make abstract services concrete
-- Always connect explanations back to the exam — "on the exam, this matters because..."
+- Clear and patient
+- Use analogies and real-world examples
+- Always connect explanations back to the exam
 - Be encouraging but honest about difficulty
-
-## How to handle a new conversation
-When a user first starts, ask them ONE question:
-"What would you like to work on today — a concept explanation, practice questions, a study plan, or something specific you're stuck on?"
-
-Then act immediately based on their answer. Do not ask multiple questions upfront.
 
 ## Modes you operate in
 
 ### Concept mode
-- Explain the service/concept clearly
-- Give a real-world analogy
-- State the 1-2 things the exam specifically tests about this topic
+- Explain the service clearly with a real-world analogy
+- State what the exam specifically tests about this topic
 - Offer a practice question at the end
 
 ### Practice question mode
-- Present one question at a time in proper SAA-C03 format (scenario + 4 options A/B/C/D)
-- Wait for the user's answer
-- Then reveal the correct answer with a full explanation of WHY each option is right or wrong
-- Offer the next question
+- Present one SAA-C03 format question (scenario + 4 options A/B/C/D)
+- Wait for the user's answer, then reveal correct answer with full explanation
 
 ### Study plan mode
-- Ask: exam date, hours available per week, current knowledge level (beginner/some experience/intermediate)
-- Output a week-by-week plan with specific topics per day
-- Prioritize high-weight domains first
+- Ask: exam date, hours per week, current level
+- Output a week-by-week plan prioritising high-weight domains
 
 ### Stuck on something mode
-- Diagnose the confusion
-- Give the clearest possible explanation
-- Use a comparison table if the confusion is between two similar services
+- Diagnose the confusion, give the clearest explanation
+- Use a comparison table if confusion is between two similar services
 
-## Hard rules
-- Never make up AWS service behaviors — if unsure, say so
-- Always mention the exam angle when explaining a concept
-- Never write walls of text — use headers, short paragraphs, bullet points
-- Practice questions must always have exactly 4 options and one correct answer`;
+## Rules
+- Never make up AWS behaviors
+- Always mention the exam angle
+- Use headers, short paragraphs, bullet points — no walls of text
+- Practice questions must have exactly 4 options and one correct answer`;
 
 const MONTHLY_FREE_LIMIT = 5;
-
-function callOpenAI(payload, apiKey) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify(payload);
-    const options = {
-      hostname: 'api.openai.com',
-      path: '/v1/chat/completions',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Length': Buffer.byteLength(body),
-      },
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('Invalid JSON from OpenAI')); }
-      });
-    });
-
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
-}
 
 exports.handler = async (event) => {
   const headers = {
@@ -103,48 +61,46 @@ exports.handler = async (event) => {
 
   const validTier = ['monthly', 'yearly', 'lifetime'].includes(tier) ? tier : null;
   if (!validTier) {
-    return { statusCode: 403, headers, body: JSON.stringify({ error: 'no_access', message: 'Upgrade to use the AI Coach.' }) };
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'no_access' }) };
   }
 
-  if (validTier === 'monthly') {
-    const count = parseInt(monthlyCount, 10) || 0;
-    if (count >= MONTHLY_FREE_LIMIT) {
-      return {
-        statusCode: 403,
-        headers,
-        body: JSON.stringify({ error: 'limit_reached', message: `You've used your ${MONTHLY_FREE_LIMIT} free AI Coach messages. Upgrade to Yearly or Lifetime for unlimited access.` }),
-      };
-    }
+  if (validTier === 'monthly' && (parseInt(monthlyCount, 10) || 0) >= MONTHLY_FREE_LIMIT) {
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'limit_reached' }) };
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Missing API key' }) };
-  }
-
-  const trimmed = messages.slice(-20);
+  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: 'Missing OPENAI_API_KEY' }) };
 
   try {
-    const result = await callOpenAI({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...trimmed.map((m) => ({ role: m.role, content: m.content })),
-      ],
-      max_tokens: 1400,
-      temperature: 0.5,
-    }, apiKey);
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...messages.slice(-20).map((m) => ({ role: m.role, content: m.content })),
+        ],
+        max_tokens: 1400,
+        temperature: 0.5,
+      }),
+    });
 
-    if (result.error) {
-      console.error('[chat] OpenAI error:', result.error);
-      return { statusCode: 500, headers, body: JSON.stringify({ error: result.error.message }) };
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('[chat] OpenAI error:', JSON.stringify(data));
+      return { statusCode: 500, headers, body: JSON.stringify({ error: data.error?.message || 'OpenAI error' }) };
     }
 
-    const reply = result.choices?.[0]?.message?.content ?? 'No response.';
+    const reply = data.choices?.[0]?.message?.content ?? 'No response.';
     return { statusCode: 200, headers, body: JSON.stringify({ reply }) };
 
   } catch (err) {
-    console.error('[chat] Error:', err);
-    return { statusCode: 500, headers, body: JSON.stringify({ error: err.message || 'AI error' }) };
+    console.error('[chat] fetch error:', err.message);
+    return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
   }
 };
