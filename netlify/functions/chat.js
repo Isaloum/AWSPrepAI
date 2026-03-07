@@ -68,8 +68,8 @@ exports.handler = async (event) => {
     return { statusCode: 403, headers, body: JSON.stringify({ error: 'limit_reached' }) };
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: 'Missing OPENAI_API_KEY' }) };
+  const apiKey = process.env.OPENAI_API_KEY_Chat_Bot;
+  if (!apiKey) return { statusCode: 500, headers, body: JSON.stringify({ error: 'Missing OPENAI_API_KEY_Chat_Bot' }) };
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
