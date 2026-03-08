@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Coach — AWSPrepAI</title>
   <meta name="description" content="Your personal AWS SAA-C03 AI Coach. Get instant explanations, practice questions, and study plans.">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-chat.svg" type="image/svg+xml">
   <link rel="stylesheet" href="navigation.css">
   <script src="https://js.stripe.com/v3/"></script>
   <style>
@@ -35,51 +35,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* ── NAV ── */
-    header {
-      background: var(--aws-dark);
-      border-bottom: 2px solid var(--border);
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0,0,0,.1);
-    }
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #fff;
-      text-decoration: none;
-    }
-    .logo img { height: 40px; width: auto; }
-    .page-links { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .page-link {
-      color: #fff;
-      text-decoration: none;
-      padding: .5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      transition: all .2s;
-      font-size: .875rem;
-      border: 1px solid transparent;
-      background: rgba(255,255,255,.1);
-    }
-    .page-link:hover { background: rgba(255,255,255,.2); }
-    .page-link.active { background: var(--aws-blue); border-color: var(--aws-blue); }
 
     /* ── LAYOUT ── */
     .chat-wrapper {
@@ -373,21 +328,76 @@
 </head>
 <body>
 
-<!-- NAV -->
-<header>
-  <div class="header-content">
-    <a href="index.html" class="logo">
-      <img src="logo.svg" alt="AWSPrepAI logo">
-    </a>
-    <div class="page-links">
-      <a href="index.html" class="page-link">Practice</a>
-      <a href="chat.html"  class="page-link active">🤖 AI Coach</a>
-      <a href="pricing.html" class="page-link">Pricing</a>
-      <a href="resources.html" class="page-link">Resources</a>
-      <a href="contact.html" class="page-link">Contact</a>
+  <nav class="main-nav" role="navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo" aria-label="AWSPrepAI Home">
+        <img src="logo.svg" alt="AWSPrepAI">
+      </a>
+      <div class="nav-menu" id="navMenu">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#quiz" class="dropdown-item" onclick="showTab('quiz')"><span class="item-icon">📝</span><div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">505 SAA-C03 questions</div></div></a>
+            <a href="index.html#exam" class="dropdown-item" onclick="showTab('exam')"><span class="item-icon">⏱️</span><div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div></a>
+            <a href="index.html#adaptive" class="dropdown-item" onclick="showTab('adaptive')"><span class="item-icon">🏗️</span><div class="item-content"><div class="item-title">Architecture Builder</div><div class="item-desc">Drag &amp; drop AWS services</div></div></a>
+            <a href="index.html#visual-exam" class="dropdown-item" onclick="showTab('visual-exam')"><span class="item-icon">🎯</span><div class="item-content"><div class="item-title">Visual Exam</div><div class="item-desc">Build your answers</div></div></a>
+          </div>
+        </div>
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">Study<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+          <div class="dropdown-menu" role="menu">
+            <a href="index.html#study-guide" class="dropdown-item" onclick="showTab('study-guide')"><span class="item-icon">📚</span><div class="item-content"><div class="item-title">Study Guide</div><div class="item-desc">Exam tips &amp; strategies</div></div></a>
+            <a href="index.html#hints-keywords" class="dropdown-item" onclick="showTab('hints-keywords')"><span class="item-icon">💡</span><div class="item-content"><div class="item-title">Keywords &amp; Hints</div><div class="item-desc">Scenario identifiers</div></div></a>
+            <a href="index.html#services" class="dropdown-item" onclick="showTab('services')"><span class="item-icon">☁️</span><div class="item-content"><div class="item-title">AWS Services</div><div class="item-desc">40+ service reference</div></div></a>
+            <a href="glossary.html" class="dropdown-item"><span class="item-icon">📖</span><div class="item-content"><div class="item-title">Glossary</div><div class="item-desc">AWS terminology</div></div></a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="chat.html" class="nav-link active" style="background:rgba(59,130,246,.25);border:1px solid rgba(59,130,246,.5);">🤖 AI Coach</a>
+      </div>
+      <a href="index.html" class="nav-cta">Start Practicing</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-nav-overlay" id="mobileNavOverlay">
+    <div class="mobile-nav-content">
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
+      <div class="mobile-nav-menu">
+        <div class="mobile-nav-section"><a href="index.html" class="mobile-nav-link">📊 Dashboard</a></div>
+        <div class="mobile-nav-section">
+          <div class="mobile-nav-title">Practice</div>
+          <a href="index.html#quiz" class="mobile-nav-link">📝 Practice Quiz</a>
+          <a href="index.html#exam" class="mobile-nav-link">⏱️ Mock Exam</a>
+          <a href="index.html#adaptive" class="mobile-nav-link">🏗️ Architecture Builder</a>
+          <a href="index.html#visual-exam" class="mobile-nav-link">🎯 Visual Exam</a>
+        </div>
+        <div class="mobile-nav-section">
+          <div class="mobile-nav-title">Study</div>
+          <a href="index.html#study-guide" class="mobile-nav-link">📚 Study Guide</a>
+          <a href="index.html#hints-keywords" class="mobile-nav-link">💡 Keywords &amp; Hints</a>
+          <a href="index.html#services" class="mobile-nav-link">☁️ AWS Services</a>
+          <a href="glossary.html" class="mobile-nav-link">📖 Glossary</a>
+        </div>
+        <div class="mobile-nav-section">
+          <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
+          <a href="resources.html" class="mobile-nav-link">📚 Resources</a>
+          <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+          <a href="pricing.html" class="mobile-nav-link">💰 Pricing</a>
+          <a href="chat.html" class="mobile-nav-link">🤖 AI Coach</a>
+        </div>
+        <a href="index.html" class="mobile-nav-cta">Start Practicing</a>
+      </div>
     </div>
   </div>
-</header>
 
 <!-- MAIN -->
 <div class="chat-wrapper" id="chat-wrapper">
