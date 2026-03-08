@@ -38,7 +38,7 @@ if (typeof Stripe !== 'undefined') {
 
 // ==================== PREMIUM ACCESS MANAGEMENT ====================
 // Keys are obfuscated to prevent casual DevTools bypass
-const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts', e: '_apa_pi' };
+const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts', e: '_apa_pi', f: '_apa_st' };
 
 function _tok(d) {
   // Simple token: base64 of "granted:" + date string
@@ -68,7 +68,7 @@ function grantPremiumAccess() {
   grantPremiumAccessWithTier('lifetime');
 }
 
-function grantPremiumAccessWithTier(tier, paymentIntentId) {
+function grantPremiumAccessWithTier(tier, paymentIntentId, accessToken) {
   try {
     const ts = new Date().toISOString();
     localStorage.setItem(_K.a, _tok(ts));
@@ -76,6 +76,9 @@ function grantPremiumAccessWithTier(tier, paymentIntentId) {
     localStorage.setItem(_K.d, ts);
     if (paymentIntentId && /^pi_/.test(paymentIntentId)) {
       localStorage.setItem(_K.e, paymentIntentId);
+    }
+    if (accessToken) {
+      localStorage.setItem(_K.f, accessToken);
     }
     // Set expiry based on tier
     if (tier === 'monthly') {
@@ -103,7 +106,7 @@ function restoreAccess(paymentIntentId) {
       });
       const data = await res.json();
       if (!res.ok || !data.verified) { reject(data.error || 'Restore failed'); return; }
-      grantPremiumAccessWithTier(data.tier, id);
+      grantPremiumAccessWithTier(data.tier, id, data.accessToken);
       resolve(data.tier);
     } catch(e) { reject(e.message || 'Restore failed'); }
   });
@@ -146,6 +149,10 @@ function getPremiumStatus() {
 
 function getSubscriptionTier() {
   try { return localStorage.getItem(_K.c) || null; } catch(e) { return null; }
+}
+
+function getAccessToken() {
+  try { return localStorage.getItem(_K.f) || null; } catch(e) { return null; }
 }
 
 function isSubscriptionActive() {

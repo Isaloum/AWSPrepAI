@@ -37,11 +37,43 @@ const SYSTEM_PROMPT = `You are AWSPrepAI — a senior AWS Solutions Architect an
 - Use headers, short paragraphs, bullet points — no walls of text
 - Practice questions must have exactly 4 options and one correct answer`;
 
+const crypto = require('crypto');
+
 const MONTHLY_FREE_LIMIT = 5;
+
+// ── Rate limiting (in-memory, resets on cold start) ──────────────────────────
+const _rl = new Map();
+function isRateLimited(ip) {
+  const now = Date.now();
+  const window = 60 * 60 * 1000; // 1 hour
+  const limit = 60; // max requests per IP per hour
+  const entry = _rl.get(ip) || { count: 0, reset: now + window };
+  if (now > entry.reset) { entry.count = 0; entry.reset = now + window; }
+  entry.count++;
+  _rl.set(ip, entry);
+  return entry.count > limit;
+}
+
+// ── Token verification ────────────────────────────────────────────────────────
+function verifyToken(token) {
+  const secret = process.env.ACCESS_TOKEN_SECRET;
+  if (!secret || !token) return null;
+  try {
+    const dot = token.lastIndexOf('.');
+    if (dot === -1) return null;
+    const payload = token.substring(0, dot);
+    const sig = token.substring(dot + 1);
+    const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+    if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) return null;
+    const data = JSON.parse(Buffer.from(payload, 'base64').toString());
+    if (data.expiry && new Date(data.expiry) < new Date()) return null;
+    return data; // { tier, expiry }
+  } catch { return null; }
+}
 
 exports.handler = async (event) => {
   const headers = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': 'https://awsprepai.netlify.app',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Content-Type': 'application/json',
   };
@@ -49,17 +81,37 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
 
+  // Rate limit by IP
+  const ip = event.headers?.['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  if (isRateLimited(ip)) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: 'Too many requests. Try again later.' }) };
+  }
+
   let body;
   try { body = JSON.parse(event.body); }
   catch { return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
-  const { messages, tier, monthlyCount } = body;
+  const { messages, accessToken, monthlyCount } = body;
 
   if (!messages || !Array.isArray(messages)) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid messages' }) };
   }
 
-  const validTier = ['monthly', 'yearly', 'lifetime'].includes(tier) ? tier : null;
+  // ── Verify signed token (server-side auth) ──────────────────────────────────
+  const tokenData = verifyToken(accessToken);
+
+  // Fallback: if no valid token but ACCESS_TOKEN_SECRET not set yet, use legacy tier field
+  const SECRET_CONFIGURED = !!process.env.ACCESS_TOKEN_SECRET;
+  let validTier = null;
+
+  if (tokenData) {
+    validTier = tokenData.tier;
+  } else if (!SECRET_CONFIGURED) {
+    // Legacy mode — secret not configured yet, trust client (temporary)
+    const { tier } = body;
+    validTier = ['monthly', 'yearly', 'lifetime'].includes(tier) ? tier : null;
+  }
+
   if (!validTier) {
     return { statusCode: 403, headers, body: JSON.stringify({ error: 'no_access' }) };
   }

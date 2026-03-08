@@ -135,7 +135,7 @@
         });
         const data = await response.json();
         if (data.verified) {
-          grantPremiumAccessWithTier(data.tier || 'lifetime');
+          grantPremiumAccessWithTier(data.tier || 'lifetime', data.paymentIntentId, data.accessToken);
         } else {
           document.querySelector('.subtitle').textContent = 'Payment could not be verified. Please contact support@awsprepai.com.';
         }

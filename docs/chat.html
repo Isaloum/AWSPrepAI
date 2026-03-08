@@ -635,6 +635,7 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messages: conversationHistory,
+        accessToken: getAccessToken(),
         tier: currentTier,
         monthlyCount,
       }),

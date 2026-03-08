@@ -1,4 +1,13 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const crypto = require('crypto');
+
+function issueToken(tier, expiry) {
+  const secret = process.env.ACCESS_TOKEN_SECRET;
+  if (!secret) return null;
+  const payload = Buffer.from(JSON.stringify({ tier, expiry: expiry || null })).toString('base64');
+  const sig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return `${payload}.${sig}`;
+}
 
 exports.handler = async (event) => {
   const headers = {
@@ -23,10 +32,15 @@ exports.handler = async (event) => {
       return { statusCode: 402, headers, body: JSON.stringify({ error: 'Payment not completed' }) };
     }
 
-    // Get tier from metadata
     const tier = (pi.metadata && pi.metadata.tier) ? pi.metadata.tier : 'lifetime';
 
-    return { statusCode: 200, headers, body: JSON.stringify({ verified: true, tier }) };
+    let expiry = null;
+    if (tier === 'monthly') { const d = new Date(); d.setDate(d.getDate() + 32); expiry = d.toISOString(); }
+    else if (tier === 'yearly') { const d = new Date(); d.setDate(d.getDate() + 366); expiry = d.toISOString(); }
+
+    const accessToken = issueToken(tier, expiry);
+
+    return { statusCode: 200, headers, body: JSON.stringify({ verified: true, tier, accessToken }) };
 
   } catch (err) {
     console.error('Restore access error:', err);
