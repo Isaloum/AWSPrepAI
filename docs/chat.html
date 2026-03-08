@@ -417,6 +417,24 @@
       </div>
     </div>
     <a href="pricing.html" style="font-size:.85rem;color:var(--muted);">Compare all plans →</a>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.08);">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem;">Already paid? Lost access after clearing your browser?</p>
+      <button onclick="showRestoreModal()" style="background:transparent;border:1px solid rgba(255,255,255,.25);color:#cbd5e1;padding:.5rem 1.25rem;border-radius:8px;cursor:pointer;font-size:.85rem;">🔑 Restore Access</button>
+    </div>
+  </div>
+
+  <!-- Restore Access Modal -->
+  <div id="restore-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#1e293b;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:2rem;max-width:420px;width:90%;text-align:center;">
+      <h3 style="margin:0 0 .5rem;font-size:1.2rem;">Restore Your Access</h3>
+      <p style="color:#94a3b8;font-size:.875rem;margin:0 0 1.25rem;">Enter your Payment Intent ID from your Stripe receipt email. It starts with <code style="background:#0f172a;padding:.1rem .4rem;border-radius:4px;">pi_</code></p>
+      <input id="restore-pi-input" type="text" placeholder="pi_3Abc123..." style="width:100%;box-sizing:border-box;background:#0f172a;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.75rem 1rem;color:#f1f5f9;font-size:.9rem;margin-bottom:.75rem;" />
+      <div id="restore-error" style="color:#f87171;font-size:.8rem;min-height:1.2rem;margin-bottom:.5rem;"></div>
+      <div style="display:flex;gap:.75rem;justify-content:center;">
+        <button onclick="hideRestoreModal()" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:#94a3b8;padding:.6rem 1.25rem;border-radius:8px;cursor:pointer;">Cancel</button>
+        <button id="restore-btn" onclick="doRestore()" style="background:#3b82f6;border:none;color:#fff;padding:.6rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;">Restore →</button>
+      </div>
+    </div>
   </div>
 
   <!-- Chat view (shown when access granted) -->
@@ -726,6 +744,36 @@ function showTyping() {
 function removeTyping(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
+}
+
+// ---- Restore Access ----
+function showRestoreModal() {
+  const m = document.getElementById('restore-modal');
+  m.style.display = 'flex';
+  document.getElementById('restore-error').textContent = '';
+  document.getElementById('restore-pi-input').value = '';
+}
+function hideRestoreModal() {
+  document.getElementById('restore-modal').style.display = 'none';
+}
+async function doRestore() {
+  const input = document.getElementById('restore-pi-input').value.trim();
+  const errEl = document.getElementById('restore-error');
+  const btn = document.getElementById('restore-btn');
+  errEl.textContent = '';
+  if (!input || !/^pi_/.test(input)) {
+    errEl.textContent = 'Please enter a valid Payment Intent ID (starts with pi_)';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Checking…';
+  try {
+    const tier = await restoreAccess(input);
+    hideRestoreModal();
+    location.reload();
+  } catch(e) {
+    errEl.textContent = e || 'Could not restore access. Check the ID and try again.';
+    btn.disabled = false; btn.textContent = 'Restore →';
+  }
 }
 </script>
 </body>

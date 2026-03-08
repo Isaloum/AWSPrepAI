@@ -38,7 +38,7 @@ if (typeof Stripe !== 'undefined') {
 
 // ==================== PREMIUM ACCESS MANAGEMENT ====================
 // Keys are obfuscated to prevent casual DevTools bypass
-const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts' };
+const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts', e: '_apa_pi' };
 
 function _tok(d) {
   // Simple token: base64 of "granted:" + date string
@@ -68,12 +68,15 @@ function grantPremiumAccess() {
   grantPremiumAccessWithTier('lifetime');
 }
 
-function grantPremiumAccessWithTier(tier) {
+function grantPremiumAccessWithTier(tier, paymentIntentId) {
   try {
     const ts = new Date().toISOString();
     localStorage.setItem(_K.a, _tok(ts));
     localStorage.setItem(_K.c, tier || 'lifetime');
     localStorage.setItem(_K.d, ts);
+    if (paymentIntentId && /^pi_/.test(paymentIntentId)) {
+      localStorage.setItem(_K.e, paymentIntentId);
+    }
     // Set expiry based on tier
     if (tier === 'monthly') {
       const exp = new Date(); exp.setDate(exp.getDate() + 32);
@@ -86,6 +89,24 @@ function grantPremiumAccessWithTier(tier) {
     }
     console.log('✅ Premium access granted:', tier);
   } catch(e) {}
+}
+
+function restoreAccess(paymentIntentId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const id = (paymentIntentId || localStorage.getItem(_K.e) || '').trim();
+      if (!id || !/^pi_/.test(id)) { reject('No valid Payment Intent ID'); return; }
+      const res = await fetch('/.netlify/functions/restore-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentIntentId: id }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.verified) { reject(data.error || 'Restore failed'); return; }
+      grantPremiumAccessWithTier(data.tier, id);
+      resolve(data.tier);
+    } catch(e) { reject(e.message || 'Restore failed'); }
+  });
 }
 
 function revokePremiumAccess() {

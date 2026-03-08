@@ -39,10 +39,11 @@ exports.handler = async (event) => {
     }
 
     const tier = (session.metadata && session.metadata.tier) ? session.metadata.tier : 'lifetime';
+    const paymentIntentId = session.payment_intent || null;
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verified: true, tier }),
+      body: JSON.stringify({ verified: true, tier, paymentIntentId }),
     };
   } catch (error) {
     console.error('Stripe verification error:', error);
