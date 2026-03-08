@@ -113,7 +113,7 @@ function restoreAccess(paymentIntentId) {
 }
 
 function revokePremiumAccess() {
-  [_K.a, _K.b, _K.c, _K.d].forEach(k => localStorage.removeItem(k));
+  [_K.a, _K.b, _K.c, _K.d, _K.e, _K.f].forEach(k => localStorage.removeItem(k));
   // Clean up old keys from previous version
   localStorage.removeItem('premium_access');
   localStorage.removeItem('premium_unlocked_at');
