@@ -522,14 +522,41 @@ let monthlyCount = 0;
 let isLoading = false;
 
 // ── Init ──
-document.addEventListener('DOMContentLoaded', () => {
+async function silentTokenRefresh() {
+  const pi = localStorage.getItem('_apa_pi');
+  if (!pi || !/^pi_/.test(pi)) return false;
+  try {
+    const res = await fetch('/.netlify/functions/restore-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentIntentId: pi }),
+    });
+    const data = await res.json();
+    if (res.ok && data.verified) {
+      grantPremiumAccessWithTier(data.tier, pi, data.accessToken);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
   currentTier = getSubscriptionTier();
-  const hasPremium = hasPremiumAccess();
+  let hasPremium = hasPremiumAccess();
+
+  // Silently refresh token if missing (e.g. 24h expiry passed)
+  if (!getAccessToken() && hasPremium) {
+    await silentTokenRefresh();
+  }
 
   if (!hasPremium) {
-    // No access at all
-    document.getElementById('paywall-view').style.display = 'block';
-    return;
+    const refreshed = await silentTokenRefresh();
+    if (!refreshed) {
+      document.getElementById('paywall-view').style.display = 'block';
+      return;
+    }
+    hasPremium = true;
+    currentTier = getSubscriptionTier();
   }
 
   // Has premium — show chat

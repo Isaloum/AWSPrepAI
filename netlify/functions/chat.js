@@ -63,11 +63,17 @@ function verifyToken(token) {
     if (dot === -1) return null;
     const payload = token.substring(0, dot);
     const sig = token.substring(dot + 1);
+    if (sig.length !== 64) return null; // expect 32-byte hex
     const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
     if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) return null;
     const data = JSON.parse(Buffer.from(payload, 'base64').toString());
+    // Token must have a valid tier
+    if (!['monthly', 'yearly', 'lifetime'].includes(data.tier)) return null;
+    // Token must be tied to a real Stripe PaymentIntent (pi_ prefix)
+    if (!data.pi || !/^pi_/.test(data.pi)) return null;
+    // Check expiry
     if (data.expiry && new Date(data.expiry) < new Date()) return null;
-    return data; // { tier, expiry }
+    return data; // { tier, pi, expiry, iat }
   } catch { return null; }
 }
 
