@@ -31,10 +31,18 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid payment intent ID' }) };
     }
 
-    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+      expand: ['latest_charge.dispute'],
+    });
 
     if (pi.status !== 'succeeded') {
       return { statusCode: 402, headers, body: JSON.stringify({ error: 'Payment not completed' }) };
+    }
+
+    // Block access if payment is disputed (chargeback)
+    if (pi.latest_charge?.dispute) {
+      console.warn(`[restore] Blocked disputed payment — pi: ${paymentIntentId}`);
+      return { statusCode: 403, headers, body: JSON.stringify({ error: 'Payment disputed. Contact support.' }) };
     }
 
     const tier = pi.metadata?.tier || 'lifetime';

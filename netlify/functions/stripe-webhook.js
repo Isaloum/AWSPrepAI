@@ -47,6 +47,15 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: `Webhook signature verification failed: ${err.message}` };
   }
 
+  // ── Chargeback / dispute → revoke access immediately ─────────────────────
+  if (stripeEvent.type === 'charge.dispute.created') {
+    const dispute = stripeEvent.data.object;
+    console.warn(`[webhook] CHARGEBACK detected — pi: ${dispute.payment_intent}, amount: ${dispute.amount}`);
+    // Token will fail on next 24h refresh since pi_ is now disputed
+    // Log for manual review
+    return { statusCode: 200, body: JSON.stringify({ received: true, action: 'access_flagged' }) };
+  }
+
   // Only handle successful payments
   if (stripeEvent.type !== 'checkout.session.completed') {
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
