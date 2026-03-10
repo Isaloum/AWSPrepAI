@@ -282,6 +282,7 @@
     }
     .mini-plan:hover { border-color: var(--aws-blue); transform: translateY(-2px); }
     .mini-plan.popular { border-color: var(--aws-orange); background: #fff8ee; }
+    .mini-plan { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .mini-plan .plan-name { font-weight: 800; font-size: 1rem; margin-bottom: .25rem; }
     .mini-plan .plan-price { font-size: 1.5rem; font-weight: 800; color: var(--aws-blue); }
     .mini-plan .plan-sub { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
@@ -357,7 +358,7 @@
         <a href="resources.html" class="nav-link">Resources</a>
         <a href="contact.html" class="nav-link">Contact</a>
         <a href="pricing.html" class="nav-link">Pricing</a>
-        <a href="chat.html" class="nav-link active" style="background:rgba(59,130,246,.25);border:1px solid rgba(59,130,246,.5);">AI Coach</a>
+        <a href="chat.html" class="nav-link active">AI Coach</a>
       </div>
       <a href="index.html" class="nav-cta">Start Practicing</a>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
@@ -414,12 +415,12 @@
         <div class="plan-price">$57.99</div>
         <div class="plan-sub">/ year · AI Coach included</div>
       </div>
-      <div class="mini-plan" onclick="initiatePayment('lifetime')">
+      <div class="mini-plan" onclick="initiatePayment('lifetime')"><div class="plan-badge-slot"></div>
         <div class="plan-name">Lifetime</div>
         <div class="plan-price">$97.99</div>
         <div class="plan-sub">one-time · AI Coach included</div>
       </div>
-      <div class="mini-plan" onclick="initiatePayment('monthly')">
+      <div class="mini-plan" onclick="initiatePayment('monthly')"><div class="plan-badge-slot"></div>
         <div class="plan-name">Monthly</div>
         <div class="plan-price">$7.99</div>
         <div class="plan-sub">/ mo · 5 free AI messages</div>
