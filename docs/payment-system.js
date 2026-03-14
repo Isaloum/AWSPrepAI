@@ -4,23 +4,23 @@ const FREE_QUESTION_LIMIT = 20;
 
 const PRICING = {
   monthly: {
-    price: 7.99,
-    stripePriceId: 'price_1T9TGSE9neqrFM5LlqTwUMt',
+    price: 7,
+    stripePriceId: 'price_1TB1YCE9neqrFM5LDbyzVSnv',
     label: 'Monthly',
     interval: 'month',
     mode: 'subscription'
   },
   yearly: {
-    price: 57.99,
-    stripePriceId: 'price_1T9TIYE9neqrFM5LsQiicRy6',
+    price: 57,
+    stripePriceId: 'price_1TB1aRE9neqrFM5LpaIQD1YX',
     label: 'Yearly',
     savings: 38,
     interval: 'year',
     mode: 'subscription'
   },
   lifetime: {
-    price: 97.99,
-    stripePriceId: 'price_1T9TJhE9neqrFM5LApVljZXx',
+    price: 97,
+    stripePriceId: 'price_1TB1bRE9neqrFM5LP6UcX9Ms',
     label: 'Lifetime',
     popular: true,
     interval: 'one-time',
