@@ -478,9 +478,9 @@
         <svg class="arch-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
           <!-- App -->
           <g class="hotspot" onclick="explain3('app','Application','Your application connects to RDS via the endpoint DNS name — not the IP. This is important because during a failover, AWS automatically updates the DNS to point to the standby, so your app reconnects without code changes.','Exam tip: Always use the RDS endpoint (DNS name), never a hardcoded IP.')">
-            <rect x="10" y="100" width="80" height="60" rx="8" class="aws-box-orange"/>
-            <text x="50" y="126" class="aws-label">🖥️</text>
-            <text x="50" y="142" class="aws-label">Application</text>
+            <rect x="10" y="60" width="80" height="60" rx="8" class="aws-box-orange"/>
+            <text x="50" y="86" class="aws-label">🖥️</text>
+            <text x="50" y="102" class="aws-label">Application</text>
           </g>
           <!-- Primary -->
           <g class="hotspot" onclick="explain3('primary','RDS Primary (Multi-AZ)','The primary RDS instance handles all reads and writes. Data is synchronously replicated to the standby in another AZ. If the primary fails, AWS automatically promotes the standby — no data loss (synchronous = zero RPO).','Exam tip: Multi-AZ = availability/failover, NOT for performance. Failover takes 1-2 minutes. Standby is NOT readable.')">
@@ -516,7 +516,7 @@
           <text x="290" y="106" class="aws-label" style="fill:#065F46;font-size:8px;text-anchor:middle;">Async replication</text>
           <text x="290" y="116" class="aws-sublabel" style="text-anchor:middle;">(seconds delay)</text>
           <!-- Arrows -->
-          <line x1="90" y1="130" x2="140" y2="105" class="arrow-orange"/>
+          <line x1="90" y1="90" x2="140" y2="100" class="arrow-orange"/>
           <line x1="195" y1="140" x2="195" y2="170" class="arrow" style="stroke-dasharray:5 3;"/>
           <line x1="250" y1="95" x2="330" y2="95" class="arrow-blue" style="stroke-dasharray:5 3;"/>
           <line x1="250" y1="115" x2="330" y2="195" class="arrow-blue" style="stroke-dasharray:5 3;"/>
