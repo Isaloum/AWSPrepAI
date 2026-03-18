@@ -511,11 +511,10 @@
             <text x="385" y="205" class="aws-label">Read Replica</text>
             <text x="385" y="220" class="aws-sublabel">DR / Global reads</text>
           </g>
-          <!-- Labels -->
-          <text x="270" y="105" class="aws-label" style="fill:#92400E;font-size:9px;text-anchor:start;">Sync replication</text>
-          <text x="270" y="115" class="aws-sublabel" style="text-anchor:start;">(zero RPO)</text>
-          <text x="270" y="145" class="aws-label" style="fill:#065F46;font-size:9px;text-anchor:start;">Async replication</text>
-          <text x="270" y="155" class="aws-sublabel" style="text-anchor:start;">(seconds delay)</text>
+          <!-- Labels: horizontal alongside arrows, no box overlap -->
+          <text x="202" y="151" class="aws-label" style="fill:#92400E;font-size:8px;text-anchor:start;">Sync (zero RPO)</text>
+          <text x="290" y="106" class="aws-label" style="fill:#065F46;font-size:8px;text-anchor:middle;">Async replication</text>
+          <text x="290" y="116" class="aws-sublabel" style="text-anchor:middle;">(seconds delay)</text>
           <!-- Arrows -->
           <line x1="90" y1="130" x2="140" y2="105" class="arrow-orange"/>
           <line x1="195" y1="140" x2="195" y2="170" class="arrow" style="stroke-dasharray:5 3;"/>
