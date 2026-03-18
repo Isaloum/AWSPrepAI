@@ -553,31 +553,31 @@
           </g>
           <!-- S3 -->
           <g class="hotspot" onclick="explain4('s3','S3 Bucket (Origin)','Stores static files (HTML, CSS, JS, images, videos). CloudFront fetches content from S3 on cache miss. Use Origin Access Control (OAC) to ensure users can only access S3 via CloudFront, not directly.','Exam tip: S3 static website hosting + CloudFront = serverless static site. S3 bucket policy should only allow CloudFront OAC, not public access.')">
-            <rect x="280" y="40" width="100" height="75" rx="8" class="aws-box-green"/>
-            <text x="330" y="68" class="aws-label">🪣</text>
-            <text x="330" y="83" class="aws-label">S3 Bucket</text>
-            <text x="330" y="98" class="aws-sublabel">Static origin</text>
-            <text x="330" y="108" class="aws-sublabel">HTML/CSS/JS</text>
+            <rect x="280" y="35" width="100" height="75" rx="8" class="aws-box-green"/>
+            <text x="330" y="63" class="aws-label">🪣</text>
+            <text x="330" y="78" class="aws-label">S3 Bucket</text>
+            <text x="330" y="93" class="aws-sublabel">Static origin</text>
+            <text x="330" y="103" class="aws-sublabel">HTML/CSS/JS</text>
           </g>
           <!-- ALB Origin -->
           <g class="hotspot" onclick="explain4('alb-origin','ALB / API (Dynamic Origin)','CloudFront can also proxy to dynamic origins like ALB, API Gateway, or EC2. Static content is cached; dynamic content passes through.','Exam tip: CloudFront can have multiple origins — S3 for static, ALB for dynamic — using cache behaviors based on URL path (e.g., /api/* → ALB, /* → S3).')">
-            <rect x="280" y="140" width="100" height="75" rx="8" class="aws-box-blue"/>
-            <text x="330" y="168" class="aws-label">⚖️</text>
-            <text x="330" y="183" class="aws-label">ALB / API GW</text>
-            <text x="330" y="198" class="aws-sublabel">Dynamic origin</text>
+            <rect x="280" y="130" width="100" height="75" rx="8" class="aws-box-blue"/>
+            <text x="330" y="158" class="aws-label">⚖️</text>
+            <text x="330" y="173" class="aws-label">ALB / API GW</text>
+            <text x="330" y="188" class="aws-sublabel">Dynamic origin</text>
           </g>
           <!-- WAF -->
           <g class="hotspot" onclick="explain4('waf','AWS WAF','Web Application Firewall. Protects against SQL injection, XSS, and other Layer 7 attacks. Can be attached to CloudFront to protect your global distribution.','Exam tip: WAF + CloudFront = global DDoS and Layer 7 protection. WAF rules can block IPs, rate-limit, or filter by geo-location.')">
-            <rect x="400" y="95" width="85" height="65" rx="8" class="aws-box-red"/>
-            <text x="443" y="120" class="aws-label">🛡️</text>
-            <text x="443" y="135" class="aws-label">WAF</text>
-            <text x="443" y="149" class="aws-sublabel">Layer 7 protect</text>
+            <rect x="400" y="88" width="85" height="65" rx="8" class="aws-box-red"/>
+            <text x="443" y="113" class="aws-label">🛡️</text>
+            <text x="443" y="128" class="aws-label">WAF</text>
+            <text x="443" y="142" class="aws-sublabel">Layer 7 protect</text>
           </g>
           <!-- Arrows -->
           <line x1="80" y1="120" x2="100" y2="120" class="arrow"/>
-          <line x1="210" y1="100" x2="280" y2="70" class="arrow-orange"/>
-          <line x1="210" y1="130" x2="280" y2="175" class="arrow-orange"/>
-          <line x1="210" y1="115" x2="400" y2="120" class="arrow" style="stroke-dasharray:5 3;"/>
+          <line x1="210" y1="103" x2="280" y2="72" class="arrow-orange"/>
+          <line x1="210" y1="137" x2="280" y2="168" class="arrow-orange"/>
+          <line x1="210" y1="120" x2="400" y2="120" class="arrow" style="stroke-dasharray:5 3;"/>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-s3-cf">
