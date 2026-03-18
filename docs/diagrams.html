@@ -116,12 +116,11 @@
       padding: 1.25rem;
       background: #FAFAFA;
       border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: visible;
     }
 
     /* SVG DIAGRAM STYLES */
-    .arch-svg { width: 100%; height: auto; max-height: 280px; }
+    .arch-svg { width: 100%; height: auto; overflow: visible; }
     .aws-box { fill: white; stroke: #CBD5E1; stroke-width: 1.5; rx: 8; }
     .aws-box-orange { fill: #FFF8F0; stroke: var(--aws-orange); stroke-width: 2; }
     .aws-box-blue { fill: #EFF6FF; stroke: var(--aws-blue); stroke-width: 2; }
@@ -939,7 +938,7 @@
         <span class="exam-tag">High Value</span>
       </div>
       <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+        <svg class="arch-svg" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arrowhead-s3adv" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#FF9900"/></marker>
           </defs>
@@ -954,27 +953,27 @@
             <text x="80" y="160" class="aws-sublabel">(root only)</text>
           </g>
           <!-- Arrow CRR -->
-          <line x1="150" y1="115" x2="180" y2="115" class="arrow-orange" marker-end="url(#arrowhead-s3adv)"/>
-          <text x="165" y="100" class="aws-sublabel">CRR</text>
+          <line x1="150" y1="115" x2="220" y2="115" class="arrow-orange" marker-end="url(#arrowhead-s3adv)"/>
+          <text x="180" y="100" class="aws-sublabel">CRR</text>
           <!-- Destination Bucket -->
           <g class="hotspot" onclick="explainS3adv('dest','Destination Bucket','Replication enabled. Receives copies of objects/versions from source. Destination also has versioning (automatically enabled).','Exam tip: CRR = Cross-Region Replication. Asynchronous (takes seconds-minutes). Useful for compliance, low-latency access, or backup.')">
-            <rect x="180" y="30" width="140" height="170" rx="8" class="aws-box-blue"/>
-            <text x="250" y="60" class="aws-label">🪣</text>
-            <text x="250" y="80" class="aws-sublabel">Destination</text>
-            <text x="250" y="100" class="aws-sublabel">Region: eu-west-1</text>
-            <text x="250" y="120" class="aws-sublabel">Versioning: ON</text>
-            <text x="250" y="140" class="aws-sublabel">(automatic)</text>
-            <text x="250" y="160" class="aws-sublabel">Backup Copy</text>
+            <rect x="220" y="30" width="140" height="170" rx="8" class="aws-box-blue"/>
+            <text x="290" y="60" class="aws-label">🪣</text>
+            <text x="290" y="80" class="aws-sublabel">Destination</text>
+            <text x="290" y="100" class="aws-sublabel">Region: eu-west-1</text>
+            <text x="290" y="120" class="aws-sublabel">Versioning: ON</text>
+            <text x="290" y="140" class="aws-sublabel">(automatic)</text>
+            <text x="290" y="160" class="aws-sublabel">Backup Copy</text>
           </g>
           <!-- Features box -->
           <g class="hotspot" onclick="explainS3adv('features','Key Features','Versioning: Keep all versions. Deletion = mark as deleted (can restore). CRR: Automatic async copy to another region. MFA Delete: Root+MFA to permanently delete.','Exam tip: These 3 features together = strong data protection. Exam question: which feature prevents accidental deletion? Answer: Versioning + MFA Delete.')">
-            <rect x="350" y="30" width="240" height="170" rx="8" class="aws-box-green"/>
-            <text x="470" y="55" class="aws-label">Features:</text>
-            <text x="360" y="80" class="aws-sublabel">✓ Versioning: all versions kept</text>
-            <text x="360" y="100" class="aws-sublabel">✓ CRR: auto replicate to another region</text>
-            <text x="360" y="120" class="aws-sublabel">✓ MFA Delete: MFA required to delete</text>
-            <text x="360" y="145" class="aws-sublabel">Combined = disaster recovery</text>
-            <text x="360" y="165" class="aws-sublabel">+ compliance protection</text>
+            <rect x="400" y="30" width="240" height="170" rx="8" class="aws-box-green"/>
+            <text x="520" y="55" class="aws-label">Features:</text>
+            <text x="410" y="80" class="aws-sublabel">✓ Versioning: all versions kept</text>
+            <text x="410" y="100" class="aws-sublabel">✓ CRR: auto replicate to another region</text>
+            <text x="410" y="120" class="aws-sublabel">✓ MFA Delete: MFA required to delete</text>
+            <text x="410" y="145" class="aws-sublabel">Combined = disaster recovery</text>
+            <text x="410" y="165" class="aws-sublabel">+ compliance protection</text>
           </g>
         </svg>
       </div>
@@ -1987,11 +1986,11 @@
             <text x="535" y="70" class="aws-sublabel">$0.00099</text>
           </g>
           <!-- Legend -->
-          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Lifecycle rule example:</text>
-          <text x="10" y="140" class="aws-sublabel">Move to Standard-IA after 30 days → Glacier Flexible after 90 days → Deep Archive after 180 days</text>
-          <text x="10" y="160" class="aws-sublabel">This minimizes costs while meeting compliance and access requirements</text>
+          <text x="15" y="120" class="aws-sublabel" style="font-weight:bold;">Lifecycle rule example:</text>
+          <text x="15" y="140" class="aws-sublabel">Move to Standard-IA after 30 days → Glacier Flexible after 90 days</text>
+          <text x="15" y="160" class="aws-sublabel">This minimizes costs while meeting compliance and access</text>
           <!-- Cost comparison -->
-          <text x="10" y="190" class="aws-sublabel" style="font-weight:bold;">Cost increases →</text>
+          <text x="15" y="190" class="aws-sublabel" style="font-weight:bold;">Cost increases →</text>
           <line x1="200" y1="200" x2="570" y2="200" stroke="#E5E7EB" stroke-width="2"/>
           <text x="220" y="220" class="aws-sublabel">More access needed ✓</text>
           <text x="520" y="220" class="aws-sublabel">Cheaper ✓</text>
@@ -2033,13 +2032,13 @@
             <text x="520" y="68" class="aws-sublabel">90% | Risky</text>
           </g>
           <!-- Use cases -->
-          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Use case selection:</text>
+          <text x="15" y="120" class="aws-sublabel" style="font-weight:bold;">Use case selection:</text>
           <rect x="10" y="135" width="575" height="100" rx="6" class="aws-box" style="opacity:0.8"/>
-          <text x="20" y="155" class="aws-sublabel">Unpredictable traffic / testing → On-Demand</text>
-          <text x="20" y="175" class="aws-sublabel">Steady production workload → Savings Plans (Compute or EC2)</text>
-          <text x="20" y="195" class="aws-sublabel">Batch jobs / non-critical / fault-tolerant → Spot Instances (up to 90% savings!)</text>
-          <text x="20" y="215" class="aws-sublabel">Baseline + spiky → Savings Plans (baseline) + Spot (spikes) + On-Demand (small portion)</text>
-          <text x="20" y="230" class="aws-sublabel">Best practice: Use AWS Cost Explorer recommendations!</text>
+          <text x="25" y="155" class="aws-sublabel">Unpredictable traffic / testing → On-Demand</text>
+          <text x="25" y="175" class="aws-sublabel">Steady production workload → Savings Plans</text>
+          <text x="25" y="195" class="aws-sublabel">Batch jobs / non-critical → Spot Instances (up to 90% savings!)</text>
+          <text x="25" y="215" class="aws-sublabel">Baseline + spiky → Savings Plans + Spot + On-Demand</text>
+          <text x="25" y="230" class="aws-sublabel">Best practice: Use AWS Cost Explorer recommendations!</text>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-savings">
@@ -2078,7 +2077,7 @@
           </g>
           <!-- Comparison header -->
           <line x1="10" y1="210" x2="590" y2="210" stroke="#E5E7EB" stroke-width="2"/>
-          <text x="10" y="230" class="aws-sublabel" style="font-weight:bold;">vs Traditional: EC2 + RDS</text>
+          <text x="15" y="230" class="aws-sublabel" style="font-weight:bold;">vs Traditional: EC2 + RDS</text>
           <!-- Traditional (pays always) -->
           <g class="hotspot" onclick="explainServerlessCost('traditional','Traditional Stack','EC2 (always running) + RDS (always running). Fixed cost regardless of traffic. ~$100-500/month baseline.','Exam tip: Traditional = always-on cost. Good if high-traffic (>10k req/day). Predictable costs.')">
             <rect x="10" y="240" width="280" height="20" rx="4" class="aws-box-orange"/>
@@ -2170,7 +2169,7 @@
           </defs>
           <!-- VPC with Private Subnet -->
           <rect x="10" y="10" width="580" height="240" rx="8" class="vpc-bg"/>
-          <text x="20" y="28" class="aws-sublabel">VPC (Private)</text>
+          <text x="25" y="28" class="aws-sublabel">VPC (Private)</text>
           <!-- EC2 in Private Subnet -->
           <g class="hotspot" onclick="explainEndpoint('ec2','EC2 Instance (Private)','Needs to access AWS services. No internet gateway (not exposed). Uses VPC Endpoints for private access.','Exam tip: Private EC2 can't access services via internet. VPC Endpoints = private path to services. No NAT Gateway cost.')">
             <rect x="30" y="60" width="120" height="60" rx="6" class="aws-box-blue"/>
@@ -2206,8 +2205,8 @@
           <text x="410" y="194" class="aws-sublabel">many more</text>
           <!-- Comparison -->
           <rect x="30" y="190" width="540" height="50" rx="6" class="aws-box" style="opacity:0.8"/>
-          <text x="40" y="210" class="aws-sublabel">Gateway = S3/DynamoDB, free, route-table based</text>
-          <text x="40" y="230" class="aws-sublabel">Interface = any other service, costs money, more flexible</text>
+          <text x="45" y="210" class="aws-sublabel">Gateway = S3/DynamoDB, free, route-table based</text>
+          <text x="45" y="230" class="aws-sublabel">Interface = any service, costs $, more flexible</text>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-endpoint">
