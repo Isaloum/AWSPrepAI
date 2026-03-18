@@ -1216,7 +1216,183 @@
       </div>
     </div>
 
-  </div>
+  <!-- 12. WAF + Shield + CloudFront -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>WAF + Shield + CloudFront — DDoS Protection</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-waf" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Internet -->
+          <rect x="5" y="80" width="55" height="60" rx="6" class="aws-box"/>
+          <text x="32" y="104" class="aws-label">🌐</text>
+          <text x="32" y="118" class="aws-sublabel">Internet</text>
+          <text x="32" y="130" class="aws-sublabel">Requests</text>
+          <!-- Arrow -->
+          <line x1="60" y1="110" x2="80" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
+          <!-- CloudFront -->
+          <g class="hotspot" onclick="explainWAF('cf','CloudFront','Global CDN — 400+ edge locations. Absorbs DDoS at edge. Integrates with Shield Standard for free Layer 3/4 protection.','Exam tip: CloudFront = CDN + DDoS edge mitigation. Reduces origin load. Works with WAF for Layer 7 filtering.')">
+            <rect x="80" y="70" width="90" height="80" rx="6" class="aws-box-blue"/>
+            <text x="125" y="95" class="aws-label">☁️</text>
+            <text x="125" y="110" class="aws-label">CloudFront</text>
+            <text x="125" y="123" class="aws-sublabel">CDN + Cache</text>
+            <text x="125" y="136" class="aws-sublabel">400+ PoPs</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="170" y1="110" x2="190" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
+          <!-- Shield -->
+          <g class="hotspot" onclick="explainWAF('shield','AWS Shield','Standard (free): L3/4 DDoS protection — SYN floods, UDP floods. Advanced ($3k/mo): L7 protection, DRT team, cost protection after attack.','Exam tip: Shield Standard = free, automatic. Advanced = paid, 24/7 DDoS Response Team. Both work with CloudFront.')">
+            <rect x="190" y="70" width="90" height="80" rx="6" class="aws-box-orange"/>
+            <text x="235" y="95" class="aws-label">🛡️</text>
+            <text x="235" y="110" class="aws-label">Shield</text>
+            <text x="235" y="123" class="aws-sublabel">DDoS L3/L4</text>
+            <text x="235" y="136" class="aws-sublabel">Standard free</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="280" y1="110" x2="300" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
+          <!-- WAF -->
+          <g class="hotspot" onclick="explainWAF('waf','WAF (Web Application Firewall)','Layer 7 protection. Rules block: SQL injection, XSS, bad bots, geo-blocks, rate limits.','Exam tip: WAF = Layer 7. Attaches to CloudFront, ALB, or API Gateway. AWS Managed Rules available. Pay per rule + request.')">
+            <rect x="300" y="70" width="90" height="80" rx="6" class="aws-box-red"/>
+            <text x="345" y="95" class="aws-label">🔥</text>
+            <text x="345" y="110" class="aws-label">WAF</text>
+            <text x="345" y="123" class="aws-sublabel">L7 Filter</text>
+            <text x="345" y="136" class="aws-sublabel">SQL/XSS/Geo</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="390" y1="110" x2="410" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
+          <!-- ALB -->
+          <g class="hotspot" onclick="explainWAF('alb','Application Load Balancer','Distributes clean (filtered) traffic to EC2 instances or containers. WAF integrates directly with ALB.','Exam tip: ALB = Layer 7 LB. Routes by path/host/header. Works with WAF, ACM (SSL), ECS, Lambda targets.')">
+            <rect x="410" y="70" width="90" height="80" rx="6" class="aws-box-green"/>
+            <text x="455" y="95" class="aws-label">⚙️</text>
+            <text x="455" y="110" class="aws-label">ALB</text>
+            <text x="455" y="123" class="aws-sublabel">Load Balancer</text>
+            <text x="455" y="136" class="aws-sublabel">Clean traffic</text>
+          </g>
+          <!-- Layer labels -->
+          <text x="125" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#0EA5E9;">Edge Cache</text>
+          <text x="235" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#FF9900;">L3/L4 DDoS</text>
+          <text x="345" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#E11D48;">L7 Filter</text>
+          <text x="455" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#16A34A;">Distribution</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-waf">
+        <p class="exp-placeholder">👆 Click any security layer to learn how it protects</p>
+      </div>
+    </div><!-- 13. AWS Organizations + SCPs -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>AWS Organizations + SCPs + Control Tower</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-org" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Root -->
+          <g class="hotspot" onclick="explainOrg('root','Organization Root','Top of the hierarchy. Master Account manages all member accounts. Enable SCPs here to affect all accounts.','Exam tip: Root = master account + OUs. Master account has special privileges. SCPs = policies preventing actions across entire org.')">
+            <rect x="240" y="10" width="120" height="50" rx="6" class="aws-box-orange"/>
+            <text x="300" y="32" class="aws-label">📦 Root</text>
+            <text x="300" y="47" class="aws-sublabel">Master Account</text>
+          </g>
+          <!-- Arrow down -->
+          <line x1="300" y1="60" x2="300" y2="85" class="arrow" marker-end="url(#arrowhead-org)"/>
+          <!-- OUs -->
+          <!-- Dev OU -->
+          <g class="hotspot" onclick="explainOrg('dev','Development OU','Organizational Unit for development accounts. Can have different SCPs than production. Often more permissive for faster iteration.','Exam tip: OUs = logical grouping for policy management. Can nest OUs (Dev → Dev-Sandbox). SCPs apply to entire OU.')">
+            <rect x="40" y="95" width="140" height="50" rx="6" class="aws-box-blue"/>
+            <text x="110" y="117" class="aws-label">Dev</text>
+            <text x="110" y="132" class="aws-sublabel">OU</text>
+          </g>
+          <!-- Prod OU -->
+          <g class="hotspot" onclick="explainOrg('prod','Production OU','Production accounts. Stricter SCPs: prevent deletion of critical resources, enforce encryption, prevent public access.','Exam tip: Prod OU = restricted. Example SCP: deny EC2:TerminateInstances. SCPs are whitelist (default deny) or blacklist (default allow).')">
+            <rect x="230" y="95" width="140" height="50" rx="6" class="aws-box-green"/>
+            <text x="300" y="117" class="aws-label">Prod</text>
+            <text x="300" y="132" class="aws-sublabel">OU</text>
+          </g>
+          <!-- Security OU -->
+          <g class="hotspot" onclick="explainOrg('sec','Security OU','Security/Compliance accounts. Most restrictive SCPs. Enforces: MFA, CloudTrail, Config, encryption requirements.','Exam tip: Security OU = logging, monitoring, auditing. Typically read-only access for security teams. Audit member accounts.')">
+            <rect x="420" y="95" width="140" height="50" rx="6" class="aws-box-red"/>
+            <text x="490" y="117" class="aws-label">Security</text>
+            <text x="490" y="132" class="aws-sublabel">OU</text>
+          </g>
+          <!-- Member Accounts -->
+          <rect x="40" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
+          <text x="105" y="192" class="aws-sublabel">Member Account 1</text>
+          <rect x="230" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
+          <text x="295" y="192" class="aws-sublabel">Member Account 2</text>
+          <rect x="420" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
+          <text x="485" y="192" class="aws-sublabel">Audit Account</text>
+          <!-- Control Tower -->
+          <g class="hotspot" onclick="explainOrg('tower','Control Tower','AWS service for multi-account governance. Sets up: Org, SCPs, Config, CloudTrail, landing zones. Enforces best practices automatically.','Exam tip: Control Tower = automation layer on top of Organizations. Sets up guardrails (preventive/detective). Automates account provisioning.')">
+            <rect x="40" y="220" width="510" height="20" rx="4" class="aws-box-purple"/>
+            <text x="295" y="235" class="aws-sublabel">AWS Control Tower — Governs multi-account environment, enforces guardrails</text>
+          </g>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-org">
+        <p class="exp-placeholder">👆 Click any component to learn about Organizations</p>
+      </div>
+    </div><!-- 15. Cognito User Pools vs Identity Pools -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Cognito — User Pools vs Identity Pools</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-cognito" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Users -->
+          <rect x="10" y="95" width="70" height="50" rx="6" class="aws-box"/>
+          <text x="45" y="115" class="aws-label">👥</text>
+          <text x="45" y="130" class="aws-sublabel">Users</text>
+          <!-- Arrow -->
+          <line x1="80" y1="120" x2="110" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
+          <!-- User Pool -->
+          <g class="hotspot" onclick="explainCognito('up','User Pool','Authentication service. Manages user accounts, sign-up/sign-in, MFA, password reset. Returns JWT token after successful authentication.','Exam tip: User Pool = Authentication (who are you?). JWT contains user identity. Use for web/mobile apps. Integrates with social providers (Google, Facebook).')">
+            <rect x="110" y="60" width="150" height="120" rx="6" class="aws-box-blue"/>
+            <text x="185" y="85" class="aws-label">User Pool</text>
+            <text x="185" y="105" class="aws-sublabel">Authentication</text>
+            <text x="185" y="125" class="aws-sublabel">JWT Token</text>
+            <text x="185" y="145" class="aws-sublabel">(verified user ID)</text>
+            <text x="185" y="165" class="aws-sublabel">↓</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="260" y1="120" x2="290" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
+          <!-- Identity Pool -->
+          <g class="hotspot" onclick="explainCognito('idp','Identity Pool','Authorization service. Takes JWT from User Pool and returns AWS credentials (temporary). Grants access to AWS services (S3, DynamoDB, etc.).','Exam tip: Identity Pool = Authorization (what can you do?). Returns AWS STS credentials. Unauthenticated access possible. Use for mobile apps accessing AWS.')">
+            <rect x="290" y="60" width="150" height="120" rx="6" class="aws-box-green"/>
+            <text x="365" y="85" class="aws-label">Identity Pool</text>
+            <text x="365" y="105" class="aws-sublabel">Authorization</text>
+            <text x="365" y="125" class="aws-sublabel">AWS Credentials</text>
+            <text x="365" y="145" class="aws-sublabel">(temp access keys)</text>
+            <text x="365" y="165" class="aws-sublabel">↓</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="440" y1="120" x2="470" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
+          <!-- AWS Services -->
+          <g class="hotspot" onclick="explainCognito('aws','AWS Services','User can now access AWS services based on the IAM role attached to Identity Pool. Access is scoped: S3 bucket, DynamoDB table, etc.','Exam tip: Identity Pool role = scoped IAM permissions. Example: S3:GetObject on specific bucket prefix only. Temporary credentials rotate automatically.')">
+            <rect x="470" y="80" width="120" height="80" rx="6" class="aws-box-orange"/>
+            <text x="530" y="105" class="aws-label">🔐</text>
+            <text x="530" y="125" class="aws-label">AWS Services</text>
+            <text x="530" y="145" class="aws-sublabel">(S3, DDB, etc.)</text>
+          </g>
+          <!-- Note -->
+          <rect x="10" y="190" width="580" height="50" rx="4" class="aws-box" style="opacity:0.8"/>
+          <text x="300" y="210" class="aws-sublabel">User Pool only: authenticate, get JWT. Identity Pool only: authorize to AWS. Both together: complete web/mobile app flow.</text>
+          <text x="300" y="228" class="aws-sublabel">Identity Pool can also work without User Pool for unauthenticated access (e.g., mobile app uploading to S3).</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-cognito">
+        <p class="exp-placeholder">👆 Click any component to learn about Cognito flow</p>
+      </div>
+    </div></div>
 </div><!-- end secure section -->
 
 <!-- ═══════════════════════════════════════════════════
@@ -1439,7 +1615,234 @@
       </div>
     </div>
 
-  </div>
+  <!-- 14. Kinesis -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Kinesis — Streams vs Firehose vs Analytics</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-kinesis" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Data Producers -->
+          <rect x="10" y="90" width="60" height="40" rx="6" class="aws-box"/>
+          <text x="40" y="110" class="aws-sublabel">IoT/Logs</text>
+          <!-- Arrow -->
+          <line x1="70" y1="110" x2="100" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
+          <!-- Kinesis Streams -->
+          <g class="hotspot" onclick="explainKinesis('streams','Kinesis Data Streams','Real-time ingestion and processing. Data retained 24 hrs (configurable to 365 days). Shards process parallel data. Great for analytics, dashboards, real-time actions.','Exam tip: KDS = real-time, high throughput, on-demand/provisioned shards. Pay per shard-hour. Consumers read simultaneously (Lambda, Kinesis Analytics, custom code).')">
+            <rect x="100" y="70" width="130" height="80" rx="6" class="aws-box-orange"/>
+            <text x="165" y="90" class="aws-label">⚡</text>
+            <text x="165" y="108" class="aws-sublabel">Kinesis Data</text>
+            <text x="165" y="122" class="aws-sublabel">Streams</text>
+            <text x="165" y="138" class="aws-sublabel">Real-time (24h)</text>
+          </g>
+          <!-- Arrow down to consumers -->
+          <line x1="165" y1="150" x2="165" y2="170" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
+          <!-- Consumers -->
+          <rect x="110" y="170" width="110" height="35" rx="4" class="aws-box-blue"/>
+          <text x="165" y="192" class="aws-sublabel">Lambda / Consumers</text>
+          <!-- Arrow Firehose -->
+          <line x1="230" y1="110" x2="270" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
+          <!-- Kinesis Firehose -->
+          <g class="hotspot" onclick="explainKinesis('firehose','Kinesis Data Firehose','Automated delivery to S3, Redshift, Elasticsearch, Datadog, etc. Near-real-time (60 seconds buffering). Serverless, no shards to manage.','Exam tip: Firehose = automated delivery. Set it and forget it. Great for data warehousing pipelines. No real-time processing (use Streams for that).')">
+            <rect x="270" y="70" width="130" height="80" rx="6" class="aws-box-green"/>
+            <text x="335" y="90" class="aws-label">📦</text>
+            <text x="335" y="108" class="aws-sublabel">Kinesis Data</text>
+            <text x="335" y="122" class="aws-sublabel">Firehose</text>
+            <text x="335" y="138" class="aws-sublabel">Auto-delivery</text>
+          </g>
+          <!-- Arrow down -->
+          <line x1="335" y1="150" x2="335" y2="170" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
+          <!-- Destinations -->
+          <rect x="280" y="170" width="110" height="35" rx="4" class="aws-box-purple"/>
+          <text x="335" y="192" class="aws-sublabel">S3 / Redshift</text>
+          <!-- Arrow Analytics -->
+          <line x1="400" y1="110" x2="440" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
+          <!-- Kinesis Analytics -->
+          <g class="hotspot" onclick="explainKinesis('analytics','Kinesis Analytics','SQL on streaming data in real-time. Process KDS directly with SQL queries. Output to Streams/Firehose/Lambda.','Exam tip: Kinesis Analytics = process streams with SQL. Real-time transformations, anomaly detection. Separate from Streams.')">
+            <rect x="440" y="70" width="150" height="80" rx="6" class="aws-box-red"/>
+            <text x="515" y="100" class="aws-label">SQL on Streams</text>
+            <text x="515" y="138" class="aws-sublabel">(real-time)</text>
+          </g>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-kinesis">
+        <p class="exp-placeholder">👆 Click any Kinesis product to learn when to use it</p>
+      </div>
+    </div><!-- 15. EventBridge -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>EventBridge — Event-Driven Architecture</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-eb" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Event Sources -->
+          <rect x="10" y="30" width="80" height="50" rx="4" class="aws-box-orange"/>
+          <text x="50" y="50" class="aws-sublabel">EC2</text>
+          <text x="50" y="65" class="aws-sublabel">Event</text>
+          <rect x="10" y="95" width="80" height="50" rx="4" class="aws-box-orange"/>
+          <text x="50" y="115" class="aws-sublabel">S3</text>
+          <text x="50" y="130" class="aws-sublabel">Event</text>
+          <rect x="10" y="160" width="80" height="50" rx="4" class="aws-box-orange"/>
+          <text x="50" y="175" class="aws-sublabel">Custom</text>
+          <text x="50" y="190" class="aws-sublabel">App</text>
+          <!-- Arrows -->
+          <line x1="90" y1="55" x2="120" y2="80" class="arrow" marker-end="url(#arrowhead-eb)"/>
+          <line x1="90" y1="120" x2="120" y2="110" class="arrow" marker-end="url(#arrowhead-eb)"/>
+          <line x1="90" y1="185" x2="120" y2="135" class="arrow" marker-end="url(#arrowhead-eb)"/>
+          <!-- EventBridge -->
+          <g class="hotspot" onclick="explainEB('bus','EventBridge Event Bus','Central hub for events. Rules match events and route to targets. Schema registry for event structure. Filters by pattern matching.','Exam tip: EventBridge = event router. Decouples event sources from targets. Default bus or custom buses. Pay per event published.')">
+            <rect x="120" y="75" width="140" height="80" rx="8" class="aws-box-blue"/>
+            <text x="190" y="105" class="aws-label">🚌</text>
+            <text x="190" y="123" class="aws-label">EventBridge</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="260" y1="115" x2="300" y2="115" class="arrow" marker-end="url(#arrowhead-eb)"/>
+          <!-- Targets -->
+          <g class="hotspot" onclick="explainEB('targets','Event Targets','Rules route to: Lambda, SQS, SNS, Step Functions, Kinesis, ECS tasks, API Gateway, etc. Each rule can have multiple targets.','Exam tip: Targets = where events go. Fan-out pattern: one event → multiple targets. Rule filters: match only specific events.')">
+            <rect x="300" y="30" width="130" height="60" rx="6" class="aws-box-green"/>
+            <text x="365" y="55" class="aws-sublabel">Lambda</text>
+            <text x="365" y="70" class="aws-sublabel">Function</text>
+          </g>
+          <rect x="300" y="105" width="130" height="60" rx="6" class="aws-box-purple"/>
+          <text x="365" y="130" class="aws-sublabel">SQS Queue</text>
+          <text x="365" y="148" class="aws-sublabel">(async)</text>
+          <rect x="300" y="180" width="130" height="60" rx="6" class="aws-box-red"/>
+          <text x="365" y="205" class="aws-sublabel">Step Functions</text>
+          <text x="365" y="223" class="aws-sublabel">(workflows)</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-eb">
+        <p class="exp-placeholder">👆 Click any component to learn about EventBridge</p>
+      </div>
+    </div><!-- 16. Step Functions -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Step Functions — Serverless Orchestration</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-sf" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Start -->
+          <circle cx="50" cy="130" r="15" class="aws-box-blue"/>
+          <text x="50" y="135" class="aws-label" style="font-weight:bold;">S</text>
+          <!-- Arrow -->
+          <line x1="65" y1="130" x2="100" y2="130" class="arrow" marker-end="url(#arrowhead-sf)"/>
+          <!-- Task 1 -->
+          <g class="hotspot" onclick="explainSF('validate','Lambda Task 1 — Validate','Executes Lambda function to validate input. If validation passes, continues. If fails, goes to error handler.','Exam tip: Tasks = Lambda, ECS, SNS, SQS, DynamoDB, etc. Catch errors and retry.')">
+            <rect x="100" y="105" width="110" height="50" rx="6" class="aws-box-orange"/>
+            <text x="155" y="125" class="aws-sublabel">Task 1</text>
+            <text x="155" y="140" class="aws-sublabel">Validate</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="210" y1="130" x2="250" y2="130" class="arrow" marker-end="url(#arrowhead-sf)"/>
+          <!-- Choice -->
+          <g class="hotspot" onclick="explainSF('choice','Choice State','Branches based on input. Example: if valid == true → process, else → error. No code needed, declarative branches.','Exam tip: Choice = conditional logic. If/Then/Else. Compare values, check strings, etc. JSON path for field access.')">
+            <polygon points="290,80 340,130 290,180 240,130" class="aws-box-green" style="fill:#D1FAE5;stroke:#065F46;stroke-width:2"/>
+            <text x="290" y="135" class="aws-sublabel">Choice</text>
+          </g>
+          <!-- Success branch -->
+          <line x1="310" y1="160" x2="310" y2="200" class="arrow" marker-end="url(#arrowhead-sf)"/>
+          <text x="320" y="180" class="aws-sublabel">valid</text>
+          <!-- Task 2 -->
+          <g class="hotspot" onclick="explainSF('process','Lambda Task 2 — Process','Executes main processing Lambda. Can have retry policy (exponential backoff) and catch for errors.','Exam tip: Retry = automatic re-execution on failure. Catch = handle error and proceed. Both in state definition.')">
+            <rect x="240" y="200" width="110" height="50" rx="6" class="aws-box-blue"/>
+            <text x="295" y="220" class="aws-sublabel">Task 2</text>
+            <text x="295" y="235" class="aws-sublabel">Process</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="350" y1="225" x2="390" y2="225" class="arrow" marker-end="url(#arrowhead-sf)"/>
+          <!-- End -->
+          <circle cx="410" cy="225" r="15" class="aws-box-green"/>
+          <text x="410" y="230" class="aws-label" style="font-weight:bold;">E</text>
+          <!-- Error branch -->
+          <line x1="310" y1="100" x2="310" y2="60" class="arrow" marker-end="url(#arrowhead-sf)"/>
+          <text x="320" y="80" class="aws-sublabel">error</text>
+          <!-- Error Task -->
+          <g class="hotspot" onclick="explainSF('error','Error Handler','Sends notification on failure. Example: SNS, SQS, or Lambda to log error.','Exam tip: Error handling = Catch state. Send alert, retry, or fail gracefully.')">
+            <rect x="240" y="30" width="110" height="50" rx="6" class="aws-box-red"/>
+            <text x="295" y="50" class="aws-sublabel">Send Alert</text>
+            <text x="295" y="65" class="aws-sublabel">(SNS/Lambda)</text>
+          </g>
+          <!-- State Machine benefits -->
+          <rect x="10" y="260" width="580" height="0" rx="4"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-sf">
+        <p class="exp-placeholder">👆 Click any state to learn about Step Functions</p>
+      </div>
+    </div><!-- 17. Storage Comparison -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>EBS vs EFS vs S3 vs Instance Store</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- EBS -->
+          <g class="hotspot" onclick="explainStorage('ebs','EBS (Elastic Block Store)','Block storage (like hard drive). Attached to single EC2 instance (same AZ). Persists after EC2 stops. Snapshots for backups. GP3/IO1/etc.','Exam tip: EBS = primary storage for EC2. Single AZ (fast latency). Encrypt with KMS. Snapshot → restore in different AZ.')">
+            <rect x="10" y="20" width="130" height="200" rx="6" class="aws-box-blue"/>
+            <text x="75" y="50" class="aws-label">EBS</text>
+            <text x="75" y="70" class="aws-sublabel">Block Storage</text>
+            <text x="75" y="90" class="aws-sublabel">Single EC2</text>
+            <text x="75" y="110" class="aws-sublabel">Single AZ</text>
+            <text x="75" y="130" class="aws-sublabel">Persistent</text>
+            <text x="75" y="150" class="aws-sublabel">Snapshots</text>
+            <text x="75" y="170" class="aws-sublabel">Use: OS disk,</text>
+            <text x="75" y="190" class="aws-sublabel">databases</text>
+          </g>
+          <!-- EFS -->
+          <g class="hotspot" onclick="explainStorage('efs','EFS (Elastic File System)','File storage (NFS). Multi-AZ, multi-EC2. Auto-scales. Slightly higher latency than EBS. Great for shared access.','Exam tip: EFS = multiple EC2 instances access same filesystem. Multi-AZ. Lifecycle policies (Standard → Infrequent Access). Higher cost than EBS.')">
+            <rect x="160" y="20" width="130" height="200" rx="6" class="aws-box-green"/>
+            <text x="225" y="50" class="aws-label">EFS</text>
+            <text x="225" y="70" class="aws-sublabel">File Storage</text>
+            <text x="225" y="90" class="aws-sublabel">Multi-EC2</text>
+            <text x="225" y="110" class="aws-sublabel">Multi-AZ</text>
+            <text x="225" y="130" class="aws-sublabel">Auto-scales</text>
+            <text x="225" y="150" class="aws-sublabel">Shared FS</text>
+            <text x="225" y="170" class="aws-sublabel">Use: web root,</text>
+            <text x="225" y="190" class="aws-sublabel">shared data</text>
+          </g>
+          <!-- S3 -->
+          <g class="hotspot" onclick="explainStorage('s3','S3 (Object Storage)','Object storage (not block/file). Global, infinite scale. Eventual consistency. Retrieve via HTTP. Versioning/CRR.','Exam tip: S3 = object storage, not filesystem. Access via API. Great for backups, static sites, data lakes. Durability: 11 9s.')">
+            <rect x="310" y="20" width="130" height="200" rx="6" class="aws-box-orange"/>
+            <text x="375" y="50" class="aws-label">S3</text>
+            <text x="375" y="70" class="aws-sublabel">Object Storage</text>
+            <text x="375" y="90" class="aws-sublabel">Global</text>
+            <text x="375" y="110" class="aws-sublabel">Infinite scale</text>
+            <text x="375" y="130" class="aws-sublabel">HTTP/S access</text>
+            <text x="375" y="150" class="aws-sublabel">Versioning</text>
+            <text x="375" y="170" class="aws-sublabel">Use: backups,</text>
+            <text x="375" y="190" class="aws-sublabel">static sites</text>
+          </g>
+          <!-- Instance Store -->
+          <g class="hotspot" onclick="explainStorage('inst','Instance Store','Ephemeral storage. Lost when instance stops/terminates. Ultra-fast (directly attached). No snapshots.','Exam tip: Instance Store = temporary. Speed cache, temp files. Do NOT use for critical data. RAID across drives for performance.')">
+            <rect x="460" y="20" width="130" height="200" rx="6" class="aws-box-purple"/>
+            <text x="525" y="50" class="aws-label">Instance</text>
+            <text x="525" y="65" class="aws-label">Store</text>
+            <text x="525" y="85" class="aws-sublabel">Ephemeral</text>
+            <text x="525" y="105" class="aws-sublabel">Lost on stop</text>
+            <text x="525" y="125" class="aws-sublabel">Ultra-fast</text>
+            <text x="525" y="145" class="aws-sublabel">No snapshot</text>
+            <text x="525" y="165" class="aws-sublabel">Use: cache,</text>
+            <text x="525" y="185" class="aws-sublabel">temp work</text>
+          </g>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-storage">
+        <p class="exp-placeholder">👆 Click any storage type to compare</p>
+      </div>
+    </div></div>
 </div><!-- end performance section -->
 
 <!-- ═══════════════════════════════════════════════════
@@ -1532,7 +1935,164 @@
       </div>
     </div>
 
-  </div>
+  <!-- 17. S3 Lifecycle -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>S3 Storage Classes Lifecycle</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-s3life" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#FF9900"/></marker>
+          </defs>
+          <!-- Standard -->
+          <g class="hotspot" onclick="explainS3life('standard','Standard','Frequent access. $0.023/GB. 99.99% availability. No retrieval fee. Minimum 30 days before transition.','Exam tip: Start here for new data. No minimums. Hot data tier.')">
+            <rect x="10" y="30" width="90" height="60" rx="6" class="aws-box-orange"/>
+            <text x="55" y="55" class="aws-label">Standard</text>
+            <text x="55" y="72" class="aws-sublabel">$0.023/GB</text>
+          </g>
+          <line x1="100" y1="60" x2="130" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
+          <text x="107" y="48" class="aws-sublabel">30 days</text>
+          <!-- Standard-IA -->
+          <g class="hotspot" onclick="explainS3life('ia','Standard-IA','Infrequent access. $0.0125/GB + retrieval fee. 99.9% availability. 30-day minimum.','Exam tip: Warm tier. Cost-effective for archival that needs occasional access.')">
+            <rect x="130" y="30" width="90" height="60" rx="6" class="aws-box-blue"/>
+            <text x="175" y="52" class="aws-sublabel">Standard-IA</text>
+            <text x="175" y="72" class="aws-sublabel">$0.0125/GB</text>
+          </g>
+          <line x1="220" y1="60" x2="250" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
+          <text x="222" y="48" class="aws-sublabel">60 days</text>
+          <!-- Glacier Instant -->
+          <g class="hotspot" onclick="explainS3life('glacier-inst','Glacier Instant','Milliseconds retrieval. $0.004/GB. Good for compliance data.','Exam tip: Cold tier. Faster than Flexible. For infrequent access with speed needs.')">
+            <rect x="250" y="30" width="90" height="60" rx="6" class="aws-box-green"/>
+            <text x="295" y="52" class="aws-sublabel">Glacier</text>
+            <text x="295" y="67" class="aws-sublabel">Instant</text>
+            <text x="295" y="82" class="aws-sublabel">$0.004/GB</text>
+          </g>
+          <line x1="340" y1="60" x2="370" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
+          <text x="342" y="48" class="aws-sublabel">90 days</text>
+          <!-- Glacier Flexible -->
+          <g class="hotspot" onclick="explainS3life('glacier-flex','Glacier Flexible','3-5 hours retrieval. $0.0036/GB. Long-term archival. 90-day minimum.','Exam tip: Cheapest option. For rarely accessed data. Retrieval takes hours (expensive).')">
+            <rect x="370" y="30" width="90" height="60" rx="6" class="aws-box-purple"/>
+            <text x="415" y="45" class="aws-sublabel">Glacier</text>
+            <text x="415" y="60" class="aws-sublabel">Flexible</text>
+            <text x="415" y="75" class="aws-sublabel">$0.0036/GB</text>
+          </g>
+          <line x1="460" y1="60" x2="490" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
+          <text x="462" y="48" class="aws-sublabel">180 days</text>
+          <!-- Deep Archive -->
+          <g class="hotspot" onclick="explainS3life('deep','Deep Archive','12 hours retrieval. $0.00099/GB. Regulatory compliance. 180-day minimum.','Exam tip: Absolute cheapest. For 7-year compliance holds. Rarely accessed.')">
+            <rect x="490" y="30" width="90" height="60" rx="6" class="aws-box-red"/>
+            <text x="535" y="52" class="aws-sublabel">Deep Archive</text>
+            <text x="535" y="70" class="aws-sublabel">$0.00099</text>
+          </g>
+          <!-- Legend -->
+          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Lifecycle rule example:</text>
+          <text x="10" y="140" class="aws-sublabel">Move to Standard-IA after 30 days → Glacier Flexible after 90 days → Deep Archive after 180 days</text>
+          <text x="10" y="160" class="aws-sublabel">This minimizes costs while meeting compliance and access requirements</text>
+          <!-- Cost comparison -->
+          <text x="10" y="190" class="aws-sublabel" style="font-weight:bold;">Cost increases →</text>
+          <line x1="200" y1="200" x2="570" y2="200" stroke="#E5E7EB" stroke-width="2"/>
+          <text x="220" y="220" class="aws-sublabel">More access needed ✓</text>
+          <text x="520" y="220" class="aws-sublabel">Cheaper ✓</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-s3life">
+        <p class="exp-placeholder">👆 Click any storage class to learn transition strategy</p>
+      </div>
+    </div><!-- 18. EC2 Savings Plans -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>EC2 Savings Plans vs Reserved vs Spot</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- On-Demand -->
+          <g class="hotspot" onclick="explainSavings('od','On-Demand','Pay hourly. No commitment. Most flexible but most expensive. 100% price.','Exam tip: On-Demand = no upfront. Good for testing, short-term, unpredictable spikes.')">
+            <rect x="10" y="30" width="120" height="60" rx="6" class="aws-box"/>
+            <text x="70" y="50" class="aws-sublabel">On-Demand</text>
+            <text x="70" y="68" class="aws-sublabel">100% | No commit</text>
+          </g>
+          <!-- Reserved Instances -->
+          <g class="hotspot" onclick="explainSavings('ri','Reserved Instances (RI)','1 or 3-year commitment. Up to 72% discount. Fixed to instance type (less flexible). All/Partial/No Upfront.','Exam tip: RI = steady-state. 3-year > 1-year discount. Best if utilization predictable. Can convert/sell unused RIs.')">
+            <rect x="160" y="30" width="120" height="60" rx="6" class="aws-box-orange"/>
+            <text x="220" y="50" class="aws-sublabel">Reserved (RI)</text>
+            <text x="220" y="68" class="aws-sublabel">28% | 1-3 yr</text>
+          </g>
+          <!-- Savings Plans -->
+          <g class="hotspot" onclick="explainSavings('sp','Savings Plans','1 or 3-year commitment. Up to 66% discount. More flexible than RI (any instance family). Compute Plans also apply to Lambda/Fargate.','Exam tip: Savings Plans = modern RI replacement. More flexible. Compute Plans recommended by Cost Explorer.')">
+            <rect x="310" y="30" width="120" height="60" rx="6" class="aws-box-green"/>
+            <text x="370" y="50" class="aws-sublabel">Savings Plans</text>
+            <text x="370" y="68" class="aws-sublabel">34% | 1-3 yr</text>
+          </g>
+          <!-- Spot -->
+          <g class="hotspot" onclick="explainSavings('spot','Spot Instances','Up to 90% discount! Can be interrupted with 2-min warning. Best for fault-tolerant, flexible workloads.','Exam tip: Spot = cheapest. Bidding for unused capacity. Interruption risk. Use for batch, analytics, not production DBs.')">
+            <rect x="460" y="30" width="120" height="60" rx="6" class="aws-box-red"/>
+            <text x="520" y="50" class="aws-sublabel">Spot Instances</text>
+            <text x="520" y="68" class="aws-sublabel">90% | Risky</text>
+          </g>
+          <!-- Use cases -->
+          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Use case selection:</text>
+          <rect x="10" y="135" width="575" height="100" rx="6" class="aws-box" style="opacity:0.8"/>
+          <text x="20" y="155" class="aws-sublabel">Unpredictable traffic / testing → On-Demand</text>
+          <text x="20" y="175" class="aws-sublabel">Steady production workload → Savings Plans (Compute or EC2)</text>
+          <text x="20" y="195" class="aws-sublabel">Batch jobs / non-critical / fault-tolerant → Spot Instances (up to 90% savings!)</text>
+          <text x="20" y="215" class="aws-sublabel">Baseline + spiky → Savings Plans (baseline) + Spot (spikes) + On-Demand (small portion)</text>
+          <text x="20" y="230" class="aws-sublabel">Best practice: Use AWS Cost Explorer recommendations!</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-savings">
+        <p class="exp-placeholder">👆 Click any pricing option to learn the tradeoffs</p>
+      </div>
+    </div><!-- 19. Serverless Cost Architecture -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Serverless Cost Architecture</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead-serverless" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+          </defs>
+          <!-- Users -->
+          <rect x="10" y="100" width="70" height="50" rx="6" class="aws-box"/>
+          <text x="45" y="125" class="aws-label">👥</text>
+          <text x="45" y="140" class="aws-sublabel">Users</text>
+          <!-- Arrow -->
+          <line x1="80" y1="125" x2="110" y2="125" class="arrow" marker-end="url(#arrowhead-serverless)"/>
+          <!-- SERVERLESS ARCHITECTURE -->
+          <g class="hotspot" onclick="explainServerlessCost('serverless','Serverless Stack','Lambda (compute) → API Gateway (entry) → DynamoDB (database) → S3 (storage). Pay only for what you use!','Exam tip: Serverless = no servers to manage. Auto-scales. Pay per execution, request, data stored. Great for variable workloads.')">
+            <rect x="110" y="40" width="450" height="50" rx="6" class="aws-box-green"/>
+            <text x="335" y="65" class="aws-sublabel">API Gateway | Lambda | DynamoDB | S3 = Pay Per Use ✓</text>
+          </g>
+          <!-- Arrow -->
+          <line x1="335" y1="90" x2="335" y2="110" class="arrow" marker-end="url(#arrowhead-serverless)"/>
+          <!-- Serverless usage example -->
+          <g class="hotspot" onclick="explainServerlessCost('usage','Example Usage','100 requests/day → Lambda: $0.20/month. DynamoDB: $0.25 for on-demand. S3: $0.023/GB. Total: ~$1-2/month.','Exam tip: Small-to-medium apps serverless often costs $5-50/month vs $100s for traditional.')">
+            <rect x="110" y="110" width="450" height="80" rx="6" class="aws-box-blue"/>
+            <text x="335" y="135" class="aws-sublabel">Lambda: $0.0000002 per request + $0.0000166 per GB-second</text>
+            <text x="335" y="155" class="aws-sublabel">DynamoDB: $1.25/GB for on-demand read/write</text>
+            <text x="335" y="175" class="aws-sublabel">Total monthly: varies from $1 (low) to $100s (high traffic)</text>
+          </g>
+          <!-- Comparison header -->
+          <line x1="10" y1="210" x2="590" y2="210" stroke="#E5E7EB" stroke-width="2"/>
+          <text x="10" y="230" class="aws-sublabel" style="font-weight:bold;">vs Traditional: EC2 + RDS</text>
+          <!-- Traditional (pays always) -->
+          <g class="hotspot" onclick="explainServerlessCost('traditional','Traditional Stack','EC2 (always running) + RDS (always running). Fixed cost regardless of traffic. ~$100-500/month baseline.','Exam tip: Traditional = always-on cost. Good if high-traffic (>10k req/day). Predictable costs.')">
+            <rect x="10" y="240" width="280" height="20" rx="4" class="aws-box-orange"/>
+            <text x="150" y="253" class="aws-sublabel">EC2+RDS: $100-500/month always (even at 0 traffic!)</text>
+          </g>
+          <!-- Serverless (pays when used) -->
+          <rect x="310" y="240" width="280" height="20" rx="4" class="aws-box-green"/>
+          <text x="450" y="253" class="aws-sublabel">Serverless: $1-100/month (scales with traffic)</text>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-serverless-cost">
+        <p class="exp-placeholder">👆 Click any component to learn cost implications</p>
+      </div>
+    </div></div>
 </div><!-- end cost section -->
 
 
@@ -1886,643 +2446,3 @@ function explainDX(c,t,x,tip) { showExplanation('exp-dx',c,t,x,tip); }
 </script>
 </body>
 </html>
-    <!-- 12. WAF + Shield + CloudFront -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>WAF + Shield + CloudFront — DDoS Protection</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-waf" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Internet -->
-          <rect x="5" y="80" width="55" height="60" rx="6" class="aws-box"/>
-          <text x="32" y="104" class="aws-label">🌐</text>
-          <text x="32" y="118" class="aws-sublabel">Internet</text>
-          <text x="32" y="130" class="aws-sublabel">Requests</text>
-          <!-- Arrow -->
-          <line x1="60" y1="110" x2="80" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
-          <!-- CloudFront -->
-          <g class="hotspot" onclick="explainWAF('cf','CloudFront','Global CDN — 400+ edge locations. Absorbs DDoS at edge. Integrates with Shield Standard for free Layer 3/4 protection.','Exam tip: CloudFront = CDN + DDoS edge mitigation. Reduces origin load. Works with WAF for Layer 7 filtering.')">
-            <rect x="80" y="70" width="90" height="80" rx="6" class="aws-box-blue"/>
-            <text x="125" y="95" class="aws-label">☁️</text>
-            <text x="125" y="110" class="aws-label">CloudFront</text>
-            <text x="125" y="123" class="aws-sublabel">CDN + Cache</text>
-            <text x="125" y="136" class="aws-sublabel">400+ PoPs</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="170" y1="110" x2="190" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
-          <!-- Shield -->
-          <g class="hotspot" onclick="explainWAF('shield','AWS Shield','Standard (free): L3/4 DDoS protection — SYN floods, UDP floods. Advanced ($3k/mo): L7 protection, DRT team, cost protection after attack.','Exam tip: Shield Standard = free, automatic. Advanced = paid, 24/7 DDoS Response Team. Both work with CloudFront.')">
-            <rect x="190" y="70" width="90" height="80" rx="6" class="aws-box-orange"/>
-            <text x="235" y="95" class="aws-label">🛡️</text>
-            <text x="235" y="110" class="aws-label">Shield</text>
-            <text x="235" y="123" class="aws-sublabel">DDoS L3/L4</text>
-            <text x="235" y="136" class="aws-sublabel">Standard free</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="280" y1="110" x2="300" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
-          <!-- WAF -->
-          <g class="hotspot" onclick="explainWAF('waf','WAF (Web Application Firewall)','Layer 7 protection. Rules block: SQL injection, XSS, bad bots, geo-blocks, rate limits.','Exam tip: WAF = Layer 7. Attaches to CloudFront, ALB, or API Gateway. AWS Managed Rules available. Pay per rule + request.')">
-            <rect x="300" y="70" width="90" height="80" rx="6" class="aws-box-red"/>
-            <text x="345" y="95" class="aws-label">🔥</text>
-            <text x="345" y="110" class="aws-label">WAF</text>
-            <text x="345" y="123" class="aws-sublabel">L7 Filter</text>
-            <text x="345" y="136" class="aws-sublabel">SQL/XSS/Geo</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="390" y1="110" x2="410" y2="110" class="arrow" marker-end="url(#arrowhead-waf)"/>
-          <!-- ALB -->
-          <g class="hotspot" onclick="explainWAF('alb','Application Load Balancer','Distributes clean (filtered) traffic to EC2 instances or containers. WAF integrates directly with ALB.','Exam tip: ALB = Layer 7 LB. Routes by path/host/header. Works with WAF, ACM (SSL), ECS, Lambda targets.')">
-            <rect x="410" y="70" width="90" height="80" rx="6" class="aws-box-green"/>
-            <text x="455" y="95" class="aws-label">⚙️</text>
-            <text x="455" y="110" class="aws-label">ALB</text>
-            <text x="455" y="123" class="aws-sublabel">Load Balancer</text>
-            <text x="455" y="136" class="aws-sublabel">Clean traffic</text>
-          </g>
-          <!-- Layer labels -->
-          <text x="125" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#0EA5E9;">Edge Cache</text>
-          <text x="235" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#FF9900;">L3/L4 DDoS</text>
-          <text x="345" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#E11D48;">L7 Filter</text>
-          <text x="455" y="165" class="aws-sublabel" style="text-anchor:middle;fill:#16A34A;">Distribution</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-waf">
-        <p class="exp-placeholder">👆 Click any security layer to learn how it protects</p>
-      </div>
-    </div>
-
-    <!-- 13. AWS Organizations + SCPs -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>AWS Organizations + SCPs + Control Tower</h3>
-        <span class="exam-tag">High Value</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-org" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Root -->
-          <g class="hotspot" onclick="explainOrg('root','Organization Root','Top of the hierarchy. Master Account manages all member accounts. Enable SCPs here to affect all accounts.','Exam tip: Root = master account + OUs. Master account has special privileges. SCPs = policies preventing actions across entire org.')">
-            <rect x="240" y="10" width="120" height="50" rx="6" class="aws-box-orange"/>
-            <text x="300" y="32" class="aws-label">📦 Root</text>
-            <text x="300" y="47" class="aws-sublabel">Master Account</text>
-          </g>
-          <!-- Arrow down -->
-          <line x1="300" y1="60" x2="300" y2="85" class="arrow" marker-end="url(#arrowhead-org)"/>
-          <!-- OUs -->
-          <!-- Dev OU -->
-          <g class="hotspot" onclick="explainOrg('dev','Development OU','Organizational Unit for development accounts. Can have different SCPs than production. Often more permissive for faster iteration.','Exam tip: OUs = logical grouping for policy management. Can nest OUs (Dev → Dev-Sandbox). SCPs apply to entire OU.')">
-            <rect x="40" y="95" width="140" height="50" rx="6" class="aws-box-blue"/>
-            <text x="110" y="117" class="aws-label">Dev</text>
-            <text x="110" y="132" class="aws-sublabel">OU</text>
-          </g>
-          <!-- Prod OU -->
-          <g class="hotspot" onclick="explainOrg('prod','Production OU','Production accounts. Stricter SCPs: prevent deletion of critical resources, enforce encryption, prevent public access.','Exam tip: Prod OU = restricted. Example SCP: deny EC2:TerminateInstances. SCPs are whitelist (default deny) or blacklist (default allow).')">
-            <rect x="230" y="95" width="140" height="50" rx="6" class="aws-box-green"/>
-            <text x="300" y="117" class="aws-label">Prod</text>
-            <text x="300" y="132" class="aws-sublabel">OU</text>
-          </g>
-          <!-- Security OU -->
-          <g class="hotspot" onclick="explainOrg('sec','Security OU','Security/Compliance accounts. Most restrictive SCPs. Enforces: MFA, CloudTrail, Config, encryption requirements.','Exam tip: Security OU = logging, monitoring, auditing. Typically read-only access for security teams. Audit member accounts.')">
-            <rect x="420" y="95" width="140" height="50" rx="6" class="aws-box-red"/>
-            <text x="490" y="117" class="aws-label">Security</text>
-            <text x="490" y="132" class="aws-sublabel">OU</text>
-          </g>
-          <!-- Member Accounts -->
-          <rect x="40" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
-          <text x="105" y="192" class="aws-sublabel">Member Account 1</text>
-          <rect x="230" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
-          <text x="295" y="192" class="aws-sublabel">Member Account 2</text>
-          <rect x="420" y="170" width="130" height="35" rx="4" class="aws-box" style="opacity:0.8"/>
-          <text x="485" y="192" class="aws-sublabel">Audit Account</text>
-          <!-- Control Tower -->
-          <g class="hotspot" onclick="explainOrg('tower','Control Tower','AWS service for multi-account governance. Sets up: Org, SCPs, Config, CloudTrail, landing zones. Enforces best practices automatically.','Exam tip: Control Tower = automation layer on top of Organizations. Sets up guardrails (preventive/detective). Automates account provisioning.')">
-            <rect x="40" y="220" width="510" height="20" rx="4" class="aws-box-purple"/>
-            <text x="295" y="235" class="aws-sublabel">AWS Control Tower — Governs multi-account environment, enforces guardrails</text>
-          </g>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-org">
-        <p class="exp-placeholder">👆 Click any component to learn about Organizations</p>
-      </div>
-    </div>
-
-    <!-- 14. CloudWatch + CloudTrail + Config -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>CloudWatch + CloudTrail + Config — Observability</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-obs" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- AWS Resources (top) -->
-          <rect x="10" y="10" width="580" height="40" rx="4" class="aws-box" style="opacity:0.5"/>
-          <text x="300" y="35" class="aws-sublabel">AWS Resources (EC2, RDS, S3, Lambda, etc.)</text>
-          <!-- Arrow down -->
-          <line x1="100" y1="50" x2="100" y2="75" class="arrow" marker-end="url(#arrowhead-obs)"/>
-          <line x1="300" y1="50" x2="300" y2="75" class="arrow" marker-end="url(#arrowhead-obs)"/>
-          <line x1="500" y1="50" x2="500" y2="75" class="arrow" marker-end="url(#arrowhead-obs)"/>
-          <!-- CloudWatch -->
-          <g class="hotspot" onclick="explainObs('cw','CloudWatch','Collects metrics (CPU, memory, disk, custom) and logs from all AWS resources. Creates alarms based on thresholds. Sends notifications to SNS/Lambda.','Exam tip: CloudWatch = metrics + logs + alarms. Logs Insights = SQL query logs. CloudWatch Agent = custom metrics from EC2. Real-time monitoring.')">
-            <rect x="20" y="75" width="160" height="150" rx="6" class="aws-box-orange"/>
-            <text x="100" y="105" class="aws-label">📊</text>
-            <text x="100" y="125" class="aws-label">CloudWatch</text>
-            <text x="100" y="145" class="aws-sublabel">Metrics/Logs</text>
-            <text x="100" y="165" class="aws-sublabel">→ Alarms</text>
-            <text x="100" y="185" class="aws-sublabel">→ SNS/Lambda</text>
-          </g>
-          <!-- CloudTrail -->
-          <g class="hotspot" onclick="explainObs('ct','CloudTrail','Logs all API calls (who, what, when, where, result). Sends logs to S3 for long-term audit trail. Critical for compliance & forensics.','Exam tip: CloudTrail = audit log of API activity. Logs to S3. Separate from CloudWatch (which is metrics). Required for compliance audits (PCI, HIPAA).')">
-            <rect x="220" y="75" width="160" height="150" rx="6" class="aws-box-blue"/>
-            <text x="300" y="105" class="aws-label">📋</text>
-            <text x="300" y="125" class="aws-label">CloudTrail</text>
-            <text x="300" y="145" class="aws-sublabel">API Audit Logs</text>
-            <text x="300" y="165" class="aws-sublabel">→ S3 Storage</text>
-            <text x="300" y="185" class="aws-sublabel">→ Analysis</text>
-          </g>
-          <!-- Config -->
-          <g class="hotspot" onclick="explainObs('cfg','Config','Records configuration changes of AWS resources. Evaluates compliance against rules. Tracks who made changes and when.','Exam tip: Config = resource inventory + compliance. Rules check: encryption enabled, public access, tags, etc. Different from CloudTrail (which is API logs).')">
-            <rect x="420" y="75" width="160" height="150" rx="6" class="aws-box-green"/>
-            <text x="500" y="105" class="aws-label">⚙️</text>
-            <text x="500" y="125" class="aws-label">Config</text>
-            <text x="500" y="145" class="aws-sublabel">Resource Config</text>
-            <text x="500" y="165" class="aws-sublabel">→ Compliance</text>
-            <text x="500" y="185" class="aws-sublabel">→ Rules</text>
-          </g>
-          <!-- Summary -->
-          <g class="hotspot" onclick="explainObs('summary','Three Pillars of Observability','CloudWatch = metrics & logs (performance). CloudTrail = API audit (security & compliance). Config = resource config (governance).','Exam tip: All three work together for complete visibility. CloudWatch = Ops, CloudTrail = Security, Config = Governance.')">
-            <rect x="10" y="240" width="580" height="20" rx="4" class="aws-box-purple"/>
-            <text x="300" y="253" class="aws-sublabel">Together: Complete visibility into resources, performance, security, and compliance</text>
-          </g>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-obs">
-        <p class="exp-placeholder">👆 Click any service to understand its role in observability</p>
-      </div>
-    </div>
-
-    <!-- 15. Cognito User Pools vs Identity Pools -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>Cognito — User Pools vs Identity Pools</h3>
-        <span class="exam-tag">High Value</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-cognito" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Users -->
-          <rect x="10" y="95" width="70" height="50" rx="6" class="aws-box"/>
-          <text x="45" y="115" class="aws-label">👥</text>
-          <text x="45" y="130" class="aws-sublabel">Users</text>
-          <!-- Arrow -->
-          <line x1="80" y1="120" x2="110" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
-          <!-- User Pool -->
-          <g class="hotspot" onclick="explainCognito('up','User Pool','Authentication service. Manages user accounts, sign-up/sign-in, MFA, password reset. Returns JWT token after successful authentication.','Exam tip: User Pool = Authentication (who are you?). JWT contains user identity. Use for web/mobile apps. Integrates with social providers (Google, Facebook).')">
-            <rect x="110" y="60" width="150" height="120" rx="6" class="aws-box-blue"/>
-            <text x="185" y="85" class="aws-label">User Pool</text>
-            <text x="185" y="105" class="aws-sublabel">Authentication</text>
-            <text x="185" y="125" class="aws-sublabel">JWT Token</text>
-            <text x="185" y="145" class="aws-sublabel">(verified user ID)</text>
-            <text x="185" y="165" class="aws-sublabel">↓</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="260" y1="120" x2="290" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
-          <!-- Identity Pool -->
-          <g class="hotspot" onclick="explainCognito('idp','Identity Pool','Authorization service. Takes JWT from User Pool and returns AWS credentials (temporary). Grants access to AWS services (S3, DynamoDB, etc.).','Exam tip: Identity Pool = Authorization (what can you do?). Returns AWS STS credentials. Unauthenticated access possible. Use for mobile apps accessing AWS.')">
-            <rect x="290" y="60" width="150" height="120" rx="6" class="aws-box-green"/>
-            <text x="365" y="85" class="aws-label">Identity Pool</text>
-            <text x="365" y="105" class="aws-sublabel">Authorization</text>
-            <text x="365" y="125" class="aws-sublabel">AWS Credentials</text>
-            <text x="365" y="145" class="aws-sublabel">(temp access keys)</text>
-            <text x="365" y="165" class="aws-sublabel">↓</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="440" y1="120" x2="470" y2="120" class="arrow" marker-end="url(#arrowhead-cognito)"/>
-          <!-- AWS Services -->
-          <g class="hotspot" onclick="explainCognito('aws','AWS Services','User can now access AWS services based on the IAM role attached to Identity Pool. Access is scoped: S3 bucket, DynamoDB table, etc.','Exam tip: Identity Pool role = scoped IAM permissions. Example: S3:GetObject on specific bucket prefix only. Temporary credentials rotate automatically.')">
-            <rect x="470" y="80" width="120" height="80" rx="6" class="aws-box-orange"/>
-            <text x="530" y="105" class="aws-label">🔐</text>
-            <text x="530" y="125" class="aws-label">AWS Services</text>
-            <text x="530" y="145" class="aws-sublabel">(S3, DDB, etc.)</text>
-          </g>
-          <!-- Note -->
-          <rect x="10" y="190" width="580" height="50" rx="4" class="aws-box" style="opacity:0.8"/>
-          <text x="300" y="210" class="aws-sublabel">User Pool only: authenticate, get JWT. Identity Pool only: authorize to AWS. Both together: complete web/mobile app flow.</text>
-          <text x="300" y="228" class="aws-sublabel">Identity Pool can also work without User Pool for unauthenticated access (e.g., mobile app uploading to S3).</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-cognito">
-        <p class="exp-placeholder">👆 Click any component to learn about Cognito flow</p>
-      </div>
-    </div>
-
-
-    <!-- 14. Kinesis -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>Kinesis — Streams vs Firehose vs Analytics</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-kinesis" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Data Producers -->
-          <rect x="10" y="90" width="60" height="40" rx="6" class="aws-box"/>
-          <text x="40" y="110" class="aws-sublabel">IoT/Logs</text>
-          <!-- Arrow -->
-          <line x1="70" y1="110" x2="100" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
-          <!-- Kinesis Streams -->
-          <g class="hotspot" onclick="explainKinesis('streams','Kinesis Data Streams','Real-time ingestion and processing. Data retained 24 hrs (configurable to 365 days). Shards process parallel data. Great for analytics, dashboards, real-time actions.','Exam tip: KDS = real-time, high throughput, on-demand/provisioned shards. Pay per shard-hour. Consumers read simultaneously (Lambda, Kinesis Analytics, custom code).')">
-            <rect x="100" y="70" width="130" height="80" rx="6" class="aws-box-orange"/>
-            <text x="165" y="90" class="aws-label">⚡</text>
-            <text x="165" y="108" class="aws-sublabel">Kinesis Data</text>
-            <text x="165" y="122" class="aws-sublabel">Streams</text>
-            <text x="165" y="138" class="aws-sublabel">Real-time (24h)</text>
-          </g>
-          <!-- Arrow down to consumers -->
-          <line x1="165" y1="150" x2="165" y2="170" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
-          <!-- Consumers -->
-          <rect x="110" y="170" width="110" height="35" rx="4" class="aws-box-blue"/>
-          <text x="165" y="192" class="aws-sublabel">Lambda / Consumers</text>
-          <!-- Arrow Firehose -->
-          <line x1="230" y1="110" x2="270" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
-          <!-- Kinesis Firehose -->
-          <g class="hotspot" onclick="explainKinesis('firehose','Kinesis Data Firehose','Automated delivery to S3, Redshift, Elasticsearch, Datadog, etc. Near-real-time (60 seconds buffering). Serverless, no shards to manage.','Exam tip: Firehose = automated delivery. Set it and forget it. Great for data warehousing pipelines. No real-time processing (use Streams for that).')">
-            <rect x="270" y="70" width="130" height="80" rx="6" class="aws-box-green"/>
-            <text x="335" y="90" class="aws-label">📦</text>
-            <text x="335" y="108" class="aws-sublabel">Kinesis Data</text>
-            <text x="335" y="122" class="aws-sublabel">Firehose</text>
-            <text x="335" y="138" class="aws-sublabel">Auto-delivery</text>
-          </g>
-          <!-- Arrow down -->
-          <line x1="335" y1="150" x2="335" y2="170" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
-          <!-- Destinations -->
-          <rect x="280" y="170" width="110" height="35" rx="4" class="aws-box-purple"/>
-          <text x="335" y="192" class="aws-sublabel">S3 / Redshift</text>
-          <!-- Arrow Analytics -->
-          <line x1="400" y1="110" x2="440" y2="110" class="arrow" marker-end="url(#arrowhead-kinesis)"/>
-          <!-- Kinesis Analytics -->
-          <g class="hotspot" onclick="explainKinesis('analytics','Kinesis Analytics','SQL on streaming data in real-time. Process KDS directly with SQL queries. Output to Streams/Firehose/Lambda.','Exam tip: Kinesis Analytics = process streams with SQL. Real-time transformations, anomaly detection. Separate from Streams.')">
-            <rect x="440" y="70" width="150" height="80" rx="6" class="aws-box-red"/>
-            <text x="515" y="100" class="aws-label">SQL on Streams</text>
-            <text x="515" y="138" class="aws-sublabel">(real-time)</text>
-          </g>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-kinesis">
-        <p class="exp-placeholder">👆 Click any Kinesis product to learn when to use it</p>
-      </div>
-    </div>
-
-    <!-- 15. EventBridge -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>EventBridge — Event-Driven Architecture</h3>
-        <span class="exam-tag">High Value</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-eb" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Event Sources -->
-          <rect x="10" y="30" width="80" height="50" rx="4" class="aws-box-orange"/>
-          <text x="50" y="50" class="aws-sublabel">EC2</text>
-          <text x="50" y="65" class="aws-sublabel">Event</text>
-          <rect x="10" y="95" width="80" height="50" rx="4" class="aws-box-orange"/>
-          <text x="50" y="115" class="aws-sublabel">S3</text>
-          <text x="50" y="130" class="aws-sublabel">Event</text>
-          <rect x="10" y="160" width="80" height="50" rx="4" class="aws-box-orange"/>
-          <text x="50" y="175" class="aws-sublabel">Custom</text>
-          <text x="50" y="190" class="aws-sublabel">App</text>
-          <!-- Arrows -->
-          <line x1="90" y1="55" x2="120" y2="80" class="arrow" marker-end="url(#arrowhead-eb)"/>
-          <line x1="90" y1="120" x2="120" y2="110" class="arrow" marker-end="url(#arrowhead-eb)"/>
-          <line x1="90" y1="185" x2="120" y2="135" class="arrow" marker-end="url(#arrowhead-eb)"/>
-          <!-- EventBridge -->
-          <g class="hotspot" onclick="explainEB('bus','EventBridge Event Bus','Central hub for events. Rules match events and route to targets. Schema registry for event structure. Filters by pattern matching.','Exam tip: EventBridge = event router. Decouples event sources from targets. Default bus or custom buses. Pay per event published.')">
-            <rect x="120" y="75" width="140" height="80" rx="8" class="aws-box-blue"/>
-            <text x="190" y="105" class="aws-label">🚌</text>
-            <text x="190" y="123" class="aws-label">EventBridge</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="260" y1="115" x2="300" y2="115" class="arrow" marker-end="url(#arrowhead-eb)"/>
-          <!-- Targets -->
-          <g class="hotspot" onclick="explainEB('targets','Event Targets','Rules route to: Lambda, SQS, SNS, Step Functions, Kinesis, ECS tasks, API Gateway, etc. Each rule can have multiple targets.','Exam tip: Targets = where events go. Fan-out pattern: one event → multiple targets. Rule filters: match only specific events.')">
-            <rect x="300" y="30" width="130" height="60" rx="6" class="aws-box-green"/>
-            <text x="365" y="55" class="aws-sublabel">Lambda</text>
-            <text x="365" y="70" class="aws-sublabel">Function</text>
-          </g>
-          <rect x="300" y="105" width="130" height="60" rx="6" class="aws-box-purple"/>
-          <text x="365" y="130" class="aws-sublabel">SQS Queue</text>
-          <text x="365" y="148" class="aws-sublabel">(async)</text>
-          <rect x="300" y="180" width="130" height="60" rx="6" class="aws-box-red"/>
-          <text x="365" y="205" class="aws-sublabel">Step Functions</text>
-          <text x="365" y="223" class="aws-sublabel">(workflows)</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-eb">
-        <p class="exp-placeholder">👆 Click any component to learn about EventBridge</p>
-      </div>
-    </div>
-
-    <!-- 16. Step Functions -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>Step Functions — Serverless Orchestration</h3>
-        <span class="exam-tag">High Value</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-sf" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Start -->
-          <circle cx="50" cy="130" r="15" class="aws-box-blue"/>
-          <text x="50" y="135" class="aws-label" style="font-weight:bold;">S</text>
-          <!-- Arrow -->
-          <line x1="65" y1="130" x2="100" y2="130" class="arrow" marker-end="url(#arrowhead-sf)"/>
-          <!-- Task 1 -->
-          <g class="hotspot" onclick="explainSF('validate','Lambda Task 1 — Validate','Executes Lambda function to validate input. If validation passes, continues. If fails, goes to error handler.','Exam tip: Tasks = Lambda, ECS, SNS, SQS, DynamoDB, etc. Catch errors and retry.')">
-            <rect x="100" y="105" width="110" height="50" rx="6" class="aws-box-orange"/>
-            <text x="155" y="125" class="aws-sublabel">Task 1</text>
-            <text x="155" y="140" class="aws-sublabel">Validate</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="210" y1="130" x2="250" y2="130" class="arrow" marker-end="url(#arrowhead-sf)"/>
-          <!-- Choice -->
-          <g class="hotspot" onclick="explainSF('choice','Choice State','Branches based on input. Example: if valid == true → process, else → error. No code needed, declarative branches.','Exam tip: Choice = conditional logic. If/Then/Else. Compare values, check strings, etc. JSON path for field access.')">
-            <polygon points="290,80 340,130 290,180 240,130" class="aws-box-green" style="fill:#D1FAE5;stroke:#065F46;stroke-width:2"/>
-            <text x="290" y="135" class="aws-sublabel">Choice</text>
-          </g>
-          <!-- Success branch -->
-          <line x1="310" y1="160" x2="310" y2="200" class="arrow" marker-end="url(#arrowhead-sf)"/>
-          <text x="320" y="180" class="aws-sublabel">valid</text>
-          <!-- Task 2 -->
-          <g class="hotspot" onclick="explainSF('process','Lambda Task 2 — Process','Executes main processing Lambda. Can have retry policy (exponential backoff) and catch for errors.','Exam tip: Retry = automatic re-execution on failure. Catch = handle error and proceed. Both in state definition.')">
-            <rect x="240" y="200" width="110" height="50" rx="6" class="aws-box-blue"/>
-            <text x="295" y="220" class="aws-sublabel">Task 2</text>
-            <text x="295" y="235" class="aws-sublabel">Process</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="350" y1="225" x2="390" y2="225" class="arrow" marker-end="url(#arrowhead-sf)"/>
-          <!-- End -->
-          <circle cx="410" cy="225" r="15" class="aws-box-green"/>
-          <text x="410" y="230" class="aws-label" style="font-weight:bold;">E</text>
-          <!-- Error branch -->
-          <line x1="310" y1="100" x2="310" y2="60" class="arrow" marker-end="url(#arrowhead-sf)"/>
-          <text x="320" y="80" class="aws-sublabel">error</text>
-          <!-- Error Task -->
-          <g class="hotspot" onclick="explainSF('error','Error Handler','Sends notification on failure. Example: SNS, SQS, or Lambda to log error.','Exam tip: Error handling = Catch state. Send alert, retry, or fail gracefully.')">
-            <rect x="240" y="30" width="110" height="50" rx="6" class="aws-box-red"/>
-            <text x="295" y="50" class="aws-sublabel">Send Alert</text>
-            <text x="295" y="65" class="aws-sublabel">(SNS/Lambda)</text>
-          </g>
-          <!-- State Machine benefits -->
-          <rect x="10" y="260" width="580" height="0" rx="4"/>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-sf">
-        <p class="exp-placeholder">👆 Click any state to learn about Step Functions</p>
-      </div>
-    </div>
-
-    <!-- 17. Storage Comparison -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>EBS vs EFS vs S3 vs Instance Store</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <!-- EBS -->
-          <g class="hotspot" onclick="explainStorage('ebs','EBS (Elastic Block Store)','Block storage (like hard drive). Attached to single EC2 instance (same AZ). Persists after EC2 stops. Snapshots for backups. GP3/IO1/etc.','Exam tip: EBS = primary storage for EC2. Single AZ (fast latency). Encrypt with KMS. Snapshot → restore in different AZ.')">
-            <rect x="10" y="20" width="130" height="200" rx="6" class="aws-box-blue"/>
-            <text x="75" y="50" class="aws-label">EBS</text>
-            <text x="75" y="70" class="aws-sublabel">Block Storage</text>
-            <text x="75" y="90" class="aws-sublabel">Single EC2</text>
-            <text x="75" y="110" class="aws-sublabel">Single AZ</text>
-            <text x="75" y="130" class="aws-sublabel">Persistent</text>
-            <text x="75" y="150" class="aws-sublabel">Snapshots</text>
-            <text x="75" y="170" class="aws-sublabel">Use: OS disk,</text>
-            <text x="75" y="190" class="aws-sublabel">databases</text>
-          </g>
-          <!-- EFS -->
-          <g class="hotspot" onclick="explainStorage('efs','EFS (Elastic File System)','File storage (NFS). Multi-AZ, multi-EC2. Auto-scales. Slightly higher latency than EBS. Great for shared access.','Exam tip: EFS = multiple EC2 instances access same filesystem. Multi-AZ. Lifecycle policies (Standard → Infrequent Access). Higher cost than EBS.')">
-            <rect x="160" y="20" width="130" height="200" rx="6" class="aws-box-green"/>
-            <text x="225" y="50" class="aws-label">EFS</text>
-            <text x="225" y="70" class="aws-sublabel">File Storage</text>
-            <text x="225" y="90" class="aws-sublabel">Multi-EC2</text>
-            <text x="225" y="110" class="aws-sublabel">Multi-AZ</text>
-            <text x="225" y="130" class="aws-sublabel">Auto-scales</text>
-            <text x="225" y="150" class="aws-sublabel">Shared FS</text>
-            <text x="225" y="170" class="aws-sublabel">Use: web root,</text>
-            <text x="225" y="190" class="aws-sublabel">shared data</text>
-          </g>
-          <!-- S3 -->
-          <g class="hotspot" onclick="explainStorage('s3','S3 (Object Storage)','Object storage (not block/file). Global, infinite scale. Eventual consistency. Retrieve via HTTP. Versioning/CRR.','Exam tip: S3 = object storage, not filesystem. Access via API. Great for backups, static sites, data lakes. Durability: 11 9s.')">
-            <rect x="310" y="20" width="130" height="200" rx="6" class="aws-box-orange"/>
-            <text x="375" y="50" class="aws-label">S3</text>
-            <text x="375" y="70" class="aws-sublabel">Object Storage</text>
-            <text x="375" y="90" class="aws-sublabel">Global</text>
-            <text x="375" y="110" class="aws-sublabel">Infinite scale</text>
-            <text x="375" y="130" class="aws-sublabel">HTTP/S access</text>
-            <text x="375" y="150" class="aws-sublabel">Versioning</text>
-            <text x="375" y="170" class="aws-sublabel">Use: backups,</text>
-            <text x="375" y="190" class="aws-sublabel">static sites</text>
-          </g>
-          <!-- Instance Store -->
-          <g class="hotspot" onclick="explainStorage('inst','Instance Store','Ephemeral storage. Lost when instance stops/terminates. Ultra-fast (directly attached). No snapshots.','Exam tip: Instance Store = temporary. Speed cache, temp files. Do NOT use for critical data. RAID across drives for performance.')">
-            <rect x="460" y="20" width="130" height="200" rx="6" class="aws-box-purple"/>
-            <text x="525" y="50" class="aws-label">Instance</text>
-            <text x="525" y="65" class="aws-label">Store</text>
-            <text x="525" y="85" class="aws-sublabel">Ephemeral</text>
-            <text x="525" y="105" class="aws-sublabel">Lost on stop</text>
-            <text x="525" y="125" class="aws-sublabel">Ultra-fast</text>
-            <text x="525" y="145" class="aws-sublabel">No snapshot</text>
-            <text x="525" y="165" class="aws-sublabel">Use: cache,</text>
-            <text x="525" y="185" class="aws-sublabel">temp work</text>
-          </g>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-storage">
-        <p class="exp-placeholder">👆 Click any storage type to compare</p>
-      </div>
-    </div>
-
-
-    <!-- 17. S3 Lifecycle -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>S3 Storage Classes Lifecycle</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-s3life" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#FF9900"/></marker>
-          </defs>
-          <!-- Standard -->
-          <g class="hotspot" onclick="explainS3life('standard','Standard','Frequent access. $0.023/GB. 99.99% availability. No retrieval fee. Minimum 30 days before transition.','Exam tip: Start here for new data. No minimums. Hot data tier.')">
-            <rect x="10" y="30" width="90" height="60" rx="6" class="aws-box-orange"/>
-            <text x="55" y="55" class="aws-label">Standard</text>
-            <text x="55" y="72" class="aws-sublabel">$0.023/GB</text>
-          </g>
-          <line x1="100" y1="60" x2="130" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
-          <text x="107" y="48" class="aws-sublabel">30 days</text>
-          <!-- Standard-IA -->
-          <g class="hotspot" onclick="explainS3life('ia','Standard-IA','Infrequent access. $0.0125/GB + retrieval fee. 99.9% availability. 30-day minimum.','Exam tip: Warm tier. Cost-effective for archival that needs occasional access.')">
-            <rect x="130" y="30" width="90" height="60" rx="6" class="aws-box-blue"/>
-            <text x="175" y="52" class="aws-sublabel">Standard-IA</text>
-            <text x="175" y="72" class="aws-sublabel">$0.0125/GB</text>
-          </g>
-          <line x1="220" y1="60" x2="250" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
-          <text x="222" y="48" class="aws-sublabel">60 days</text>
-          <!-- Glacier Instant -->
-          <g class="hotspot" onclick="explainS3life('glacier-inst','Glacier Instant','Milliseconds retrieval. $0.004/GB. Good for compliance data.','Exam tip: Cold tier. Faster than Flexible. For infrequent access with speed needs.')">
-            <rect x="250" y="30" width="90" height="60" rx="6" class="aws-box-green"/>
-            <text x="295" y="52" class="aws-sublabel">Glacier</text>
-            <text x="295" y="67" class="aws-sublabel">Instant</text>
-            <text x="295" y="82" class="aws-sublabel">$0.004/GB</text>
-          </g>
-          <line x1="340" y1="60" x2="370" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
-          <text x="342" y="48" class="aws-sublabel">90 days</text>
-          <!-- Glacier Flexible -->
-          <g class="hotspot" onclick="explainS3life('glacier-flex','Glacier Flexible','3-5 hours retrieval. $0.0036/GB. Long-term archival. 90-day minimum.','Exam tip: Cheapest option. For rarely accessed data. Retrieval takes hours (expensive).')">
-            <rect x="370" y="30" width="90" height="60" rx="6" class="aws-box-purple"/>
-            <text x="415" y="45" class="aws-sublabel">Glacier</text>
-            <text x="415" y="60" class="aws-sublabel">Flexible</text>
-            <text x="415" y="75" class="aws-sublabel">$0.0036/GB</text>
-          </g>
-          <line x1="460" y1="60" x2="490" y2="60" class="arrow-orange" marker-end="url(#arrowhead-s3life)"/>
-          <text x="462" y="48" class="aws-sublabel">180 days</text>
-          <!-- Deep Archive -->
-          <g class="hotspot" onclick="explainS3life('deep','Deep Archive','12 hours retrieval. $0.00099/GB. Regulatory compliance. 180-day minimum.','Exam tip: Absolute cheapest. For 7-year compliance holds. Rarely accessed.')">
-            <rect x="490" y="30" width="90" height="60" rx="6" class="aws-box-red"/>
-            <text x="535" y="52" class="aws-sublabel">Deep Archive</text>
-            <text x="535" y="70" class="aws-sublabel">$0.00099</text>
-          </g>
-          <!-- Legend -->
-          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Lifecycle rule example:</text>
-          <text x="10" y="140" class="aws-sublabel">Move to Standard-IA after 30 days → Glacier Flexible after 90 days → Deep Archive after 180 days</text>
-          <text x="10" y="160" class="aws-sublabel">This minimizes costs while meeting compliance and access requirements</text>
-          <!-- Cost comparison -->
-          <text x="10" y="190" class="aws-sublabel" style="font-weight:bold;">Cost increases →</text>
-          <line x1="200" y1="200" x2="570" y2="200" stroke="#E5E7EB" stroke-width="2"/>
-          <text x="220" y="220" class="aws-sublabel">More access needed ✓</text>
-          <text x="520" y="220" class="aws-sublabel">Cheaper ✓</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-s3life">
-        <p class="exp-placeholder">👆 Click any storage class to learn transition strategy</p>
-      </div>
-    </div>
-
-    <!-- 18. EC2 Savings Plans -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>EC2 Savings Plans vs Reserved vs Spot</h3>
-        <span class="exam-tag">⭐ High Frequency</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
-          <!-- On-Demand -->
-          <g class="hotspot" onclick="explainSavings('od','On-Demand','Pay hourly. No commitment. Most flexible but most expensive. 100% price.','Exam tip: On-Demand = no upfront. Good for testing, short-term, unpredictable spikes.')">
-            <rect x="10" y="30" width="120" height="60" rx="6" class="aws-box"/>
-            <text x="70" y="50" class="aws-sublabel">On-Demand</text>
-            <text x="70" y="68" class="aws-sublabel">100% | No commit</text>
-          </g>
-          <!-- Reserved Instances -->
-          <g class="hotspot" onclick="explainSavings('ri','Reserved Instances (RI)','1 or 3-year commitment. Up to 72% discount. Fixed to instance type (less flexible). All/Partial/No Upfront.','Exam tip: RI = steady-state. 3-year > 1-year discount. Best if utilization predictable. Can convert/sell unused RIs.')">
-            <rect x="160" y="30" width="120" height="60" rx="6" class="aws-box-orange"/>
-            <text x="220" y="50" class="aws-sublabel">Reserved (RI)</text>
-            <text x="220" y="68" class="aws-sublabel">28% | 1-3 yr</text>
-          </g>
-          <!-- Savings Plans -->
-          <g class="hotspot" onclick="explainSavings('sp','Savings Plans','1 or 3-year commitment. Up to 66% discount. More flexible than RI (any instance family). Compute Plans also apply to Lambda/Fargate.','Exam tip: Savings Plans = modern RI replacement. More flexible. Compute Plans recommended by Cost Explorer.')">
-            <rect x="310" y="30" width="120" height="60" rx="6" class="aws-box-green"/>
-            <text x="370" y="50" class="aws-sublabel">Savings Plans</text>
-            <text x="370" y="68" class="aws-sublabel">34% | 1-3 yr</text>
-          </g>
-          <!-- Spot -->
-          <g class="hotspot" onclick="explainSavings('spot','Spot Instances','Up to 90% discount! Can be interrupted with 2-min warning. Best for fault-tolerant, flexible workloads.','Exam tip: Spot = cheapest. Bidding for unused capacity. Interruption risk. Use for batch, analytics, not production DBs.')">
-            <rect x="460" y="30" width="120" height="60" rx="6" class="aws-box-red"/>
-            <text x="520" y="50" class="aws-sublabel">Spot Instances</text>
-            <text x="520" y="68" class="aws-sublabel">90% | Risky</text>
-          </g>
-          <!-- Use cases -->
-          <text x="10" y="120" class="aws-sublabel" style="font-weight:bold;">Use case selection:</text>
-          <rect x="10" y="135" width="575" height="100" rx="6" class="aws-box" style="opacity:0.8"/>
-          <text x="20" y="155" class="aws-sublabel">Unpredictable traffic / testing → On-Demand</text>
-          <text x="20" y="175" class="aws-sublabel">Steady production workload → Savings Plans (Compute or EC2)</text>
-          <text x="20" y="195" class="aws-sublabel">Batch jobs / non-critical / fault-tolerant → Spot Instances (up to 90% savings!)</text>
-          <text x="20" y="215" class="aws-sublabel">Baseline + spiky → Savings Plans (baseline) + Spot (spikes) + On-Demand (small portion)</text>
-          <text x="20" y="230" class="aws-sublabel">Best practice: Use AWS Cost Explorer recommendations!</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-savings">
-        <p class="exp-placeholder">👆 Click any pricing option to learn the tradeoffs</p>
-      </div>
-    </div>
-
-    <!-- 19. Serverless Cost Architecture -->
-    <div class="diagram-card">
-      <div class="diagram-card-header">
-        <h3>Serverless Cost Architecture</h3>
-        <span class="exam-tag">High Value</span>
-      </div>
-      <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead-serverless" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
-          </defs>
-          <!-- Users -->
-          <rect x="10" y="100" width="70" height="50" rx="6" class="aws-box"/>
-          <text x="45" y="125" class="aws-label">👥</text>
-          <text x="45" y="140" class="aws-sublabel">Users</text>
-          <!-- Arrow -->
-          <line x1="80" y1="125" x2="110" y2="125" class="arrow" marker-end="url(#arrowhead-serverless)"/>
-          <!-- SERVERLESS ARCHITECTURE -->
-          <g class="hotspot" onclick="explainServerlessCost('serverless','Serverless Stack','Lambda (compute) → API Gateway (entry) → DynamoDB (database) → S3 (storage). Pay only for what you use!','Exam tip: Serverless = no servers to manage. Auto-scales. Pay per execution, request, data stored. Great for variable workloads.')">
-            <rect x="110" y="40" width="450" height="50" rx="6" class="aws-box-green"/>
-            <text x="335" y="65" class="aws-sublabel">API Gateway | Lambda | DynamoDB | S3 = Pay Per Use ✓</text>
-          </g>
-          <!-- Arrow -->
-          <line x1="335" y1="90" x2="335" y2="110" class="arrow" marker-end="url(#arrowhead-serverless)"/>
-          <!-- Serverless usage example -->
-          <g class="hotspot" onclick="explainServerlessCost('usage','Example Usage','100 requests/day → Lambda: $0.20/month. DynamoDB: $0.25 for on-demand. S3: $0.023/GB. Total: ~$1-2/month.','Exam tip: Small-to-medium apps serverless often costs $5-50/month vs $100s for traditional.')">
-            <rect x="110" y="110" width="450" height="80" rx="6" class="aws-box-blue"/>
-            <text x="335" y="135" class="aws-sublabel">Lambda: $0.0000002 per request + $0.0000166 per GB-second</text>
-            <text x="335" y="155" class="aws-sublabel">DynamoDB: $1.25/GB for on-demand read/write</text>
-            <text x="335" y="175" class="aws-sublabel">Total monthly: varies from $1 (low) to $100s (high traffic)</text>
-          </g>
-          <!-- Comparison header -->
-          <line x1="10" y1="210" x2="590" y2="210" stroke="#E5E7EB" stroke-width="2"/>
-          <text x="10" y="230" class="aws-sublabel" style="font-weight:bold;">vs Traditional: EC2 + RDS</text>
-          <!-- Traditional (pays always) -->
-          <g class="hotspot" onclick="explainServerlessCost('traditional','Traditional Stack','EC2 (always running) + RDS (always running). Fixed cost regardless of traffic. ~$100-500/month baseline.','Exam tip: Traditional = always-on cost. Good if high-traffic (>10k req/day). Predictable costs.')">
-            <rect x="10" y="240" width="280" height="20" rx="4" class="aws-box-orange"/>
-            <text x="150" y="253" class="aws-sublabel">EC2+RDS: $100-500/month always (even at 0 traffic!)</text>
-          </g>
-          <!-- Serverless (pays when used) -->
-          <rect x="310" y="240" width="280" height="20" rx="4" class="aws-box-green"/>
-          <text x="450" y="253" class="aws-sublabel">Serverless: $1-100/month (scales with traffic)</text>
-        </svg>
-      </div>
-      <div class="explanation-panel" id="exp-serverless-cost">
-        <p class="exp-placeholder">👆 Click any component to learn cost implications</p>
-      </div>
-    </div>
-
-
