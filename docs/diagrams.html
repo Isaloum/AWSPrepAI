@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture Diagrams — AWSPrepAI</title>
+  <link rel="stylesheet" href="navigation.css">
+  <style>
+    :root {
+      --aws-orange: #FF9900;
+      --aws-dark: #232F3E;
+      --aws-blue: #146EB4;
+      --aws-light: #F8F9FA;
+      --border: #E5E7EB;
+      --text: #1F2937;
+      --muted: #6B7280;
+      --radius: 12px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #F3F4F6; color: var(--text); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: var(--aws-dark);
+      color: white;
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: .5rem; }
+    .page-header p { color: #94A3B8; font-size: 1rem; max-width: 600px; margin: 0 auto 1.5rem; }
+
+    /* DOMAIN FILTER */
+    .filter-bar {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: .5rem 1.25rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: .875rem;
+      font-weight: 600;
+      transition: all .2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--aws-orange);
+      border-color: var(--aws-orange);
+      color: white;
+    }
+
+    /* MAIN CONTENT */
+    .content { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* SECTION HEADER */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 2.5rem 0 1.25rem;
+    }
+    .section-header h2 { font-size: 1.25rem; font-weight: 800; color: var(--aws-dark); }
+    .domain-badge {
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .badge-resilient { background: #DBEAFE; color: #1D4ED8; }
+    .badge-secure { background: #FCE7F3; color: #BE185D; }
+    .badge-performance { background: #D1FAE5; color: #065F46; }
+    .badge-cost { background: #FEF3C7; color: #92400E; }
+
+    /* DIAGRAM GRID */
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* DIAGRAM CARD */
+    .diagram-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow .2s;
+    }
+    .diagram-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+    .diagram-card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .diagram-card-header h3 { font-size: 1rem; font-weight: 700; color: var(--aws-dark); }
+    .exam-tag {
+      font-size: .7rem;
+      font-weight: 700;
+      background: #FEF3C7;
+      color: #92400E;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+    }
+    .diagram-svg-wrap {
+      padding: 1.25rem;
+      background: #FAFAFA;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    /* SVG DIAGRAM STYLES */
+    .arch-svg { width: 100%; height: auto; }
+    .aws-box { fill: white; stroke: #CBD5E1; stroke-width: 1.5; rx: 8; }
+    .aws-box-orange { fill: #FFF8F0; stroke: var(--aws-orange); stroke-width: 2; }
+    .aws-box-blue { fill: #EFF6FF; stroke: var(--aws-blue); stroke-width: 2; }
+    .aws-box-green { fill: #F0FDF4; stroke: #16A34A; stroke-width: 2; }
+    .aws-box-red { fill: #FFF1F2; stroke: #E11D48; stroke-width: 2; }
+    .aws-box-purple { fill: #FAF5FF; stroke: #7C3AED; stroke-width: 2; }
+    .aws-box-gray { fill: #F8FAFC; stroke: #94A3B8; stroke-width: 1.5; }
+    .vpc-bg { fill: #F0F9FF; stroke: #0EA5E9; stroke-width: 2; stroke-dasharray: 6 3; }
+    .az-bg { fill: #F0FDF4; stroke: #86EFAC; stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .subnet-public { fill: #ECFDF5; stroke: #6EE7B7; stroke-width: 1.5; }
+    .subnet-private { fill: #EFF6FF; stroke: #93C5FD; stroke-width: 1.5; }
+    .arrow { stroke: #64748B; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+    .arrow-orange { stroke: var(--aws-orange); stroke-width: 2; fill: none; marker-end: url(#arrowhead-orange); }
+    .arrow-blue { stroke: var(--aws-blue); stroke-width: 1.5; fill: none; marker-end: url(#arrowhead-blue); }
+    .aws-label { font-family: -apple-system, sans-serif; font-size: 11px; font-weight: 600; fill: var(--aws-dark); text-anchor: middle; }
+    .aws-sublabel { font-family: -apple-system, sans-serif; font-size: 9px; fill: #64748B; text-anchor: middle; }
+    .section-label { font-family: -apple-system, sans-serif; font-size: 10px; font-weight: 700; fill: #0EA5E9; text-anchor: start; }
+    .az-label { font-family: -apple-system, sans-serif; font-size: 10px; font-weight: 700; fill: #16A34A; text-anchor: start; }
+
+    /* HOTSPOT */
+    .hotspot {
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .hotspot:hover rect, .hotspot:hover circle { opacity: .85; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)); }
+
+    /* EXPLANATION PANEL */
+    .explanation-panel {
+      padding: 1rem 1.25rem;
+      min-height: 80px;
+    }
+    .explanation-panel .exp-title {
+      font-size: .875rem;
+      font-weight: 700;
+      color: var(--aws-dark);
+      margin-bottom: .35rem;
+    }
+    .explanation-panel .exp-text {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .explanation-panel .exp-tip {
+      margin-top: .5rem;
+      font-size: .75rem;
+      background: #FEF3C7;
+      color: #92400E;
+      padding: .35rem .75rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .exp-placeholder {
+      font-size: .8rem;
+      color: #CBD5E1;
+      font-style: italic;
+    }
+
+    /* HIDDEN */
+    .domain-section { display: block; }
+    .domain-section.hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .diagram-grid { grid-template-columns: 1fr; }
+      .page-header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" role="navigation">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <svg width="28" height="28" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <text x="2" y="26" font-size="17" font-weight="900" fill="#FFFFFF" font-family="Arial,sans-serif">AWS</text>
+        <path d="M2 32 Q26 44 50 32" stroke="#FF9900" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <polygon points="46,27 52,33 46,36" fill="#FF9900"/>
+      </svg>
+      <span>AWSPrepAI</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Dashboard</a>
+      <div class="nav-dropdown">
+        <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg></button>
+        <div class="dropdown-menu">
+          <a href="index.html#quiz" class="dropdown-item">📝 Practice Quiz</a>
+          <a href="index.html#exam" class="dropdown-item">⏱️ Mock Exam</a>
+          <a href="index.html#visual-exam" class="dropdown-item">🎯 Visual Exam</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-link" aria-haspopup="true" aria-expanded="false">Study<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg></button>
+        <div class="dropdown-menu">
+          <a href="index.html#study-guide" class="dropdown-item">📚 Study Guide</a>
+          <a href="index.html#services" class="dropdown-item">☁️ AWS Services</a>
+          <a href="glossary.html" class="dropdown-item">📖 Glossary</a>
+          <a href="diagrams.html" class="dropdown-item">🏗️ Architecture Diagrams</a>
+        </div>
+      </div>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="resources.html" class="nav-link">Resources</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+      <a href="pricing.html" class="nav-link">Pricing</a>
+      <a href="chat.html" class="nav-link">AI Coach</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>🏗️ AWS Architecture Diagrams</h1>
+  <p>Full SAA-C03 coverage — click any component to learn what it does and why it matters for your exam.</p>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterDomain('all')">All Domains</button>
+    <button class="filter-btn" onclick="filterDomain('resilient')">Resilient</button>
+    <button class="filter-btn" onclick="filterDomain('secure')">Secure</button>
+    <button class="filter-btn" onclick="filterDomain('performance')">High-Performing</button>
+    <button class="filter-btn" onclick="filterDomain('cost')">Cost-Optimized</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════════════
+     DOMAIN 1: RESILIENT ARCHITECTURES
+═══════════════════════════════════════════════════ -->
+<div class="domain-section" data-domain="resilient">
+  <div class="section-header">
+    <h2>Resilient Architectures</h2>
+    <span class="domain-badge badge-resilient">26% of exam</span>
+  </div>
+  <div class="diagram-grid">
+
+    <!-- 1. VPC with Public & Private Subnets -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>VPC — Public & Private Subnets</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
+            <marker id="arrowhead-orange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#FF9900"/></marker>
+            <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#146EB4"/></marker>
+          </defs>
+          <!-- Internet -->
+          <g class="hotspot" onclick="explain('internet','Internet','Entry point for all public traffic. Traffic flows through the Internet Gateway into your VPC.','Exam tip: Internet Gateway is horizontally scaled, redundant, and highly available.')">
+            <rect x="10" y="110" width="70" height="60" rx="8" class="aws-box"/>
+            <text x="45" y="136" class="aws-label">🌐</text>
+            <text x="45" y="152" class="aws-label">Internet</text>
+          </g>
+          <!-- Internet Gateway -->
+          <g class="hotspot" onclick="explain('igw','Internet Gateway (IGW)','Allows communication between your VPC and the internet. Must be attached to a VPC and added to the route table of public subnets.','Exam tip: Only one IGW per VPC. Public subnet = route table points to IGW.')">
+            <rect x="100" y="110" width="80" height="60" rx="8" class="aws-box-orange"/>
+            <text x="140" y="136" class="aws-label">🔗</text>
+            <text x="140" y="150" class="aws-label">Internet</text>
+            <text x="140" y="162" class="aws-label">Gateway</text>
+          </g>
+          <!-- VPC -->
+          <rect x="200" y="20" width="285" height="250" rx="10" class="vpc-bg"/>
+          <text x="208" y="38" class="section-label">VPC (10.0.0.0/16)</text>
+          <!-- AZ -->
+          <rect x="212" y="45" width="262" height="212" rx="8" class="az-bg"/>
+          <text x="220" y="62" class="az-label">Availability Zone</text>
+          <!-- Public Subnet -->
+          <rect x="222" y="68" width="115" height="175" rx="6" class="subnet-public"/>
+          <text x="280" y="84" class="aws-label" style="fill:#065F46;font-size:9px;">Public Subnet</text>
+          <!-- NAT Gateway -->
+          <g class="hotspot" onclick="explain('nat','NAT Gateway','Allows private subnet instances to access the internet (for updates etc.) without being exposed to inbound internet traffic. Managed by AWS — highly available within an AZ.','Exam tip: NAT Gateway is in the PUBLIC subnet. Private subnet route table points to NAT GW. Costs money — exam questions about cost optimization often involve removing NAT GW.')">
+            <rect x="232" y="90" width="95" height="50" rx="6" class="aws-box-green"/>
+            <text x="280" y="112" class="aws-label">🔄</text>
+            <text x="280" y="128" class="aws-label">NAT Gateway</text>
+          </g>
+          <!-- Public EC2 -->
+          <g class="hotspot" onclick="explain('ec2-public','Public EC2 Instance','Lives in a public subnet with a public IP. Directly accessible from the internet via the IGW. Used for bastion hosts, web servers, load balancers.','Exam tip: A public subnet instance needs: 1) Public IP/Elastic IP, 2) IGW attached to VPC, 3) Route table pointing to IGW, 4) Security group allowing inbound traffic.')">
+            <rect x="232" y="160" width="95" height="70" rx="6" class="aws-box-orange"/>
+            <text x="280" y="188" class="aws-label">💻</text>
+            <text x="280" y="203" class="aws-label">Public EC2</text>
+            <text x="280" y="218" class="aws-sublabel">Bastion / Web</text>
+          </g>
+          <!-- Private Subnet -->
+          <rect x="348" y="68" width="115" height="175" rx="6" class="subnet-private"/>
+          <text x="406" y="84" class="aws-label" style="fill:#1D4ED8;font-size:9px;">Private Subnet</text>
+          <!-- Private EC2 -->
+          <g class="hotspot" onclick="explain('ec2-private','Private EC2 Instance','No public IP. Cannot be reached directly from internet. Accesses internet via NAT Gateway. More secure for databases, app servers, backend services.','Exam tip: Private instance outbound internet = NAT Gateway. Private instance access from on-prem = VPN or Direct Connect. Private instance access from same VPC = directly via private IP.')">
+            <rect x="358" y="90" width="95" height="70" rx="6" class="aws-box-blue"/>
+            <text x="406" y="118" class="aws-label">🔒</text>
+            <text x="406" y="133" class="aws-label">Private EC2</text>
+            <text x="406" y="148" class="aws-sublabel">App / DB Server</text>
+          </g>
+          <!-- Route Tables -->
+          <g class="hotspot" onclick="explain('rt','Route Tables','Control where network traffic is directed. Public subnet route table has a route to IGW (0.0.0.0/0 → igw-xxx). Private subnet route table has a route to NAT Gateway (0.0.0.0/0 → nat-xxx).','Exam tip: Every subnet must be associated with exactly one route table. If not explicitly associated, uses the main/default route table.')">
+            <rect x="358" y="180" width="95" height="50" rx="6" class="aws-box"/>
+            <text x="406" y="202" class="aws-label">📋</text>
+            <text x="406" y="217" class="aws-label">Route Table</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="80" y1="140" x2="100" y2="140" class="arrow"/>
+          <line x1="180" y1="140" x2="200" y2="140" class="arrow-orange"/>
+          <line x1="327" y1="115" x2="348" y2="115" class="arrow-blue"/>
+          <line x1="280" y1="140" x2="280" y2="160" class="arrow"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-vpc-subnets">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 2. ALB + Auto Scaling -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>ALB + Auto Scaling Group</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Internet -->
+          <g class="hotspot" onclick="explain2('users','Users / Internet Traffic','HTTP/HTTPS traffic from users hits the ALB first. The ALB then distributes traffic across healthy EC2 instances in the ASG.','Exam tip: ALB operates at Layer 7 (HTTP/HTTPS). NLB operates at Layer 4 (TCP/UDP). Use ALB for web apps, NLB for high-performance TCP.')">
+            <rect x="10" y="110" width="70" height="60" rx="8" class="aws-box"/>
+            <text x="45" y="136" class="aws-label">👥</text>
+            <text x="45" y="152" class="aws-label">Users</text>
+          </g>
+          <!-- ALB -->
+          <g class="hotspot" onclick="explain2('alb','Application Load Balancer (ALB)','Distributes HTTP/HTTPS traffic across multiple EC2 instances. Supports path-based and host-based routing, health checks, sticky sessions, and SSL termination.','Exam tip: ALB + ASG = classic resilient web app pattern. ALB health checks automatically route away from unhealthy instances.')">
+            <rect x="100" y="100" width="95" height="70" rx="8" class="aws-box-orange"/>
+            <text x="148" y="128" class="aws-label">⚖️</text>
+            <text x="148" y="143" class="aws-label">Application</text>
+            <text x="148" y="157" class="aws-label">Load Balancer</text>
+          </g>
+          <!-- ASG Box -->
+          <rect x="215" y="20" width="270" height="245" rx="10" style="fill:#F0FDF4;stroke:#86EFAC;stroke-width:2;stroke-dasharray:6 3;"/>
+          <text x="225" y="40" class="az-label">Auto Scaling Group</text>
+          <!-- AZ1 -->
+          <rect x="225" y="50" width="115" height="200" rx="8" style="fill:#EFF6FF;stroke:#93C5FD;stroke-width:1.5;stroke-dasharray:4 3;"/>
+          <text x="283" y="67" class="aws-label" style="fill:#1D4ED8;font-size:9px;">AZ 1</text>
+          <!-- EC2 instances AZ1 -->
+          <g class="hotspot" onclick="explain2('ec2-asg','EC2 Instance (in ASG)','Auto Scaling automatically launches/terminates instances based on demand. Maintains desired capacity and replaces unhealthy instances.','Exam tip: ASG across multiple AZs = high availability. ASG + ALB = resilient and scalable. Launch Template defines instance config.')">
+            <rect x="235" y="75" width="95" height="55" rx="6" class="aws-box-blue"/>
+            <text x="283" y="98" class="aws-label">💻 EC2</text>
+            <text x="283" y="113" class="aws-sublabel">t3.medium</text>
+          </g>
+          <g class="hotspot" onclick="explain2('ec2-asg','EC2 Instance (in ASG)','Auto Scaling automatically launches/terminates instances based on demand. Maintains desired capacity and replaces unhealthy instances.','Exam tip: ASG across multiple AZs = high availability. ASG + ALB = resilient and scalable. Launch Template defines instance config.')">
+            <rect x="235" y="145" width="95" height="55" rx="6" class="aws-box-blue"/>
+            <text x="283" y="168" class="aws-label">💻 EC2</text>
+            <text x="283" y="183" class="aws-sublabel">t3.medium</text>
+          </g>
+          <!-- AZ2 -->
+          <rect x="355" y="50" width="115" height="200" rx="8" style="fill:#EFF6FF;stroke:#93C5FD;stroke-width:1.5;stroke-dasharray:4 3;"/>
+          <text x="413" y="67" class="aws-label" style="fill:#1D4ED8;font-size:9px;">AZ 2</text>
+          <g class="hotspot" onclick="explain2('ec2-asg','EC2 Instance (in ASG)','Auto Scaling automatically launches/terminates instances based on demand. Maintains desired capacity and replaces unhealthy instances.','Exam tip: ASG across multiple AZs = high availability. ASG + ALB = resilient and scalable. Launch Template defines instance config.')">
+            <rect x="365" y="75" width="95" height="55" rx="6" class="aws-box-blue"/>
+            <text x="413" y="98" class="aws-label">💻 EC2</text>
+            <text x="413" y="113" class="aws-sublabel">t3.medium</text>
+          </g>
+          <g class="hotspot" onclick="explain2('scale','Scaling Policy','ASG scales out (adds instances) when CPU > threshold, scales in (removes) when load drops. Target tracking, step scaling, or scheduled scaling.','Exam tip: Scale-out = add instances. Scale-in = remove. Cooldown period prevents rapid scale in/out. Use Target Tracking for simplicity.')">
+            <rect x="365" y="145" width="95" height="55" rx="6" class="aws-box-green"/>
+            <text x="413" y="164" class="aws-label">📈</text>
+            <text x="413" y="180" class="aws-label">Scale Out/In</text>
+            <text x="413" y="195" class="aws-sublabel">Auto</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="80" y1="135" x2="100" y2="135" class="arrow"/>
+          <line x1="195" y1="135" x2="235" y2="102" class="arrow-orange"/>
+          <line x1="195" y1="135" x2="235" y2="172" class="arrow-orange"/>
+          <line x1="195" y1="135" x2="355" y2="102" class="arrow-orange"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-alb-asg">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 3. RDS Multi-AZ -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>RDS Multi-AZ vs Read Replicas</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- App -->
+          <g class="hotspot" onclick="explain3('app','Application','Your application connects to RDS via the endpoint DNS name — not the IP. This is important because during a failover, AWS automatically updates the DNS to point to the standby, so your app reconnects without code changes.','Exam tip: Always use the RDS endpoint (DNS name), never a hardcoded IP.')">
+            <rect x="10" y="100" width="80" height="60" rx="8" class="aws-box-orange"/>
+            <text x="50" y="126" class="aws-label">🖥️</text>
+            <text x="50" y="142" class="aws-label">Application</text>
+          </g>
+          <!-- Primary -->
+          <g class="hotspot" onclick="explain3('primary','RDS Primary (Multi-AZ)','The primary RDS instance handles all reads and writes. Data is synchronously replicated to the standby in another AZ. If the primary fails, AWS automatically promotes the standby — no data loss (synchronous = zero RPO).','Exam tip: Multi-AZ = availability/failover, NOT for performance. Failover takes 1-2 minutes. Standby is NOT readable.')">
+            <rect x="140" y="60" width="110" height="80" rx="8" class="aws-box-blue"/>
+            <text x="195" y="88" class="aws-label">🗄️ RDS</text>
+            <text x="195" y="103" class="aws-label">Primary</text>
+            <text x="195" y="118" class="aws-sublabel">AZ 1 — Writes</text>
+            <text x="195" y="130" class="aws-sublabel">+ Reads</text>
+          </g>
+          <!-- Standby -->
+          <g class="hotspot" onclick="explain3('standby','RDS Standby (Multi-AZ)','Exact synchronous copy of the primary. NOT accessible for reads or writes — only for failover. When primary fails, standby is promoted automatically by AWS within 1-2 minutes.','Exam tip: Standby ≠ Read Replica. Standby = failover only. Read Replica = offload reads. You cannot connect to a Multi-AZ standby directly.')">
+            <rect x="140" y="170" width="110" height="70" rx="8" class="aws-box-gray"/>
+            <text x="195" y="196" class="aws-label">🗄️ RDS</text>
+            <text x="195" y="211" class="aws-label">Standby</text>
+            <text x="195" y="226" class="aws-sublabel">AZ 2 — Failover</text>
+          </g>
+          <!-- Read Replica -->
+          <g class="hotspot" onclick="explain3('rr','Read Replica','Asynchronous copy of the primary used to offload read traffic. Can be in same AZ, different AZ, or even different region. Can be promoted to standalone DB (but breaks replication).','Exam tip: Read Replica = performance (offload reads). Multi-AZ = availability (failover). Read Replicas can be cross-region for disaster recovery.')">
+            <rect x="330" y="60" width="110" height="80" rx="8" class="aws-box-green"/>
+            <text x="385" y="88" class="aws-label">🗄️ Read</text>
+            <text x="385" y="103" class="aws-label">Replica</text>
+            <text x="385" y="118" class="aws-sublabel">Read-only</text>
+            <text x="385" y="130" class="aws-sublabel">Async copy</text>
+          </g>
+          <g class="hotspot" onclick="explain3('rr2','Cross-Region Read Replica','Read Replicas can be created in a different AWS region. Used for global read performance and disaster recovery. Can be promoted to primary if needed.','Exam tip: Cross-region RR = DR strategy. RPO = seconds to minutes (async). Costs additional data transfer fees.')">
+            <rect x="330" y="165" width="110" height="75" rx="8" class="aws-box-purple"/>
+            <text x="385" y="190" class="aws-label">🌍 Cross-Region</text>
+            <text x="385" y="205" class="aws-label">Read Replica</text>
+            <text x="385" y="220" class="aws-sublabel">DR / Global reads</text>
+          </g>
+          <!-- Labels -->
+          <text x="270" y="105" class="aws-label" style="fill:#92400E;font-size:9px;text-anchor:start;">Sync replication</text>
+          <text x="270" y="115" class="aws-sublabel" style="text-anchor:start;">(zero RPO)</text>
+          <text x="270" y="145" class="aws-label" style="fill:#065F46;font-size:9px;text-anchor:start;">Async replication</text>
+          <text x="270" y="155" class="aws-sublabel" style="text-anchor:start;">(seconds delay)</text>
+          <!-- Arrows -->
+          <line x1="90" y1="130" x2="140" y2="105" class="arrow-orange"/>
+          <line x1="195" y1="140" x2="195" y2="170" class="arrow" style="stroke-dasharray:5 3;"/>
+          <line x1="250" y1="95" x2="330" y2="95" class="arrow-blue" style="stroke-dasharray:5 3;"/>
+          <line x1="250" y1="115" x2="330" y2="195" class="arrow-blue" style="stroke-dasharray:5 3;"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-rds">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 4. S3 + CloudFront -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>S3 + CloudFront CDN</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Users global -->
+          <g class="hotspot" onclick="explain4('users-global','Global Users','Users around the world connect to CloudFront edge locations — the nearest one — instead of hitting your S3 bucket directly. This reduces latency dramatically.','Exam tip: CloudFront = CDN. Edge locations cache content. Reduces load on origin and lowers latency for global users.')">
+            <rect x="10" y="80" width="70" height="80" rx="8" class="aws-box"/>
+            <text x="45" y="110" class="aws-label">🌍</text>
+            <text x="45" y="125" class="aws-label">Global</text>
+            <text x="45" y="140" class="aws-label">Users</text>
+          </g>
+          <!-- CloudFront -->
+          <g class="hotspot" onclick="explain4('cf','CloudFront (CDN)','Content Delivery Network with 400+ edge locations globally. Caches content at the edge, so users get content from the nearest location. Supports HTTPS, custom SSL certificates, WAF integration, and signed URLs for private content.','Exam tip: CloudFront + S3 = global static website. Use Origin Access Control (OAC) to prevent direct S3 access. Use signed URLs/cookies to restrict access to paid content.')">
+            <rect x="100" y="70" width="110" height="100" rx="8" class="aws-box-orange"/>
+            <text x="155" y="108" class="aws-label">☁️</text>
+            <text x="155" y="123" class="aws-label">CloudFront</text>
+            <text x="155" y="138" class="aws-sublabel">400+ Edge Locations</text>
+            <text x="155" y="152" class="aws-sublabel">Cache TTL</text>
+          </g>
+          <!-- S3 -->
+          <g class="hotspot" onclick="explain4('s3','S3 Bucket (Origin)','Stores static files (HTML, CSS, JS, images, videos). CloudFront fetches content from S3 on cache miss. Use Origin Access Control (OAC) to ensure users can only access S3 via CloudFront, not directly.','Exam tip: S3 static website hosting + CloudFront = serverless static site. S3 bucket policy should only allow CloudFront OAC, not public access.')">
+            <rect x="280" y="40" width="100" height="75" rx="8" class="aws-box-green"/>
+            <text x="330" y="68" class="aws-label">🪣</text>
+            <text x="330" y="83" class="aws-label">S3 Bucket</text>
+            <text x="330" y="98" class="aws-sublabel">Static origin</text>
+            <text x="330" y="108" class="aws-sublabel">HTML/CSS/JS</text>
+          </g>
+          <!-- ALB Origin -->
+          <g class="hotspot" onclick="explain4('alb-origin','ALB / API (Dynamic Origin)','CloudFront can also proxy to dynamic origins like ALB, API Gateway, or EC2. Static content is cached; dynamic content passes through.','Exam tip: CloudFront can have multiple origins — S3 for static, ALB for dynamic — using cache behaviors based on URL path (e.g., /api/* → ALB, /* → S3).')">
+            <rect x="280" y="140" width="100" height="75" rx="8" class="aws-box-blue"/>
+            <text x="330" y="168" class="aws-label">⚖️</text>
+            <text x="330" y="183" class="aws-label">ALB / API GW</text>
+            <text x="330" y="198" class="aws-sublabel">Dynamic origin</text>
+          </g>
+          <!-- WAF -->
+          <g class="hotspot" onclick="explain4('waf','AWS WAF','Web Application Firewall. Protects against SQL injection, XSS, and other Layer 7 attacks. Can be attached to CloudFront to protect your global distribution.','Exam tip: WAF + CloudFront = global DDoS and Layer 7 protection. WAF rules can block IPs, rate-limit, or filter by geo-location.')">
+            <rect x="400" y="95" width="85" height="65" rx="8" class="aws-box-red"/>
+            <text x="443" y="120" class="aws-label">🛡️</text>
+            <text x="443" y="135" class="aws-label">WAF</text>
+            <text x="443" y="149" class="aws-sublabel">Layer 7 protect</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="80" y1="120" x2="100" y2="120" class="arrow"/>
+          <line x1="210" y1="100" x2="280" y2="70" class="arrow-orange"/>
+          <line x1="210" y1="130" x2="280" y2="175" class="arrow-orange"/>
+          <line x1="210" y1="115" x2="400" y2="120" class="arrow" style="stroke-dasharray:5 3;"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-s3-cf">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 5. SQS Decoupling -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>SQS — Decoupled Architecture</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Producer -->
+          <g class="hotspot" onclick="explain5('producer','Producer (Message Sender)','The producer sends messages to the SQS queue without waiting for consumers to process them. This decouples the producer from the consumer — if the consumer is slow or down, messages queue up safely.','Exam tip: SQS decoupling = classic pattern for handling traffic spikes. Producer never overwhelms the consumer.')">
+            <rect x="10" y="80" width="90" height="70" rx="8" class="aws-box-orange"/>
+            <text x="55" y="106" class="aws-label">📤</text>
+            <text x="55" y="121" class="aws-label">Producer</text>
+            <text x="55" y="136" class="aws-sublabel">EC2 / Lambda</text>
+          </g>
+          <!-- SQS -->
+          <g class="hotspot" onclick="explain5('sqs','SQS Queue','Managed message queue. Messages are stored until a consumer reads and deletes them. Standard queue: at-least-once delivery, best-effort ordering. FIFO queue: exactly-once, strict order.','Exam tip: Standard SQS = high throughput, possible duplicates. FIFO SQS = ordered, no duplicates, 3000 msg/s. Visibility timeout prevents two consumers processing the same message simultaneously.')">
+            <rect x="160" y="70" width="120" height="90" rx="8" class="aws-box-blue"/>
+            <text x="220" y="100" class="aws-label">📬</text>
+            <text x="220" y="115" class="aws-label">SQS Queue</text>
+            <text x="220" y="130" class="aws-sublabel">Messages buffered</text>
+            <text x="220" y="143" class="aws-sublabel">Decoupled</text>
+          </g>
+          <!-- DLQ -->
+          <g class="hotspot" onclick="explain5('dlq','Dead Letter Queue (DLQ)','Failed messages (exceeded maxReceiveCount) are moved here for analysis and debugging. Prevents poison pill messages from blocking the queue forever.','Exam tip: Always configure a DLQ in production. Set maxReceiveCount (e.g., 3-5). Messages in DLQ can be reprocessed after fixing the bug.')">
+            <rect x="160" y="175" width="120" height="40" rx="8" class="aws-box-red"/>
+            <text x="220" y="194" class="aws-label">💀 Dead Letter Queue</text>
+            <text x="220" y="208" class="aws-sublabel">Failed messages</text>
+          </g>
+          <!-- Consumers + ASG -->
+          <rect x="310" y="45" width="170" height="135" rx="8" style="fill:#F0FDF4;stroke:#86EFAC;stroke-width:1.5;stroke-dasharray:5 3;"/>
+          <text x="320" y="62" class="az-label">Consumer ASG</text>
+          <g class="hotspot" onclick="explain5('consumer','Consumer (with ASG)','Consumers poll the SQS queue, process messages, then delete them. ASG can scale based on queue depth (number of messages) — more messages = more consumers.','Exam tip: Scale consumers based on ApproximateNumberOfMessages metric in CloudWatch. This is a key pattern for handling variable workloads.')">
+            <rect x="320" y="68" width="75" height="50" rx="6" class="aws-box-green"/>
+            <text x="358" y="90" class="aws-label">💻</text>
+            <text x="358" y="106" class="aws-label">Consumer</text>
+          </g>
+          <g class="hotspot" onclick="explain5('consumer','Consumer (with ASG)','Consumers poll the SQS queue, process messages, then delete them. ASG can scale based on queue depth (number of messages) — more messages = more consumers.','Exam tip: Scale consumers based on ApproximateNumberOfMessages metric in CloudWatch. This is a key pattern for handling variable workloads.')">
+            <rect x="400" y="68" width="75" height="50" rx="6" class="aws-box-green"/>
+            <text x="438" y="90" class="aws-label">💻</text>
+            <text x="438" y="106" class="aws-label">Consumer</text>
+          </g>
+          <g class="hotspot" onclick="explain5('consumer','Consumer (with ASG)','Consumers poll the SQS queue, process messages, then delete them. ASG can scale based on queue depth (number of messages) — more messages = more consumers.','Exam tip: Scale consumers based on ApproximateNumberOfMessages metric in CloudWatch. This is a key pattern for handling variable workloads.')">
+            <rect x="360" y="130" width="75" height="40" rx="6" class="aws-box-gray"/>
+            <text x="398" y="148" class="aws-label">💻 Auto</text>
+            <text x="398" y="162" class="aws-label">Scale</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="100" y1="115" x2="160" y2="115" class="arrow-orange"/>
+          <line x1="280" y1="115" x2="310" y2="95" class="arrow-blue"/>
+          <line x1="280" y1="115" x2="310" y2="148" class="arrow-blue"/>
+          <line x1="220" y1="160" x2="220" y2="175" class="arrow" style="stroke:#E11D48;"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-sqs">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 6. Route 53 Failover -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Route 53 — DNS Failover</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- User -->
+          <g class="hotspot" onclick="explain6('user-dns','User DNS Query','User types your domain (e.g., app.example.com). Browser sends DNS query to Route 53. Route 53 returns the correct IP based on routing policy and health checks.','Exam tip: Route 53 is a DNS service — it does NOT proxy traffic, it just returns IP addresses. For DDoS protection of DNS, enable Route 53 Resolver DNS Firewall.')">
+            <rect x="10" y="95" width="70" height="55" rx="8" class="aws-box"/>
+            <text x="45" y="118" class="aws-label">👤</text>
+            <text x="45" y="133" class="aws-label">User</text>
+          </g>
+          <!-- Route 53 -->
+          <g class="hotspot" onclick="explain6('r53','Route 53','Global DNS service with 100% SLA. Supports multiple routing policies: Simple, Weighted, Latency-based, Geolocation, Geoproximity, Failover, Multivalue.','Exam tip: Know each routing policy use case. Failover = active/passive HA. Latency = route to lowest latency region. Weighted = A/B testing or canary deploy. Geolocation = compliance/content localization.')">
+            <rect x="100" y="80" width="100" height="80" rx="8" class="aws-box-orange"/>
+            <text x="150" y="110" class="aws-label">🌐</text>
+            <text x="150" y="125" class="aws-label">Route 53</text>
+            <text x="150" y="140" class="aws-sublabel">DNS + Health Checks</text>
+          </g>
+          <!-- Primary Region -->
+          <g class="hotspot" onclick="explain6('primary-region','Primary Region (Active)','Route 53 health checks the primary endpoint. If healthy, all traffic routes here. If unhealthy (health check fails), Route 53 automatically switches DNS to the secondary.','Exam tip: Health check interval = 30s (standard) or 10s (fast). After 3 failures → unhealthy. DNS TTL determines how quickly failover takes effect.')">
+            <rect x="250" y="30" width="115" height="80" rx="8" class="aws-box-blue"/>
+            <text x="308" y="60" class="aws-label">🏢</text>
+            <text x="308" y="75" class="aws-label">Primary</text>
+            <text x="308" y="90" class="aws-label">us-east-1</text>
+            <text x="308" y="104" class="aws-sublabel">Active (Healthy)</text>
+          </g>
+          <!-- Secondary Region -->
+          <g class="hotspot" onclick="explain6('secondary-region','Secondary Region (Passive)','Standby infrastructure in a different region. Route 53 only routes traffic here when the primary health check fails. Must be pre-warmed or use services that scale automatically (like S3 static site, or pre-scaled EC2).','Exam tip: Failover routing = active/passive. For active/active (both serve traffic simultaneously), use Weighted or Latency routing instead.')">
+            <rect x="250" y="140" width="115" height="80" rx="8" class="aws-box-gray"/>
+            <text x="308" y="170" class="aws-label">🏢</text>
+            <text x="308" y="185" class="aws-label">Secondary</text>
+            <text x="308" y="200" class="aws-label">us-west-2</text>
+            <text x="308" y="214" class="aws-sublabel">Passive (Standby)</text>
+          </g>
+          <!-- Health Check -->
+          <g class="hotspot" onclick="explain6('hc','Health Checks','Route 53 sends periodic health check requests to your endpoints. If endpoint fails threshold, it marks record as unhealthy and stops routing traffic there. Supports HTTP, HTTPS, TCP checks.','Exam tip: Health checks can monitor CloudWatch alarms (calculated health checks). Use for complex health scenarios, e.g., check if DB is accessible before marking web app healthy.')">
+            <rect x="390" y="80" width="95" height="80" rx="8" class="aws-box-red"/>
+            <text x="438" y="108" class="aws-label">❤️</text>
+            <text x="438" y="123" class="aws-label">Health</text>
+            <text x="438" y="138" class="aws-label">Checks</text>
+            <text x="438" y="152" class="aws-sublabel">30s interval</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="80" y1="122" x2="100" y2="122" class="arrow"/>
+          <line x1="200" y1="100" x2="250" y2="65" class="arrow-orange"/>
+          <line x1="200" y1="140" x2="250" y2="175" class="arrow" style="stroke:#94A3B8;stroke-dasharray:5 3;"/>
+          <line x1="365" y1="65" x2="390" y2="105" class="arrow" style="stroke:#E11D48;"/>
+          <line x1="365" y1="185" x2="390" y2="140" class="arrow" style="stroke:#E11D48;"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-r53">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+  </div><!-- end diagram-grid resilient -->
+</div><!-- end resilient section -->
+
+<!-- ═══════════════════════════════════════════════════
+     DOMAIN 2: SECURE ARCHITECTURES
+═══════════════════════════════════════════════════ -->
+<div class="domain-section" data-domain="secure">
+  <div class="section-header">
+    <h2>Secure Architectures</h2>
+    <span class="domain-badge badge-secure">30% of exam</span>
+  </div>
+  <div class="diagram-grid">
+
+    <!-- 7. IAM -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>IAM — Users, Roles & Policies</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- IAM User -->
+          <g class="hotspot" onclick="explain7('iam-user','IAM User','A person or application with long-term credentials (username/password or access keys). Best practice: use roles instead of long-term keys for applications. Enable MFA for all users.','Exam tip: Never use root account for day-to-day tasks. Use IAM users with least privilege. Rotate access keys regularly.')">
+            <rect x="10" y="30" width="100" height="65" rx="8" class="aws-box-orange"/>
+            <text x="60" y="56" class="aws-label">👤</text>
+            <text x="60" y="71" class="aws-label">IAM User</text>
+            <text x="60" y="86" class="aws-sublabel">Long-term creds</text>
+          </g>
+          <!-- IAM Group -->
+          <g class="hotspot" onclick="explain7('iam-group','IAM Group','Collection of IAM users. Attach policies to groups instead of individual users. Users inherit group permissions. A user can belong to multiple groups.','Exam tip: Use groups for permission management at scale. Attach policies to groups, not users directly. Groups cannot be nested (no groups within groups).')">
+            <rect x="10" y="120" width="100" height="65" rx="8" class="aws-box-blue"/>
+            <text x="60" y="146" class="aws-label">👥</text>
+            <text x="60" y="161" class="aws-label">IAM Group</text>
+            <text x="60" y="176" class="aws-sublabel">Devs / Admins</text>
+          </g>
+          <!-- Policy -->
+          <g class="hotspot" onclick="explain7('policy','IAM Policy','JSON document defining what actions are allowed or denied on which resources. Identity-based (attached to user/role/group) or Resource-based (attached to resource like S3 bucket).','Exam tip: Policy evaluation: explicit Deny > explicit Allow > implicit Deny. AWS managed policies vs customer managed policies. Always use least privilege principle.')">
+            <rect x="175" y="75" width="110" height="90" rx="8" class="aws-box-purple"/>
+            <text x="230" y="108" class="aws-label">📋</text>
+            <text x="230" y="123" class="aws-label">IAM Policy</text>
+            <text x="230" y="138" class="aws-sublabel">Allow/Deny rules</text>
+            <text x="230" y="152" class="aws-sublabel">JSON format</text>
+          </g>
+          <!-- IAM Role -->
+          <g class="hotspot" onclick="explain7('iam-role','IAM Role','Temporary credentials for AWS services, applications, or cross-account access. EC2, Lambda, ECS all assume roles. No long-term keys — credentials are rotated automatically by AWS.','Exam tip: EC2 instance profile = IAM role for EC2. Always use roles for EC2/Lambda instead of storing access keys. Cross-account access = trust policy on the role.')">
+            <rect x="345" y="30" width="110" height="75" rx="8" class="aws-box-green"/>
+            <text x="400" y="58" class="aws-label">🎭</text>
+            <text x="400" y="73" class="aws-label">IAM Role</text>
+            <text x="400" y="88" class="aws-sublabel">Temp credentials</text>
+            <text x="400" y="100" class="aws-sublabel">Auto-rotated</text>
+          </g>
+          <!-- Services using role -->
+          <g class="hotspot" onclick="explain7('ec2-role','EC2 / Lambda with Role','AWS services assume IAM roles to get temporary credentials. EC2 uses instance profiles. Lambda uses execution roles. No access keys needed in code.','Exam tip: If an EC2 needs to access S3, attach an IAM role with S3 permissions to the instance — never store access keys on the instance itself.')">
+            <rect x="345" y="135" width="110" height="75" rx="8" class="aws-box-blue"/>
+            <text x="400" y="163" class="aws-label">💻 EC2</text>
+            <text x="400" y="178" class="aws-label">Lambda</text>
+            <text x="400" y="193" class="aws-sublabel">Assumes role</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="110" y1="62" x2="175" y2="115" class="arrow"/>
+          <line x1="110" y1="152" x2="175" y2="125" class="arrow"/>
+          <line x1="285" y1="115" x2="345" y2="70" class="arrow-orange"/>
+          <line x1="400" y1="105" x2="400" y2="135" class="arrow"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-iam">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 8. Security Groups vs NACLs -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Security Groups vs NACLs</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Internet -->
+          <rect x="10" y="95" width="60" height="50" rx="8" class="aws-box"/>
+          <text x="40" y="117" class="aws-label">🌐</text>
+          <text x="40" y="132" class="aws-label">Internet</text>
+          <!-- NACL -->
+          <g class="hotspot" onclick="explain8('nacl','Network ACL (NACL)','Subnet-level firewall. Stateless — must define both inbound AND outbound rules. Rules evaluated in order (lowest number first). Supports allow and deny rules. Applied to all instances in subnet.','Exam tip: NACL = stateless, subnet level. Security Group = stateful, instance level. NACL can block specific IPs (SGs cannot deny). Default NACL allows all; custom NACL denies all.')">
+            <rect x="90" y="60" width="90" height="120" rx="8" class="aws-box-red"/>
+            <text x="135" y="90" class="aws-label">🚧</text>
+            <text x="135" y="105" class="aws-label">NACL</text>
+            <text x="135" y="120" class="aws-sublabel">Subnet level</text>
+            <text x="135" y="133" class="aws-sublabel">Stateless</text>
+            <text x="135" y="146" class="aws-sublabel">Allow + Deny</text>
+            <text x="135" y="162" class="aws-sublabel">Ordered rules</text>
+          </g>
+          <!-- Subnet -->
+          <rect x="200" y="40" width="200" height="160" rx="8" class="subnet-public"/>
+          <text x="300" y="58" class="aws-label" style="fill:#065F46;font-size:9px;">Public Subnet</text>
+          <!-- Security Group -->
+          <g class="hotspot" onclick="explain8('sg','Security Group','Instance-level virtual firewall. Stateful — if inbound is allowed, return traffic is automatically allowed (no need for outbound rule). Only supports allow rules (no explicit deny). Applied per ENI.','Exam tip: Security Groups = stateful, instance level, allow rules only. Default SG allows all outbound, denies all inbound. SG rules reference IP ranges or other SGs (not subnets).')">
+            <rect x="220" y="65" width="160" height="115" rx="8" class="aws-box-blue"/>
+            <text x="300" y="90" class="aws-label">🛡️ Security</text>
+            <text x="300" y="105" class="aws-label">Group</text>
+            <text x="300" y="120" class="aws-sublabel">Instance level</text>
+            <text x="300" y="133" class="aws-sublabel">Stateful</text>
+            <text x="300" y="146" class="aws-sublabel">Allow rules only</text>
+            <!-- EC2 inside -->
+            <rect x="340" y="80" width="30" height="85" rx="4" class="aws-box-orange"/>
+            <text x="355" y="118" class="aws-label" style="font-size:8px;">EC2</text>
+          </g>
+          <!-- Comparison table -->
+          <rect x="415" y="30" width="75" height="180" rx="8" class="aws-box-gray"/>
+          <text x="453" y="50" class="aws-label" style="font-size:8px;">SG vs NACL</text>
+          <text x="453" y="70" class="aws-sublabel">SG: Stateful</text>
+          <text x="453" y="85" class="aws-sublabel">NACL: Stateless</text>
+          <text x="453" y="105" class="aws-sublabel">SG: Instance</text>
+          <text x="453" y="120" class="aws-sublabel">NACL: Subnet</text>
+          <text x="453" y="140" class="aws-sublabel">SG: Allow</text>
+          <text x="453" y="155" class="aws-sublabel">NACL: Allow</text>
+          <text x="453" y="170" class="aws-sublabel">+ Deny</text>
+          <!-- Arrows -->
+          <line x1="70" y1="120" x2="90" y2="120" class="arrow"/>
+          <line x1="180" y1="120" x2="220" y2="120" class="arrow-orange"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-sg-nacl">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 9. KMS Encryption -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>KMS — Encryption at Rest</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- KMS -->
+          <g class="hotspot" onclick="explain9('kms','AWS KMS (Key Management Service)','Managed service for creating and managing encryption keys. Supports symmetric (AES-256) and asymmetric (RSA, ECC) keys. Keys never leave KMS unencrypted — all operations happen inside KMS.','Exam tip: KMS = server-side encryption for AWS services. AWS managed keys (free) vs customer managed keys (CMK, $1/month). Key policy controls who can use the key. CloudTrail logs all KMS API calls.')">
+            <rect x="185" y="75" width="120" height="90" rx="8" class="aws-box-orange"/>
+            <text x="245" y="108" class="aws-label">🔑</text>
+            <text x="245" y="123" class="aws-label">AWS KMS</text>
+            <text x="245" y="138" class="aws-sublabel">CMK management</text>
+            <text x="245" y="152" class="aws-sublabel">AES-256 / RSA</text>
+          </g>
+          <!-- S3 SSE -->
+          <g class="hotspot" onclick="explain9('s3-sse','S3 Server-Side Encryption','SSE-S3: AWS manages keys. SSE-KMS: KMS manages keys (audit trail, key policy control). SSE-C: Customer provides key. Default encryption can be enforced via bucket policy.','Exam tip: SSE-KMS = best for compliance/audit. Enforce via bucket policy: deny requests without x-amz-server-side-encryption: aws:kms header. S3 also supports client-side encryption.')">
+            <rect x="10" y="30" width="100" height="70" rx="8" class="aws-box-green"/>
+            <text x="60" y="56" class="aws-label">🪣 S3</text>
+            <text x="60" y="71" class="aws-label">SSE-KMS</text>
+            <text x="60" y="86" class="aws-sublabel">Encrypted objects</text>
+          </g>
+          <!-- EBS -->
+          <g class="hotspot" onclick="explain9('ebs','EBS Encryption','EBS volumes can be encrypted at rest using KMS. Encryption covers: data at rest, data in transit between instance and volume, snapshots, volumes created from snapshots.','Exam tip: Encrypted EBS snapshot → encrypted volume. Unencrypted snapshot → can encrypt on copy. To encrypt an unencrypted volume: snapshot → copy with encryption → create volume.')">
+            <rect x="10" y="120" width="100" height="70" rx="8" class="aws-box-blue"/>
+            <text x="60" y="146" class="aws-label">💾 EBS</text>
+            <text x="60" y="161" class="aws-label">Encrypted</text>
+            <text x="60" y="176" class="aws-sublabel">KMS key</text>
+          </g>
+          <!-- RDS Encrypt -->
+          <g class="hotspot" onclick="explain9('rds-enc','RDS Encryption','RDS encryption must be enabled at creation — cannot be added later. Encryption covers: DB instance, automated backups, read replicas, snapshots.','Exam tip: To encrypt an unencrypted RDS: take snapshot → copy snapshot with encryption enabled → restore from encrypted snapshot. Read replicas of encrypted DB must also be encrypted.')">
+            <rect x="380" y="30" width="100" height="70" rx="8" class="aws-box-purple"/>
+            <text x="430" y="56" class="aws-label">🗄️ RDS</text>
+            <text x="430" y="71" class="aws-label">Encrypted</text>
+            <text x="430" y="86" class="aws-sublabel">At-rest + transit</text>
+          </g>
+          <!-- Secrets Manager -->
+          <g class="hotspot" onclick="explain9('secrets','Secrets Manager','Stores and auto-rotates secrets (DB passwords, API keys). Integrates with RDS, Redshift, DocumentDB for automatic rotation. Encrypted using KMS.','Exam tip: Secrets Manager = managed rotation + KMS encryption. Parameter Store = simpler, cheaper, no auto-rotation for free tier. Use Secrets Manager for DB passwords in production.')">
+            <rect x="380" y="120" width="100" height="70" rx="8" class="aws-box-red"/>
+            <text x="430" y="146" class="aws-label">🔐</text>
+            <text x="430" y="161" class="aws-label">Secrets Mgr</text>
+            <text x="430" y="176" class="aws-sublabel">Auto-rotate</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="110" y1="65" x2="185" y2="110" class="arrow-orange"/>
+          <line x1="110" y1="155" x2="185" y2="135" class="arrow-orange"/>
+          <line x1="305" y1="110" x2="380" y2="65" class="arrow-orange"/>
+          <line x1="305" y1="130" x2="380" y2="155" class="arrow-orange"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-kms">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 10. VPN + Direct Connect -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Site-to-Site VPN & Direct Connect</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Corp DC -->
+          <g class="hotspot" onclick="explain10('corp','Corporate Data Center','On-premises infrastructure that needs to connect securely to AWS. Two options: Site-to-Site VPN (over internet, encrypted) or Direct Connect (dedicated private line).','Exam tip: VPN = quick to set up, goes over public internet, encrypted. Direct Connect = private dedicated bandwidth, takes weeks to provision, not encrypted by default (add VPN over DX for encryption).')">
+            <rect x="10" y="80" width="100" height="80" rx="8" class="aws-box-gray"/>
+            <text x="60" y="108" class="aws-label">🏢</text>
+            <text x="60" y="123" class="aws-label">Corporate</text>
+            <text x="60" y="138" class="aws-label">Data Center</text>
+            <text x="60" y="152" class="aws-sublabel">On-premises</text>
+          </g>
+          <!-- VPN path -->
+          <g class="hotspot" onclick="explain10('vpn','Site-to-Site VPN','Encrypted IPsec tunnel over the public internet between your on-prem Customer Gateway and AWS Virtual Private Gateway. Redundant tunnels per connection. Bandwidth limited by internet connection.','Exam tip: VPN uses Customer Gateway (on-prem side) + Virtual Private Gateway or Transit Gateway (AWS side). Setup in minutes/hours. Use for backup to Direct Connect.')">
+            <rect x="160" y="40" width="155" height="55" rx="8" class="aws-box-blue"/>
+            <text x="238" y="62" class="aws-label">🔐 Site-to-Site VPN</text>
+            <text x="238" y="77" class="aws-sublabel">IPsec tunnel — over internet</text>
+            <text x="238" y="90" class="aws-sublabel">Encrypted | Quick setup</text>
+          </g>
+          <!-- DX path -->
+          <g class="hotspot" onclick="explain10('dx','AWS Direct Connect','Dedicated private network connection from your data center to AWS. 1 Gbps or 10 Gbps speeds. Consistent performance, lower latency, no internet exposure. Takes weeks to months to provision.','Exam tip: Direct Connect = consistent bandwidth for large data transfers. Not encrypted by default. DX + VPN = private AND encrypted. DX failover: use VPN as backup.')">
+            <rect x="160" y="145" width="155" height="55" rx="8" class="aws-box-orange"/>
+            <text x="238" y="165" class="aws-label">⚡ Direct Connect</text>
+            <text x="238" y="180" class="aws-sublabel">Dedicated private line</text>
+            <text x="238" y="193" class="aws-sublabel">1/10 Gbps | Weeks to setup</text>
+          </g>
+          <!-- VGW / TGW -->
+          <g class="hotspot" onclick="explain10('vgw','Virtual Private Gateway / Transit Gateway','VGW: attaches to a single VPC, terminates VPN/DX connections. Transit Gateway (TGW): central hub connecting multiple VPCs, VPNs, and Direct Connect — like a network router in the cloud.','Exam tip: Multiple VPCs + on-prem = use Transit Gateway. Single VPC + on-prem = Virtual Private Gateway. TGW supports thousands of VPCs.')">
+            <rect x="350" y="80" width="130" height="80" rx="8" class="aws-box-green"/>
+            <text x="415" y="108" class="aws-label">🔗</text>
+            <text x="415" y="123" class="aws-label">VGW / TGW</text>
+            <text x="415" y="138" class="aws-sublabel">Virtual Private GW</text>
+            <text x="415" y="152" class="aws-sublabel">or Transit GW</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="110" y1="105" x2="160" y2="67" class="arrow-blue"/>
+          <line x1="110" y1="135" x2="160" y2="172" class="arrow-orange"/>
+          <line x1="315" y1="67" x2="350" y2="105" class="arrow-blue"/>
+          <line x1="315" y1="172" x2="350" y2="135" class="arrow-orange"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-vpn-dx">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end secure section -->
+
+<!-- ═══════════════════════════════════════════════════
+     DOMAIN 3: HIGH-PERFORMING
+═══════════════════════════════════════════════════ -->
+<div class="domain-section" data-domain="performance">
+  <div class="section-header">
+    <h2>High-Performing Architectures</h2>
+    <span class="domain-badge badge-performance">24% of exam</span>
+  </div>
+  <div class="diagram-grid">
+
+    <!-- 11. ElastiCache -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>ElastiCache — Caching Layer</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Users -->
+          <rect x="10" y="90" width="60" height="45" rx="8" class="aws-box"/>
+          <text x="40" y="110" class="aws-label">👥</text>
+          <text x="40" y="125" class="aws-label">Users</text>
+          <!-- App -->
+          <g class="hotspot" onclick="explainP('app-cache','Application Layer','Application checks ElastiCache first (cache hit = fast response). If data not in cache (cache miss), fetches from RDS and writes to cache for next time.','Exam tip: Cache-aside pattern = most common. App manages cache. Write-through = write to cache and DB simultaneously. Use TTL to expire stale data.')">
+            <rect x="90" y="80" width="100" height="65" rx="8" class="aws-box-orange"/>
+            <text x="140" y="108" class="aws-label">🖥️</text>
+            <text x="140" y="123" class="aws-label">Application</text>
+            <text x="140" y="138" class="aws-sublabel">EC2 / Lambda</text>
+          </g>
+          <!-- ElastiCache -->
+          <g class="hotspot" onclick="explainP('cache','ElastiCache (Redis/Memcached)','In-memory cache. Redis supports persistence, replication, pub/sub, sorted sets. Memcached supports multi-threading and simple caching only. Both reduce database load dramatically.','Exam tip: Redis = rich data structures, persistence, Multi-AZ. Memcached = simpler, multi-threaded. ElastiCache Redis = session store, leaderboards, real-time analytics. Exam often asks Redis vs Memcached.')">
+            <rect x="250" y="40" width="120" height="80" rx="8" class="aws-box-red"/>
+            <text x="310" y="68" class="aws-label">⚡</text>
+            <text x="310" y="83" class="aws-label">ElastiCache</text>
+            <text x="310" y="98" class="aws-label">Redis / Memcached</text>
+            <text x="310" y="112" class="aws-sublabel">Sub-ms latency</text>
+          </g>
+          <!-- RDS -->
+          <g class="hotspot" onclick="explainP('rds-cache','RDS (Source of Truth)','The persistent database. ElastiCache sits in front of RDS to serve frequently accessed data from memory. Reduces DB load and improves response times.','Exam tip: Classic pattern: Users → ALB → EC2 → ElastiCache (cache hit: return) → RDS (cache miss: fetch + store). Use for read-heavy workloads.')">
+            <rect x="250" y="145" width="120" height="65" rx="8" class="aws-box-blue"/>
+            <text x="310" y="170" class="aws-label">🗄️</text>
+            <text x="310" y="185" class="aws-label">RDS</text>
+            <text x="310" y="200" class="aws-sublabel">Source of truth</text>
+          </g>
+          <!-- Cache hit/miss labels -->
+          <text x="200" y="72" class="aws-label" style="fill:#065F46;font-size:9px;">Cache Hit →</text>
+          <text x="200" y="160" class="aws-label" style="fill:#92400E;font-size:9px;">Cache Miss →</text>
+          <!-- Arrows -->
+          <line x1="70" y1="112" x2="90" y2="112" class="arrow"/>
+          <line x1="190" y1="100" x2="250" y2="78" class="arrow-orange"/>
+          <line x1="190" y1="130" x2="250" y2="170" class="arrow" style="stroke:#94A3B8;stroke-dasharray:4 3;"/>
+          <line x1="310" y1="120" x2="310" y2="145" class="arrow" style="stroke:#94A3B8;stroke-dasharray:4 3;"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-cache">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 12. DynamoDB -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>DynamoDB — NoSQL at Scale</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- App -->
+          <g class="hotspot" onclick="explainD('app-ddb','Application','Connects to DynamoDB via the AWS SDK. No connection pooling needed — DynamoDB is serverless. Queries use Partition Key (required) and Sort Key (optional).','Exam tip: DynamoDB = key-value and document store. Partition Key must be chosen carefully for even distribution. Hot partition = bad performance.')">
+            <rect x="10" y="90" width="100" height="60" rx="8" class="aws-box-orange"/>
+            <text x="60" y="116" class="aws-label">🖥️</text>
+            <text x="60" y="131" class="aws-label">Application</text>
+          </g>
+          <!-- DynamoDB -->
+          <g class="hotspot" onclick="explainD('ddb','DynamoDB','Serverless NoSQL database. Single-digit millisecond performance at any scale. Supports both provisioned and on-demand capacity modes. Automatically replicates across 3 AZs.','Exam tip: DynamoDB = no schema, flexible, auto-scale. RDS = relational, SQL, schema required. Use DDB for: session data, shopping carts, user profiles, gaming leaderboards, IoT data.')">
+            <rect x="160" y="60" width="130" height="110" rx="8" class="aws-box-blue"/>
+            <text x="225" y="90" class="aws-label">🗃️</text>
+            <text x="225" y="105" class="aws-label">DynamoDB</text>
+            <text x="225" y="120" class="aws-sublabel">Serverless NoSQL</text>
+            <text x="225" y="133" class="aws-sublabel">3-AZ replication</text>
+            <text x="225" y="146" class="aws-sublabel">< 10ms latency</text>
+            <text x="225" y="160" class="aws-sublabel">Auto-scale</text>
+          </g>
+          <!-- DAX -->
+          <g class="hotspot" onclick="explainD('dax','DynamoDB DAX (Cache)','In-memory cache specifically for DynamoDB. Reduces read latency from milliseconds to microseconds. Fully managed, highly available.','Exam tip: DAX = DynamoDB Accelerator. Microsecond reads. Write-through cache. Use when DynamoDB latency is still too high. Compatible with existing DynamoDB API calls.')">
+            <rect x="160" y="185" width="130" height="30" rx="6" class="aws-box-red"/>
+            <text x="225" y="203" class="aws-label">⚡ DAX Cache — microseconds</text>
+          </g>
+          <!-- Global Tables -->
+          <g class="hotspot" onclick="explainD('global','DynamoDB Global Tables','Multi-region, multi-active replication. Write to any region, data replicates globally. Under 1-second replication typically. Used for globally distributed apps.','Exam tip: Global Tables = active-active multi-region. Great for disaster recovery + global low-latency. Conflict resolution: last-writer-wins.')">
+            <rect x="350" y="40" width="130" height="70" rx="8" class="aws-box-green"/>
+            <text x="415" y="65" class="aws-label">🌍</text>
+            <text x="415" y="80" class="aws-label">Global Tables</text>
+            <text x="415" y="95" class="aws-sublabel">Multi-region</text>
+            <text x="415" y="108" class="aws-sublabel">Active-active</text>
+          </g>
+          <!-- Streams -->
+          <g class="hotspot" onclick="explainD('streams','DynamoDB Streams','Captures item-level changes in order. Events can trigger Lambda functions for real-time processing. Useful for change data capture, replication, analytics.','Exam tip: DynamoDB Streams + Lambda = event-driven architecture. Stream records kept for 24 hours. Use for: audit logs, cross-region replication trigger, search index updates in OpenSearch.')">
+            <rect x="350" y="135" width="130" height="70" rx="8" class="aws-box-purple"/>
+            <text x="415" y="160" class="aws-label">🌊</text>
+            <text x="415" y="175" class="aws-label">DDB Streams</text>
+            <text x="415" y="190" class="aws-sublabel">Change events</text>
+            <text x="415" y="203" class="aws-sublabel">→ Lambda trigger</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="110" y1="120" x2="160" y2="115" class="arrow-orange"/>
+          <line x1="290" y1="95" x2="350" y2="72" class="arrow-blue"/>
+          <line x1="290" y1="140" x2="350" y2="165" class="arrow-blue"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-ddb">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 13. Lambda + API Gateway -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>Serverless — Lambda + API Gateway</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Client -->
+          <rect x="10" y="90" width="70" height="50" rx="8" class="aws-box"/>
+          <text x="45" y="112" class="aws-label">📱</text>
+          <text x="45" y="127" class="aws-label">Client</text>
+          <!-- API GW -->
+          <g class="hotspot" onclick="explainS('apigw','API Gateway','Fully managed service for creating, publishing, and securing REST, HTTP, and WebSocket APIs. Handles throttling, auth (Cognito/Lambda authorizer), caching, and request transformation.','Exam tip: API Gateway + Lambda = serverless REST API. Max timeout = 29 seconds. Use Lambda Proxy integration for full request pass-through. Enable caching to reduce Lambda invocations.')">
+            <rect x="100" y="70" width="100" height="80" rx="8" class="aws-box-orange"/>
+            <text x="150" y="100" class="aws-label">🔌</text>
+            <text x="150" y="115" class="aws-label">API Gateway</text>
+            <text x="150" y="130" class="aws-sublabel">REST / HTTP</text>
+            <text x="150" y="143" class="aws-sublabel">Auth + Throttle</text>
+          </g>
+          <!-- Lambda -->
+          <g class="hotspot" onclick="explainS('lambda','AWS Lambda','Serverless compute. Run code without managing servers. Supports Node.js, Python, Java, Go, etc. Max execution time: 15 minutes. Scales automatically from 0 to thousands of concurrent executions.','Exam tip: Lambda cold start = latency on first invocation. Use Provisioned Concurrency to eliminate cold starts. Lambda@Edge = run at CloudFront edge locations. Max memory: 10GB.')">
+            <rect x="255" y="70" width="100" height="80" rx="8" class="aws-box-blue"/>
+            <text x="305" y="100" class="aws-label">λ</text>
+            <text x="305" y="115" class="aws-label">Lambda</text>
+            <text x="305" y="130" class="aws-sublabel">0 → auto-scale</text>
+            <text x="305" y="143" class="aws-sublabel">15 min max</text>
+          </g>
+          <!-- DynamoDB -->
+          <g class="hotspot" onclick="explainS('ddb-serverless','DynamoDB (Serverless DB)','Perfect pair with Lambda. Both serverless, both auto-scale. No connection pool management. Lambda accesses DynamoDB via SDK with IAM role.','Exam tip: Lambda + DynamoDB = fully serverless stack. Add API Gateway in front = complete serverless API. Add S3 + CloudFront = serverless full-stack app.')">
+            <rect x="415" y="50" width="75" height="60" rx="8" class="aws-box-green"/>
+            <text x="453" y="75" class="aws-label">🗃️</text>
+            <text x="453" y="90" class="aws-label">DynamoDB</text>
+            <text x="453" y="104" class="aws-sublabel">Serverless</text>
+          </g>
+          <!-- S3 -->
+          <g class="hotspot" onclick="explainS('s3-serverless','S3 (Object Storage)','Lambda can read/write S3 objects. S3 events can trigger Lambda (e.g., image upload → resize). No servers to manage.','Exam tip: S3 event notification → Lambda = serverless file processing. Common pattern: upload to S3 → trigger Lambda → process → save to DynamoDB.')">
+            <rect x="415" y="135" width="75" height="60" rx="8" class="aws-box-purple"/>
+            <text x="453" y="160" class="aws-label">🪣</text>
+            <text x="453" y="175" class="aws-label">S3</text>
+            <text x="453" y="190" class="aws-sublabel">Object store</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="80" y1="115" x2="100" y2="115" class="arrow"/>
+          <line x1="200" y1="110" x2="255" y2="110" class="arrow-orange"/>
+          <line x1="355" y1="95" x2="415" y2="78" class="arrow-blue"/>
+          <line x1="355" y1="130" x2="415" y2="162" class="arrow-blue"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-lambda">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+    <!-- 14. SNS Fan-Out -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>SNS Fan-Out Pattern</h3>
+        <span class="exam-tag">High Value</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Publisher -->
+          <g class="hotspot" onclick="explainFO('pub','Publisher (Producer)','Sends a message to SNS topic once. SNS fans it out to all subscribers simultaneously — no need to send to each subscriber individually.','Exam tip: SNS = push-based, pub/sub. SQS = pull-based, queue. SNS + SQS = fan-out pattern for reliable message delivery to multiple consumers.')">
+            <rect x="10" y="90" width="90" height="55" rx="8" class="aws-box-orange"/>
+            <text x="55" y="114" class="aws-label">📤</text>
+            <text x="55" y="129" class="aws-label">Publisher</text>
+          </g>
+          <!-- SNS -->
+          <g class="hotspot" onclick="explainFO('sns','SNS Topic','Pub/Sub messaging service. One message → delivered to all subscribers instantly. Supports SQS, Lambda, HTTP/S, email, SMS, mobile push as subscribers.','Exam tip: SNS Fan-out = one SNS topic → multiple SQS queues. Each SQS queue has its own consumer (e.g., email service, analytics, fulfillment). Decouples event processing.')">
+            <rect x="160" y="75" width="110" height="80" rx="8" class="aws-box-blue"/>
+            <text x="215" y="108" class="aws-label">📣</text>
+            <text x="215" y="123" class="aws-label">SNS Topic</text>
+            <text x="215" y="138" class="aws-sublabel">Fan-out to all subs</text>
+          </g>
+          <!-- SQS 1 -->
+          <g class="hotspot" onclick="explainFO('sqs1','SQS Queue (Email Service)','Receives a copy of every SNS message. Email service consumes messages independently. If email service is slow, messages queue up without affecting other services.','Exam tip: SNS→SQS fan-out: each subscriber processes independently at their own pace. Reliable: if SQS consumer is down, messages are retained in queue (up to 14 days).')">
+            <rect x="340" y="20" width="110" height="55" rx="8" class="aws-box-green"/>
+            <text x="395" y="44" class="aws-label">📬 SQS</text>
+            <text x="395" y="60" class="aws-sublabel">Email Service</text>
+          </g>
+          <!-- SQS 2 -->
+          <g class="hotspot" onclick="explainFO('sqs2','SQS Queue (Analytics)','Same message, separate queue. Analytics service processes at its own rate. Fan-out ensures all services get the data without coupling them together.','Exam tip: This is the SNS Fan-Out pattern. Classic exam question: how to reliably deliver one event to multiple services → SNS topic with SQS subscribers.')">
+            <rect x="340" y="95" width="110" height="55" rx="8" class="aws-box-purple"/>
+            <text x="395" y="119" class="aws-label">📬 SQS</text>
+            <text x="395" y="135" class="aws-sublabel">Analytics</text>
+          </g>
+          <!-- Lambda sub -->
+          <g class="hotspot" onclick="explainFO('lambda-sub','Lambda Subscriber','SNS can invoke Lambda directly (without SQS). Good for lightweight, fast processing. For heavy processing with retry, use SQS between SNS and Lambda.','Exam tip: SNS→Lambda = direct invocation, synchronous retry. SNS→SQS→Lambda = buffered, async, better for spikes and retry logic.')">
+            <rect x="340" y="170" width="110" height="45" rx="8" class="aws-box-orange"/>
+            <text x="395" y="190" class="aws-label">λ Lambda</text>
+            <text x="395" y="205" class="aws-sublabel">Direct invocation</text>
+          </g>
+          <!-- Arrows -->
+          <line x1="100" y1="117" x2="160" y2="117" class="arrow-orange"/>
+          <line x1="270" y1="100" x2="340" y2="47" class="arrow-blue"/>
+          <line x1="270" y1="115" x2="340" y2="122" class="arrow-blue"/>
+          <line x1="270" y1="130" x2="340" y2="190" class="arrow-blue"/>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-fanout">
+        <p class="exp-placeholder">👆 Click any component to learn what it does</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end performance section -->
+
+<!-- ═══════════════════════════════════════════════════
+     DOMAIN 4: COST-OPTIMIZED
+═══════════════════════════════════════════════════ -->
+<div class="domain-section" data-domain="cost">
+  <div class="section-header">
+    <h2>Cost-Optimized Architectures</h2>
+    <span class="domain-badge badge-cost">20% of exam</span>
+  </div>
+  <div class="diagram-grid">
+
+    <!-- 15. S3 Storage Classes -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>S3 Storage Classes</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg">
+          <g class="hotspot" onclick="explainC('s3-std','S3 Standard','General purpose. 99.99% availability, 11 9s durability. Stored in minimum 3 AZs. Most expensive storage cost. No minimum storage duration or retrieval fee.','Exam tip: S3 Standard = hot data, frequent access. No retrieval fee. Use for active data, websites, content distribution.')">
+            <rect x="10" y="15" width="460" height="30" rx="4" class="aws-box-orange"/>
+            <text x="240" y="35" class="aws-label">S3 Standard — Frequent access | $0.023/GB | No retrieval fee</text>
+          </g>
+          <g class="hotspot" onclick="explainC('s3-ia','S3 Standard-IA','Infrequent Access. Same durability and AZ count as Standard. Lower storage cost but has retrieval fee. 30-day minimum storage duration.','Exam tip: IA = data you keep but rarely access. Disaster recovery backups, older data. Min 30 days, min 128KB. Retrieval fee applies.')">
+            <rect x="10" y="55" width="460" height="30" rx="4" class="aws-box-blue"/>
+            <text x="240" y="75" class="aws-label">S3 Standard-IA — Infrequent | $0.0125/GB | Retrieval fee | Min 30 days</text>
+          </g>
+          <g class="hotspot" onclick="explainC('s3-1z','S3 One Zone-IA','Single AZ — if AZ is destroyed, data is lost. Cheapest IA option. Good for reproducible data or secondary backups.','Exam tip: One Zone-IA = single AZ, can recreate data if lost. 20% cheaper than Standard-IA. NOT for primary backup of irreplaceable data.')">
+            <rect x="10" y="95" width="460" height="30" rx="4" class="aws-box-gray"/>
+            <text x="240" y="115" class="aws-label">S3 One Zone-IA — Single AZ | $0.01/GB | Risk of AZ loss | Min 30 days</text>
+          </g>
+          <g class="hotspot" onclick="explainC('s3-it','S3 Intelligent-Tiering','Automatically moves objects between tiers based on access patterns. Small monthly monitoring fee per object. No retrieval fee.','Exam tip: Intelligent-Tiering = unknown or changing access patterns. Automatically optimizes cost. No retrieval fee. Good default for unpredictable workloads.')">
+            <rect x="10" y="135" width="460" height="30" rx="4" class="aws-box-green"/>
+            <text x="240" y="155" class="aws-label">S3 Intelligent-Tiering — Auto-tier | Monitoring fee | No retrieval fee</text>
+          </g>
+          <g class="hotspot" onclick="explainC('s3-glacier','S3 Glacier Instant Retrieval','Archive storage. Millisecond retrieval (same as Standard). 90-day minimum. Best for quarterly archives that need immediate access.','Exam tip: Glacier Instant = archive price, instant access. Use for medical images, news media accessed occasionally.')">
+            <rect x="10" y="175" width="220" height="40" rx="4" class="aws-box-purple"/>
+            <text x="120" y="193" class="aws-label">Glacier Instant</text>
+            <text x="120" y="208" class="aws-sublabel">ms retrieval | 90 days min</text>
+          </g>
+          <g class="hotspot" onclick="explainC('s3-gflex','S3 Glacier Flexible / Deep Archive','Glacier Flexible: 1min–12hr retrieval. Deep Archive: 12–48hr retrieval. Lowest cost. For long-term compliance archives (7-10 years).','Exam tip: Deep Archive = cheapest S3 storage ($0.00099/GB). 180-day minimum. Use for compliance data that must be retained but almost never accessed.')">
+            <rect x="240" y="175" width="230" height="40" rx="4" class="aws-box-red"/>
+            <text x="355" y="193" class="aws-label">Glacier Flexible / Deep Archive</text>
+            <text x="355" y="208" class="aws-sublabel">hrs retrieval | cheapest | 90-180 days</text>
+          </g>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-s3-classes">
+        <p class="exp-placeholder">👆 Click any storage class to learn when to use it</p>
+      </div>
+    </div>
+
+    <!-- 16. EC2 Pricing Models -->
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <h3>EC2 Pricing Models</h3>
+        <span class="exam-tag">⭐ High Frequency</span>
+      </div>
+      <div class="diagram-svg-wrap">
+        <svg class="arch-svg" viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg">
+          <g class="hotspot" onclick="explainEC2('on-demand','On-Demand Instances','Pay by the hour/second. No commitment. Highest price per hour. Best for unpredictable workloads, short-term use, or testing.','Exam tip: On-Demand = flexibility, no commitment. Most expensive. Good for: spiky unpredictable traffic, short-term workloads, experiments.')">
+            <rect x="10" y="15" width="460" height="35" rx="6" class="aws-box-orange"/>
+            <text x="240" y="33" class="aws-label">On-Demand — Pay per hour | No commitment | Highest cost</text>
+            <text x="240" y="45" class="aws-sublabel">Best for: unpredictable workloads, short-term, testing</text>
+          </g>
+          <g class="hotspot" onclick="explainEC2('reserved','Reserved Instances (RI)','1 or 3 year commitment. Up to 72% discount vs On-Demand. Standard RI (most discount), Convertible RI (can change instance type), Scheduled RI (specific time windows).','Exam tip: RIs = steady-state, predictable workloads. 3-year > 1-year discount. All Upfront > Partial > No Upfront discount. Convertible RI = less discount but can change family/OS/tenancy.')">
+            <rect x="10" y="60" width="460" height="40" rx="6" class="aws-box-blue"/>
+            <text x="240" y="78" class="aws-label">Reserved Instances — 1 or 3 year | Up to 72% discount</text>
+            <text x="240" y="93" class="aws-sublabel">Standard (highest discount) | Convertible (flexible) | Scheduled</text>
+          </g>
+          <g class="hotspot" onclick="explainEC2('savings','Savings Plans','Flexible commitment ($/hour) for 1 or 3 years. Compute Savings Plan: any instance family, region, OS, tenancy. EC2 Savings Plan: specific family in a region. Up to 66% discount.','Exam tip: Savings Plans = modern alternative to RIs. More flexible — applies to Lambda and Fargate too (Compute Savings Plan). Recommended by AWS Cost Explorer.')">
+            <rect x="10" y="110" width="460" height="40" rx="6" class="aws-box-green"/>
+            <text x="240" y="128" class="aws-label">Savings Plans — Commit to $/hour | Up to 66% | Flexible</text>
+            <text x="240" y="143" class="aws-sublabel">Compute (any EC2 + Lambda + Fargate) | EC2 (specific family)</text>
+          </g>
+          <g class="hotspot" onclick="explainEC2('spot','Spot Instances','Use unused EC2 capacity at up to 90% discount. Can be interrupted with 2-minute warning when AWS needs capacity back. Best for fault-tolerant, flexible workloads.','Exam tip: Spot = cheapest but interruptible. Good for: batch jobs, data analysis, image processing, stateless workloads. NOT for: databases, critical always-on apps. Use Spot Fleets to combine instance types.')">
+            <rect x="10" y="160" width="460" height="40" rx="6" class="aws-box-purple"/>
+            <text x="240" y="178" class="aws-label">Spot Instances — Up to 90% discount | Can be interrupted</text>
+            <text x="240" y="193" class="aws-sublabel">Best for: batch, analytics, fault-tolerant | NOT for databases</text>
+          </g>
+          <g class="hotspot" onclick="explainEC2('dedicated','Dedicated Hosts / Instances','Physical server dedicated to you. Required for: per-socket/per-core software licensing, compliance requirements. Most expensive option.','Exam tip: Dedicated Host = compliance + BYOL (Bring Your Own License). You control instance placement. More expensive than Dedicated Instance. Use for regulatory requirements.')">
+            <rect x="10" y="208" width="460" height="20" rx="4" class="aws-box-red"/>
+            <text x="240" y="222" class="aws-label">Dedicated Hosts/Instances — Physical isolation | BYOL licensing | Most expensive</text>
+          </g>
+        </svg>
+      </div>
+      <div class="explanation-panel" id="exp-ec2-pricing">
+        <p class="exp-placeholder">👆 Click any pricing model to learn when to use it</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end cost section -->
+
+</div><!-- end content -->
+
+<script src="navigation.js"></script>
+<script>
+// ─── FILTER ──────────────────────────────────────────
+function filterDomain(domain) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.domain-section').forEach(s => {
+    if (domain === 'all' || s.dataset.domain === domain) {
+      s.classList.remove('hidden');
+    } else {
+      s.classList.add('hidden');
+    }
+  });
+}
+
+// ─── EXPLAIN HELPERS ─────────────────────────────────
+function showExplanation(panelId, component, title, text, tip) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  panel.innerHTML = `
+    <div class="exp-title">🔍 ${title}</div>
+    <div class="exp-text">${text}</div>
+    ${tip ? `<div class="exp-tip">💡 ${tip}</div>` : ''}
+  `;
+}
+
+// VPC
+function explain(component, title, text, tip) { showExplanation('exp-vpc-subnets', component, title, text, tip); }
+// ALB ASG
+function explain2(component, title, text, tip) { showExplanation('exp-alb-asg', component, title, text, tip); }
+// RDS
+function explain3(component, title, text, tip) { showExplanation('exp-rds', component, title, text, tip); }
+// S3+CF
+function explain4(component, title, text, tip) { showExplanation('exp-s3-cf', component, title, text, tip); }
+// SQS
+function explain5(component, title, text, tip) { showExplanation('exp-sqs', component, title, text, tip); }
+// Route 53
+function explain6(component, title, text, tip) { showExplanation('exp-r53', component, title, text, tip); }
+// IAM
+function explain7(component, title, text, tip) { showExplanation('exp-iam', component, title, text, tip); }
+// SG NACL
+function explain8(component, title, text, tip) { showExplanation('exp-sg-nacl', component, title, text, tip); }
+// KMS
+function explain9(component, title, text, tip) { showExplanation('exp-kms', component, title, text, tip); }
+// VPN DX
+function explain10(component, title, text, tip) { showExplanation('exp-vpn-dx', component, title, text, tip); }
+// Performance
+function explainP(component, title, text, tip) { showExplanation('exp-cache', component, title, text, tip); }
+function explainD(component, title, text, tip) { showExplanation('exp-ddb', component, title, text, tip); }
+function explainS(component, title, text, tip) { showExplanation('exp-lambda', component, title, text, tip); }
+function explainFO(component, title, text, tip) { showExplanation('exp-fanout', component, title, text, tip); }
+// Cost
+function explainC(component, title, text, tip) { showExplanation('exp-s3-classes', component, title, text, tip); }
+function explainEC2(component, title, text, tip) { showExplanation('exp-ec2-pricing', component, title, text, tip); }
+</script>
+</body>
+</html>
