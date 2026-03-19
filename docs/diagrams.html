@@ -2167,56 +2167,68 @@
         <span class="exam-tag">⭐ High Frequency</span>
       </div>
       <div class="diagram-svg-wrap">
-        <svg class="arch-svg" viewBox="0 0 600 285" xmlns="http://www.w3.org/2000/svg">
+        <svg class="arch-svg" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arrowhead-endpoint" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
           </defs>
-          <!-- VPC boundary -->
-          <rect x="10" y="10" width="580" height="270" rx="8" class="vpc-bg"/>
-          <text x="20" y="28" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">🔒 VPC (Private)</text>
-          <!-- EC2 -->
+
+          <!-- VPC boundary (left side only — contains EC2 + endpoints) -->
+          <rect x="10" y="10" width="350" height="240" rx="10" class="vpc-bg"/>
+          <text x="22" y="30" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">🔒 VPC (Private)</text>
+
+          <!-- AWS Cloud label (right side) -->
+          <text x="410" y="22" style="font-size:10px;font-weight:600;fill:#64748B;text-anchor:start;">☁️ AWS Cloud</text>
+
+          <!-- EC2 — vertically centered between the two rows -->
           <g class="hotspot" onclick="explainEndpoint('ec2','EC2 Instance (Private)','Needs to access AWS services. No internet gateway (not exposed). Uses VPC Endpoints for private access.','Exam tip: Private EC2 can\'t access services via internet. VPC Endpoints = private path to services. No NAT Gateway cost.')">
-            <rect x="25" y="55" width="120" height="70" rx="6" class="aws-box-blue"/>
-            <text x="85" y="80" class="aws-label">🖥️</text>
-            <text x="85" y="97" class="aws-label">EC2 Private</text>
+            <rect x="25" y="65" width="115" height="110" rx="8" class="aws-box-blue"/>
+            <text x="82" y="108" class="aws-label">🖥️</text>
+            <text x="82" y="128" class="aws-label">EC2 Private</text>
           </g>
-          <!-- Arrow EC2 → Gateway -->
-          <line x1="145" y1="78" x2="185" y2="78" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
-          <!-- Arrow EC2 → Interface -->
-          <line x1="145" y1="112" x2="185" y2="168" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
+
           <!-- Gateway Endpoint -->
           <g class="hotspot" onclick="explainEndpoint('gw','Gateway Endpoint (Free)','S3 and DynamoDB only. No cost! Add to route table — traffic automatically routed through endpoint. No ENI.','Exam tip: Gateway = S3/DynamoDB only, free, easiest. Add to route table. Perfect for private S3 access.')">
-            <rect x="185" y="45" width="140" height="75" rx="6" class="aws-box-green"/>
-            <text x="255" y="70" class="aws-label">Gateway</text>
-            <text x="255" y="87" class="aws-label">S3 / DynamoDB</text>
-            <text x="255" y="105" class="aws-sublabel">FREE ✓</text>
+            <rect x="180" y="45" width="155" height="85" rx="8" class="aws-box-green"/>
+            <text x="257" y="74" class="aws-label">Gateway</text>
+            <text x="257" y="91" class="aws-label">S3 / DynamoDB</text>
+            <text x="257" y="111" class="aws-sublabel">FREE ✓</text>
           </g>
-          <!-- Arrow Gateway → S3 -->
-          <line x1="325" y1="82" x2="365" y2="82" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
-          <!-- S3 box -->
-          <g class="hotspot" onclick="explainEndpoint('gw','Gateway Endpoint (Free)','S3 and DynamoDB only. No cost! Add to route table — traffic automatically routed through endpoint. No ENI.','Exam tip: Gateway = S3/DynamoDB only, free, easiest. Add to route table. Perfect for private S3 access.')">
-            <rect x="365" y="45" width="110" height="75" rx="6" class="aws-box-orange"/>
-            <text x="420" y="72" class="aws-label">🪣</text>
-            <text x="420" y="90" class="aws-label">S3</text>
-          </g>
+
           <!-- Interface Endpoint -->
           <g class="hotspot" onclick="explainEndpoint('iface','Interface Endpoint ($$)','PrivateLink. For any AWS service except S3/DynamoDB. Creates ENI with private IP in subnet. Costs per hour + data transfer.','Exam tip: Interface = most services (SNS, SQS, Lambda, etc). Has cost. Uses PrivateLink. Most flexible.')">
-            <rect x="185" y="140" width="140" height="75" rx="6" class="aws-box-purple"/>
-            <text x="255" y="165" class="aws-label">Interface</text>
-            <text x="255" y="182" class="aws-label">Most Services</text>
-            <text x="255" y="200" class="aws-sublabel">Costs $$</text>
+            <rect x="180" y="160" width="155" height="75" rx="8" class="aws-box-purple"/>
+            <text x="257" y="188" class="aws-label">Interface</text>
+            <text x="257" y="205" class="aws-label">Most Services</text>
+            <text x="257" y="223" class="aws-sublabel">Costs $$</text>
           </g>
-          <!-- Arrow Interface → Services -->
-          <line x1="325" y1="177" x2="365" y2="177" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
-          <!-- Services box -->
-          <rect x="365" y="140" width="110" height="75" rx="6" class="aws-box-red"/>
-          <text x="420" y="163" class="aws-label" style="font-size:10px;">AWS Services</text>
-          <text x="420" y="179" class="aws-sublabel">SNS, SQS,</text>
-          <text x="420" y="194" class="aws-sublabel">Lambda, EC2…</text>
-          <!-- Comparison -->
-          <rect x="25" y="230" width="555" height="42" rx="6" class="aws-box" style="opacity:0.8"/>
-          <text x="35" y="248" style="font-size:9px;font-weight:700;fill:#334155;text-anchor:start;">🟢 Gateway = S3/DynamoDB only, FREE, route-table based</text>
-          <text x="35" y="264" style="font-size:9px;font-weight:700;fill:#334155;text-anchor:start;">🟣 Interface = any service, costs $, uses PrivateLink ENI</text>
+
+          <!-- Arrows: EC2 → Endpoints -->
+          <line x1="140" y1="98"  x2="180" y2="87"  class="arrow" marker-end="url(#arrowhead-endpoint)"/>
+          <line x1="140" y1="142" x2="180" y2="197" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
+
+          <!-- S3 (external) -->
+          <g class="hotspot" onclick="explainEndpoint('gw','Gateway Endpoint (Free)','S3 and DynamoDB only. No cost! Add to route table — traffic automatically routed through endpoint. No ENI.','Exam tip: Gateway = S3/DynamoDB only, free, easiest. Add to route table. Perfect for private S3 access.')">
+            <rect x="395" y="45" width="185" height="85" rx="8" class="aws-box-orange"/>
+            <text x="487" y="80" class="aws-label">🪣</text>
+            <text x="487" y="100" class="aws-label">S3</text>
+          </g>
+
+          <!-- AWS Services (external) -->
+          <g class="hotspot" onclick="explainEndpoint('iface','Interface Endpoint ($$)','PrivateLink. For any AWS service except S3/DynamoDB. Creates ENI with private IP in subnet. Costs per hour + data transfer.','Exam tip: Interface = most services (SNS, SQS, Lambda, etc). Has cost. Uses PrivateLink. Most flexible.')">
+            <rect x="395" y="160" width="185" height="75" rx="8" class="aws-box-red"/>
+            <text x="487" y="186" class="aws-label">AWS Services</text>
+            <text x="487" y="203" class="aws-sublabel">SNS, SQS, Lambda,</text>
+            <text x="487" y="218" class="aws-sublabel">EC2, and more…</text>
+          </g>
+
+          <!-- Arrows: Endpoints → External Services -->
+          <line x1="335" y1="87"  x2="395" y2="87"  class="arrow" marker-end="url(#arrowhead-endpoint)"/>
+          <line x1="335" y1="197" x2="395" y2="197" class="arrow" marker-end="url(#arrowhead-endpoint)"/>
+
+          <!-- Legend -->
+          <rect x="10" y="265" width="580" height="28" rx="6" class="aws-box" style="opacity:0.85"/>
+          <text x="22" y="281" style="font-size:9.5px;font-weight:700;fill:#334155;text-anchor:start;">🟢 Gateway = S3/DynamoDB only, FREE, route-table based</text>
+          <text x="320" y="281" style="font-size:9.5px;font-weight:700;fill:#334155;text-anchor:start;">🟣 Interface = any service, costs $, uses PrivateLink ENI</text>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-endpoint">
