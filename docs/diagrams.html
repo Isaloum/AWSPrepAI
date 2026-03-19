@@ -890,48 +890,49 @@
           <defs>
             <marker id="arrowhead-dr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748B"/></marker>
           </defs>
+          <!-- 4 equal boxes: width=130, gap=20, x=10,160,310,460 -->
           <!-- Backup & Restore -->
           <g class="hotspot" onclick="explainDR('backup','Backup & Restore','Cheapest option. Regular backups to S3. Restore when needed (hours to days RTO). Highest RPO (many hours).','Exam tip: Backup & Restore = cost-optimized but slow. Good for non-critical data. RTO: hours-days, RPO: hours.')">
-            <rect x="10" y="20" width="130" height="70" rx="6" class="aws-box-blue"/>
-            <text x="75" y="40" class="aws-label">Backup</text>
-            <text x="75" y="55" class="aws-label">& Restore</text>
-            <text x="75" y="72" class="aws-sublabel">RTO: hours</text>
+            <rect x="10" y="20" width="130" height="75" rx="8" class="aws-box-blue"/>
+            <text x="75" y="45" class="aws-label">Backup</text>
+            <text x="75" y="61" class="aws-label">& Restore</text>
+            <text x="75" y="80" class="aws-sublabel">RTO: hours</text>
           </g>
           <!-- Pilot Light -->
           <g class="hotspot" onclick="explainDR('pilot','Pilot Light','Minimal warm standby. Only critical components running in secondary region. Small RTO (tens of minutes). Scale up on failover.','Exam tip: Pilot Light = cost-effective active-passive. Core app in standby, ready to scale. RTO: 10-15 min, RPO: minutes.')">
-            <rect x="170" y="20" width="130" height="70" rx="6" class="aws-box-green"/>
-            <text x="235" y="40" class="aws-label">Pilot Light</text>
-            <text x="235" y="57" class="aws-sublabel">RTO: 10-15 min</text>
-            <text x="235" y="72" class="aws-sublabel">RPO: minutes</text>
+            <rect x="160" y="20" width="130" height="75" rx="8" class="aws-box-green"/>
+            <text x="225" y="45" class="aws-label">Pilot Light</text>
+            <text x="225" y="63" class="aws-sublabel">RTO: 10-15 min</text>
+            <text x="225" y="80" class="aws-sublabel">RPO: minutes</text>
           </g>
           <!-- Warm Standby -->
           <g class="hotspot" onclick="explainDR('warm','Warm Standby','Scaled-down full copy running in secondary region. Ready to handle traffic immediately. RTO: minutes. Higher cost than Pilot Light.','Exam tip: Warm Standby = scaled-down active copy. More expensive than Pilot Light but faster failover. RTO: < 5 min, RPO: real-time.')">
-            <rect x="330" y="20" width="130" height="70" rx="6" class="aws-box-orange"/>
-            <text x="395" y="40" class="aws-label">Warm</text>
-            <text x="395" y="55" class="aws-label">Standby</text>
-            <text x="395" y="72" class="aws-sublabel">RTO: minutes</text>
+            <rect x="310" y="20" width="130" height="75" rx="8" class="aws-box-orange"/>
+            <text x="375" y="45" class="aws-label">Warm</text>
+            <text x="375" y="61" class="aws-label">Standby</text>
+            <text x="375" y="80" class="aws-sublabel">RTO: minutes</text>
           </g>
           <!-- Multi-Site -->
           <g class="hotspot" onclick="explainDR('multisite','Multi-Site Active-Active','Fully scaled copy in every region. All regions active simultaneously. Zero-downtime failover. Most expensive option.','Exam tip: Multi-Site = maximum availability. Seamless regional failover. Global load balancing. Highest cost but best RTO/RPO (near-zero).')">
-            <rect x="490" y="20" width="100" height="70" rx="6" class="aws-box-red"/>
-            <text x="540" y="35" class="aws-label">Multi-Site</text>
-            <text x="540" y="50" class="aws-label">Active-Active</text>
-            <text x="540" y="68" class="aws-sublabel">RTO: 0</text>
+            <rect x="460" y="20" width="130" height="75" rx="8" class="aws-box-red"/>
+            <text x="525" y="45" class="aws-label">Multi-Site</text>
+            <text x="525" y="61" class="aws-label">Active-Active</text>
+            <text x="525" y="80" class="aws-sublabel">RTO: 0</text>
           </g>
           <!-- Legend -->
-          <text x="10" y="120" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">⏱ RTO (Recovery Time Objective) = downtime duration</text>
-          <text x="10" y="140" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">💾 RPO (Recovery Point Objective) = data loss window</text>
+          <text x="10" y="125" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">⏱ RTO (Recovery Time Objective) = downtime duration</text>
+          <text x="10" y="145" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">💾 RPO (Recovery Point Objective) = data loss window</text>
           <!-- Cost comparison -->
-          <text x="10" y="170" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">💰 Cost (Low to High):</text>
-          <line x1="10" y1="180" x2="590" y2="180" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="16" y="188" width="130" height="34" rx="4" class="aws-box-blue"/>
-          <text x="81" y="210" class="aws-sublabel">Backup</text>
-          <rect x="162" y="188" width="130" height="34" rx="4" class="aws-box-green"/>
-          <text x="227" y="210" class="aws-sublabel">Pilot Light</text>
-          <rect x="308" y="188" width="130" height="34" rx="4" class="aws-box-orange"/>
-          <text x="373" y="210" class="aws-sublabel">Warm</text>
-          <rect x="454" y="188" width="130" height="34" rx="4" class="aws-box-red"/>
-          <text x="519" y="210" class="aws-sublabel">Multi-Site</text>
+          <text x="10" y="175" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">💰 Cost (Low to High):</text>
+          <line x1="10" y1="183" x2="590" y2="183" stroke="#E5E7EB" stroke-width="1"/>
+          <rect x="10"  y="190" width="130" height="38" rx="6" class="aws-box-blue"/>
+          <text x="75"  y="214" class="aws-sublabel">Backup</text>
+          <rect x="160" y="190" width="130" height="38" rx="6" class="aws-box-green"/>
+          <text x="225" y="214" class="aws-sublabel">Pilot Light</text>
+          <rect x="310" y="190" width="130" height="38" rx="6" class="aws-box-orange"/>
+          <text x="375" y="214" class="aws-sublabel">Warm Standby</text>
+          <rect x="460" y="190" width="130" height="38" rx="6" class="aws-box-red"/>
+          <text x="525" y="214" class="aws-sublabel">Multi-Site</text>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-dr">
