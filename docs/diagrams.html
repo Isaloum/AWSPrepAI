@@ -2290,15 +2290,16 @@
             <text x="535" y="100" class="aws-label">Geoproximity</text>
             <text x="535" y="117" class="aws-sublabel">Geo + Bias</text>
           </g>
-          <!-- Multi-value Answer -->
+          <!-- Multi-value Answer — centered in middle column, row 3 -->
           <g class="hotspot" onclick="explainR53policies('multivalue','Multi-Value Answer','Return multiple IPs (up to 8). Client picks one. Health checks on each. Better than Simple for HA.','Exam tip: Multi-Value = Simple + health checks. Returns random healthy IPs. Better than Simple but not Failover.')">
-            <rect x="310" y="160" width="90" height="55" rx="6" class="aws-box-orange"/>
-            <text x="355" y="170" class="aws-label">Multi-Value</text>
-            <text x="355" y="187" class="aws-sublabel">Multiple IPs</text>
+            <rect x="370" y="160" width="110" height="55" rx="6" class="aws-box-orange"/>
+            <text x="425" y="182" class="aws-label">Multi-Value</text>
+            <text x="425" y="200" class="aws-sublabel">Multiple IPs</text>
           </g>
           <!-- Legend -->
-          <text x="40" y="240" class="aws-sublabel" style="font-weight:bold;">Key: Failover/Weighted/Latency/Geolocation/Geoproximity have ROUTING POLICIES</text>
-          <text x="40" y="258" class="aws-sublabel">Simple/Multi-Value are just return patterns</text>
+          <rect x="10" y="228" width="580" height="45" rx="6" class="aws-box" style="opacity:0.85"/>
+          <text x="20" y="245" style="font-size:9.5px;font-weight:700;fill:#334155;text-anchor:start;">🔑 Failover, Weighted, Latency, Geolocation, Geoproximity = have ROUTING POLICIES</text>
+          <text x="20" y="263" style="font-size:9.5px;fill:#334155;text-anchor:start;">📋 Simple, Multi-Value = return patterns only (no routing logic)</text>
         </svg>
       </div>
       <div class="explanation-panel" id="exp-r53policies">
