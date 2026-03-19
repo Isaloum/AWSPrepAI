@@ -827,40 +827,49 @@
           <line x1="90" y1="125" x2="130" y2="125" class="arrow" marker-end="url(#arrowhead-ecs)"/>
           <!-- ECS Cluster -->
           <g class="hotspot" onclick="explainECS('cluster','ECS Cluster','Logical grouping of resources (on EC2 or Fargate). Manages container orchestration, scaling, and health checks.','Exam tip: ECS Cluster = orchestration layer. Cluster can have EC2 instances (EC2 launch type) or use Fargate (serverless).')">
-            <rect x="130" y="10" width="450" height="210" rx="8" class="vpc-bg"/>
+            <rect x="130" y="10" width="455" height="215" rx="8" class="vpc-bg"/>
             <text x="143" y="30" style="font-size:11px;font-weight:700;fill:#334155;text-anchor:start;">📦 ECS Cluster</text>
+
+            <!-- Row 1 — 3 equal boxes (120×55), spaced evenly -->
             <!-- Task Definition -->
-            <rect x="150" y="50" width="130" height="50" rx="6" class="aws-box-blue"/>
-            <text x="215" y="73" class="aws-label">Task Definition</text>
-            <text x="215" y="87" class="aws-sublabel">(container image specs)</text>
-            <!-- Fargate Tasks -->
-            <g class="hotspot" onclick="explainECS('tasks','Fargate Tasks','Serverless containers. AWS manages underlying compute. You define CPU/memory, AWS handles scaling & patching. Tasks are ephemeral.','Exam tip: Fargate = no EC2 to manage. Pay per task duration + resources. Great for variable workloads. Use with ALB for load balancing.')">
-              <rect x="310" y="50" width="100" height="50" rx="6" class="aws-box-green"/>
-              <text x="360" y="70" class="aws-sublabel">Fargate</text>
-              <text x="360" y="85" class="aws-sublabel">Task 1</text>
+            <rect x="148" y="42" width="120" height="55" rx="8" class="aws-box-blue"/>
+            <text x="208" y="64" class="aws-label">Task Definition</text>
+            <text x="208" y="81" class="aws-sublabel">container image specs</text>
+
+            <!-- Fargate Task 1 -->
+            <g class="hotspot" onclick="explainECS('tasks','Fargate Tasks','Serverless containers. AWS manages underlying compute. You define CPU/memory, AWS handles scaling &amp; patching. Tasks are ephemeral.','Exam tip: Fargate = no EC2 to manage. Pay per task duration + resources. Great for variable workloads. Use with ALB for load balancing.')">
+              <rect x="288" y="42" width="120" height="55" rx="8" class="aws-box-green"/>
+              <text x="348" y="64" class="aws-label">Fargate Task 1</text>
+              <text x="348" y="81" class="aws-sublabel">Running</text>
             </g>
+
+            <!-- Fargate Task 2 -->
             <g style="opacity:0.7">
-              <rect x="430" y="50" width="100" height="50" rx="6" class="aws-box-green"/>
-              <text x="480" y="70" class="aws-sublabel">Fargate</text>
-              <text x="480" y="85" class="aws-sublabel">Task 2</text>
+              <rect x="428" y="42" width="120" height="55" rx="8" class="aws-box-green"/>
+              <text x="488" y="64" class="aws-label">Fargate Task 2</text>
+              <text x="488" y="81" class="aws-sublabel">Running</text>
             </g>
-            <!-- ECR -->
+
+            <!-- Row 2 — 3 equal boxes (120×55) -->
+            <!-- ECR Registry -->
             <g class="hotspot" onclick="explainECS('ecr','ECR - Container Registry','AWS managed Docker registry. Store, manage, and deploy container images. Integrates with ECS task definitions.','Exam tip: ECR = private Docker registry. Can scan for vulnerabilities. IAM controls access to images.')">
-              <rect x="150" y="130" width="130" height="50" rx="6" class="aws-box-purple"/>
-              <text x="215" y="153" class="aws-label">📦</text>
-              <text x="215" y="168" class="aws-label">ECR Registry</text>
+              <rect x="148" y="122" width="120" height="55" rx="8" class="aws-box-purple"/>
+              <text x="208" y="145" class="aws-label">ECR Registry</text>
+              <text x="208" y="162" class="aws-sublabel">Container images</text>
             </g>
+
             <!-- CloudWatch Logs -->
             <g class="hotspot" onclick="explainECS('logs','CloudWatch Logs','ECS tasks send stdout/stderr to CloudWatch Logs automatically. Monitor, search, and alert on container logs.','Exam tip: Log driver = awslogs in task definition. Helps debugging. Integrates with CloudWatch alarms.')">
-              <rect x="310" y="130" width="130" height="50" rx="6" class="aws-box"/>
-              <text x="375" y="150" class="aws-sublabel">CloudWatch</text>
-              <text x="375" y="165" class="aws-sublabel">Logs</text>
+              <rect x="288" y="122" width="120" height="55" rx="8" class="aws-box"/>
+              <text x="348" y="145" class="aws-label">CloudWatch Logs</text>
+              <text x="348" y="162" class="aws-sublabel">Monitoring</text>
             </g>
+
             <!-- Auto Scaling -->
             <g class="hotspot" onclick="explainECS('scaling','Auto Scaling','Scales number of tasks based on metrics (CPU, memory, custom). Target tracking makes it simple.','Exam tip: ECS Service auto scaling = differs from EC2 auto scaling. Scales tasks, not instances.')">
-              <rect x="470" y="130" width="90" height="50" rx="6" class="aws-box-orange"/>
-              <text x="515" y="150" class="aws-sublabel">Auto</text>
-              <text x="515" y="165" class="aws-sublabel">Scaling</text>
+              <rect x="428" y="122" width="120" height="55" rx="8" class="aws-box-orange"/>
+              <text x="488" y="145" class="aws-label">Auto Scaling</text>
+              <text x="488" y="162" class="aws-sublabel">Task count</text>
             </g>
           </g>
         </svg>
