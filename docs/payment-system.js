@@ -264,6 +264,98 @@ async function initiatePayment(tier) {
   }
 }
 
+// ==================== PROGRESS SYNC (server-side, cross-device) ====================
+// Saves & loads quiz progress via Netlify Blobs (JWT-authenticated).
+// Local storage is always used as primary cache; server is synced in background.
+
+const SYNC_BASE = '/.netlify/functions/sync-progress';
+const LOAD_BASE = '/.netlify/functions/load-progress';
+
+/**
+ * Save progress for one cert to the server.
+ * Call after every answered question (debounce recommended).
+ * @param {string} cert  e.g. 'saa-c03'
+ * @param {object} data  any serializable progress object
+ */
+async function syncProgress(cert, data) {
+  const token = getAccessToken();
+  if (!token || !hasPremiumAccess()) return; // free users — local only
+
+  try {
+    await fetch(SYNC_BASE, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ cert, data }),
+    });
+  } catch (e) {
+    // Offline — silently fail; local storage still has data
+  }
+}
+
+/**
+ * Load ALL certs' progress from server.
+ * Returns object keyed by cert, e.g. { 'saa-c03': {...}, ... }
+ * Returns null if not premium or request fails.
+ */
+async function loadAllProgress() {
+  const token = getAccessToken();
+  if (!token || !hasPremiumAccess()) return null;
+
+  try {
+    const resp = await fetch(LOAD_BASE, {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!resp.ok) return null;
+    const { progress } = await resp.json();
+    return progress || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Load progress for a single cert from server.
+ * Falls back to localStorage if server unavailable.
+ * @param {string} cert
+ * @param {string} localKey  localStorage key for fallback
+ */
+async function loadProgressForCert(cert, localKey) {
+  const token = getAccessToken();
+  if (!token || !hasPremiumAccess()) {
+    // Free user — local only
+    try { return JSON.parse(localStorage.getItem(localKey) || 'null'); } catch { return null; }
+  }
+
+  try {
+    const resp = await fetch(`${SYNC_BASE}?cert=${encodeURIComponent(cert)}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!resp.ok) throw new Error('not ok');
+    const { data } = await resp.json();
+    if (data) {
+      // Cache locally for offline use
+      localStorage.setItem(localKey, JSON.stringify(data));
+      return data;
+    }
+  } catch (e) {
+    // Fall back to local cache
+  }
+  try { return JSON.parse(localStorage.getItem(localKey) || 'null'); } catch { return null; }
+}
+
+// Debounce helper for sync calls (avoids hammering server on every keystroke)
+function _debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
+// Ready-to-use debounced sync (1.5 s delay after last call)
+const syncProgressDebounced = _debounce(syncProgress, 1500);
+
 // ==================== UI HELPERS ====================
 
 function initPremiumUI() {
