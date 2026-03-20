@@ -3344,6 +3344,10 @@
 
   <!-- Include payment system script -->
   <script src="payment-system.js"></script>
+  <script>
+    // Initialize JWT premium check on every page load (async, non-blocking)
+    initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
+  </script>
   <!-- Include sample questions script -->
   <script src="sample-questions.js"></script>
 </body>

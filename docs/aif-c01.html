@@ -688,5 +688,8 @@ function restartMock() {
 // ── Init ───────────────────────────────────────────────────────────────────
 renderDashboard();
 </script>
+  <script>
+    initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
+  </script>
 </body>
 </html>

@@ -1,31 +1,37 @@
+/**
+ * restore-access.js
+ * Re-issues a signed JWT when a paying user clears their browser or uses a new device.
+ * Verifies the original payment_intent with Stripe before issuing.
+ */
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const crypto = require('crypto');
+const { issueJWT } = require('./_jwt');
 
-function issueToken(tier, piId, expiry) {
-  const secret = process.env.ACCESS_TOKEN_SECRET;
-  if (!secret) return null;
-  const payload = Buffer.from(JSON.stringify({
-    tier,
-    pi: piId || null,
-    expiry: expiry || null,
-    iat: Date.now(),
-  })).toString('base64');
-  const sig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return `${payload}.${sig}`;
+const ALLOWED_ORIGINS = [
+  'https://isaloum.github.io',
+  'https://awsprepai.netlify.app',
+];
+
+function corsHeaders(origin) {
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json',
+  };
 }
 
 exports.handler = async (event) => {
-  const headers = {
-    'Access-Control-Allow-Origin': 'https://awsprepai.netlify.app',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
-  };
+  const origin = event.headers.origin || event.headers.Origin || '';
+  const headers = corsHeaders(origin);
 
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
-  if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
 
   try {
-    const { paymentIntentId } = JSON.parse(event.body);
+    const { paymentIntentId } = JSON.parse(event.body || '{}');
 
     if (!paymentIntentId || !/^pi_/.test(paymentIntentId)) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid payment intent ID' }) };
@@ -39,25 +45,31 @@ exports.handler = async (event) => {
       return { statusCode: 402, headers, body: JSON.stringify({ error: 'Payment not completed' }) };
     }
 
-    // Block access if payment is disputed (chargeback)
+    // Block chargebacks
     if (pi.latest_charge?.dispute) {
       console.warn(`[restore] Blocked disputed payment — pi: ${paymentIntentId}`);
       return { statusCode: 403, headers, body: JSON.stringify({ error: 'Payment disputed. Contact support.' }) };
     }
 
     const tier = pi.metadata?.tier || 'lifetime';
+    const now  = Math.floor(Date.now() / 1000);
 
-    let expiry = null;
+    // Subscriptions get a rolling 24h window; lifetime is permanent
+    let exp = null;
     if (tier === 'monthly' || tier === 'yearly') {
-      const d = new Date(); d.setHours(d.getHours() + 24); expiry = d.toISOString();
+      exp = now + 86400; // 24-hour rolling refresh
     }
 
-    const accessToken = issueToken(tier, paymentIntentId, expiry);
+    const accessToken = issueJWT({ tier, pi: paymentIntentId, ...(exp ? { exp } : {}) });
 
-    return { statusCode: 200, headers, body: JSON.stringify({ verified: true, tier, accessToken }) };
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ verified: true, tier, accessToken }),
+    };
 
   } catch (err) {
-    console.error('Restore access error:', err);
+    console.error('[restore-access] Error:', err.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: err.message || 'Restore failed' }) };
   }
 };
