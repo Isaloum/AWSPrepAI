@@ -1,36 +1,17 @@
 /**
- * Stripe Webhook Handler
- * Stripe calls this directly when a payment succeeds — no client involvement.
- * This is the most secure way to grant access: server-to-server only.
- *
- * Required env vars:
- *   STRIPE_SECRET_KEY
- *   STRIPE_WEBHOOK_SECRET   (from Netlify → your webhook signing secret in Stripe dashboard)
- *   ACCESS_TOKEN_SECRET
+ * stripe-webhook.js
+ * Stripe calls this server-to-server when a payment/trial completes.
+ * SECURITY: verifies webhook signature — cannot be forged.
  */
-
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const crypto = require('crypto');
-
-function issueToken(tier, piId, expiry) {
-  const secret = process.env.ACCESS_TOKEN_SECRET;
-  if (!secret) return null;
-  const payload = Buffer.from(JSON.stringify({
-    tier,
-    pi: piId,
-    expiry: expiry || null,
-    iat: Date.now(),
-  })).toString('base64');
-  const sig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return `${payload}.${sig}`;
-}
+const { issueJWT } = require('./_jwt');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method not allowed' };
   }
 
-  const sig = event.headers['stripe-signature'];
+  const sig           = event.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!sig || !webhookSecret) {
@@ -40,23 +21,19 @@ exports.handler = async (event) => {
 
   let stripeEvent;
   try {
-    // Stripe verifies the payload hasn't been tampered with
     stripeEvent = stripe.webhooks.constructEvent(event.body, sig, webhookSecret);
   } catch (err) {
     console.error('[webhook] Signature verification failed:', err.message);
     return { statusCode: 400, body: `Webhook signature verification failed: ${err.message}` };
   }
 
-  // ── Chargeback / dispute → revoke access immediately ─────────────────────
+  // Chargeback: flag for manual review (token will fail on next refresh)
   if (stripeEvent.type === 'charge.dispute.created') {
     const dispute = stripeEvent.data.object;
-    console.warn(`[webhook] CHARGEBACK detected — pi: ${dispute.payment_intent}, amount: ${dispute.amount}`);
-    // Token will fail on next 24h refresh since pi_ is now disputed
-    // Log for manual review
+    console.warn(`[webhook] CHARGEBACK — pi: ${dispute.payment_intent}, amount: ${dispute.amount}`);
     return { statusCode: 200, body: JSON.stringify({ received: true, action: 'access_flagged' }) };
   }
 
-  // Handle: successful payment OR trial start
   if (stripeEvent.type === 'customer.subscription.deleted') {
     console.log('[webhook] Subscription cancelled:', stripeEvent.data.object.id);
     return { statusCode: 200, body: JSON.stringify({ received: true, action: 'subscription_cancelled' }) };
@@ -66,8 +43,8 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
   }
 
-  const session = stripeEvent.data.object;
-  const isTrial = session.payment_status === 'no_payment_required'; // trial start
+  const session  = stripeEvent.data.object;
+  const isTrial  = session.payment_status === 'no_payment_required';
 
   if (session.payment_status !== 'paid' && !isTrial) {
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
@@ -75,23 +52,21 @@ exports.handler = async (event) => {
 
   const tier = session.metadata?.tier || 'lifetime';
   const piId = session.payment_intent || session.subscription || null;
+  const now  = Math.floor(Date.now() / 1000);
 
-  // Expiry: trial gets 3 days, subscriptions get their full period
-  let expiry = null;
-  if (isTrial) {
-    const d = new Date(); d.setDate(d.getDate() + 3); expiry = d.toISOString();
-  } else if (tier === 'monthly') {
-    const d = new Date(); d.setDate(d.getDate() + 32); expiry = d.toISOString();
-  } else if (tier === 'yearly') {
-    const d = new Date(); d.setDate(d.getDate() + 366); expiry = d.toISOString();
-  }
+  let exp = null;
+  if (isTrial)               exp = now + 3   * 86400;
+  else if (tier === 'monthly') exp = now + 32  * 86400;
+  else if (tier === 'yearly')  exp = now + 366 * 86400;
 
-  const accessToken = issueToken(tier, piId, expiry);
+  const accessToken = issueJWT({ tier, pi: piId, ...(exp ? { exp } : {}) });
 
-  console.log(`[webhook] ${isTrial ? 'Trial started' : 'Payment confirmed'} — tier: ${tier}, id: ${piId}`);
+  console.log(`[webhook] ${isTrial ? 'Trial' : 'Payment'} confirmed — tier: ${tier}, pi: ${piId}`);
 
+  // NOTE: This response goes to Stripe, not the user.
+  // The user gets their token via verify-session after the checkout redirect.
   return {
     statusCode: 200,
-    body: JSON.stringify({ received: true, tier, accessToken }),
+    body: JSON.stringify({ received: true, tier }),
   };
 };

@@ -36,211 +36,246 @@ if (typeof Stripe !== 'undefined') {
   stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
 }
 
-// ==================== PREMIUM ACCESS MANAGEMENT ====================
-// Keys are obfuscated to prevent casual DevTools bypass
-const _K = { a: '_apa_tk', b: '_apa_ex', c: '_apa_tr', d: '_apa_ts', e: '_apa_pi', f: '_apa_st' };
+// ==================== RSA-JWT VERIFICATION ====================
+// Public key embedded at build time — private key never leaves the server.
+// Tokens signed with RS256 cannot be forged without the private key.
+// Anyone can read the public key; only the server can create valid tokens.
 
-function _tok(d) {
-  // Simple token: base64 of "granted:" + date string
-  try { return btoa('granted:' + d); } catch(e) { return ''; }
+const RSA_PUBLIC_KEY_B64 = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFtZEVxU09iZy9OeWVmdWxHVW4yVgpnUVNMajU3Wk4wMDBqell2WFUwR1lyelJmQW9sUmoxdzl6dldhcTBYOFNqNzhmS3N5RnpaOVlJSzFsWWVzK1Y4Cm5UVHp6ZDhnZk5kbTlIQk9pbjRacytXK1poU05pTlZDOHhoT25zdkU4cHRlVWlIcWNWOGRiOW1paDRyenJHSzcKamUzdkgzTTg1Sm12RVN4MkQ0QmtsbmxqdXJ5L2NnREdwVHZmYjFwRHJINkNSOVg0RDIvQUJnd21sNUg4SGpVRwpYNXl0RG1aWjh5cGYyZW00WW9mNFpYTThLVmxMZE95TWhhNDdyN3I0L3JlTkQvbysvakp0MUJOU3h2UFk1VlROCkJGOVVEU3RsTnQ2dXgzS1djWUlGa0Y1N3B2UERUV0ZlTXpDak5Ca3FJTEV3Rkl0RHRDWCtLRWVEZ0dnaGhOa0kKOFFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==';
+
+// Internal state — set once per page load via initPremiumCheck()
+let _premiumState = null; // { valid: bool, tier: string|null }
+
+function b64urlDecode(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  return Uint8Array.from(atob(s), c => c.charCodeAt(0));
 }
+
+function pemToArrayBuffer(pem) {
+  const b64 = pem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '');
+  return b64urlDecode(b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''));
+}
+
+async function _importPublicKey() {
+  try {
+    const pem = atob(RSA_PUBLIC_KEY_B64);
+    const der = pemToArrayBuffer(pem);
+    return await crypto.subtle.importKey(
+      'spki', der.buffer,
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+      false, ['verify']
+    );
+  } catch (e) {
+    console.error('[jwt] importKey failed:', e);
+    return null;
+  }
+}
+
+async function _verifyJWT(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+
+  try {
+    const pubKey = await _importPublicKey();
+    if (!pubKey) return null;
+
+    const data  = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
+    const sig   = b64urlDecode(parts[2]);
+    const valid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', pubKey, sig, data);
+    if (!valid) return null;
+
+    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+    // Check expiry
+    if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) return null;
+    return payload;
+  } catch (e) {
+    console.error('[jwt] verify failed:', e);
+    return null;
+  }
+}
+
+/**
+ * Call once on page load. Verifies the stored JWT and caches the result.
+ * All subsequent hasPremiumAccess() calls are synchronous (cached).
+ */
+async function initPremiumCheck() {
+  if (_premiumState !== null) return; // already done
+
+  const token = localStorage.getItem('_apa_jwt');
+  if (!token) {
+    _premiumState = { valid: false, tier: null };
+    return;
+  }
+
+  const payload = await _verifyJWT(token);
+  if (payload) {
+    _premiumState = { valid: true, tier: payload.tier || 'lifetime' };
+
+    // Subscription: refresh token from server if it expires within 2 days
+    if (payload.exp) {
+      const secsLeft = payload.exp - Math.floor(Date.now() / 1000);
+      if (secsLeft < 2 * 86400 && payload.pi) {
+        // Background refresh — don't block UI
+        _refreshToken(payload.pi).catch(() => {});
+      }
+    }
+  } else {
+    // Token invalid or expired — revoke
+    _revokeAccess();
+    _premiumState = { valid: false, tier: null };
+  }
+}
+
+async function _refreshToken(paymentIntentId) {
+  try {
+    const resp = await fetch('/.netlify/functions/restore-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentIntentId }),
+    });
+    const data = await resp.json();
+    if (data.accessToken) {
+      localStorage.setItem('_apa_jwt', data.accessToken);
+      localStorage.setItem('_apa_tier', data.tier || 'lifetime');
+    }
+  } catch (e) {
+    // Offline or network error — keep existing token, will retry next visit
+  }
+}
+
+function _revokeAccess() {
+  ['_apa_jwt', '_apa_tier', '_apa_pi',
+   // Legacy keys (clean up old sessions)
+   '_apa_tk', '_apa_ex', '_apa_tr', '_apa_ts', '_apa_st', 'premium_access'
+  ].forEach(k => localStorage.removeItem(k));
+}
+
+// ==================== PUBLIC API ====================
 
 function hasPremiumAccess() {
-  try {
-    const token  = localStorage.getItem(_K.a);
-    const expiry = localStorage.getItem(_K.b);
-    const tier   = localStorage.getItem(_K.c);
-    const ts     = localStorage.getItem(_K.d);
-    if (!token || !ts) return false;
-    // Validate token integrity
-    if (token !== _tok(ts)) return false;
-    // Lifetime has no expiry
-    if (tier === 'lifetime') return true;
-    // Check expiry for monthly/yearly
-    if (expiry) {
-      return new Date(expiry) > new Date();
-    }
-    return true;
-  } catch(e) { return false; }
-}
-
-function grantPremiumAccess() {
-  grantPremiumAccessWithTier('lifetime');
-}
-
-function grantPremiumAccessWithTier(tier, paymentIntentId, accessToken) {
-  try {
-    const ts = new Date().toISOString();
-    localStorage.setItem(_K.a, _tok(ts));
-    localStorage.setItem(_K.c, tier || 'lifetime');
-    localStorage.setItem(_K.d, ts);
-    if (paymentIntentId && /^pi_/.test(paymentIntentId)) {
-      localStorage.setItem(_K.e, paymentIntentId);
-    }
-    if (accessToken) {
-      localStorage.setItem(_K.f, accessToken);
-    }
-    // Set expiry based on tier
-    if (tier === 'monthly') {
-      const exp = new Date(); exp.setDate(exp.getDate() + 32);
-      localStorage.setItem(_K.b, exp.toISOString());
-    } else if (tier === 'yearly') {
-      const exp = new Date(); exp.setDate(exp.getDate() + 366);
-      localStorage.setItem(_K.b, exp.toISOString());
-    } else {
-      localStorage.removeItem(_K.b); // lifetime = no expiry
-    }
-    console.log('✅ Premium access granted:', tier);
-  } catch(e) {}
-}
-
-function restoreAccess(paymentIntentId) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const id = (paymentIntentId || localStorage.getItem(_K.e) || '').trim();
-      if (!id || !/^pi_/.test(id)) { reject('No valid Payment Intent ID'); return; }
-      const res = await fetch('/.netlify/functions/restore-access', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentIntentId: id }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.verified) { reject(data.error || 'Restore failed'); return; }
-      grantPremiumAccessWithTier(data.tier, id, data.accessToken);
-      resolve(data.tier);
-    } catch(e) { reject(e.message || 'Restore failed'); }
-  });
-}
-
-function revokePremiumAccess() {
-  [_K.a, _K.b, _K.c, _K.d, _K.e, _K.f].forEach(k => localStorage.removeItem(k));
-  // Clean up old keys from previous version
-  localStorage.removeItem('premium_access');
-  localStorage.removeItem('premium_unlocked_at');
-  localStorage.removeItem('subscription_tier');
-  localStorage.removeItem('subscription_expiry');
-}
-
-function isQuestionLocked(questionIndex) {
-  if (hasPremiumAccess()) return false;
-  const limit = window.currentFreeLimit || FREE_QUESTION_LIMIT;
-  return questionIndex >= limit;
-}
-
-function getAvailableQuestionCount() {
-  if (typeof questions !== 'undefined') {
-    return hasPremiumAccess() ? questions.length : FREE_QUESTION_LIMIT;
+  if (_premiumState === null) {
+    // initPremiumCheck() hasn't finished yet — fail safe (show free limit)
+    return false;
   }
-  return FREE_QUESTION_LIMIT;
+  return _premiumState.valid === true;
 }
 
-function getPremiumStatus() {
-  const isPremium = hasPremiumAccess();
-  const totalQuestions = typeof questions !== 'undefined' ? questions.length : 533;
-  const currentIndex = typeof currentQuestionIndex !== 'undefined' ? currentQuestionIndex : 0;
-  return {
-    isPremium,
-    freeQuestionsRemaining: isPremium ? 0 : Math.max(0, FREE_QUESTION_LIMIT - currentIndex),
-    totalQuestions,
-    availableQuestions: getAvailableQuestionCount(),
-    lockedQuestions: totalQuestions - FREE_QUESTION_LIMIT
-  };
-}
-
-function getSubscriptionTier() {
-  try { return localStorage.getItem(_K.c) || null; } catch(e) { return null; }
+function getPremiumTier() {
+  return _premiumState?.tier || localStorage.getItem('_apa_tier') || null;
 }
 
 function getAccessToken() {
-  try { return localStorage.getItem(_K.f) || null; } catch(e) { return null; }
+  return localStorage.getItem('_apa_jwt') || null;
 }
 
-function isSubscriptionActive() {
+function isPremiumUser() {
   return hasPremiumAccess();
 }
 
-// ==================== PAYWALL UI ====================
-
-function showPaywall() {
-  const modal = document.getElementById('paywall-modal');
-  if (modal) {
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    updatePaywallStats();
-  }
+function revokePremiumAccess() {
+  _revokeAccess();
+  _premiumState = { valid: false, tier: null };
 }
 
-function closePaywall() {
-  const modal = document.getElementById('paywall-modal');
-  if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-}
+// ==================== GRANT ACCESS (post-payment) ====================
 
-function updatePaywallStats() {
-  const status = getPremiumStatus();
-  const lockedCountEl = document.getElementById('locked-question-count');
-  if (lockedCountEl) lockedCountEl.textContent = status.lockedQuestions;
-  const freeCountEl = document.getElementById('free-question-count');
-  if (freeCountEl) freeCountEl.textContent = FREE_QUESTION_LIMIT;
-}
-
-// ==================== STRIPE PAYMENT ====================
-
-async function initiatePayment(tier = 'lifetime') {
-  if (!stripe) {
-    alert('Payment system not initialized. Please refresh the page.');
-    return;
-  }
-  const pricing = PRICING[tier];
-  if (!pricing) { alert('Invalid pricing tier selected.'); return; }
-  const button = document.querySelector(`.btn-premium[data-tier="${tier}"]`);
-  try {
-    if (button) { button.disabled = true; button.textContent = '⏳ Processing...'; }
-    const response = await fetch('/.netlify/functions/create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId: pricing.stripePriceId, mode: pricing.mode, tier }),
-    });
-    if (!response.ok) throw new Error('Failed to create checkout session');
-    const session = await response.json();
-    if (session.url) { window.location.href = session.url; }
-    else throw new Error('No checkout URL returned');
-  } catch (error) {
-    console.error('Payment error:', error);
-    alert('Payment failed. Please try again or contact support.');
-    if (button) { button.disabled = false; button.textContent = pricing.label || '🔓 Unlock'; }
-  }
-}
-
-// ==================== PREMIUM BADGE ====================
-
-function showPremiumBadge() {
-  const badge = document.getElementById('premium-badge');
-  if (badge && hasPremiumAccess()) badge.style.display = 'inline-flex';
-}
-
-function updatePremiumUI() {
-  showPremiumBadge();
-  const counterEl = document.getElementById('question-counter');
-  if (counterEl) {
-    const status = getPremiumStatus();
-    if (hasPremiumAccess()) {
-      counterEl.innerHTML = `<span class="premium-label">⭐ Premium</span> All ${status.totalQuestions} questions unlocked`;
+async function grantPremiumAccessWithTier(tier, paymentIntentId, accessToken) {
+  if (accessToken) {
+    // Verify before storing — never trust unverified tokens
+    const payload = await _verifyJWT(accessToken);
+    if (payload) {
+      localStorage.setItem('_apa_jwt', accessToken);
+      localStorage.setItem('_apa_tier', tier || payload.tier || 'lifetime');
+      if (paymentIntentId) localStorage.setItem('_apa_pi', paymentIntentId);
+      _premiumState = { valid: true, tier: tier || payload.tier || 'lifetime' };
     } else {
-      counterEl.innerHTML = `${status.freeQuestionsRemaining} free questions remaining`;
+      console.error('[payment] Received invalid token from server');
     }
   }
 }
 
-// ==================== INITIALIZATION ====================
+// ==================== REFRESH (restore on new device) ====================
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Migrate old-style premium_access key to new obfuscated format
-  if (localStorage.getItem('premium_access') === 'true' && !localStorage.getItem(_K.a)) {
-    const oldTier = localStorage.getItem('subscription_tier') || 'lifetime';
-    grantPremiumAccessWithTier(oldTier);
+async function refreshPremiumAccess() {
+  const piId = (localStorage.getItem('_apa_pi') || '').trim();
+  if (!piId || !piId.startsWith('pi_')) {
+    alert('No payment record found. Please contact support at support@awsprepai.com');
+    return;
   }
-  updatePremiumUI();
-});
+  try {
+    await _refreshToken(piId);
+    // Re-verify with fresh token
+    _premiumState = null;
+    await initPremiumCheck();
+    if (hasPremiumAccess()) {
+      alert('Access restored! Welcome back.');
+      location.reload();
+    } else {
+      alert('Could not verify your purchase. Please contact support.');
+    }
+  } catch (e) {
+    alert('Network error. Please try again.');
+  }
+}
+
+// ==================== QUESTION GATING ====================
+
+function shouldShowUpgrade(questionIndex) {
+  if (hasPremiumAccess()) return false;
+  return questionIndex >= FREE_QUESTION_LIMIT;
+}
+
+function getAvailableQuestionCount(questions) {
+  return hasPremiumAccess() ? questions.length : FREE_QUESTION_LIMIT;
+}
+
+function filterQuestionsForUser(questions) {
+  const isPremium = hasPremiumAccess();
+  return isPremium ? questions : questions.slice(0, FREE_QUESTION_LIMIT);
+}
+
+// ==================== STRIPE PAYMENT FLOW ====================
+
+async function initiatePayment(tier) {
+  const plan = PRICING[tier];
+  if (!plan) return;
+
+  try {
+    const resp = await fetch('/.netlify/functions/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        priceId: plan.stripePriceId,
+        mode: plan.mode,
+        tier,
+      }),
+    });
+    const data = await resp.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    console.error('Payment error:', err);
+    alert('Payment failed to initialize. Please try again.');
+  }
+}
+
+// ==================== UI HELPERS ====================
+
+function initPremiumUI() {
+  const badge = document.getElementById('premiumBadge');
+  if (badge && hasPremiumAccess()) badge.style.display = 'inline-flex';
+
+  // Migrate legacy sessions (old btoa tokens → prompt restore)
+  const hasLegacy = localStorage.getItem('_apa_tk') || localStorage.getItem('premium_access');
+  const hasNew    = localStorage.getItem('_apa_jwt');
+  if (hasLegacy && !hasNew) {
+    // Clean up legacy keys silently
+    ['_apa_tk','_apa_ex','_apa_tr','_apa_ts','_apa_st','premium_access']
+      .forEach(k => localStorage.removeItem(k));
+  }
+}
