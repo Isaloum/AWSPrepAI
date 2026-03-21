@@ -23,9 +23,25 @@
     .page-link{color:#fff;text-decoration:none;padding:.5rem 1rem;border-radius:6px;font-weight:600;transition:all .2s;font-size:.875rem;border:1px solid transparent;background:rgba(255,255,255,.1)}
     .page-link:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
     .page-link.active{background:var(--aws-blue);color:#fff;border-color:var(--aws-blue)}
+    /* ── Home Pricing ── */
+    .home-pricing-section{max-width:1100px;margin:0 auto;padding:3rem 1.5rem 2rem}
+    .home-pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem}
+    .home-pricing-card{background:#fff;border:2px solid var(--border);border-radius:14px;padding:1.75rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;position:relative;overflow:hidden}
+    .home-pricing-card.home-pricing-featured{border-color:#2563EB;box-shadow:0 8px 30px rgba(37,99,235,.15)}
+    .home-pricing-badge{font-size:.72rem;font-weight:700;color:#fff;padding:.3rem .75rem;border-radius:999px;display:inline-block;margin-bottom:.25rem;width:fit-content}
+    .home-pricing-name{font-size:1.1rem;font-weight:800;color:var(--aws-dark)}
+    .home-pricing-price{font-size:2.5rem;font-weight:900;color:var(--aws-dark);line-height:1;margin:.25rem 0}
+    .home-pricing-price span{font-size:1.2rem;vertical-align:top;margin-top:.4rem;display:inline-block}
+    .home-pricing-period{font-size:.9rem;font-weight:500;color:var(--muted)}
+    .home-pricing-list{list-style:none;flex:1;padding:0;margin:.5rem 0 1rem}
+    .home-pricing-list li{padding:.3rem 0;color:var(--muted);font-size:.9rem;border-bottom:1px solid #f3f4f6}
+    .home-pricing-list li:last-child{border-bottom:none}
+    .home-pricing-btn{padding:.75rem 1.25rem;border-radius:8px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;background:#1F2937;color:#fff;transition:all .2s;width:100%}
+    .home-pricing-btn:hover{opacity:.9;transform:translateY(-1px)}
     /* ── Cert Hub Grid ── */
     .cert-hub-section{max-width:1200px;margin:0 auto;padding:3rem 1.5rem 2rem}
-    .cert-hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
+    .cert-hub-group-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6B7280;padding:.5rem 0 .5rem;margin-top:1.25rem;border-bottom:1px solid #E5E7EB;margin-bottom:.75rem}
+    .cert-hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
     .cert-hub-card{display:block;background:#fff;border:2px solid var(--border);border-radius:12px;padding:1.25rem 1rem;text-decoration:none;color:var(--text);transition:all .2s;cursor:pointer}
     .cert-hub-card:hover{border-color:var(--aws-blue);box-shadow:0 4px 16px rgba(59,130,246,.15);transform:translateY(-3px)}
     .cert-hub-card.cert-hub-free{border-color:#10b981;background:linear-gradient(135deg,#f0fdf4,#fff)}
@@ -356,7 +372,9 @@
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.25);border:1px solid rgba(59,130,246,.5);">AI Coach</a>
       </div>
 
-      <button class="nav-cta" onclick="showTab('quiz')">Start Practicing</button>
+      <a href="login.html" class="nav-link" id="nav-login-btn" style="font-weight:700;">Log In</a>
+      <a href="signup.html" class="nav-cta" id="nav-signup-btn" style="text-decoration:none;">Sign Up Free</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
 
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span>
@@ -435,8 +453,7 @@
           <a href="certifications.html" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">🎓 Browse All Certs</a>
         </div>
         <div class="hero-badges">
-          <span class="badge">✅ 20 Questions Free</span>
-          <span class="badge">🚀 No Signup</span>
+          <span class="badge">✅ 5 Questions Free</span>
           <span class="badge">📴 Works Offline</span>
         </div>
       </div>
@@ -467,140 +484,96 @@
       <h2 id="cert-hub-heading" class="section-title">Choose Your Certification</h2>
       <p class="section-subtitle">Click any cert to start practicing. Dashboard is always free — full practice &amp; mock exams require a plan.</p>
     </div>
+    <!-- Foundation -->
+    <div class="cert-hub-group-label">Foundation</div>
     <div class="cert-hub-grid">
-
-      <!-- SAA-C03 — has free tier -->
-      <a href="saa-c03.html" class="cert-hub-card cert-hub-free">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🏗️</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
-        <div class="cert-hub-name">Solutions Architect Associate</div>
-        <div class="cert-hub-code">SAA-C03</div>
-        <div class="cert-hub-badge free-badge">✅ Free Tier</div>
-      </a>
-
-      <!-- CLF-C02 -->
       <a href="clf-c02.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">☁️</span>
-          <span class="cert-hub-level foundation">Foundation</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">☁️</span><span class="cert-hub-level foundation">Foundation</span></div>
         <div class="cert-hub-name">Cloud Practitioner</div>
         <div class="cert-hub-code">CLF-C02</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
-      <!-- AIF-C01 -->
       <a href="aif-c01.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🤖</span>
-          <span class="cert-hub-level foundation">Foundation</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">🤖</span><span class="cert-hub-level foundation">Foundation</span></div>
         <div class="cert-hub-name">AI Practitioner</div>
         <div class="cert-hub-code">AIF-C01</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
+    </div>
 
-      <!-- DVA-C02 -->
+    <!-- Associate -->
+    <div class="cert-hub-group-label">Associate</div>
+    <div class="cert-hub-grid">
+      <a href="saa-c03.html" class="cert-hub-card cert-hub-free">
+        <div class="cert-hub-top"><span class="cert-hub-icon">🏗️</span><span class="cert-hub-level associate">Associate</span></div>
+        <div class="cert-hub-name">Solutions Architect Associate</div>
+        <div class="cert-hub-code">SAA-C03</div>
+        <div class="cert-hub-badge free-badge">✅ Free Tier</div>
+      </a>
       <a href="dva-c02.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">💻</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">💻</span><span class="cert-hub-level associate">Associate</span></div>
         <div class="cert-hub-name">Developer Associate</div>
         <div class="cert-hub-code">DVA-C02</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
-      <!-- SOA-C02 -->
       <a href="soa-c02.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">⚙️</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">⚙️</span><span class="cert-hub-level associate">Associate</span></div>
         <div class="cert-hub-name">SysOps Admin Associate</div>
         <div class="cert-hub-code">SOA-C02</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
-      <!-- MLA-C01 -->
-      <a href="mla-c01.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🧠</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
-        <div class="cert-hub-name">ML Engineer Associate</div>
-        <div class="cert-hub-code">MLA-C01</div>
-        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
-      </a>
-
-      <!-- DEA-C01 -->
       <a href="dea-c01.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">📊</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">📊</span><span class="cert-hub-level associate">Associate</span></div>
         <div class="cert-hub-name">Data Engineer Associate</div>
         <div class="cert-hub-code">DEA-C01</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
-      <!-- GAI-C01 -->
+      <a href="mla-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top"><span class="cert-hub-icon">🧠</span><span class="cert-hub-level associate">Associate</span></div>
+        <div class="cert-hub-name">ML Engineer Associate</div>
+        <div class="cert-hub-code">MLA-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
       <a href="gai-c01.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">✨</span>
-          <span class="cert-hub-level associate">Associate</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">✨</span><span class="cert-hub-level associate">Associate</span></div>
         <div class="cert-hub-name">Generative AI Developer</div>
         <div class="cert-hub-code">GAI-C01</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
+    </div>
 
-      <!-- SAP-C02 -->
+    <!-- Professional -->
+    <div class="cert-hub-group-label">Professional</div>
+    <div class="cert-hub-grid">
       <a href="sap-c02.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🏛️</span>
-          <span class="cert-hub-level professional">Professional</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">🏛️</span><span class="cert-hub-level professional">Professional</span></div>
         <div class="cert-hub-name">Solutions Architect Pro</div>
         <div class="cert-hub-code">SAP-C02</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
-      <!-- DOP-C02 -->
       <a href="dop-c02.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🔄</span>
-          <span class="cert-hub-level professional">Professional</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">🔄</span><span class="cert-hub-level professional">Professional</span></div>
         <div class="cert-hub-name">DevOps Engineer Pro</div>
         <div class="cert-hub-code">DOP-C02</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
+    </div>
 
-      <!-- ANS-C01 -->
-      <a href="ans-c01.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🌐</span>
-          <span class="cert-hub-level specialty">Specialty</span>
-        </div>
-        <div class="cert-hub-name">Advanced Networking</div>
-        <div class="cert-hub-code">ANS-C01</div>
-        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
-      </a>
-
-      <!-- SCS-C03 -->
+    <!-- Specialty -->
+    <div class="cert-hub-group-label">Specialty</div>
+    <div class="cert-hub-grid">
       <a href="scs-c03.html" class="cert-hub-card">
-        <div class="cert-hub-top">
-          <span class="cert-hub-icon">🔒</span>
-          <span class="cert-hub-level specialty">Specialty</span>
-        </div>
+        <div class="cert-hub-top"><span class="cert-hub-icon">🔒</span><span class="cert-hub-level specialty">Specialty</span></div>
         <div class="cert-hub-name">Security Specialty</div>
         <div class="cert-hub-code">SCS-C03</div>
         <div class="cert-hub-badge premium-badge">🔒 Premium</div>
       </a>
-
+      <a href="ans-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top"><span class="cert-hub-icon">🌐</span><span class="cert-hub-level specialty">Specialty</span></div>
+        <div class="cert-hub-name">Advanced Networking</div>
+        <div class="cert-hub-code">ANS-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
     </div>
   </section>
 
@@ -669,7 +642,7 @@
     <div class="steps-container">
       <div class="step"><div class="step-number">1</div><h3 class="step-title">Pick Your Cert</h3><p class="step-description">Choose from 12 active AWS certifications based on your career path</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
-      <div class="step"><div class="step-number">2</div><h3 class="step-title">Start Free</h3><p class="step-description">Get 20 free SAA-C03 questions instantly — no signup required</p></div>
+      <div class="step"><div class="step-number">2</div><h3 class="step-title">Start Free</h3><p class="step-description">Try 5 free SAA-C03 questions — sign up to unlock more</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
       <div class="step"><div class="step-number">3</div><h3 class="step-title">Go Premium</h3><p class="step-description">Unlock all certs, full question banks, mock exams &amp; visual builder</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
@@ -677,16 +650,59 @@
     </div>
   </section>
 
+  <!-- ── PRICING SECTION ── -->
+  <section class="home-pricing-section" aria-labelledby="home-pricing-heading">
+    <div class="section-header">
+      <h2 id="home-pricing-heading" class="section-title">Simple, Honest Pricing</h2>
+      <p class="section-subtitle">Try 5 questions free. Upgrade to unlock every cert, every question, every tool.</p>
+    </div>
+    <div class="home-pricing-grid">
+      <div class="home-pricing-card">
+        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#059669,#10b981);">🎁 3 Days Free Trial</div>
+        <div class="home-pricing-name">Monthly</div>
+        <div class="home-pricing-price"><span>$</span>7<span class="home-pricing-period">/month</span></div>
+        <ul class="home-pricing-list">
+          <li>✓ All 12 certifications</li><li>✓ 3,000+ questions</li>
+          <li>✓ Unlimited mock exams</li><li>✓ Architecture builder</li><li>✓ Cancel anytime</li>
+        </ul>
+        <button class="home-pricing-btn" onclick="typeof openEmailModal==='function'?openEmailModal('trial'):window.location.href='pricing.html'">Start Free Trial →</button>
+      </div>
+      <div class="home-pricing-card home-pricing-featured">
+        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#2563EB,#3B82F6);">💰 Save $35 · Best Value</div>
+        <div class="home-pricing-name">Yearly</div>
+        <div class="home-pricing-price"><span>$</span>49<span class="home-pricing-period">/year</span></div>
+        <ul class="home-pricing-list">
+          <li>✓ Everything in Monthly</li><li>✓ Exam history &amp; versions</li>
+          <li>✓ Domain score breakdowns</li><li>✓ Priority support</li>
+          <li style="color:#2563EB;font-weight:700;">✓ ~$4.08/month</li>
+        </ul>
+        <button class="home-pricing-btn" style="background:#2563EB" onclick="typeof openEmailModal==='function'?openEmailModal('yearly'):window.location.href='pricing.html'">Get Yearly Access →</button>
+      </div>
+      <div class="home-pricing-card">
+        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#7c3aed,#a855f7);">⭐ Pay Once · Use Forever</div>
+        <div class="home-pricing-name">Lifetime</div>
+        <div class="home-pricing-price"><span>$</span>97<span class="home-pricing-period"> one-time</span></div>
+        <ul class="home-pricing-list">
+          <li>✓ Everything in Yearly</li><li>✓ All future certs included</li>
+          <li style="color:#7c3aed;font-weight:700;">✓ 🤖 AI Coach (GPT-4o)</li>
+          <li style="color:#7c3aed;font-weight:700;">✓ Personalised study plans</li><li>✓ 30-day pass guarantee</li>
+        </ul>
+        <button class="home-pricing-btn" style="background:#7c3aed" onclick="typeof openEmailModal==='function'?openEmailModal('lifetime'):window.location.href='pricing.html'">Get Lifetime + AI →</button>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:1.25rem">🔒 Secure checkout via Stripe &bull; 30-day pass guarantee &bull; <a href="pricing.html" style="color:var(--aws-blue)">Full pricing details →</a></p>
+  </section>
+
   <!-- ── CTA ── -->
   <section class="cta-section" aria-labelledby="cta-heading">
     <div class="cta-content">
       <h2 id="cta-heading" class="cta-title">Ready to Pass Any AWS Cert?</h2>
-      <p class="cta-description">Start free on SAA-C03 or go premium for all 12 certifications.</p>
+      <p class="cta-description">5 free questions on SAA-C03 — no credit card needed.</p>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem">
-        <button class="btn-cta-lg" onclick="startPractice()">Start Free (SAA-C03) →</button>
-        <a href="pricing.html" class="btn-cta-lg" style="background:#FF9900;text-decoration:none;padding:.875rem 2rem;border-radius:8px;font-weight:700;color:#fff;font-size:1rem;">See Plans →</a>
+        <button class="btn-cta-lg" onclick="startPractice()">Try 5 Free Questions →</button>
+        <a href="signup.html" class="btn-cta-lg" style="background:#10b981;text-decoration:none;padding:.875rem 2rem;border-radius:8px;font-weight:700;color:#fff;font-size:1rem;">Create Free Account →</a>
       </div>
-      <p class="cta-note">No signup required &bull; Works offline &bull; From $7/month</p>
+      <p class="cta-note">Sign up free &bull; Works offline &bull; From $7/month</p>
     </div>
   </section>
 
@@ -1706,7 +1722,7 @@
         <h1>📄 Sample Questions</h1>
         <p class="sample-subtitle">
           Try these 10 hand-picked questions to experience the quality of our content.
-          No signup required!
+          Sign up to track your progress!
         </p>
         <div class="sample-stats">
           <div class="sample-stat">
@@ -1772,7 +1788,7 @@
           <h3>Ready for More?</h3>
           <p>Get access to <strong>20 FREE questions</strong> with full quiz features!</p>
           <button class="btn-cta-large" onclick="showTab('quiz')">
-            🚀 Start Full Quiz (20 Free Questions)
+            🚀 Start Free (5 Questions)
           </button>
           <button class="btn-restart-sample" onclick="restartSampleQuiz()">
             🔄 Retry Sample Questions
