@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Dashboard — AWSPrepAI</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="navigation.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#F0F2F5;color:#232F3E;min-height:100vh;display:flex;flex-direction:column}
+
+    /* ── LAYOUT ── */
+    .dash-layout{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:0}
+    @media(max-width:900px){.dash-layout{grid-template-columns:1fr}}
+
+    /* ── SIDEBAR ── */
+    .dash-sidebar{background:#1F2937;color:#fff;padding:1.5rem 0;display:flex;flex-direction:column;gap:.25rem}
+    @media(max-width:900px){.dash-sidebar{display:none}}
+    .sidebar-section-label{font-size:.7rem;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;padding:.75rem 1.5rem .25rem}
+    .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.5rem;font-size:.9rem;color:#D1D5DB;text-decoration:none;border-left:3px solid transparent;transition:all .15s;cursor:pointer;background:none;border-top:none;border-right:none;border-bottom:none;width:100%;text-align:left}
+    .sidebar-link:hover{background:rgba(255,255,255,.06);color:#fff}
+    .sidebar-link.active{background:rgba(59,130,246,.15);color:#60A5FA;border-left-color:#3B82F6}
+    .sidebar-link .icon{font-size:1.1rem;width:20px;text-align:center}
+    .sidebar-bottom{margin-top:auto;padding:1rem 0;border-top:1px solid #374151}
+    .sidebar-user{display:flex;align-items:center;gap:.75rem;padding:.5rem 1.5rem;font-size:.85rem;color:#9CA3AF}
+    .sidebar-user .avatar{width:34px;height:34px;background:#3B82F6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+
+    /* ── MAIN CONTENT ── */
+    .dash-main{overflow-y:auto;padding:2rem;display:flex;flex-direction:column;gap:1.75rem}
+    @media(max-width:640px){.dash-main{padding:1rem;gap:1.25rem}}
+
+    /* ── PAGE HEADER ── */
+    .dash-page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .dash-page-title{font-size:1.5rem;font-weight:800;color:#1F2937}
+    .dash-page-sub{font-size:.875rem;color:#6B7280;margin-top:.2rem}
+
+    /* ── STAT CARDS ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+    .stat-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.35rem}
+    .stat-card .stat-label{font-size:.8rem;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.04em}
+    .stat-card .stat-value{font-size:1.8rem;font-weight:800;color:#1F2937}
+    .stat-card .stat-note{font-size:.8rem;color:#9CA3AF}
+    .stat-card.green .stat-value{color:#10B981}
+    .stat-card.blue .stat-value{color:#3B82F6}
+    .stat-card.purple .stat-value{color:#8B5CF6}
+    .stat-card.amber .stat-value{color:#F59E0B}
+
+    /* ── SECTION CARD ── */
+    .section-card{background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden}
+    .section-card-header{padding:1.1rem 1.5rem;border-bottom:1px solid #F3F4F6;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .section-card-title{font-size:1rem;font-weight:700;color:#1F2937}
+    .section-card-body{padding:1.5rem}
+
+    /* ── TIER BADGE ── */
+    .tier-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700}
+    .tier-free{background:#EFF6FF;color:#2563EB}
+    .tier-monthly{background:#F0FDF4;color:#16A34A}
+    .tier-yearly{background:#FEF3C7;color:#D97706}
+    .tier-lifetime{background:#F5F3FF;color:#7C3AED}
+
+    /* ── PROFILE GRID ── */
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:560px){.profile-grid{grid-template-columns:1fr}}
+    .profile-field label{font-size:.8rem;font-weight:600;color:#6B7280;display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
+    .profile-field .field-val{font-size:.95rem;color:#1F2937;font-weight:500}
+    .profile-field .field-val.muted{color:#9CA3AF;font-style:italic}
+
+    /* ── BILLING CARD ── */
+    .billing-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid #F3F4F6}
+    .billing-row:last-child{border-bottom:none}
+    .billing-row .bill-label{font-size:.88rem;color:#6B7280}
+    .billing-row .bill-val{font-size:.88rem;font-weight:600;color:#1F2937}
+
+    /* ── CERT GRID ── */
+    .cert-access-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+    .cert-access-card{border:1px solid #E5E7EB;border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;text-decoration:none;color:inherit;transition:all .2s}
+    .cert-access-card:hover{border-color:#3B82F6;box-shadow:0 2px 12px rgba(59,130,246,.12);transform:translateY(-1px)}
+    .cert-access-card .cert-icon{font-size:1.5rem}
+    .cert-access-card .cert-name{font-size:.85rem;font-weight:700;color:#1F2937}
+    .cert-access-card .cert-code{font-size:.75rem;color:#6B7280}
+    .cert-access-card .cert-status{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;margin-top:.25rem;width:fit-content}
+    .cert-status-locked{background:#FEF2F2;color:#DC2626}
+    .cert-status-active{background:#F0FDF4;color:#16A34A}
+    .cert-status-free{background:#EFF6FF;color:#2563EB}
+
+    /* ── EXAM HISTORY TABLE ── */
+    .exam-filter-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
+    .exam-filter-row select{padding:.45rem .75rem;border:1px solid #D1D5DB;border-radius:8px;font-size:.85rem;color:#374151;background:#fff;outline:none;cursor:pointer}
+    .exam-history-table{width:100%;border-collapse:collapse;font-size:.875rem}
+    .exam-history-table th{text-align:left;padding:.6rem .75rem;font-size:.75rem;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #F3F4F6;white-space:nowrap}
+    .exam-history-table td{padding:.75rem;border-bottom:1px solid #F9FAFB;color:#374151;vertical-align:middle}
+    .exam-history-table tr:last-child td{border-bottom:none}
+    .exam-history-table tr:hover td{background:#FAFAFA}
+    .score-pill{display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.78rem;font-weight:700}
+    .score-pass{background:#D1FAE5;color:#065F46}
+    .score-fail{background:#FEE2E2;color:#991B1B}
+    .score-mid{background:#FEF3C7;color:#92400E}
+    .version-badge{background:#EFF6FF;color:#1D4ED8;padding:.15rem .5rem;border-radius:6px;font-size:.75rem;font-weight:600}
+    .domain-tag{background:#F3F4F6;color:#374151;padding:.15rem .5rem;border-radius:6px;font-size:.75rem}
+    .no-data{text-align:center;padding:3rem 1rem;color:#9CA3AF}
+    .no-data .no-data-icon{font-size:2.5rem;display:block;margin-bottom:.75rem}
+
+    /* ── UPGRADE BANNER ── */
+    .upgrade-banner{background:linear-gradient(135deg,#1D4ED8 0%,#7C3AED 100%);border-radius:14px;padding:1.5rem 2rem;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+    .upgrade-banner h3{font-size:1.1rem;font-weight:800;margin-bottom:.35rem}
+    .upgrade-banner p{font-size:.875rem;opacity:.85;max-width:460px}
+    .btn-upgrade{background:#fff;color:#1D4ED8;font-weight:700;font-size:.9rem;padding:.7rem 1.5rem;border-radius:8px;text-decoration:none;border:none;cursor:pointer;white-space:nowrap;transition:all .2s;display:inline-block}
+    .btn-upgrade:hover{background:#EFF6FF;transform:translateY(-1px)}
+
+    /* ── MOBILE NAV ── */
+    .mobile-dash-tabs{display:none;background:#1F2937;overflow-x:auto;padding:.5rem 1rem;gap:.25rem}
+    @media(max-width:900px){.mobile-dash-tabs{display:flex}}
+    .mobile-tab{padding:.45rem .9rem;border-radius:999px;font-size:.8rem;font-weight:600;color:#9CA3AF;cursor:pointer;white-space:nowrap;border:none;background:none;transition:all .15s}
+    .mobile-tab.active{background:#3B82F6;color:#fff}
+
+    /* ── LOGOUT BTN ── */
+    .btn-logout{padding:.45rem 1rem;background:#FEE2E2;color:#DC2626;border:1px solid #FECACA;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .btn-logout:hover{background:#FECACA}
+
+    /* ── SECTION HIDE ── */
+    .dash-section{display:none}
+    .dash-section.active{display:block}
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap{height:8px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-top:.4rem}
+    .progress-bar-fill{height:100%;border-radius:999px;background:#3B82F6;transition:width .5s ease}
+
+    /* ── RETAKE ACCORDION ── */
+    .retake-row{cursor:pointer}
+    .retake-row:hover td{background:#EFF6FF!important}
+    .retake-expand{font-size:.75rem;color:#3B82F6;font-weight:600}
+    .retake-detail-row td{background:#F8FAFF;padding:.5rem .75rem .5rem 2.5rem;font-size:.82rem;color:#4B5563}
+    .retake-detail-row.hidden{display:none}
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="main-nav" role="navigation">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-icon">☁️</span>
+      <span class="nav-logo-text">AWSPrepAI</span>
+    </a>
+    <div class="nav-menu" id="navMenu">
+      <a href="certifications.html" class="nav-link">Certifications</a>
+      <a href="pricing.html" class="nav-link">Pricing</a>
+    </div>
+    <button class="btn-logout" id="logoutBtn" onclick="logout()">Log Out</button>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+      <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE TABS -->
+<div class="mobile-dash-tabs" id="mobileTabs">
+  <button class="mobile-tab active" onclick="showSection('overview','this')">Overview</button>
+  <button class="mobile-tab" onclick="showSection('certifications','this')">Certs</button>
+  <button class="mobile-tab" onclick="showSection('history','this')">Exam History</button>
+  <button class="mobile-tab" onclick="showSection('account','this')">Account</button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar">
+    <div class="sidebar-section-label">Main</div>
+    <button class="sidebar-link active" id="sb-overview" onclick="showSection('overview')">
+      <span class="icon">📊</span> Overview
+    </button>
+    <button class="sidebar-link" id="sb-certifications" onclick="showSection('certifications')">
+      <span class="icon">🏆</span> My Certifications
+    </button>
+    <button class="sidebar-link" id="sb-history" onclick="showSection('history')">
+      <span class="icon">📋</span> Exam History
+    </button>
+    <div class="sidebar-section-label">Settings</div>
+    <button class="sidebar-link" id="sb-account" onclick="showSection('account')">
+      <span class="icon">👤</span> Account & Billing
+    </button>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar">?</div>
+        <div>
+          <div style="color:#F9FAFB;font-weight:600;font-size:.85rem" id="sidebarName">Loading…</div>
+          <div style="font-size:.75rem" id="sidebarEmail"></div>
+        </div>
+      </div>
+      <button class="sidebar-link" onclick="logout()" style="margin-top:.25rem;color:#F87171">
+        <span class="icon">🚪</span> Log Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="dash-main">
+
+    <!-- ══════════════ OVERVIEW ══════════════ -->
+    <div class="dash-section active" id="section-overview">
+
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title" id="welcomeName">Welcome back!</div>
+          <div class="dash-page-sub">Here's your study progress at a glance.</div>
+        </div>
+        <span class="tier-badge tier-free" id="tierBadge">Free</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Exams Taken</div>
+          <div class="stat-value" id="statExamsTaken">0</div>
+          <div class="stat-note">total attempts</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Best Score</div>
+          <div class="stat-value" id="statBestScore">—</div>
+          <div class="stat-note">across all exams</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Certs Unlocked</div>
+          <div class="stat-value" id="statCertsUnlocked">1</div>
+          <div class="stat-note">of 12 available</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Avg Score</div>
+          <div class="stat-value" id="statAvgScore">—</div>
+          <div class="stat-note">last 5 exams</div>
+        </div>
+      </div>
+
+      <!-- Upgrade banner (shown for free/non-premium) -->
+      <div class="upgrade-banner" id="upgradeBanner">
+        <div>
+          <h3>🚀 Unlock All 12 AWS Certifications</h3>
+          <p>Get unlimited practice questions, full mock exams, and detailed explanations for every cert.</p>
+        </div>
+        <a href="pricing.html" class="btn-upgrade">See Plans →</a>
+      </div>
+
+      <!-- Recent Exam History (mini) -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">Recent Exam Attempts</div>
+          <button onclick="showSection('history')" style="font-size:.82rem;color:#3B82F6;background:none;border:none;cursor:pointer;font-weight:600">View All →</button>
+        </div>
+        <div class="section-card-body" style="padding:0">
+          <table class="exam-history-table" id="recentExamTable">
+            <thead>
+              <tr>
+                <th>Cert</th>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody id="recentExamBody">
+              <tr><td colspan="4" class="no-data"><span class="no-data-icon">📝</span>No exam attempts yet.<br>Start practicing to see your results here.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /overview -->
+
+    <!-- ══════════════ CERTIFICATIONS ══════════════ -->
+    <div class="dash-section" id="section-certifications">
+
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">My Certifications</div>
+          <div class="dash-page-sub">Free tier: SAA-C03 (5 questions). Upgrade to unlock all.</div>
+        </div>
+      </div>
+
+      <div class="cert-access-grid" id="certAccessGrid">
+        <!-- Populated by JS -->
+      </div>
+
+    </div><!-- /certifications -->
+
+    <!-- ══════════════ EXAM HISTORY ══════════════ -->
+    <div class="dash-section" id="section-history">
+
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Exam History</div>
+          <div class="dash-page-sub">Every attempt saved — track improvement across retakes.</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">All Attempts</div>
+          <div class="exam-filter-row" style="margin:0">
+            <select id="filterCert" onchange="renderHistory()">
+              <option value="">All Certs</option>
+            </select>
+            <select id="filterMode" onchange="renderHistory()">
+              <option value="">All Modes</option>
+              <option value="practice">Practice</option>
+              <option value="mock">Mock Exam</option>
+            </select>
+          </div>
+        </div>
+        <div class="section-card-body" style="padding:0;overflow-x:auto">
+          <table class="exam-history-table" id="fullHistoryTable">
+            <thead>
+              <tr>
+                <th>Cert</th>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Questions</th>
+                <th>Mode</th>
+                <th>Domain</th>
+              </tr>
+            </thead>
+            <tbody id="fullHistoryBody">
+              <tr><td colspan="7" class="no-data"><span class="no-data-icon">📝</span>No exam attempts yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Per-cert breakdown -->
+      <div class="section-card" id="certBreakdownCard">
+        <div class="section-card-header">
+          <div class="section-card-title">Progress Per Certification</div>
+        </div>
+        <div class="section-card-body" id="certBreakdownBody">
+          <div class="no-data"><span class="no-data-icon">📊</span>Complete an exam to see cert-level progress.</div>
+        </div>
+      </div>
+
+    </div><!-- /history -->
+
+    <!-- ══════════════ ACCOUNT ══════════════ -->
+    <div class="dash-section" id="section-account">
+
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Account & Billing</div>
+          <div class="dash-page-sub">Manage your profile, subscription, and settings.</div>
+        </div>
+      </div>
+
+      <!-- Profile card -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">👤 Profile</div>
+        </div>
+        <div class="section-card-body">
+          <div class="profile-grid">
+            <div class="profile-field">
+              <label>Full Name</label>
+              <div class="field-val" id="profileName">—</div>
+            </div>
+            <div class="profile-field">
+              <label>Email</label>
+              <div class="field-val" id="profileEmail">—</div>
+            </div>
+            <div class="profile-field">
+              <label>Member Since</label>
+              <div class="field-val" id="profileSince">—</div>
+            </div>
+            <div class="profile-field">
+              <label>Account Type</label>
+              <div class="field-val" id="profileTier">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing card -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">💳 Billing & Subscription</div>
+        </div>
+        <div class="section-card-body" id="billingBody">
+          <div class="billing-row">
+            <span class="bill-label">Plan</span>
+            <span class="bill-val" id="billPlan">Free</span>
+          </div>
+          <div class="billing-row" id="billNextRow" style="display:none">
+            <span class="bill-label">Next Billing Date</span>
+            <span class="bill-val" id="billNext">—</span>
+          </div>
+          <div class="billing-row" id="billAmountRow" style="display:none">
+            <span class="bill-label">Amount</span>
+            <span class="bill-val" id="billAmount">—</span>
+          </div>
+          <div class="billing-row" id="billStatusRow">
+            <span class="bill-label">Status</span>
+            <span class="bill-val" id="billStatus" style="color:#10B981">Active</span>
+          </div>
+          <div style="margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap" id="billActions">
+            <a href="pricing.html" class="btn-upgrade" style="font-size:.85rem;padding:.55rem 1.25rem;background:#3B82F6;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block" id="upgradePlanBtn">Upgrade Plan →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change password -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🔒 Password</div>
+        </div>
+        <div class="section-card-body">
+          <p style="font-size:.875rem;color:#6B7280;margin-bottom:1rem">To change your password, use the link below.</p>
+          <a href="forgot-password.html" style="font-size:.875rem;color:#3B82F6;font-weight:600;text-decoration:none">Reset Password →</a>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="section-card" style="border-color:#FECACA">
+        <div class="section-card-header" style="border-color:#FEE2E2">
+          <div class="section-card-title" style="color:#DC2626">⚠️ Danger Zone</div>
+        </div>
+        <div class="section-card-body">
+          <p style="font-size:.875rem;color:#6B7280;margin-bottom:1rem">Logging out will clear your session from this browser.</p>
+          <button onclick="logout()" class="btn-logout" style="font-size:.875rem;padding:.55rem 1.25rem">Log Out of This Device</button>
+        </div>
+      </div>
+
+    </div><!-- /account -->
+
+  </main>
+</div><!-- /layout -->
+
+<script>
+// ══════════════════════════════════════════
+// AUTH GUARD — redirect if not logged in
+// ══════════════════════════════════════════
+const session = localStorage.getItem('_apa_session');
+if (!session) {
+  window.location.href = 'login.html';
+}
+
+const userEmail = localStorage.getItem('_apa_email') || '';
+const userName  = localStorage.getItem('_apa_name')  || '';
+const userTier  = localStorage.getItem('_apa_tier')  || 'free';
+
+// ══════════════════════════════════════════
+// CERT CATALOG
+// ══════════════════════════════════════════
+const CERTS = [
+  { code:'SAA-C03', name:'Solutions Architect Associate', icon:'☁️', href:'saa-c03.html', free:true  },
+  { code:'CLF-C02', name:'Cloud Practitioner',            icon:'🌩️', href:'clf-c02.html', free:false },
+  { code:'DVA-C02', name:'Developer Associate',           icon:'💻', href:'dva-c02.html', free:false },
+  { code:'SOA-C02', name:'SysOps Admin Associate',        icon:'⚙️', href:'soa-c02.html', free:false },
+  { code:'SAP-C02', name:'Solutions Architect Pro',       icon:'🏗️', href:'sap-c02.html', free:false },
+  { code:'DOP-C02', name:'DevOps Engineer Pro',           icon:'🔄', href:'dop-c02.html', free:false },
+  { code:'SCS-C03', name:'Security Specialty',            icon:'🔒', href:'scs-c03.html', free:false },
+  { code:'ANS-C01', name:'Advanced Networking',           icon:'🌐', href:'ans-c01.html', free:false },
+  { code:'DAS-C01', name:'Data Analytics Specialty',      icon:'📊', href:'#',            free:false },
+  { code:'MLS-C01', name:'Machine Learning Specialty',    icon:'🤖', href:'mla-c01.html', free:false },
+  { code:'DEA-C01', name:'Data Engineer Associate',       icon:'🗄️', href:'dea-c01.html', free:false },
+  { code:'GAI-C01', name:'AI Practitioner',               icon:'✨', href:'gai-c01.html', free:false },
+];
+
+const isPremium = (userTier === 'monthly' || userTier === 'yearly' || userTier === 'lifetime');
+
+// ══════════════════════════════════════════
+// EXAM HISTORY — stored in localStorage as JSON array
+// Schema: { id, certCode, mode, domain, score, total, date, version }
+// ══════════════════════════════════════════
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem('_apa_history') || '[]');
+  } catch(e) { return []; }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  // Sidebar user info
+  const initials = userName ? userName.charAt(0).toUpperCase() : (userEmail ? userEmail.charAt(0).toUpperCase() : '?');
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('sidebarName').textContent   = userName || userEmail.split('@')[0] || 'User';
+  document.getElementById('sidebarEmail').textContent  = userEmail;
+
+  // Welcome
+  const greeting = userName ? `Welcome back, ${userName}!` : 'Welcome back!';
+  document.getElementById('welcomeName').textContent = greeting;
+
+  // Tier badge
+  const badgeEl = document.getElementById('tierBadge');
+  const tierMap = {
+    free: ['Free', 'tier-free'],
+    monthly: ['Monthly Pro', 'tier-monthly'],
+    yearly: ['Yearly Pro', 'tier-yearly'],
+    lifetime: ['Lifetime', 'tier-lifetime'],
+  };
+  const [label, cls] = tierMap[userTier] || tierMap.free;
+  badgeEl.textContent = label;
+  badgeEl.className = 'tier-badge ' + cls;
+
+  // Hide upgrade banner if premium
+  if (isPremium) {
+    const ub = document.getElementById('upgradeBanner');
+    if (ub) ub.style.display = 'none';
+  }
+
+  // Profile
+  document.getElementById('profileName').textContent  = userName || '—';
+  document.getElementById('profileEmail').textContent = userEmail || '—';
+  document.getElementById('profileSince').textContent = getMemberSince();
+  document.getElementById('profileTier').innerHTML    = `<span class="tier-badge ${tierMap[userTier]?.[1]||'tier-free'}">${label}</span>`;
+
+  // Billing
+  const planNames = { free:'Free', monthly:'Monthly Pro ($7/mo)', yearly:'Yearly Pro ($49/yr)', lifetime:'Lifetime ($97)' };
+  document.getElementById('billPlan').textContent = planNames[userTier] || 'Free';
+  if (userTier !== 'free') {
+    document.getElementById('upgradePlanBtn').textContent = 'Manage Subscription →';
+    if (userTier !== 'lifetime') {
+      document.getElementById('billNextRow').style.display   = 'flex';
+      document.getElementById('billAmountRow').style.display = 'flex';
+    }
+  }
+
+  // Stats
+  buildStats();
+
+  // Cert grid
+  buildCertGrid();
+
+  // History
+  buildHistoryFilter();
+  renderHistory();
+
+  // Recent exams on overview
+  renderRecentExams();
+
+  // Cert breakdown
+  buildCertBreakdown();
+}
+
+function getMemberSince() {
+  const stored = localStorage.getItem('_apa_joined');
+  if (stored) return new Date(stored).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+  // First time — store today
+  const today = new Date().toISOString();
+  localStorage.setItem('_apa_joined', today);
+  return new Date(today).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+}
+
+// ══════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════
+function buildStats() {
+  const history = getHistory();
+  const scores  = history.map(h => Math.round((h.score / h.total) * 100));
+
+  document.getElementById('statExamsTaken').textContent   = history.length || '0';
+  document.getElementById('statCertsUnlocked').textContent = isPremium ? '12' : '1';
+
+  if (scores.length) {
+    document.getElementById('statBestScore').textContent = Math.max(...scores) + '%';
+    const last5 = scores.slice(-5);
+    const avg   = Math.round(last5.reduce((a,b) => a+b, 0) / last5.length);
+    document.getElementById('statAvgScore').textContent = avg + '%';
+  }
+}
+
+// ══════════════════════════════════════════
+// CERT GRID
+// ══════════════════════════════════════════
+function buildCertGrid() {
+  const grid = document.getElementById('certAccessGrid');
+  grid.innerHTML = CERTS.map(c => {
+    const accessible = c.free || isPremium;
+    const statusCls  = c.free ? 'cert-status-free' : (accessible ? 'cert-status-active' : 'cert-status-locked');
+    const statusText = c.free ? '✅ Free Tier' : (accessible ? '✅ Unlocked' : '🔒 Premium');
+    const history    = getHistory().filter(h => h.certCode === c.code);
+    const attempts   = history.length;
+    const bestScore  = attempts ? Math.max(...history.map(h => Math.round((h.score/h.total)*100))) : null;
+
+    return `<a href="${accessible ? c.href : 'pricing.html'}" class="cert-access-card">
+      <div class="cert-icon">${c.icon}</div>
+      <div class="cert-name">${c.name}</div>
+      <div class="cert-code">${c.code}</div>
+      <span class="cert-status ${statusCls}">${statusText}</span>
+      ${attempts ? `<div style="font-size:.75rem;color:#6B7280;margin-top:.25rem">
+        ${attempts} attempt${attempts>1?'s':''} · Best: <strong>${bestScore}%</strong>
+      </div>` : ''}
+    </a>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// HISTORY FILTER
+// ══════════════════════════════════════════
+function buildHistoryFilter() {
+  const sel = document.getElementById('filterCert');
+  const history = getHistory();
+  const codes = [...new Set(history.map(h => h.certCode))];
+  codes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+
+// ══════════════════════════════════════════
+// RENDER HISTORY TABLE
+// ══════════════════════════════════════════
+function renderHistory() {
+  let history = getHistory();
+  const certFilter = document.getElementById('filterCert').value;
+  const modeFilter = document.getElementById('filterMode').value;
+  if (certFilter) history = history.filter(h => h.certCode === certFilter);
+  if (modeFilter) history = history.filter(h => h.mode === modeFilter);
+  history = history.slice().reverse(); // newest first
+
+  const tbody = document.getElementById('fullHistoryBody');
+  if (!history.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="no-data"><span class="no-data-icon">📝</span>No exam attempts yet.<br>Start practicing to see your results here.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = history.map((h, idx) => {
+    const pct  = Math.round((h.score / h.total) * 100);
+    const cls  = pct >= 72 ? 'score-pass' : pct >= 50 ? 'score-mid' : 'score-fail';
+    const date = new Date(h.date).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    return `<tr>
+      <td><strong>${h.certCode}</strong></td>
+      <td><span class="version-badge">v${h.version}</span></td>
+      <td style="white-space:nowrap">${date}</td>
+      <td><span class="score-pill ${cls}">${pct}%</span> <span style="color:#9CA3AF;font-size:.78rem">${h.score}/${h.total}</span></td>
+      <td>${h.total}</td>
+      <td><span class="domain-tag">${h.mode === 'mock' ? 'Mock Exam' : 'Practice'}</span></td>
+      <td style="color:#9CA3AF;font-size:.8rem">${h.domain || 'All Domains'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// RECENT EXAMS (overview)
+// ══════════════════════════════════════════
+function renderRecentExams() {
+  const history = getHistory().slice().reverse().slice(0, 5);
+  const tbody   = document.getElementById('recentExamBody');
+  if (!history.length) return;
+
+  tbody.innerHTML = history.map(h => {
+    const pct  = Math.round((h.score / h.total) * 100);
+    const cls  = pct >= 72 ? 'score-pass' : pct >= 50 ? 'score-mid' : 'score-fail';
+    const date = new Date(h.date).toLocaleDateString('en-US', {month:'short',day:'numeric'});
+    return `<tr>
+      <td><strong>${h.certCode}</strong> <span class="version-badge" style="font-size:.7rem">v${h.version}</span></td>
+      <td style="color:#6B7280;font-size:.82rem">${date}</td>
+      <td><span class="score-pill ${cls}">${pct}%</span></td>
+      <td><span class="domain-tag">${h.mode === 'mock' ? 'Mock' : 'Practice'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// CERT BREAKDOWN
+// ══════════════════════════════════════════
+function buildCertBreakdown() {
+  const history = getHistory();
+  if (!history.length) return;
+
+  const byCode = {};
+  history.forEach(h => {
+    if (!byCode[h.certCode]) byCode[h.certCode] = [];
+    byCode[h.certCode].push(h);
+  });
+
+  const body = document.getElementById('certBreakdownBody');
+  body.innerHTML = Object.entries(byCode).map(([code, attempts]) => {
+    const scores = attempts.map(a => Math.round((a.score/a.total)*100));
+    const best   = Math.max(...scores);
+    const latest = scores[scores.length - 1];
+    const cert   = CERTS.find(c => c.code === code);
+    return `<div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+        <div style="font-weight:700;font-size:.9rem">${cert ? cert.icon + ' ' : ''}${code}</div>
+        <div style="font-size:.8rem;color:#6B7280">${attempts.length} attempt${attempts.length>1?'s':''} · Best: <strong style="color:#10B981">${best}%</strong> · Latest: <strong>${latest}%</strong></div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${best}%;background:${best>=72?'#10B981':best>=50?'#F59E0B':'#EF4444'}"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:.75rem;color:#9CA3AF">
+        <span>0%</span><span>Pass (72%)</span><span>100%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// SECTION SWITCHING
+// ══════════════════════════════════════════
+function showSection(id, mobileBtnCtx) {
+  // Hide all
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+
+  // Show target
+  document.getElementById('section-' + id).classList.add('active');
+  const sb = document.getElementById('sb-' + id);
+  if (sb) sb.classList.add('active');
+
+  // Mobile tabs
+  if (mobileBtnCtx) {
+    document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+    // Find clicked tab
+    event.target.classList.add('active');
+  }
+
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════════════════
+// LOGOUT
+// ══════════════════════════════════════════
+function logout() {
+  localStorage.removeItem('_apa_session');
+  localStorage.removeItem('_apa_email');
+  localStorage.removeItem('_apa_name');
+  localStorage.removeItem('_apa_tier');
+  window.location.href = 'login.html';
+}
+
+// ══════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════
+init();
+</script>
+
+<!-- Hook into cert pages to save exam results -->
+<script>
+/**
+ * Called by cert practice pages when an exam session ends.
+ * certCode  : e.g. 'SAA-C03'
+ * score     : number of correct answers
+ * total     : total questions
+ * mode      : 'practice' | 'mock'
+ * domain    : domain name or '' for all
+ */
+window.saveExamResult = function(certCode, score, total, mode, domain) {
+  const history = JSON.parse(localStorage.getItem('_apa_history') || '[]');
+  // Calculate version = how many previous attempts on this cert + 1
+  const prevAttempts = history.filter(h => h.certCode === certCode).length;
+  history.push({
+    id:       Date.now(),
+    certCode,
+    score,
+    total,
+    mode:     mode || 'practice',
+    domain:   domain || '',
+    date:     new Date().toISOString(),
+    version:  prevAttempts + 1
+  });
+  localStorage.setItem('_apa_history', JSON.stringify(history));
+};
+</script>
+
+<script src="navigation.js"></script>
+</body>
+</html>

@@ -169,7 +169,9 @@
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
       </div>
-      <a href="pricing.html" class="nav-cta">Start Free Trial</a>
+      <a href="login.html" class="nav-link" id="nav-login-btn" style="font-weight:700;">Log In</a>
+      <a href="signup.html" class="nav-cta" id="nav-signup-btn" style="text-decoration:none;">Sign Up Free</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
       </button>
@@ -453,7 +455,24 @@ function showSection(id, evt) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
   if (evt) evt.currentTarget.classList.add('active');
-  if (id === 'dashboard') renderDashboard();
+  if (id === 'dashboard') {
+    renderDashboard();
+    // Auto-save practice session to dashboard history
+    const all = Object.values(state.answered);
+    if (all.length > 0) {
+      try {
+        const hist = JSON.parse(localStorage.getItem('_apa_history')||'[]');
+        const correct = all.filter(v=>v===true).length;
+        const lastSaved = hist.filter(h=>h.certCode==='SAA-C03'&&h.mode==='practice');
+        const lastCount = lastSaved.length ? lastSaved[lastSaved.length-1].total : 0;
+        if (all.length !== lastCount) { // only save if different
+          const ver = hist.filter(h=>h.certCode==='SAA-C03').length + 1;
+          hist.push({id:Date.now(),certCode:'SAA-C03',score:correct,total:all.length,mode:'practice',domain:'',date:new Date().toISOString(),version:ver});
+          localStorage.setItem('_apa_history', JSON.stringify(hist));
+        }
+      } catch(e){}
+    }
+  }
   if (id === 'practice') renderPractice();
 }
 
@@ -648,6 +667,18 @@ function submitMock() {
   let correct = 0;
   mockQuestions.forEach((q,i) => { if (mockAnswers[i] === q.answer) correct++; });
   const pct = Math.round(correct/total*100);
+
+  // Save to dashboard history
+  if (typeof window.saveExamResult === 'function') {
+    window.saveExamResult('SAA-C03', correct, total, 'mock', '');
+  } else {
+    try {
+      const hist = JSON.parse(localStorage.getItem('_apa_history')||'[]');
+      const ver  = hist.filter(h=>h.certCode==='SAA-C03').length + 1;
+      hist.push({id:Date.now(),certCode:'SAA-C03',score:correct,total,mode:'mock',domain:'',date:new Date().toISOString(),version:ver});
+      localStorage.setItem('_apa_history', JSON.stringify(hist));
+    } catch(e){}
+  }
 
   document.getElementById('mock-exam').style.display = 'none';
   document.getElementById('mock-result').style.display = 'block';
