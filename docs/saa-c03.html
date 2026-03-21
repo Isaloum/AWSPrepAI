@@ -368,6 +368,18 @@
       <div class="ref-item"><span class="ref-svc">Hybrid Connectivity</span><span class="ref-desc">Direct Connect=dedicated; VPN=encrypted internet; DX+VPN=redundant</span></div>
     </div>
     <div class="ref-card">
+      <div class="ref-title">🚨 Disaster Recovery Tips</div>
+      <div class="ref-item"><span class="ref-svc">Backup – EBS/RDS</span><span class="ref-desc">EBS Snapshots, RDS automated backups → push to S3/S3-IA/Glacier + Lifecycle Policy + CRR</span></div>
+      <div class="ref-item"><span class="ref-svc">Backup – On-Prem</span><span class="ref-desc">Snowball (bulk migration) or Storage Gateway (ongoing sync to S3)</span></div>
+      <div class="ref-item"><span class="ref-svc">HA – DNS</span><span class="ref-desc">Route 53 DNS failover to migrate traffic across regions instantly</span></div>
+      <div class="ref-item"><span class="ref-svc">HA – Services</span><span class="ref-desc">RDS Multi-AZ, ElastiCache Multi-AZ, EFS, S3 — all multi-AZ by default</span></div>
+      <div class="ref-item"><span class="ref-svc">HA – Network</span><span class="ref-desc">Site-to-Site VPN as failover/backup for Direct Connect outages</span></div>
+      <div class="ref-item"><span class="ref-svc">Replication – DB</span><span class="ref-desc">RDS Cross-Region Read Replica, Aurora Global DB, on-prem → RDS replication</span></div>
+      <div class="ref-item"><span class="ref-svc">Replication – Storage</span><span class="ref-desc">Storage Gateway: continuous replication from on-prem to AWS</span></div>
+      <div class="ref-item"><span class="ref-svc">Automation</span><span class="ref-desc">CloudFormation/Beanstalk recreate env; CloudWatch alarms reboot EC2; Lambda for custom logic</span></div>
+      <div class="ref-item"><span class="ref-svc">Chaos Engineering</span><span class="ref-desc">Netflix "Simian Army" randomly terminates EC2 to validate resilience</span></div>
+    </div>
+    <div class="ref-card">
       <div class="ref-title">💡 Exam Tips</div>
       <div class="ref-item"><span class="ref-svc">HA vs Fault Tolerant</span><span class="ref-desc">HA=minimal downtime (Multi-AZ); FT=zero downtime (active-active)</span></div>
       <div class="ref-item"><span class="ref-svc">Scale reads?</span><span class="ref-desc">RDS Read Replica or ElastiCache, NOT Multi-AZ</span></div>
