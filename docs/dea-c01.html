@@ -369,5 +369,305 @@
         <div class="ref-item"><span class="ref-svc">TCO</span><span class="ref-desc">Compare total on-prem costs (power/cooling/staff) vs AWS</span></div>
       </div>
     </div>
-    </section>l lang="en">
+    </section>
+</div>
+<script src="dea_questions_260.js"></script>
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const DOMAINS = ['data-ingestion-transformation','data-store-management','data-operations','data-security-governance'];
+const DOMAIN_LABELS = {'data-ingestion-transformation':'Ingestion & Transform','data-store-management':'Data Store Mgmt','data-operations':'Data Operations','data-security-governance':'Security & Governance'};
+const DOMAIN_WEIGHTS = {'data-ingestion-transformation':34,'data-store-management':26,'data-operations':22,'data-security-governance':18};
+
+let state = loadState();
+
+let practiceFilter = 'all';
+let practicePool = [];
+let practiceIdx = 0;
+let practiceAnswered = {};
+
+let mockQuestions = [];
+let mockIdx = 0;
+let mockAnswers = {};
+let mockTimer = null;
+let mockSecs = 5400;
+
+// ── Persistence ────────────────────────────────────────────────────────────
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('dva_state')) || makeState(); }
+  catch(e) { return makeState(); }
+}
+function makeState() {
+  return { answered: {}, streak: 0, maxStreak: 0 };
+}
+function saveState() { localStorage.setItem('dva_state', JSON.stringify(state)); }
+function resetProgress() {
+  if (!confirm('Reset all CLF-C02 progress?')) return;
+  state = makeState(); saveState(); renderDashboard(); renderPractice();
+}
+
+// ── Nav ────────────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'practice') renderPractice();
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const all = Object.values(state.answered);
+  const total = all.length;
+  const correct = all.filter(v => v === true).length;
+  const pct = total ? Math.round(correct/total*100) : 0;
+  document.getElementById('dash-total').textContent = total;
+  document.getElementById('dash-correct').textContent = correct;
+  document.getElementById('dash-pct').textContent = pct + '%';
+  document.getElementById('dash-streak').textContent = state.streak;
+
+  const dp = document.getElementById('domain-progress');
+  dp.innerHTML = '';
+  DOMAINS.forEach(cat => {
+    const qs = DEA_QUESTIONS.filter(q => q.cat === cat);
+    const answered = qs.filter((q,i) => state.answered[cat+i] !== undefined);
+    const correct = qs.filter((q,i) => state.answered[cat+i] === true);
+    const pct = answered.length ? Math.round(correct.length/answered.length*100) : 0;
+    const fill = answered.length ? Math.round(answered.length/qs.length*100) : 0;
+    dp.innerHTML += `<div class="domain-card">
+      <div class="domain-name">${DOMAIN_LABELS[cat]}</div>
+      <div class="domain-meta">${answered.length}/${qs.length} answered · ${pct}% correct · ${DOMAIN_WEIGHTS[cat]}% of exam</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${fill}%"></div></div>
+    </div>`;
+  });
+}
+
+function startPractice(mode) {
+  if (mode === 'weak') {
+    // find weakest domain
+    let worstCat = DOMAINS[0], worstPct = 101;
+    DOMAINS.forEach(cat => {
+      const qs = DEA_QUESTIONS.filter(q => q.cat === cat);
+      const answered = qs.filter((q,i) => state.answered[cat+i] !== undefined);
+      const correct = qs.filter((q,i) => state.answered[cat+i] === true);
+      const pct = answered.length ? correct.length/answered.length*100 : 0;
+      if (pct < worstPct) { worstPct = pct; worstCat = cat; }
+    });
+    setFilter(worstCat, null);
+  }
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab')[1].classList.add('active');
+  showSectionById('practice');
+  renderPractice();
+}
+function showSectionById(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+}
+
+// ── Practice ───────────────────────────────────────────────────────────────
+function buildPool() {
+  practicePool = DEA_QUESTIONS.map((q,i) => ({q, key: q.cat+i}))
+    .filter(({q}) => practiceFilter === 'all' || q.cat === practiceFilter);
+  // shuffle
+  for (let i = practicePool.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [practicePool[i],practicePool[j]] = [practicePool[j],practicePool[i]];
+  }
+  practiceIdx = 0;
+  practiceAnswered = {};
+}
+
+function setFilter(cat, btn) {
+  practiceFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  buildPool();
+  renderPracticeQ();
+}
+
+function renderPractice() {
+  if (!practicePool.length) buildPool();
+  renderPracticeQ();
+}
+
+function renderPracticeQ() {
+  if (!practicePool.length) return;
+  const total = practicePool.length;
+  const {q, key} = practicePool[practiceIdx];
+  const pct = Math.round((practiceIdx/total)*100);
+
+  document.getElementById('p-progress').textContent = `Question ${practiceIdx+1} / ${total}`;
+  document.getElementById('p-cat-tag').textContent = DOMAIN_LABELS[q.cat] || q.cat;
+  document.getElementById('p-progress-fill').style.width = pct + '%';
+  document.getElementById('p-question').textContent = q.q;
+
+  const opts = document.getElementById('p-options');
+  opts.innerHTML = '';
+  const LETTERS = ['A','B','C','D'];
+  const alreadyAnswered = practiceAnswered[practiceIdx] !== undefined;
+
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option' + (alreadyAnswered ? ' locked' : '');
+    if (alreadyAnswered) {
+      if (i === q.answer) div.classList.add('correct');
+      else if (i === practiceAnswered[practiceIdx] && i !== q.answer) div.classList.add('incorrect');
+    }
+    div.innerHTML = `<div class="opt-letter">${LETTERS[i]}</div><div class="opt-text">${opt}</div>`;
+    if (!alreadyAnswered) {
+      div.onclick = () => answerPractice(i, key, q);
+    }
+    opts.appendChild(div);
+  });
+
+  const exp = document.getElementById('p-explanation');
+  if (alreadyAnswered) {
+    exp.innerHTML = `<strong>Explanation:</strong> ${q.explain}`;
+    exp.classList.add('show');
+  } else {
+    exp.innerHTML = '';
+    exp.classList.remove('show');
+  }
+
+  document.getElementById('p-prev').disabled = practiceIdx === 0;
+  document.getElementById('p-next').disabled = !alreadyAnswered;
+}
+
+function answerPractice(chosen, key, q) {
+  if (practiceAnswered[practiceIdx] !== undefined) return;
+  practiceAnswered[practiceIdx] = chosen;
+  const correct = chosen === q.answer;
+  state.answered[key] = correct;
+  if (correct) state.streak++;
+  else state.streak = 0;
+  if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+  saveState();
+  renderPracticeQ();
+  document.getElementById('p-next').disabled = false;
+}
+
+function nextQ() {
+  if (practiceIdx < practicePool.length - 1) { practiceIdx++; renderPracticeQ(); }
+}
+function prevQ() {
+  if (practiceIdx > 0) { practiceIdx--; renderPracticeQ(); }
+}
+function skipQ() {
+  if (practiceIdx < practicePool.length - 1) { practiceIdx++; renderPracticeQ(); }
+}
+
+// ── Mock Exam ──────────────────────────────────────────────────────────────
+function startMock() {
+  // Sample ~proportional to weights
+  const buckets = {};
+  DOMAINS.forEach(cat => {
+    buckets[cat] = DEA_QUESTIONS.filter(q => q.cat === cat)
+      .sort(() => Math.random()-.5);
+  });
+  const counts = {'data-ingestion-transformation':22,'data-store-management':17,'data-operations':14,'data-security-governance':12};
+  mockQuestions = [];
+  DOMAINS.forEach(cat => mockQuestions.push(...buckets[cat].slice(0,counts[cat])));
+  mockQuestions = mockQuestions.sort(() => Math.random()-.5);
+  mockIdx = 0;
+  mockAnswers = {};
+  mockSecs = 5400;
+
+  document.getElementById('mock-start').style.display = 'none';
+  document.getElementById('mock-exam').style.display = 'block';
+  document.getElementById('mock-result').style.display = 'none';
+  renderMockQ();
+  mockTimer = setInterval(tickTimer, 1000);
+}
+
+function tickTimer() {
+  mockSecs--;
+  const m = Math.floor(mockSecs/60).toString().padStart(2,'0');
+  const s = (mockSecs%60).toString().padStart(2,'0');
+  document.getElementById('m-timer').textContent = `${m}:${s}`;
+  if (mockSecs <= 0) submitMock();
+}
+
+function renderMockQ() {
+  const q = mockQuestions[mockIdx];
+  const total = mockQuestions.length;
+  document.getElementById('m-num').textContent = mockIdx+1;
+  document.getElementById('m-fill').style.width = Math.round((mockIdx/total)*100)+'%';
+  document.getElementById('m-cat').textContent = DOMAIN_LABELS[q.cat] || q.cat;
+  document.getElementById('m-question').textContent = q.q;
+
+  const opts = document.getElementById('m-options');
+  opts.innerHTML = '';
+  const LETTERS = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    const sel = mockAnswers[mockIdx] === i;
+    div.className = 'quiz-option' + (sel ? ' correct' : '');
+    div.innerHTML = `<div class="opt-letter">${LETTERS[i]}</div><div class="opt-text">${opt}</div>`;
+    div.onclick = () => { mockAnswers[mockIdx] = i; renderMockQ(); };
+    opts.appendChild(div);
+  });
+}
+
+function mockNext() { if (mockIdx < mockQuestions.length-1) { mockIdx++; renderMockQ(); } }
+function mockPrev() { if (mockIdx > 0) { mockIdx--; renderMockQ(); } }
+function mockSkip() { mockNext(); }
+
+function submitMock() {
+  clearInterval(mockTimer);
+  const total = mockQuestions.length;
+  let correct = 0;
+  mockQuestions.forEach((q,i) => { if (mockAnswers[i] === q.answer) correct++; });
+  const pct = Math.round(correct/total*100);
+
+  document.getElementById('mock-exam').style.display = 'none';
+  document.getElementById('mock-result').style.display = 'block';
+  const scoreEl = document.getElementById('m-score-pct');
+  scoreEl.textContent = pct + '%';
+  scoreEl.className = 'result-score ' + (pct >= 70 ? 'pass' : 'fail');
+  document.getElementById('m-result-label').textContent = pct >= 70
+    ? '✅ PASS — Exam-ready! Score ≥ 70%'
+    : '❌ FAIL — Keep studying. Need 70% to pass.';
+
+  // breakdown by domain
+  const bd = {};
+  DOMAINS.forEach(cat => bd[cat] = {c:0,t:0});
+  mockQuestions.forEach((q,i) => {
+    bd[q.cat].t++;
+    if (mockAnswers[i] === q.answer) bd[q.cat].c++;
+  });
+  document.getElementById('m-breakdown').innerHTML =
+    `<div class="breakdown-item"><div class="breakdown-val">${correct}/${total}</div><div class="breakdown-key">Score</div></div>` +
+    DOMAINS.map(cat => `<div class="breakdown-item"><div class="breakdown-val">${bd[cat].t ? Math.round(bd[cat].c/bd[cat].t*100) : 0}%</div><div class="breakdown-key">${DOMAIN_LABELS[cat].split(' ')[0]}</div></div>`).join('');
+
+  // review
+  const rev = document.getElementById('m-review');
+  rev.innerHTML = '<div style="font-weight:700;margin-bottom:.75rem;font-size:.95rem">Question Review:</div>';
+  const LETTERS = ['A','B','C','D'];
+  mockQuestions.forEach((q,i) => {
+    const chosen = mockAnswers[i];
+    const ok = chosen === q.answer;
+    rev.innerHTML += `<div style="margin-bottom:1rem;padding:1rem;border-radius:8px;background:${ok?'rgba(16,185,129,.08)':'rgba(239,68,68,.07)'};border:1px solid ${ok?'#10b981':'#ef4444'}">
+      <div style="font-weight:600;margin-bottom:.35rem;font-size:.88rem">${i+1}. ${q.q}</div>
+      <div style="font-size:.82rem;color:var(--muted)">Your answer: <b>${chosen!==undefined?LETTERS[chosen]:'—'}</b> · Correct: <b>${LETTERS[q.answer]}</b></div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:.3rem">${q.explain}</div>
+    </div>`;
+  });
+}
+
+function restartMock() {
+  clearInterval(mockTimer);
+  document.getElementById('mock-start').style.display = 'block';
+  document.getElementById('mock-exam').style.display = 'none';
+  document.getElementById('mock-result').style.display = 'none';
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderDashboard();
+</script>
+  <script>
+    initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
+  </script>
+  <script src="navigation.js"></script>
+</body>
 </html>
