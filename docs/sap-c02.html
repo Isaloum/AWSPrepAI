@@ -408,7 +408,40 @@ function resetProgress() {
 }
 
 // ── Nav ────────────────────────────────────────────────────────────────────
+
+// ── Premium gate ──────────────────────────────────────────────────────────
+function requiresPremium(sectionId) {
+  return (sectionId === 'practice' || sectionId === 'mock');
+}
+
+function showPremiumOverlay() {
+  let overlay = document.getElementById('premium-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'premium-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+        <div style="font-size:2.5rem;margin-bottom:.75rem">🔒</div>
+        <h2 style="font-size:1.4rem;font-weight:800;color:#1F2937;margin-bottom:.5rem">Premium Feature</h2>
+        <p style="color:#545b64;margin-bottom:1.5rem;line-height:1.6">The Dashboard is free. Full practice questions and mock exams require a premium plan.</p>
+        <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+          <a href="pricing.html" style="background:#FF9900;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.95rem">See Plans →</a>
+          <button onclick="document.getElementById('premium-overlay').remove()" style="background:#f3f4f6;color:#374151;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;border:none;cursor:pointer;font-size:.95rem">Stay on Dashboard</button>
+        </div>
+        <p style="margin-top:1rem;font-size:.8rem;color:#9ca3af">From $7/month · Cancel anytime</p>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
+  }
+}
+
 function showSection(id) {
+  // Premium gate: practice + mock require subscription
+  if (requiresPremium(id)) {
+    const isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+    if (!isPremium) { showPremiumOverlay(); return; }
+  }
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
@@ -670,6 +703,7 @@ renderDashboard();
   <script>
     initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
   </script>
+  <script src="payment-system.js"></script>
   <script src="navigation.js"></script>
 </body>
 </html>

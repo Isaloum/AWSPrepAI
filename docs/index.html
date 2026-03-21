@@ -23,6 +23,30 @@
     .page-link{color:#fff;text-decoration:none;padding:.5rem 1rem;border-radius:6px;font-weight:600;transition:all .2s;font-size:.875rem;border:1px solid transparent;background:rgba(255,255,255,.1)}
     .page-link:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
     .page-link.active{background:var(--aws-blue);color:#fff;border-color:var(--aws-blue)}
+    /* ── Cert Hub Grid ── */
+    .cert-hub-section{max-width:1200px;margin:0 auto;padding:3rem 1.5rem 2rem}
+    .cert-hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
+    .cert-hub-card{display:block;background:#fff;border:2px solid var(--border);border-radius:12px;padding:1.25rem 1rem;text-decoration:none;color:var(--text);transition:all .2s;cursor:pointer}
+    .cert-hub-card:hover{border-color:var(--aws-blue);box-shadow:0 4px 16px rgba(59,130,246,.15);transform:translateY(-3px)}
+    .cert-hub-card.cert-hub-free{border-color:#10b981;background:linear-gradient(135deg,#f0fdf4,#fff)}
+    .cert-hub-card.cert-hub-free:hover{border-color:#059669;box-shadow:0 4px 16px rgba(16,185,129,.2)}
+    .cert-hub-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+    .cert-hub-icon{font-size:1.5rem}
+    .cert-hub-level{font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:999px;text-transform:uppercase}
+    .cert-hub-level.foundation{background:#dbeafe;color:#1d4ed8}
+    .cert-hub-level.associate{background:#d1fae5;color:#065f46}
+    .cert-hub-level.professional{background:#ede9fe;color:#5b21b6}
+    .cert-hub-level.specialty{background:#fce7f3;color:#9d174d}
+    .cert-hub-name{font-weight:700;font-size:.85rem;color:var(--aws-dark);margin-bottom:.2rem;line-height:1.3}
+    .cert-hub-code{font-size:.75rem;color:var(--muted);font-weight:600;margin-bottom:.6rem}
+    .cert-hub-badge{font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:999px;display:inline-block}
+    .free-badge{background:#d1fae5;color:#065f46}
+    .premium-badge{background:#f3f4f6;color:#6b7280}
+    /* ── Feature tier tags ── */
+    .feature-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+    .feature-tier{font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:999px}
+    .free-tier-tag{background:#d1fae5;color:#065f46}
+    .premium-tier-tag{background:#ede9fe;color:#5b21b6}
     .nav-tabs{display:flex;gap:.5rem;flex-wrap:wrap;position:relative;background:#fff;padding:.75rem;border-radius:8px;margin-top:.75rem}
     .nav-tab{background:#fff;border:1px solid var(--border);color:var(--text);padding:.625rem 1.25rem;border-radius:6px;cursor:pointer;font-weight:600;transition:all .2s ease;font-size:.875rem}
     .nav-tab:hover{background:#f0f0f0;border-color:var(--aws-blue);color:var(--aws-blue)}
@@ -396,94 +420,40 @@
   <!-- Landing Page (Home) -->
   <section id="home" class="app-section active" aria-label="Home">
 
-  <!-- Hero Section (Redesigned) -->
+  <!-- ── HERO ── -->
   <section class="hero-section" aria-label="Hero">
     <div class="hero-container">
-      <!-- Left Side: Content -->
       <div class="hero-content">
-        <!-- Badge -->
         <div class="hero-badge">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-          </svg>
-          <span>AWS Certified Solutions Architect Associate</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+          <span>12 AWS Certifications · 3,000+ Questions</span>
         </div>
-
-        <!-- Main Heading -->
-        <h1 class="hero-title">
-          Pass AWS SAA-C03 by Building,<br>
-          <span class="gradient-text">Not Memorizing</span>
-        </h1>
-
-        <!-- Subtitle -->
-        <p class="hero-subtitle">
-          The only platform that tests if you can <strong>BUILD AWS solutions</strong>.
-          533 interactive questions + visual architecture builder.
-        </p>
-
-        <!-- CTA Buttons -->
+        <h1 class="hero-title">Master Any AWS<br><span class="gradient-text">Certification</span></h1>
+        <p class="hero-subtitle">Scenario-based practice, mock exams, visual architecture builder, and quick reference — for every active AWS cert.</p>
         <div class="hero-cta">
-          <button class="btn-primary" onclick="startPractice()" aria-label="Start free practice">
-            🚀 Start Free Practice
-          </button>
-          <button class="btn-secondary" onclick="showTab('sample')" aria-label="Try sample questions">
-            📄 Try Sample Questions
-          </button>
+          <button class="btn-primary" onclick="startPractice()" aria-label="Start free SAA-C03 practice">🚀 Start Free (SAA-C03)</button>
+          <a href="certifications.html" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">🎓 Browse All Certs</a>
         </div>
-
-        <!-- Feature Badges -->
-        <div class="hero-badges" aria-label="Trust indicators">
-          <span class="badge">✅ 533 Questions</span>
-          <span class="badge">🚀 Free to Start</span>
+        <div class="hero-badges">
+          <span class="badge">✅ 20 Questions Free</span>
+          <span class="badge">🚀 No Signup</span>
           <span class="badge">📴 Works Offline</span>
         </div>
       </div>
-
-      <!-- Right Side: Architecture Diagram -->
       <div class="hero-visual" aria-hidden="true">
         <div class="architecture-card">
-          <div class="architecture-header">
-            <span class="architecture-label">SAMPLE AWS ARCHITECTURE</span>
-          </div>
-
+          <div class="architecture-header"><span class="architecture-label">SAMPLE AWS ARCHITECTURE</span></div>
           <div class="architecture-diagram">
-            <!-- VPC Container -->
             <div class="vpc-container">
               <span class="vpc-label">VPC</span>
-
-              <!-- Internet -->
-              <div class="aws-service internet">
-                <span>🌐</span>
-                <span>Internet</span>
-              </div>
-
-              <!-- Load Balancer -->
-              <div class="aws-service load-balancer">
-                <span>⚖️</span>
-                <span>Load Balancer</span>
-              </div>
-
-              <!-- EC2 Instances -->
+              <div class="aws-service internet"><span>🌐</span><span>Internet</span></div>
+              <div class="aws-service load-balancer"><span>⚖️</span><span>Load Balancer</span></div>
               <div class="ec2-row">
-                <div class="aws-service ec2">
-                  <span>🖥️</span>
-                  <span>EC2</span>
-                </div>
-                <div class="aws-service ec2">
-                  <span>🖥️</span>
-                  <span>EC2</span>
-                </div>
-                <div class="aws-service ec2">
-                  <span>🖥️</span>
-                  <span>EC2</span>
-                </div>
+                <div class="aws-service ec2"><span>🖥️</span><span>EC2</span></div>
+                <div class="aws-service ec2"><span>🖥️</span><span>EC2</span></div>
+                <div class="aws-service ec2"><span>🖥️</span><span>EC2</span></div>
               </div>
-
-              <!-- RDS Database -->
-              <div class="aws-service rds">
-                <span>🗄️</span>
-                <span>RDS Database</span>
-              </div>
+              <div class="aws-service rds"><span>🗄️</span><span>RDS Database</span></div>
             </div>
           </div>
         </div>
@@ -491,131 +461,232 @@
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- ── CERT HUB GRID ── -->
+  <section class="cert-hub-section" aria-labelledby="cert-hub-heading">
+    <div class="section-header">
+      <h2 id="cert-hub-heading" class="section-title">Choose Your Certification</h2>
+      <p class="section-subtitle">Click any cert to start practicing. Dashboard is always free — full practice &amp; mock exams require a plan.</p>
+    </div>
+    <div class="cert-hub-grid">
+
+      <!-- SAA-C03 — has free tier -->
+      <a href="saa-c03.html" class="cert-hub-card cert-hub-free">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🏗️</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">Solutions Architect Associate</div>
+        <div class="cert-hub-code">SAA-C03</div>
+        <div class="cert-hub-badge free-badge">✅ Free Tier</div>
+      </a>
+
+      <!-- CLF-C02 -->
+      <a href="clf-c02.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">☁️</span>
+          <span class="cert-hub-level foundation">Foundation</span>
+        </div>
+        <div class="cert-hub-name">Cloud Practitioner</div>
+        <div class="cert-hub-code">CLF-C02</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- AIF-C01 -->
+      <a href="aif-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🤖</span>
+          <span class="cert-hub-level foundation">Foundation</span>
+        </div>
+        <div class="cert-hub-name">AI Practitioner</div>
+        <div class="cert-hub-code">AIF-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- DVA-C02 -->
+      <a href="dva-c02.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">💻</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">Developer Associate</div>
+        <div class="cert-hub-code">DVA-C02</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- SOA-C02 -->
+      <a href="soa-c02.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">⚙️</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">SysOps Admin Associate</div>
+        <div class="cert-hub-code">SOA-C02</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- MLA-C01 -->
+      <a href="mla-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🧠</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">ML Engineer Associate</div>
+        <div class="cert-hub-code">MLA-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- DEA-C01 -->
+      <a href="dea-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">📊</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">Data Engineer Associate</div>
+        <div class="cert-hub-code">DEA-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- GAI-C01 -->
+      <a href="gai-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">✨</span>
+          <span class="cert-hub-level associate">Associate</span>
+        </div>
+        <div class="cert-hub-name">Generative AI Developer</div>
+        <div class="cert-hub-code">GAI-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- SAP-C02 -->
+      <a href="sap-c02.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🏛️</span>
+          <span class="cert-hub-level professional">Professional</span>
+        </div>
+        <div class="cert-hub-name">Solutions Architect Pro</div>
+        <div class="cert-hub-code">SAP-C02</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- DOP-C02 -->
+      <a href="dop-c02.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🔄</span>
+          <span class="cert-hub-level professional">Professional</span>
+        </div>
+        <div class="cert-hub-name">DevOps Engineer Pro</div>
+        <div class="cert-hub-code">DOP-C02</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- ANS-C01 -->
+      <a href="ans-c01.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🌐</span>
+          <span class="cert-hub-level specialty">Specialty</span>
+        </div>
+        <div class="cert-hub-name">Advanced Networking</div>
+        <div class="cert-hub-code">ANS-C01</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+      <!-- SCS-C03 -->
+      <a href="scs-c03.html" class="cert-hub-card">
+        <div class="cert-hub-top">
+          <span class="cert-hub-icon">🔒</span>
+          <span class="cert-hub-level specialty">Specialty</span>
+        </div>
+        <div class="cert-hub-name">Security Specialty</div>
+        <div class="cert-hub-code">SCS-C03</div>
+        <div class="cert-hub-badge premium-badge">🔒 Premium</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── SAA-C03 TOOLS (keep all the good stuff) ── -->
   <section id="features" class="features-section" aria-labelledby="features-heading">
     <div class="section-header">
-      <h2 id="features-heading" class="section-title">Everything You Need to Pass</h2>
-      <p class="section-subtitle">Comprehensive study tools designed for the AWS SAA-C03 certification</p>
+      <h2 id="features-heading" class="section-title">SAA-C03 Advanced Tools</h2>
+      <p class="section-subtitle">Exclusive deep-dive tools for the Solutions Architect Associate exam</p>
     </div>
     <div class="features-grid">
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">📝</span>
+        <div class="feature-card-top"><span class="feature-icon">📝</span><span class="feature-tier free-tier-tag">20 Free</span></div>
         <h3 class="feature-title">Practice Quiz</h3>
         <p class="feature-description">533 real-world questions covering all SAA-C03 domains with detailed explanations</p>
-        <button class="feature-link" onclick="showTab('quiz')" aria-label="Start practice quiz">Start practicing →</button>
+        <button class="feature-link" onclick="showTab('quiz')">Start practicing →</button>
       </article>
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">⏱️</span>
+        <div class="feature-card-top"><span class="feature-icon">⏱️</span><span class="feature-tier premium-tier-tag">Premium</span></div>
         <h3 class="feature-title">Mock Exam</h3>
         <p class="feature-description">Timed 65-question practice tests that simulate the real exam experience</p>
-        <button class="feature-link" onclick="showTab('exam')" aria-label="Take a mock exam">Take exam →</button>
+        <button class="feature-link" onclick="showTab('exam')">Take exam →</button>
       </article>
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">🏗️</span>
+        <div class="feature-card-top"><span class="feature-icon">🏗️</span><span class="feature-tier premium-tier-tag">Premium</span></div>
         <h3 class="feature-title">Architecture Builder</h3>
         <p class="feature-description">Drag-and-drop AWS services to build solutions and visualize architectures</p>
-        <button class="feature-link" onclick="showTab('adaptive')" aria-label="Try the architecture builder">Build now →</button>
+        <button class="feature-link" onclick="showTab('adaptive')">Build now →</button>
       </article>
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">🎯</span>
+        <div class="feature-card-top"><span class="feature-icon">🎯</span><span class="feature-tier premium-tier-tag">Premium</span></div>
         <h3 class="feature-title">Visual Exam</h3>
         <p class="feature-description">Interactive scenarios where you construct AWS architectures as answers</p>
-        <button class="feature-link" onclick="showTab('visual-exam')" aria-label="Take a visual exam">Try visual →</button>
+        <button class="feature-link" onclick="showTab('visual-exam')">Try visual →</button>
       </article>
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">📚</span>
+        <div class="feature-card-top"><span class="feature-icon">📚</span><span class="feature-tier free-tier-tag">Free</span></div>
         <h3 class="feature-title">Study Guide</h3>
         <p class="feature-description">Comprehensive tips, strategies, and domain breakdowns for exam success</p>
-        <button class="feature-link" onclick="showTab('study-guide')" aria-label="Read the study guide">Read guide →</button>
+        <button class="feature-link" onclick="showTab('study-guide')">Read guide →</button>
       </article>
       <article class="feature-card">
-        <span class="feature-icon" aria-hidden="true">💡</span>
+        <div class="feature-card-top"><span class="feature-icon">💡</span><span class="feature-tier free-tier-tag">Free</span></div>
         <h3 class="feature-title">Keywords &amp; Hints</h3>
         <p class="feature-description">Learn to identify question patterns and keywords that guide you to the right answer</p>
-        <button class="feature-link" onclick="showTab('hints-keywords')" aria-label="Learn hints and keywords">Learn hints →</button>
+        <button class="feature-link" onclick="showTab('hints-keywords')">Learn hints →</button>
       </article>
     </div>
   </section>
 
-  <!-- Stats Section - Modern Grid -->
-  <section id="stats" class="stats-section" aria-label="Platform statistics">
+  <!-- ── STATS ── -->
+  <section class="stats-section" aria-label="Platform statistics">
     <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-item-number">533</div>
-        <div class="stat-item-label">Practice Questions</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-item-number">65</div>
-        <div class="stat-item-label">Mock Exam Questions</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-item-number">20</div>
-        <div class="stat-item-label">Visual Scenarios</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-item-number">100%</div>
-        <div class="stat-item-label">Exam Coverage</div>
-      </div>
+      <div class="stat-item"><div class="stat-item-number">12</div><div class="stat-item-label">Certifications</div></div>
+      <div class="stat-item"><div class="stat-item-number">3,000+</div><div class="stat-item-label">Practice Questions</div></div>
+      <div class="stat-item"><div class="stat-item-number">20</div><div class="stat-item-label">Free Questions</div></div>
+      <div class="stat-item"><div class="stat-item-number">100%</div><div class="stat-item-label">Exam Coverage</div></div>
     </div>
   </section>
 
-  <!-- How It Works -->
+  <!-- ── HOW IT WORKS ── -->
   <section class="how-it-works" aria-labelledby="how-it-works-heading">
     <div class="section-header">
       <h2 id="how-it-works-heading" class="section-title">How It Works</h2>
       <p class="section-subtitle">Your path to AWS certification success</p>
     </div>
-
     <div class="steps-container">
-      <div class="step">
-        <div class="step-number">1</div>
-        <h3 class="step-title">Start Free</h3>
-        <p class="step-description">
-          Begin with 20 free practice questions to test your knowledge
-        </p>
-      </div>
-
+      <div class="step"><div class="step-number">1</div><h3 class="step-title">Pick Your Cert</h3><p class="step-description">Choose from 12 active AWS certifications based on your career path</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
-
-      <div class="step">
-        <div class="step-number">2</div>
-        <h3 class="step-title">Practice &amp; Learn</h3>
-        <p class="step-description">
-          Study with detailed explanations and visual architecture diagrams
-        </p>
-      </div>
-
+      <div class="step"><div class="step-number">2</div><h3 class="step-title">Start Free</h3><p class="step-description">Get 20 free SAA-C03 questions instantly — no signup required</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
-
-      <div class="step">
-        <div class="step-number">3</div>
-        <h3 class="step-title">Take Mock Exams</h3>
-        <p class="step-description">
-          Simulate the real exam with timed practice tests
-        </p>
-      </div>
-
+      <div class="step"><div class="step-number">3</div><h3 class="step-title">Go Premium</h3><p class="step-description">Unlock all certs, full question banks, mock exams &amp; visual builder</p></div>
       <span class="step-connector" aria-hidden="true">→</span>
-
-      <div class="step">
-        <div class="step-number">4</div>
-        <h3 class="step-title">Pass with Confidence</h3>
-        <p class="step-description">
-          Achieve your AWS Solutions Architect certification
-        </p>
-      </div>
+      <div class="step"><div class="step-number">4</div><h3 class="step-title">Pass with Confidence</h3><p class="step-description">Arrive at exam day knowing you've built real AWS knowledge</p></div>
     </div>
   </section>
 
-  <!-- Final CTA Section -->
-  <section id="cta" class="cta-section" aria-labelledby="cta-heading">
+  <!-- ── CTA ── -->
+  <section class="cta-section" aria-labelledby="cta-heading">
     <div class="cta-content">
-      <h2 id="cta-heading" class="cta-title">Ready to Actually Understand AWS?</h2>
-      <p class="cta-description">Start practicing with the most interactive AWS certification prep platform.</p>
-      <button class="btn-cta-lg" onclick="startPractice()" aria-label="Start practicing for free">
-        Start Free Practice Now →
-      </button>
-      <p class="cta-note">No signup required &bull; Works offline &bull; 100% free forever</p>
+      <h2 id="cta-heading" class="cta-title">Ready to Pass Any AWS Cert?</h2>
+      <p class="cta-description">Start free on SAA-C03 or go premium for all 12 certifications.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="btn-cta-lg" onclick="startPractice()">Start Free (SAA-C03) →</button>
+        <a href="pricing.html" class="btn-cta-lg" style="background:#FF9900;text-decoration:none;padding:.875rem 2rem;border-radius:8px;font-weight:700;color:#fff;font-size:1rem;">See Plans →</a>
+      </div>
+      <p class="cta-note">No signup required &bull; Works offline &bull; From $7/month</p>
     </div>
   </section>
 
