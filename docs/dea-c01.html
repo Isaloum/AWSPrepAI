@@ -14,15 +14,14 @@
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     .container{max-width:1140px;margin:0 auto;padding:0 1.5rem}
 
-    /* ── Header ── */
-    header{background:var(--aws-dark);border-bottom:2px solid #374151;padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 4px rgba(0,0,0,.15)}
-    .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem}
-    .logo{display:flex;align-items:center;gap:.75rem;font-size:1.4rem;font-weight:800;color:#fff;text-decoration:none}
-    .logo img{height:44px;width:auto}
-    .page-links{display:flex;gap:.4rem;flex-wrap:wrap}
-    .page-link{color:#fff;text-decoration:none;padding:.45rem .9rem;border-radius:6px;font-weight:600;transition:all .2s;font-size:.85rem;border:1px solid transparent;background:rgba(255,255,255,.1)}
-    .page-link:hover{background:rgba(255,255,255,.2)}
-    .page-link.active{background:var(--dea-blue);border-color:var(--dea-blue)}
+    
+    
+    
+    
+    
+    
+    
+    
 
     /* ── Hero ── */
     .dea-hero{background:linear-gradient(135deg,#1a2332 0%,#232F3E 50%,#2d3a4a 100%);padding:2.5rem 1.5rem;text-align:center;margin:0}
@@ -132,7 +131,7 @@
 
     @media(max-width:768px){
       .dea-hero h1{font-size:1.75rem}
-      .header-content{flex-direction:column;align-items:flex-start}
+      
       .quiz-question{font-size:1rem}
       .dea-stats-row{gap:1.5rem}
     }
@@ -140,25 +139,31 @@
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <div class="header-content">
-      <a class="logo" href="index.html">
-        <img src="logo.svg" alt="AWSPrepAI">
-        AWSPrepAI
-      </a>
-      <div class="page-links">
-        <a href="saa-c03.html" class="page-link">SAA-C03</a>
-        <a href="certifications.html" class="page-link">All Certs</a>
-        <a href="dea-c01.html" class="page-link active">DEA-C01</a>
-        <a href="about.html" class="page-link">About</a>
-        <a href="resources.html" class="page-link">Resources</a>
-        <a href="contact.html" class="page-link">Contact</a>
-        <a href="pricing.html" class="page-link">Pricing</a>
+  <nav class="main-nav" role="navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo" aria-label="AWSPrepAI Home"><img src="logo.svg" alt="AWSPrepAI"></a>
+      <div class="nav-menu" id="navMenu">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+          <div class="dropdown-menu" role="menu">
+            <a href="saa-c03.html" class="dropdown-item"><span class="item-icon">📝</span><div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">SAA-C03 questions</div></div></a>
+            <a href="saa-c03.html" class="dropdown-item"><span class="item-icon">⏱️</span><div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div></a>
+          </div>
         </div>
+        <a href="certifications.html" class="nav-link">Certifications</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
+      </div>
+      <a href="pricing.html" class="nav-cta">Start Free Trial</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+        <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+      </button>
     </div>
-  </div>
-</header>
+  </nav>
 
 <!-- Hero -->
 <div class="dea-hero">
@@ -369,15 +374,14 @@
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     .container{max-width:1140px;margin:0 auto;padding:0 1.5rem}
 
-    /* ── Header ── */
-    header{background:var(--aws-dark);border-bottom:2px solid #374151;padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 4px rgba(0,0,0,.15)}
-    .header-content{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem}
-    .logo{display:flex;align-items:center;gap:.75rem;font-size:1.4rem;font-weight:800;color:#fff;text-decoration:none}
-    .logo img{height:44px;width:auto}
-    .page-links{display:flex;gap:.4rem;flex-wrap:wrap}
-    .page-link{color:#fff;text-decoration:none;padding:.45rem .9rem;border-radius:6px;font-weight:600;transition:all .2s;font-size:.85rem;border:1px solid transparent;background:rgba(255,255,255,.1)}
-    .page-link:hover{background:rgba(255,255,255,.2)}
-    .page-link.active{background:var(--dea-blue);border-color:var(--dea-blue)}
+    
+    
+    
+    
+    
+    
+    
+    
 
     /* ── Hero ── */
     .dea-hero{background:linear-gradient(135deg,#1a2332 0%,#232F3E 50%,#2d3a4a 100%);padding:2.5rem 1.5rem;text-align:center;margin:0}
@@ -487,7 +491,7 @@
 
     @media(max-width:768px){
       .dea-hero h1{font-size:1.75rem}
-      .header-content{flex-direction:column;align-items:flex-start}
+      
       .quiz-question{font-size:1rem}
       .dea-stats-row{gap:1.5rem}
     }
@@ -495,17 +499,31 @@
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <div class="header-content">
-      <a class="logo" href="index.html">
-        <img src="logo.svg" alt="AWSPrepAI">
-        AWSPrepAI
-      </a>
-      
+  <nav class="main-nav" role="navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo" aria-label="AWSPrepAI Home"><img src="logo.svg" alt="AWSPrepAI"></a>
+      <div class="nav-menu" id="navMenu">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <div class="nav-item-dropdown">
+          <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
+          <div class="dropdown-menu" role="menu">
+            <a href="saa-c03.html" class="dropdown-item"><span class="item-icon">📝</span><div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">SAA-C03 questions</div></div></a>
+            <a href="saa-c03.html" class="dropdown-item"><span class="item-icon">⏱️</span><div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div></a>
+          </div>
+        </div>
+        <a href="certifications.html" class="nav-link">Certifications</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="pricing.html" class="nav-link">Pricing</a>
+        <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
+      </div>
+      <a href="pricing.html" class="nav-cta">Start Free Trial</a>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
+        <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+      </button>
     </div>
-  </div>
-</header>
+  </nav>
 
 <!-- Hero -->
 <div class="dea-hero">
@@ -1036,5 +1054,6 @@ renderDashboard();
   <script>
     initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
   </script>
+  <script src="navigation.js"></script>
 </body>
 </html>
