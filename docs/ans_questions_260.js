@@ -220,8 +220,7 @@ const ANS_QUESTIONS = [
   { cat: "network-security", q: "Alert or block?", options: ["A. Alert bad", "B. Validate", "C. No", "D. Perm"], answer: 3, explain: "Validate." },
   { cat: "network-security", q: "FW 10k rules?", options: ["A. No", "B. Perf", "C. Auto", "D. No"], answer: 3, explain: "Perf." },
   { cat: "network-security", q: "WAF zero-day?", options: ["A. All", "B. Update", "C. No", "D. Auto"], answer: 3, explain: "Update." }
-
-]
+,
   { cat: "network-design", q: "What is the purpose of Transit Gateway route tables?", options: ["A. Basic routing", "B. Per-attachment custom routing", "C. Peering only", "D. NAT only"], answer: 0, explain: "Route tables enable flexible routing per attachment." },
   { cat: "network-implementation", q: "Direct Connect LAG purpose?", options: ["A. Single link", "B. Bonded capacity", "C. Peering", "D. Backup"], answer: 0, explain: "LAG increases bandwidth." },
   { cat: "network-design", q: "VPC endpoint service producer config?", options: ["A. Interface endpoint", "B. NLB backend service", "C. Gateway endpoint", "D. Peering"], answer: 0, explain: "Producer requires NLB." },
@@ -243,9 +242,7 @@ const ANS_QUESTIONS = [
   { cat: "network-security", q: "Managed rules update frequency?", options: ["A. Never", "B. Manual only", "C. AWS managed", "D. Yearly"], answer: 3, explain: "Automatic updates." },
   { cat: "network-design", q: "Cross-region replication networking?", options: ["A. Public internet", "B. AWS backbone", "C. VPN only", "D. Direct Connect"], answer: 3, explain: "AWS optimized." },
   { cat: "network-design", q: "Subnet sizing best practice?", options: ["A. Minimal", "B. Plan for growth", "C. Exact need", "D. Large blocks"], answer: 3, explain: "Future-proof sizing." },
-  { cat: "network-implementation", q: "VPN tunnel redundancy?", options: ["A. Single tunnel", "B. Dual tunnels", "C. Variable", "D. Not needed"], answer: 3, explain: "Dual tunnels standard." }
-
-]
+  { cat: "network-implementation", q: "VPN tunnel redundancy?", options: ["A. Single tunnel", "B. Dual tunnels", "C. Variable", "D. Not needed"], answer: 3, explain: "Dual tunnels standard." },
   { cat: "network-design", q: "Zero Trust network architecture approach?", options: ["A. Trust by default", "B. Verify every access", "C. Perimeter only", "D. No trust model"], answer: 2, explain: "Continuous verification." },
   { cat: "network-management", q: "Network performance monitoring tool?", options: ["A. CloudWatch only", "B. VPC Flow Logs only", "C. CloudWatch and Flow Logs", "D. No tools"], answer: 2, explain: "Multiple tools needed." },
   { cat: "network-security", q: "DDoS attack traffic patterns?", options: ["A. Random", "B. Volumetric, protocol, app", "C. Predictable", "D. None"], answer: 2, explain: "Multiple attack types." },
