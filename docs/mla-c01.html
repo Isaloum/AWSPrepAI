@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
   <style>
-    :root{--bg:#F9FAFB;--card:#fff;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#1F2937;--aws-blue:#3B82F6;--accent-2:#2563EB;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--mla-orange:#ea580c;--mla-dark:#431407;--mla-light:#fff7ed;--mla-blue:#ea580c}
+    :root{--bg:#F9FAFB;--card:#fff;--text:#232F3E;--muted:#545b64;--border:#d5dbdb;--radius:8px;--aws-orange:#FF9900;--aws-dark:#1F2937;--aws-blue:#3B82F6;--accent-2:#2563EB;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--mla-orange:#FF9900;--mla-dark:#232F3E;--mla-light:#fff8ee;--mla-blue:#FF9900}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     .container{max-width:1140px;margin:0 auto;padding:0 1.5rem}
@@ -58,7 +58,7 @@
     .domain-name{font-weight:700;font-size:.9rem;color:var(--aws-dark);margin-bottom:.25rem}
     .domain-meta{font-size:.78rem;color:var(--muted);margin-bottom:.6rem}
     .progress-bar{height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden}
-    .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mla-blue),#7c3aed);transition:width .4s}
+    .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mla-blue),#FF9900);transition:width .4s}
 
     /* ── Filter bar ── */
     .filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
@@ -76,7 +76,7 @@
     .quiz-question{font-size:1.15rem;font-weight:600;line-height:1.55;margin-bottom:1.5rem;color:var(--aws-dark)}
     .quiz-options{display:grid;gap:.75rem}
     .quiz-option{background:#fafafa;border:2px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;transition:all .2s;font-size:.95rem;display:flex;align-items:flex-start;gap:.75rem}
-    .quiz-option:hover:not(.locked){border-color:var(--mla-blue);background:#f5f3ff}
+    .quiz-option:hover:not(.locked){border-color:var(--mla-blue);background:#fff8ee}
     .quiz-option.correct{border-color:var(--success);background:rgba(16,185,129,.1)}
     .quiz-option.incorrect{border-color:var(--danger);background:rgba(239,68,68,.09)}
     .quiz-option.locked{pointer-events:none}
@@ -86,7 +86,7 @@
     .opt-text{flex:1;line-height:1.4}
 
     /* Explanation */
-    .explanation{margin-top:1rem;padding:1rem 1.25rem;border-radius:8px;background:#f5f3ff;border-left:4px solid var(--mla-blue);font-size:.9rem;line-height:1.55;display:none}
+    .explanation{margin-top:1rem;padding:1rem 1.25rem;border-radius:8px;background:#fff8ee;border-left:4px solid var(--mla-blue);font-size:.9rem;line-height:1.55;display:none}
     .explanation.show{display:block}
     .explanation strong{color:var(--mla-blue)}
 
@@ -94,7 +94,7 @@
     .quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;flex-wrap:wrap;gap:.5rem}
     .btn{padding:.7rem 1.4rem;border-radius:8px;font-weight:700;cursor:pointer;transition:all .2s;border:none;font-size:.9rem}
     .btn-primary{background:var(--mla-blue);color:#fff}
-    .btn-primary:hover{background:#6d28d9;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+    .btn-primary:hover{background:#FF9900;box-shadow:0 2px 8px rgba(124,58,237,.3)}
     .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
     .btn-secondary:hover{background:#f3f4f6;border-color:var(--mla-blue)}
     .btn-skip{background:transparent;color:var(--muted);font-size:.82rem;padding:.5rem .8rem;border:1px solid var(--border)}
@@ -169,7 +169,9 @@
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
       </div>
-      <a href="pricing.html" class="nav-cta">Start Free Trial</a>
+      <a href="login.html" class="nav-link" id="nav-login-btn" style="font-weight:700;">Log In</a>
+      <a href="signup.html" class="nav-cta" id="nav-signup-btn" style="text-decoration:none;">Sign Up Free</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
       </button>
@@ -260,7 +262,7 @@
       <div style="font-size:3rem;margin-bottom:1rem">🎯</div>
       <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:.75rem">Mock Exam</h2>
       <p style="color:var(--muted);margin-bottom:1.5rem">65 questions · 90 minutes · Simulates the real Cloud PractitionerF-C01 exam experience. Answers revealed only at the end.</p>
-      <div style="background:#f5f3ff;border-radius:8px;padding:1rem;margin-bottom:1.5rem;text-align:left">
+      <div style="background:#fff8ee;border-radius:8px;padding:1rem;margin-bottom:1.5rem;text-align:left">
         <div style="font-weight:700;margin-bottom:.5rem;color:var(--mla-blue)">Exam blueprint:</div>
         <div style="font-size:.85rem;color:var(--muted);line-height:1.8">
           Development — 24%<br>
