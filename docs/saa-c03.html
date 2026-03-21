@@ -53,7 +53,8 @@
 
     /* ── Domain progress ── */
     .domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem}
-    .domain-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .domain-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer;transition:all .2s}
+    .domain-card:hover{border-color:var(--saa-color);box-shadow:0 4px 14px rgba(0,0,0,.12);transform:translateY(-2px)}
     .domain-name{font-weight:700;font-size:.9rem;color:var(--aws-dark);margin-bottom:.25rem}
     .domain-meta{font-size:.78rem;color:var(--muted);margin-bottom:.6rem}
     .progress-bar{height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden}
@@ -475,7 +476,7 @@ function renderDashboard() {
     const cor = qs.filter((q,i) => state.answered[cat+i] === true);
     const p = ans.length ? Math.round(cor.length/ans.length*100) : 0;
     const fill = ans.length ? Math.round(ans.length/qs.length*100) : 0;
-    dp.innerHTML += `<div class="domain-card">
+    dp.innerHTML += `<div class="domain-card" onclick="startPractice('${cat}')">
       <div class="domain-name">${DOMAIN_LABELS[cat]}</div>
       <div class="domain-meta">${ans.length}/${qs.length} answered · ${p}% correct · ${DOMAIN_WEIGHTS[cat]}% of exam</div>
       <div class="progress-bar"><div class="progress-fill" style="width:${fill}%"></div></div>
