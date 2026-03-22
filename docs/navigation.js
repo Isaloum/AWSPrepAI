@@ -67,6 +67,20 @@ document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
   });
 }());
 
+// ==================== AUTH NAV STATE ====================
+// Show "My Dashboard" and hide "Log In / Sign Up" when user is logged in
+(function () {
+  const session = localStorage.getItem('_apa_session');
+  const loginBtn = document.getElementById('nav-login-btn');
+  const signupBtn = document.getElementById('nav-signup-btn');
+  const dashBtn = document.getElementById('nav-dashboard-btn');
+  if (session && loginBtn && signupBtn && dashBtn) {
+    loginBtn.style.display = 'none';
+    signupBtn.style.display = 'none';
+    dashBtn.style.display = 'inline-flex';
+  }
+}());
+
 // ==================== SHOW TAB FALLBACK (for non-index pages) ====================
 // On index.html the inline script defines showTab(); this fallback is used on other pages.
 window.showTab = window.showTab || function (tabName) {
