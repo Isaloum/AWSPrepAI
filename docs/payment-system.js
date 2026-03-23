@@ -11,16 +11,16 @@ const PRICING = {
     mode: 'subscription'
   },
   yearly: {
-    price: 57,
-    stripePriceId: 'price_1TB1aRE9neqrFM5LpaIQD1YX',
+    price: 67,
+    stripePriceId: 'price_1TED8EE9neqrFM5LCIL9P0Yp',
     label: 'Yearly',
     savings: 38,
     interval: 'year',
     mode: 'subscription'
   },
   lifetime: {
-    price: 97,
-    stripePriceId: 'price_1TB1bRE9neqrFM5LP6UcX9Ms',
+    price: 147,
+    stripePriceId: 'price_1TED9ME9neqrFM5LeKAAEWTO',
     label: 'Lifetime',
     popular: true,
     interval: 'one-time',
