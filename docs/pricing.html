@@ -177,6 +177,15 @@
       <label class="modal-label" for="modalEmail">Email Address</label>
       <input type="email" class="modal-input" id="modalEmail" placeholder="you@email.com" autocomplete="email">
 
+      <!-- Order Bump — shown only for monthly/trial -->
+      <div id="orderBumpBox" style="background:#f0fdf4;border:2px dashed #059669;border-radius:10px;padding:.85rem 1rem;margin-bottom:.9rem;display:none;">
+        <div style="font-size:.78rem;font-weight:800;color:#065f46;margin-bottom:.3rem;">⚡ SPECIAL ADD-ON — Only $17 more (one-time)</div>
+        <div style="font-size:.85rem;color:#374151;margin-bottom:.4rem;">Unlock <strong>3 certifications of your choice</strong> — SAA-C03 + 2 more (CLF, DVA, SOA, etc.)</div>
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;font-weight:700;color:#065f46;">
+          <input type="checkbox" id="orderBumpCheck" style="width:16px;height:16px;accent-color:#059669;">
+          Yes! Add 3 certs for $17
+        </label>
+      </div>
       <button class="modal-btn" id="trialSubmitBtn" onclick="proceedWithTrial()">Continue to Secure Checkout →</button>
 
       <div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.6rem;font-size:.78rem;color:#6B7280">
@@ -266,15 +275,6 @@
           <li>30-day pass guarantee — fail = full refund</li>
           <li>Email support</li>
         </ul>
-        <!-- Order Bump -->
-        <div style="background:#f0fdf4;border:2px dashed #059669;border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;">
-          <div style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:.35rem;">⚡ ADD-ON OFFER — Only $17 more</div>
-          <div style="font-size:.88rem;color:#374151;margin-bottom:.4rem;">Unlock <strong>3 certifications of your choice</strong> — SAA + 2 more (CLF, DVA, SOA, etc.)</div>
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;font-weight:600;color:#065f46;">
-            <input type="checkbox" id="orderBump" style="width:16px;height:16px;accent-color:#059669;" onchange="updateMonthlyPrice(this)">
-            Yes! Add 3 certs for $17 (one-time)
-          </label>
-        </div>
         <button class="btn-premium" style="background:linear-gradient(90deg,#059669,#10b981);font-size:1.05rem;" onclick="openEmailModal('trial')">Start Free — No Card Needed →</button>
         <div style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:.5rem;">3 days free · then $7/mo · cancel anytime</div>
       </div>
@@ -534,6 +534,9 @@
 
     function openEmailModal(tier) {
       pendingTier = tier;
+      // Show order bump only on monthly/trial checkout
+      const bump = document.getElementById('orderBumpBox');
+      if (bump) bump.style.display = (tier === 'trial') ? 'block' : 'none';
       document.getElementById('emailModal').classList.add('active');
       setTimeout(() => document.getElementById('modalName').focus(), 100);
     }
