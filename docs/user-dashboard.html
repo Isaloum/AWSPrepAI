@@ -435,12 +435,21 @@
 // ══════════════════════════════════════════
 // AUTH GUARD — redirect if not logged in
 // ══════════════════════════════════════════
-const session = localStorage.getItem('_apa_session');
-const sessionExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
-if (!session || Date.now() > sessionExp) {
-  ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
-  window.location.href = 'login.html';
+function _clearSession() {
+  ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier','_apa_history','_apa_joined'].forEach(k => localStorage.removeItem(k));
 }
+function _jwtExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return Date.now() / 1000 > payload.exp;
+  } catch(e) { return true; }
+}
+(function() {
+  const token = localStorage.getItem('_apa_session');
+  const customExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+  const expired = !token || _jwtExpired(token) || Date.now() > customExp;
+  if (expired) { _clearSession(); window.location.href = 'login.html'; }
+})();
 
 const userEmail = localStorage.getItem('_apa_email') || '';
 const userName  = localStorage.getItem('_apa_name')  || '';

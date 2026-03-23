@@ -72,7 +72,13 @@ document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
 (function () {
   const session = localStorage.getItem('_apa_session');
   const sessionExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
-  const isValid = session && Date.now() < sessionExp;
+  let isValid = false;
+  if (session) {
+    try {
+      const payload = JSON.parse(atob(session.split('.')[1]));
+      isValid = (Date.now() / 1000 < payload.exp) && (Date.now() < sessionExp);
+    } catch(e) { isValid = false; }
+  }
   if (!isValid && session) {
     ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
   }

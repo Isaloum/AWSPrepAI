@@ -174,7 +174,9 @@ async function handleSignup(e) {
   }
 
   // Store session
+  const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
   localStorage.setItem('_apa_session', data.session?.access_token || 'confirmed');
+  localStorage.setItem('_apa_session_exp', Date.now() + SESSION_TTL_MS);
   localStorage.setItem('_apa_email', email);
   localStorage.setItem('_apa_name', firstName);
   localStorage.setItem('_apa_tier', 'free');
