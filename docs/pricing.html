@@ -42,7 +42,7 @@
     .guarantee-banner .g-text span{font-size:.9rem;color:#047857}
 
     /* ── Pricing grid ── */
-    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2.5rem}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2.5rem;align-items:start}
     .pricing-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.08);position:relative;display:flex;flex-direction:column;transition:transform .2s}
     .pricing-card:hover{transform:translateY(-4px)}
     .pricing-card--popular{border:2px solid #2563EB;box-shadow:0 8px 24px rgba(37,99,235,.2)}
@@ -132,7 +132,7 @@
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
           <div class="dropdown-menu" role="menu">
-            <a href="index.html#quiz" class="dropdown-item" onclick="showTab('quiz')"><span class="item-icon">📝</span><div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">533 SAA-C03 questions</div></div></a>
+            <a href="index.html#quiz" class="dropdown-item" onclick="showTab('quiz')"><span class="item-icon">📝</span><div class="item-content"><div class="item-title">Practice Quiz</div><div class="item-desc">3,120 questions · 12 certs</div></div></a>
             <a href="index.html#exam" class="dropdown-item" onclick="showTab('exam')"><span class="item-icon">⏱️</span><div class="item-content"><div class="item-title">Mock Exam</div><div class="item-desc">Timed practice test</div></div></a>
             <a href="index.html#adaptive" class="dropdown-item" onclick="showTab('adaptive')"><span class="item-icon">🏗️</span><div class="item-content"><div class="item-title">Architecture Builder</div><div class="item-desc">Drag &amp; drop AWS services</div></div></a>
             <a href="index.html#visual-exam" class="dropdown-item" onclick="showTab('visual-exam')"><span class="item-icon">🎯</span><div class="item-content"><div class="item-title">Visual Exam</div><div class="item-desc">Build your answers</div></div></a>
