@@ -119,7 +119,9 @@ async function handleLogin(e) {
   }
 
   const user = data.user;
+  const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
   localStorage.setItem('_apa_session', data.session.access_token);
+  localStorage.setItem('_apa_session_exp', Date.now() + SESSION_TTL_MS);
   localStorage.setItem('_apa_email', email);
   localStorage.setItem('_apa_name', user.user_metadata?.first_name || user.user_metadata?.full_name?.split(' ')[0] || '');
   localStorage.setItem('_apa_tier', user.user_metadata?.tier || 'free');

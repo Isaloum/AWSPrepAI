@@ -71,10 +71,15 @@ document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
 // Show "My Dashboard" and hide "Log In / Sign Up" when user is logged in
 (function () {
   const session = localStorage.getItem('_apa_session');
+  const sessionExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+  const isValid = session && Date.now() < sessionExp;
+  if (!isValid && session) {
+    ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
+  }
   const loginBtn = document.getElementById('nav-login-btn');
   const signupBtn = document.getElementById('nav-signup-btn');
   const dashBtn = document.getElementById('nav-dashboard-btn');
-  if (session && loginBtn && signupBtn && dashBtn) {
+  if (isValid && loginBtn && signupBtn && dashBtn) {
     loginBtn.style.display = 'none';
     signupBtn.style.display = 'none';
     dashBtn.style.display = 'inline-flex';
