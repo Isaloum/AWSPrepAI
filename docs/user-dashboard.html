@@ -436,7 +436,9 @@
 // AUTH GUARD — redirect if not logged in
 // ══════════════════════════════════════════
 const session = localStorage.getItem('_apa_session');
-if (!session) {
+const sessionExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+if (!session || Date.now() > sessionExp) {
+  ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
   window.location.href = 'login.html';
 }
 
@@ -721,10 +723,8 @@ function showSection(id, mobileBtnCtx) {
 // LOGOUT
 // ══════════════════════════════════════════
 function logout() {
-  localStorage.removeItem('_apa_session');
-  localStorage.removeItem('_apa_email');
-  localStorage.removeItem('_apa_name');
-  localStorage.removeItem('_apa_tier');
+  ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
+  if (typeof supa !== 'undefined') supa.auth.signOut();
   window.location.href = 'login.html';
 }
 
