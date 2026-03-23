@@ -27,11 +27,11 @@
     .trial-steps{display:flex;align-items:center;gap:.5rem;margin-top:.9rem;flex-wrap:wrap;justify-content:center}
     .trial-step{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.4rem .9rem;color:#fff;font-size:.85rem;font-weight:600;white-space:nowrap}
     .trial-arrow{color:#93c5fd;font-size:1.1rem;font-weight:700}
-    .trial-cta{background:#FF9900;color:#fff;border:none;border-radius:10px;padding:.75rem 1.75rem;font-size:1rem;font-weight:800;cursor:pointer;white-space:nowrap;margin-top:.5rem;transition:background .2s}
-    .trial-cta:hover{background:#e08800}
+    .trial-cta{background:#2563EB;color:#fff;border:none;border-radius:10px;padding:.75rem 1.75rem;font-size:1rem;font-weight:800;cursor:pointer;white-space:nowrap;margin-top:.5rem;transition:background .2s}
+    .trial-cta:hover{background:#1d4ed8}
 
     /* ── Urgency bar ── */
-    .urgency-bar{background:linear-gradient(90deg,#FF9900,#f59e0b);color:#fff;text-align:center;padding:.6rem 1rem;font-weight:700;font-size:.95rem;border-radius:8px;margin-bottom:1.5rem;animation:pulse 2s infinite}
+    .urgency-bar{background:linear-gradient(90deg,#dc2626,#b91c1c);color:#fff;text-align:center;padding:.6rem 1rem;font-weight:700;font-size:.95rem;border-radius:8px;margin-bottom:1.5rem;animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.85}}
     #buyer-count{font-weight:900;font-size:1.1rem}
 
@@ -45,7 +45,7 @@
     .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2.5rem}
     .pricing-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.08);position:relative;display:flex;flex-direction:column;transition:transform .2s}
     .pricing-card:hover{transform:translateY(-4px)}
-    .pricing-card--popular{border:2px solid var(--aws-orange);box-shadow:0 8px 24px rgba(255,153,0,.2)}
+    .pricing-card--popular{border:2px solid #2563EB;box-shadow:0 8px 24px rgba(37,99,235,.2)}
     .popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--aws-orange);color:#fff;font-size:.75rem;font-weight:700;padding:.35rem 1rem;border-radius:999px;white-space:nowrap}
     .tier-name{font-size:1.25rem;font-weight:700;color:var(--aws-dark);margin-bottom:.5rem}
     .tier-price{font-size:3rem;font-weight:900;color:var(--aws-blue);line-height:1}
@@ -58,8 +58,8 @@
     .features-list li::before{content:'✓ ';color:var(--success);font-weight:700}
     .btn-premium{display:block;width:100%;padding:.875rem;background:var(--aws-blue);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;margin-top:auto}
     .btn-premium:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.4)}
-    .btn-premium--popular{background:var(--aws-orange)}
-    .btn-premium--popular:hover{background:#e08800;box-shadow:0 4px 12px rgba(255,153,0,.4)}
+    .btn-premium--popular{background:#2563EB}
+    .btn-premium--popular:hover{background:#1d4ed8;box-shadow:0 4px 12px rgba(37,99,235,.4)}
 
     /* ── Secure badges ── */
     .secure-badges{text-align:center;margin-bottom:2.5rem;color:var(--muted);font-size:.85rem}
@@ -112,8 +112,8 @@
     .modal-card-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.9rem}
     .modal-card-row .modal-input{margin-bottom:0}
     .modal-divider{border:none;border-top:1px solid var(--border);margin:.75rem 0}
-    .modal-btn{width:100%;padding:.9rem;background:var(--aws-orange);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:.6rem;transition:background .2s}
-    .modal-btn:hover{background:#e08800}
+    .modal-btn{width:100%;padding:.9rem;background:#2563EB;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:.6rem;transition:background .2s}
+    .modal-btn:hover{background:#1d4ed8}
     .modal-fine{font-size:.75rem;color:#9CA3AF;text-align:center;line-height:1.5}
 
     footer{background:var(--aws-dark);border-top:2px solid var(--border);padding:1.5rem 0;margin-top:2rem;text-align:center;color:#d5dbdb}
@@ -242,7 +242,7 @@
       <div style="display:flex;align-items:center;gap:.5rem;"><span style="text-decoration:line-through;color:#ef4444;font-weight:700;font-size:.95rem;">$399</span><span style="font-size:.85rem;color:#6b7280;">Udemy SAA course</span></div>
       <div style="display:flex;align-items:center;gap:.5rem;"><span style="text-decoration:line-through;color:#ef4444;font-weight:700;font-size:.95rem;">$300+</span><span style="font-size:.85rem;color:#6b7280;">Official AWS training</span></div>
       <div style="display:flex;align-items:center;gap:.5rem;"><span style="text-decoration:line-through;color:#ef4444;font-weight:700;font-size:.95rem;">$1,200+</span><span style="font-size:.85rem;color:#6b7280;">Bootcamp prep courses</span></div>
-      <div style="background:#dcfce7;color:#166534;font-weight:800;font-size:.9rem;padding:.3rem .85rem;border-radius:999px;">AWSPrepAI from $7/mo</div>
+      <div style="background:#dcfce7;color:#166534;font-weight:800;font-size:.9rem;padding:.3rem .85rem;border-radius:999px;">AWSPrepAI from $7/mo · Lifetime $147</div>
     </div>
 
     <!-- Pricing Cards -->
@@ -259,43 +259,51 @@
         <div class="tier-period">/ month · cancel anytime</div>
         <div class="tier-savings">☕ Less than a coffee per week</div>
         <ul class="features-list">
-          <li><strong>2,860 real scenario questions</strong> across 11 AWS certs</li>
+          <li><strong>1 AWS certification</strong> — SAA-C03 (260 real questions)</li>
           <li>Timed mock exams — real exam simulation</li>
-          <li>Visual architecture builder</li>
-          <li>Domain progress tracking + weak area detection</li>
+          <li>Basic progress tracking</li>
+          <li>Answer explanations</li>
           <li>30-day pass guarantee — fail = full refund</li>
           <li>Email support</li>
-          <li style="color:#9ca3af;font-size:.88rem;">⚡ Start free today, pay only if you love it</li>
         </ul>
+        <!-- Order Bump -->
+        <div style="background:#f0fdf4;border:2px dashed #059669;border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;">
+          <div style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:.35rem;">⚡ ADD-ON OFFER — Only $17 more</div>
+          <div style="font-size:.88rem;color:#374151;margin-bottom:.4rem;">Unlock <strong>3 certifications of your choice</strong> — SAA + 2 more (CLF, DVA, SOA, etc.)</div>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.85rem;font-weight:600;color:#065f46;">
+            <input type="checkbox" id="orderBump" style="width:16px;height:16px;accent-color:#059669;" onchange="updateMonthlyPrice(this)">
+            Yes! Add 3 certs for $17 (one-time)
+          </label>
+        </div>
         <button class="btn-premium" style="background:linear-gradient(90deg,#059669,#10b981);font-size:1.05rem;" onclick="openEmailModal('trial')">Start Free — No Card Needed →</button>
         <div style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:.5rem;">3 days free · then $7/mo · cancel anytime</div>
       </div>
 
       <!-- Yearly — MOST POPULAR -->
-      <div class="pricing-card pricing-card--popular" style="border:3px solid var(--aws-orange);transform:scale(1.03);background:linear-gradient(180deg,#fff8ee 0%,#fff 60%);">
-        <div class="popular-badge" style="background:linear-gradient(90deg,#FF9900,#f59e0b);font-size:.8rem;">⭐ MOST POPULAR · SMARTEST PICK</div>
+      <div class="pricing-card pricing-card--popular" style="border:3px solid #2563EB;transform:scale(1.03);background:linear-gradient(180deg,#eff6ff 0%,#fff 60%);">
+        <div class="popular-badge" style="background:linear-gradient(90deg,#2563EB,#1d4ed8);font-size:.8rem;">⭐ MOST POPULAR · SMARTEST PICK</div>
         <div style="margin-top:.75rem;">
           <div class="tier-name" style="font-size:1.4rem;">Yearly</div>
-          <div style="font-size:.82rem;color:#d97706;font-weight:700;margin-bottom:.5rem;">✓ Best for multi-cert career growth</div>
+          <div style="font-size:.82rem;color:#2563EB;font-weight:700;margin-bottom:.5rem;">✓ Best for multi-cert career growth</div>
         </div>
         <div style="display:flex;align-items:baseline;gap:.5rem;">
-          <div class="tier-price" style="color:var(--aws-orange);"><span class="currency" style="color:var(--aws-orange);">$</span>49</div>
-          <div style="text-decoration:line-through;color:#9ca3af;font-size:1.2rem;font-weight:700;">$84</div>
+          <div class="tier-price" style="color:#2563EB;"><span class="currency" style="color:#2563EB;">$</span>67</div>
+          <div style="text-decoration:line-through;color:#9ca3af;font-size:1.2rem;font-weight:700;">$108</div>
         </div>
-        <div class="tier-period">/year · <strong style="color:var(--aws-orange);">~$4/month</strong> · save $35</div>
-        <div class="tier-savings" style="background:#fff3cd;color:#92400e;">🔥 Save $35 vs monthly — 41% off</div>
+        <div class="tier-period">/year · <strong style="color:#2563EB;">~$5.60/month</strong> · save $41</div>
+        <div class="tier-savings" style="background:#dbeafe;color:#1e3a8a;">🔥 Save $41 vs monthly — 38% off</div>
         <ul class="features-list">
-          <li><strong>2,860 real scenario questions</strong> across 11 AWS certs</li>
+          <li><strong>All 11 AWS certifications</strong> — 2,860 real questions</li>
+          <li><strong>4 full exams per cert</strong> — 44 practice exams total</li>
           <li>Timed mock exams — real exam simulation</li>
           <li>Visual architecture builder</li>
-          <li>Domain score breakdown per session</li>
-          <li>Weak area detection + personalized focus</li>
+          <li>Performance analytics — score trends &amp; weak areas</li>
           <li>30-day pass guarantee — fail = full refund</li>
-          <li style="color:var(--success);font-weight:700;">🏆 All 11 cert question banks (CLF → SAP)</li>
+          <li style="color:var(--success);font-weight:700;">🏆 All future cert updates included free</li>
           <li style="color:var(--success);font-weight:700;">📅 Priority email support</li>
-          <li style="color:var(--success);">🔄 All future cert updates included free</li>
+          <li style="color:#9ca3af;font-size:.85rem;">🔒 AI Coach — Lifetime only</li>
         </ul>
-        <button class="btn-premium btn-premium--popular" style="font-size:1.05rem;padding:1rem;" onclick="openEmailModal('yearly')">Lock In Yearly — Save $35 →</button>
+        <button class="btn-premium btn-premium--popular" style="font-size:1.05rem;padding:1rem;background:linear-gradient(90deg,#2563EB,#1d4ed8);" onclick="openEmailModal('yearly')">Lock In Yearly — Save $41 →</button>
         <div style="text-align:center;font-size:.75rem;color:#9ca3af;margin-top:.5rem;">One payment · full year · no surprises</div>
       </div>
 
@@ -307,20 +315,21 @@
           <div style="font-size:.82rem;color:#7c3aed;font-weight:700;margin-bottom:.5rem;">✓ One payment. Own it forever.</div>
         </div>
         <div style="display:flex;align-items:baseline;gap:.5rem;">
-          <div class="tier-price" style="color:#7c3aed;"><span class="currency" style="color:#7c3aed;">$</span>97</div>
-          <div style="text-decoration:line-through;color:#9ca3af;font-size:1.2rem;font-weight:700;">$399</div>
+          <div class="tier-price" style="color:#7c3aed;"><span class="currency" style="color:#7c3aed;">$</span>147</div>
+          <div style="text-decoration:line-through;color:#9ca3af;font-size:1.2rem;font-weight:700;">$499</div>
         </div>
         <div class="tier-period">one-time · never pay again</div>
-        <div class="tier-savings" style="background:#ede9fe;color:#5b21b6;">💡 AWS cert = avg $15K salary boost. We cost $97.</div>
+        <div class="tier-savings" style="background:#ede9fe;color:#5b21b6;">💡 AWS cert = avg $15K salary boost. We cost $147.</div>
         <ul class="features-list">
-          <li><strong>2,860 real scenario questions</strong> across 11 AWS certs</li>
-          <li>Timed mock exams — real exam simulation</li>
-          <li>Visual architecture builder</li>
-          <li>Domain progress tracking + weak area detection</li>
+          <li><strong>All 11 AWS certifications</strong> — 2,860 real questions</li>
+          <li><strong>4 full exams per cert</strong> — 44 practice exams total</li>
+          <li>Visual diagrams on hard questions</li>
+          <li>Hints system — guided problem solving</li>
+          <li>Performance analytics — score trends &amp; weak areas</li>
           <li>30-day pass guarantee — fail = full refund</li>
           <li style="color:#7c3aed;font-weight:700;">🤖 Unlimited AI Coach — ask anything, 24/7</li>
-          <li style="color:#7c3aed;font-weight:700;">💡 Instant explanations for every wrong answer</li>
-          <li style="color:#7c3aed;font-weight:700;">📝 Custom study plans tailored to your gaps</li>
+          <li style="color:#7c3aed;font-weight:700;">💡 AI explains every wrong answer instantly</li>
+          <li style="color:#7c3aed;font-weight:700;">📝 Personalized study plans from AI</li>
           <li style="color:var(--success);font-weight:700;">🏆 All future certs added — no extra charge</li>
           <li style="color:var(--success);">♾️ Lifetime access — study at your own pace</li>
         </ul>
@@ -380,7 +389,7 @@
         </div>
         <div class="testimonial-card">
           <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Best $97 I ever spent. The lifetime access means I can use it for my DevOps Pro cert next. The visual architecture builder helped me understand VPC concepts finally."</p>
+          <p class="testimonial-text">"Best $147 I ever spent. The lifetime access means I can use it for my DevOps Pro cert next. The AI Coach explained every VPC concept I kept getting wrong — finally clicked."</p>
           <div class="testimonial-author">
             <div class="author-avatar">JK</div>
             <div class="author-info">
@@ -511,6 +520,16 @@
     // ── Trial modal — collects name + email, then redirects to Stripe Checkout ──
     // Card data is collected entirely on Stripe's secure hosted page (stripe.com domain).
     // Our site never sees, handles, or stores any card information. Full PCI compliance.
+    function updateMonthlyPrice(checkbox) {
+      // Visual feedback only — actual charge handled at checkout
+      const btn = document.querySelector('.pricing-card:first-child .btn-premium');
+      if (checkbox.checked) {
+        btn.textContent = 'Start Free + Add 3 Certs ($17) →';
+      } else {
+        btn.textContent = 'Start Free — No Card Needed →';
+      }
+    }
+
     let pendingTier = null;
 
     function openEmailModal(tier) {
