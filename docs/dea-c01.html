@@ -164,7 +164,7 @@
         <a href="certifications.html" class="nav-link">Certifications</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="resources.html" class="nav-link">Resources</a>
-        <a href="contact.html" class="nav-link">Contact</a>
+        
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
       </div>
@@ -395,13 +395,13 @@ let mockSecs = 5400;
 
 // ── Persistence ────────────────────────────────────────────────────────────
 function loadState() {
-  try { return JSON.parse(localStorage.getItem('dva_state')) || makeState(); }
+  try { return JSON.parse(localStorage.getItem('dea_state')) || makeState(); }
   catch(e) { return makeState(); }
 }
 function makeState() {
   return { answered: {}, streak: 0, maxStreak: 0 };
 }
-function saveState() { localStorage.setItem('dva_state', JSON.stringify(state)); }
+function saveState() { localStorage.setItem('dea_state', JSON.stringify(state)); }
 function resetProgress() {
   if (!confirm('Reset all CLF-C02 progress?')) return;
   state = makeState(); saveState(); renderDashboard(); renderPractice();
@@ -410,6 +410,27 @@ function resetProgress() {
 // ── Nav ────────────────────────────────────────────────────────────────────
 
 // ── Premium gate ──────────────────────────────────────────────────────────
+function showWrongCertOverlay() {
+  let overlay = document.getElementById('wrong-cert-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'wrong-cert-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+        <div style="font-size:2.5rem;margin-bottom:.75rem">🔒</div>
+        <h2 style="font-size:1.4rem;font-weight:800;color:#1F2937;margin-bottom:.5rem">Different Cert Selected</h2>
+        <p style="color:#545b64;margin-bottom:1.5rem;line-height:1.6">Your Monthly plan is unlocked for a different cert. Switch your selection on the dashboard, or upgrade for all 12.</p>
+        <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+          <a href="user-dashboard.html" style="background:#16A34A;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.95rem">Change Cert →</a>
+          <a href="pricing.html" style="background:#2563EB;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.95rem">Upgrade Plan →</a>
+        </div>
+        <p style="margin-top:1rem;font-size:.8rem;color:#9ca3af">Or <button onclick="document.getElementById('wrong-cert-overlay').remove()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:.8rem;text-decoration:underline">dismiss</button></p>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
+  }
+}
 function requiresPremium(sectionId) {
   return (sectionId === 'practice' || sectionId === 'mock');
 }
@@ -441,6 +462,14 @@ function showSection(id) {
   if (requiresPremium(id)) {
     const isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
     if (!isPremium) { showPremiumOverlay(); return; }
+
+    // Monthly tier: only the selected cert is accessible
+    const tier = (typeof getPremiumTier === 'function') ? getPremiumTier() : localStorage.getItem('_apa_tier');
+    if (tier === 'monthly') {
+      const monthlyCert = localStorage.getItem('_apa_monthly_cert');
+      if (!monthlyCert) { window.location.href = 'user-dashboard.html'; return; }
+      if (monthlyCert !== 'DEA-C01') { showWrongCertOverlay(); return; }
+    }
   }
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -578,6 +607,7 @@ function answerPractice(chosen, key, q) {
   else state.streak = 0;
   if (state.streak > state.maxStreak) state.maxStreak = state.streak;
   saveState();
+  if (typeof syncProgressDebounced === 'function') syncProgressDebounced('dea-c01', state);
   renderPracticeQ();
   document.getElementById('p-next').disabled = false;
 }
@@ -655,6 +685,14 @@ function submitMock() {
   mockQuestions.forEach((q,i) => { if (mockAnswers[i] === q.answer) correct++; });
   const pct = Math.round(correct/total*100);
 
+  // Save to exam history (_apa_history)
+  try {
+    const hist = JSON.parse(localStorage.getItem('_apa_history')||'[]');
+    const ver = hist.filter(h=>h.certCode==='DEA-C01').length + 1;
+    hist.push({id:Date.now(),certCode:'DEA-C01',score:correct,total,mode:'mock',domain:'',date:new Date().toISOString(),version:ver});
+    localStorage.setItem('_apa_history', JSON.stringify(hist));
+  } catch(e){}
+
   document.getElementById('mock-exam').style.display = 'none';
   document.getElementById('mock-result').style.display = 'block';
   const scoreEl = document.getElementById('m-score-pct');
@@ -702,7 +740,13 @@ renderDashboard();
 </script>
   <script src="payment-system.js"></script>
   <script>
-    initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
+    initPremiumCheck().then(async () => {
+      initPremiumUI();
+      if (typeof loadProgressForCert === 'function' && typeof hasPremiumAccess === 'function' && hasPremiumAccess()) {
+        const saved = await loadProgressForCert('dea-c01', 'dea_state');
+        if (saved) { state = Object.assign(makeState(), saved); saveState(); renderDashboard(); }
+      }
+    }).catch(() => {});
   </script>
   <script src="navigation.js"></script>
 <script src="nav-auth.js"></script>
