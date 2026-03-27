@@ -80,9 +80,11 @@
     .cert-access-card .cert-name{font-size:.85rem;font-weight:700;color:#1F2937}
     .cert-access-card .cert-code{font-size:.75rem;color:#6B7280}
     .cert-access-card .cert-status{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;margin-top:.25rem;width:fit-content}
-    .cert-status-locked{background:#FEF2F2;color:#DC2626}
-    .cert-status-active{background:#F0FDF4;color:#16A34A}
-    .cert-status-free{background:#EFF6FF;color:#2563EB}
+    .cert-status-locked{background:#F9FAFB;color:#9CA3AF;border:1px dashed #D1D5DB}
+    .cert-status-active{background:#F0FDF4;color:#16A34A;border:1px solid #86EFAC}
+    .cert-status-free{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE}
+    .cert-status-switch{background:#FFF7ED;color:#D97706;border:1px solid #FCD34D;cursor:pointer}
+    .cert-status-add{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;cursor:pointer}
 
     /* ── EXAM HISTORY TABLE ── */
     .exam-filter-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
@@ -684,18 +686,26 @@ function buildCertGrid() {
         statusText = '✅ Your Cert';
         href       = c.href;
       } else if (bundleCerts.length < 3) {
-        statusCls  = 'cert-status-locked';
+        statusCls  = 'cert-status-add';
         statusText = '➕ Add to Bundle';
         href       = `javascript:addBundleSlot('${c.code}')`;
       } else {
-        statusCls  = 'cert-status-locked';
+        statusCls  = 'cert-status-switch';
         statusText = '🔄 Swap Slot';
         href       = `javascript:swapBundleSlot('${c.code}')`;
       }
     } else if (userTier === 'monthly') {
       accessible = (monthlyCert === c.code);
-      statusCls  = accessible ? 'cert-status-active' : 'cert-status-locked';
-      statusText = accessible ? '✅ Your Cert' : (monthlyCert ? '🔄 Switch to This' : '🔒 Pick a Cert');
+      if (accessible) {
+        statusCls = 'cert-status-active';
+        statusText = '✅ Your Cert';
+      } else if (monthlyCert) {
+        statusCls = 'cert-status-switch';
+        statusText = '🔄 Switch to This';
+      } else {
+        statusCls = 'cert-status-locked';
+        statusText = '🔒 Pick a Cert';
+      }
       href       = accessible ? c.href : `javascript:switchMonthlyCert('${c.code}')`;
     } else {
       accessible = false;
