@@ -139,6 +139,37 @@
   </style>
 </head>
 <body>
+  <!-- PAGE-LEVEL ACCESS GATE -->
+  <script>
+  (function() {
+    var CERT_CODE = 'SOA-C02';
+    var tier = localStorage.getItem('_apa_tier') || 'free';
+    var monthlyCert = localStorage.getItem('_apa_monthly_cert') || '';
+    // Monthly users: must own this cert
+    if (tier === 'monthly' || tier === 'monthly3') {
+      if (!monthlyCert) { window.location.href = 'user-dashboard.html'; return; }
+      if (monthlyCert !== CERT_CODE) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var certName = monthlyCert;
+          var d = document.createElement('div');
+          d.id = 'cert-gate-overlay';
+          d.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem';
+          d.innerHTML = '<div style="background:#fff;border-radius:16px;padding:2.5rem;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)">' +
+            '<div style="font-size:2.5rem;margin-bottom:.75rem">🔒</div>' +
+            '<h2 style="font-size:1.3rem;font-weight:800;color:#1F2937;margin-bottom:.5rem">Not in Your Plan</h2>' +
+            '<p style="color:#545b64;margin-bottom:.75rem;line-height:1.6">Your Monthly plan covers <strong>' + certName + '</strong> only.<br>' +
+            'Upgrade to Yearly or Lifetime to access all 12 certifications.</p>' +
+            '<div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem">' +
+            '<a href="pricing.html" style="background:#2563EB;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem">Upgrade Plan →</a>' +
+            '<a href="' + certName.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-') + '.html" style="background:#f3f4f6;color:#374151;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem">Go to My Cert</a>' +
+            '</div></div>';
+          document.body.appendChild(d);
+        });
+      }
+    }
+    // Free/visitor: they can view dashboard only (section gate handles practice/mock)
+  })();
+  </script>
 
     <nav class="main-nav" role="navigation">
     <div class="nav-container">
