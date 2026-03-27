@@ -500,7 +500,7 @@ const _jwtTier  = (() => {
     return pl.tier || 'free';
   } catch (e) { return 'free'; }
 })();
-const _TIER_RANK = { free: 0, monthly: 1, yearly: 2, lifetime: 3 };
+const _TIER_RANK = { free: 0, monthly: 1, bundle3: 1, yearly: 2, lifetime: 3 };
 const userTier = (_TIER_RANK[_jwtTier] || 0) >= (_TIER_RANK[_supaTier] || 0) ? _jwtTier : _supaTier;
 if (userTier !== _supaTier) localStorage.setItem('_apa_tier', userTier);
 

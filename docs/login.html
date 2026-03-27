@@ -101,7 +101,7 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // Helper: resolve best tier from Supabase metadata + payment JWT
 function resolveBestTier(supaTier) {
-  const TIER_RANK = { free: 0, monthly: 1, yearly: 2, lifetime: 3 };
+  const TIER_RANK = { free: 0, monthly: 1, bundle3: 1, yearly: 2, lifetime: 3 };
   try {
     const jwt = localStorage.getItem('_apa_jwt');
     if (!jwt) return supaTier;

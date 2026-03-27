@@ -56,7 +56,7 @@ exports.handler = async (event) => {
 
     // Subscriptions get a rolling 24h window; lifetime is permanent
     let exp = null;
-    if (tier === 'monthly' || tier === 'yearly') {
+    if (tier === 'monthly' || tier === 'bundle3' || tier === 'yearly') {
       exp = now + 86400; // 24-hour rolling refresh
     }
 

@@ -2130,15 +2130,21 @@
           document.getElementById('floatingTips').style.display = 'none';
         }
 
-        // Render 4 exam cards when opening exam tab
-        if (tab.dataset.tab === 'exam') {
+        // Gate quiz + exam tabs for monthly users with non-SAA cert
+        if (tab.dataset.tab === 'quiz' || tab.dataset.tab === 'exam') {
           const _tier = localStorage.getItem('_apa_tier');
           const _monthlyCert = localStorage.getItem('_apa_monthly_cert');
           if (_tier === 'monthly' && _monthlyCert && _monthlyCert !== 'SAA-C03') {
             if (typeof showPaywall === 'function') showPaywall();
             return;
           }
-          backToExamSelect();
+          if (_tier === 'bundle3') {
+            try {
+              const _bc = JSON.parse(localStorage.getItem('_apa_bundle_certs') || '[]');
+              if (!_bc.includes('SAA-C03')) { if (typeof showPaywall === 'function') showPaywall(); return; }
+            } catch(e) {}
+          }
+          if (tab.dataset.tab === 'exam') backToExamSelect();
         }
 
         // Initialize architecture builder on first visit
