@@ -601,6 +601,7 @@ function answerPractice(chosen, key, q) {
   else state.streak = 0;
   if (state.streak > state.maxStreak) state.maxStreak = state.streak;
   saveState();
+  if (typeof syncProgressDebounced === 'function') syncProgressDebounced('saa-c03', state);
   renderPracticeQ();
   document.getElementById('p-next').disabled = false;
   // Show upgrade wall after free limit is exhausted
@@ -776,7 +777,13 @@ renderDashboard();
 </script>
   <script src="payment-system.js"></script>
   <script>
-    initPremiumCheck().then(() => { initPremiumUI(); buildPool(); renderPracticeQ(); }).catch(() => {});
+    initPremiumCheck().then(async () => {
+      initPremiumUI();
+      if (typeof loadProgressForCert === 'function' && typeof hasPremiumAccess === 'function' && hasPremiumAccess()) {
+        const saved = await loadProgressForCert('saa-c03', 'saa_state');
+        if (saved) { state = Object.assign(makeState(), saved); saveState(); renderDashboard(); buildPool(); renderPracticeQ(); }
+      } else { buildPool(); renderPracticeQ(); }
+    }).catch(() => {});
   </script>
   <script src="navigation.js"></script>
 <script src="nav-auth.js"></script>

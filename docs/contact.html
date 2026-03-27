@@ -110,12 +110,12 @@
           </div>
         </div>
 
-        <a href="certifications.html" class="nav-link">Certifications</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="resources.html" class="nav-link">Resources</a>
-        <a href="contact.html" class="nav-link active">Contact</a>
-        <a href="pricing.html" class="nav-link">Pricing</a>
-        <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
+        <a href="certifications.html" class="nav-link" onclick="clearContact()">Certifications</a>
+        <a href="about.html" class="nav-link" onclick="clearContact()">About</a>
+        <a href="resources.html" class="nav-link" onclick="clearContact()">Resources</a>
+        <a href="contact.html" class="nav-link active" id="nav-contact-tab">Contact</a>
+        <a href="pricing.html" class="nav-link" onclick="clearContact()">Pricing</a>
+        <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);" onclick="clearContact()">AI Coach</a>
       </div>
 
       <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
@@ -228,5 +228,19 @@
   </footer>
   <script src="navigation.js"></script>
 <script src="nav-auth.js"></script>
+<script>
+function clearContact() {
+  sessionStorage.setItem('hideContact', '1');
+}
+// If user navigated here without coming from footer box, hide the contact tab
+if (sessionStorage.getItem('hideContact') === '1') {
+  document.addEventListener('DOMContentLoaded', function() {
+    const tab = document.getElementById('nav-contact-tab');
+    if (tab) tab.style.display = 'none';
+  });
+}
+// Clear the flag so next visit from footer works again
+sessionStorage.removeItem('hideContact');
+</script>
 </body>
 </html>

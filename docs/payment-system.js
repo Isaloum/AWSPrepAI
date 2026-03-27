@@ -12,10 +12,10 @@ const PRICING = {
   },
   bundle3: {
     price: 17,
-    stripePriceId: 'REPLACE_WITH_17_BUNDLE_PRICE_ID',
+    stripePriceId: 'price_1TEh73E9neqrFM5L2Q38zGJF',
     label: '3-Cert Bundle',
-    interval: 'one-time',
-    mode: 'payment'
+    interval: 'month',
+    mode: 'subscription'
   },
   yearly: {
     price: 67,
