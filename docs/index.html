@@ -2231,11 +2231,11 @@
       const tier = localStorage.getItem('_apa_tier');
       const monthlyCert = localStorage.getItem('_apa_monthly_cert');
 
-      // Remove all active highlights first
+      // Reset ALL badges to Premium first (handles hardcoded HTML defaults)
       document.querySelectorAll('.cert-hub-card').forEach(c => {
         c.classList.remove('cert-hub-free', 'cert-hub-active');
         const badge = c.querySelector('.cert-hub-badge');
-        if (badge && badge.textContent.includes('Your Cert')) {
+        if (badge) {
           badge.textContent = '🔒 Premium';
           badge.className = 'cert-hub-badge premium-badge';
         }
@@ -2257,6 +2257,18 @@
           const badge = card.querySelector('.cert-hub-badge');
           if (badge) { badge.textContent = '✅ Your Cert'; badge.className = 'cert-hub-badge free-badge'; }
         }
+      } else if (tier === 'bundle3') {
+        try {
+          const bundleCerts = JSON.parse(localStorage.getItem('_apa_bundle_certs') || '[]');
+          bundleCerts.forEach(code => {
+            const card = document.getElementById('cert-hub-' + code.toLowerCase());
+            if (card) {
+              card.classList.add('cert-hub-free');
+              const badge = card.querySelector('.cert-hub-badge');
+              if (badge) { badge.textContent = '✅ Your Cert'; badge.className = 'cert-hub-badge free-badge'; }
+            }
+          });
+        } catch(e) {}
       } else if (tier === 'yearly' || tier === 'lifetime') {
         // All certs unlocked
         document.querySelectorAll('.cert-hub-card').forEach(c => {
@@ -2266,8 +2278,12 @@
         });
       }
     }
-    // Run on load
-    document.addEventListener('DOMContentLoaded', updateCertHubHighlight);
+    // Run on load AND after a short delay to handle async JWT verification
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCertHubHighlight();
+      // Re-run after JWT check completes (async)
+      setTimeout(updateCertHubHighlight, 800);
+    });
 
     function startPractice() {
       document.querySelector('[data-tab="quiz"]').click();

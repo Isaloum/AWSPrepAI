@@ -516,6 +516,23 @@ function renderDashboard() {
 }
 
 function startPractice(mode) {
+  // ── Cert access gate (blocks wrong monthly cert) ──────────────────────
+  if (requiresPremium && requiresPremium('practice')) {
+    const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+    if (!_isPremium) { if(typeof showPremiumOverlay==='function') showPremiumOverlay(); return; }
+    const _tier = (typeof getPremiumTier === 'function') ? getPremiumTier() : localStorage.getItem('_apa_tier');
+    if (_tier === 'monthly') {
+      const _mc = localStorage.getItem('_apa_monthly_cert');
+      if (!_mc || _mc !== 'SCS-C03') { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+    }
+    if (_tier === 'bundle3') {
+      try {
+        const _bc = JSON.parse(localStorage.getItem('_apa_bundle_certs') || '[]');
+        if (!_bc.includes('SCS-C03')) { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+      } catch(e) { window.location.href = 'user-dashboard.html'; return; }
+    }
+  }
+
   if (mode === 'weak') {
     // find weakest domain
     let worstCat = DOMAINS[0], worstPct = 101;
