@@ -2278,12 +2278,9 @@
         });
       }
     }
-    // Run on load AND after a short delay to handle async JWT verification
-    document.addEventListener('DOMContentLoaded', () => {
-      updateCertHubHighlight();
-      // Re-run after JWT check completes (async)
-      setTimeout(updateCertHubHighlight, 800);
-    });
+    // Run immediately on DOMContentLoaded (reads from localStorage)
+    document.addEventListener('DOMContentLoaded', updateCertHubHighlight);
+    // Also expose globally so initPremiumCheck().then() can call it
 
     function startPractice() {
       document.querySelector('[data-tab="quiz"]').click();
@@ -3506,7 +3503,7 @@
   <script src="payment-system.js"></script>
   <script>
     // Initialize JWT premium check on every page load (async, non-blocking)
-    initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
+    initPremiumCheck().then(() => { initPremiumUI(); updateCertHubHighlight(); }).catch(() => {});
   </script>
   <!-- Include sample questions script -->
   <script src="sample-questions.js"></script>
