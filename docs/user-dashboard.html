@@ -74,12 +74,13 @@
 
     /* ── CERT GRID ── */
     .cert-access-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
-    .cert-access-card{border:1px solid #E5E7EB;border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;text-decoration:none;color:inherit;transition:all .2s}
+    .cert-access-card{border:1px solid #E5E7EB;border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;text-decoration:none;color:inherit;transition:all .2s;min-height:110px}
     .cert-access-card:hover{border-color:#3B82F6;box-shadow:0 2px 12px rgba(59,130,246,.12);transform:translateY(-1px)}
     .cert-access-card .cert-icon{font-size:1.5rem}
     .cert-access-card .cert-name{font-size:.85rem;font-weight:700;color:#1F2937}
     .cert-access-card .cert-code{font-size:.75rem;color:#6B7280}
-    .cert-access-card .cert-status{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;margin-top:.25rem;width:fit-content}
+    .cert-access-card .cert-spacer{flex:1}
+    .cert-access-card .cert-status{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;width:fit-content}
     .cert-status-locked{background:#FEF2F2;color:#DC2626}
     .cert-status-active{background:#F0FDF4;color:#16A34A}
     .cert-status-free{background:#EFF6FF;color:#2563EB}
@@ -651,8 +652,8 @@ function buildCertGrid() {
     } else if (userTier === 'monthly') {
       accessible = (monthlyCert === c.code);
       statusCls  = accessible ? 'cert-status-active' : 'cert-status-locked';
-      statusText = accessible ? '✅ Your Cert' : (monthlyCert ? '🔒 Switch Plan' : '🔒 Pick a Cert');
-      href       = accessible ? c.href : 'pricing.html';
+      statusText = accessible ? '✅ Your Cert' : '🔄 Switch to This';
+      href       = accessible ? c.href : `javascript:switchMonthlyCert('${c.code}')`;
     } else {
       accessible = false;
       statusCls  = 'cert-status-locked';
@@ -668,8 +669,9 @@ function buildCertGrid() {
       <div class="cert-icon">${c.icon}</div>
       <div class="cert-name">${c.name}</div>
       <div class="cert-code">${c.code}</div>
+      <div class="cert-spacer"></div>
       <span class="cert-status ${statusCls}">${statusText}</span>
-      ${attempts ? `<div style="font-size:.75rem;color:#6B7280;margin-top:.25rem">
+      ${attempts ? `<div style="font-size:.75rem;color:#6B7280">
         ${attempts} attempt${attempts>1?'s':''} · Best: <strong>${bestScore}%</strong>
       </div>` : ''}
     </a>`;
@@ -698,6 +700,17 @@ function buildMonthlyCertPicker() {
         <span style="font-size:.78rem;font-weight:700;color:#16A34A;margin-top:.25rem">Tap to select →</span>
       </div>`).join('');
   }
+}
+
+function switchMonthlyCert(code) {
+  if (!confirm(`Switch your monthly cert to ${code}? Your current cert access will change.`)) return;
+  localStorage.setItem('_apa_monthly_cert', code);
+  buildCertGrid();
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#15803D;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+  msg.textContent = `✅ Switched to ${code}!`;
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3000);
 }
 
 function selectMonthlyCert(code) {
