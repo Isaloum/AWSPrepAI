@@ -1,209 +1,71 @@
-# ☁️ AWSPrepAI
+# AWSPrepAI
 
-<div align="center">
+**Date:** 2026-03-24
+**Status:** In Progress
 
-### AI-Powered AWS SAA-C03 Study Platform
+## Folder Structure
 
-**506 curated practice questions • Smart Study Guide • Mock Exams • Progress Analytics**
-
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-FF9900?style=for-the-badge&logo=amazon-aws)](https://isaloum.github.io/AWSPrepAI)
-[![GitHub](https://img.shields.io/badge/GitHub-View%20Source-181717?style=for-the-badge&logo=github)](https://github.com/Isaloum/AWSPrepAI)
-
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazon-aws&logoColor=white)
-
-</div>
-
----
-
-## 📋 About
-
-**AWSPrepAI** is a comprehensive study platform designed to help you ace the AWS Solutions Architect Associate (SAA-C03) certification exam. Built with vanilla JavaScript, it features 506 carefully curated practice questions, an AI-analyzed smart study guide, full-length mock exams, and intelligent progress tracking—all without requiring any backend or external dependencies.
-
-**Perfect for:** Solutions Architect Associate (SAA-C03) exam preparation.
-
-🎯 **[Try it now →](https://isaloum.github.io/AWSPrepAI)**
-
----
-
-## ✨ Features
-
-| Feature | Description |
-|---------|-------------|
-| 🎯 **Hero Landing Page** | Engaging landing page with AWS SAA-C03 badge, compelling intro, and clear call-to-action |
-| 🎓 **Smart Study Guide** | AI-analyzed content from 506 SAA-C03 questions with domain-specific tips, common traps, and top tested services |
-| 📝 **Practice Quiz** | 506 questions with detailed explanations across all SAA-C03 exam domains |
-| ⏱️ **Mock Exams** | Full-length timed exams matching real certification format |
-| 📊 **Progress Tracking** | Track accuracy, streaks, weak areas, and exam readiness |
-| 🔍 **Services Reference** | Searchable guide with 30+ core AWS services |
-| 💡 **Contextual Tips** | Floating tips button provides domain-specific help during practice |
-| 📚 **Resource Pages** | Dedicated About, Contact, Glossary (coming soon), and Resources (coming soon) pages |
-| 💾 **Offline Support** | All data stored locally using LocalStorage—no backend required |
-| 📱 **Mobile Responsive** | Fully responsive design with hamburger menu navigation for mobile devices |
-| 🎨 **Professional Branding** | Custom logo and favicon for a polished professional appearance |
-| 🏗️ **Architecture Builder** | Interactive drag-and-drop canvas to build and validate AWS architectures with 10+ scenario-based challenges, real-time feedback, and solution animations |
-
----
-
-## 🚀 Live Demo
-
-**👉 [https://isaloum.github.io/AWSPrepAI](https://isaloum.github.io/AWSPrepAI)**
-
----
-
-## 📚 Certification Supported
-
-### 🏗️ AWS Solutions Architect Associate (SAA-C03) - 506 Questions
-- **Design Secure Architectures** (144 questions) - IAM, KMS, VPC, Security Groups, compliance
-- **Design Resilient Architectures** (119 questions) - HA, DR, Auto Scaling, ELB, decoupling
-- **Design High-Performing Architectures** (152 questions) - Caching, databases, CloudFront, compute
-- **Design Cost-Optimized Architectures** (90 questions) - S3 lifecycle, Reserved Instances, monitoring
-
----
-
-## 🎓 Smart Study Guide Highlights
-
-The Study Guide is powered by AI analysis of all 506 SAA-C03 practice questions:
-
-- **Top 10 Most Tested Services** per domain (e.g., S3 appears 145 times in performance questions)
-- **Key Topics to Master** with specific exam focus areas
-- **Common Wrong Answer Traps** to avoid during the exam
-- **Quick Reference Guides** for last-minute review
-- **Exam Strategy Tips** including time management and red/green flags
-
----
-
-## 📄 Site Structure
-
-AWSPrepAI now includes several pages for a comprehensive learning experience:
-
-- **🏠 Home (Landing Page):** Hero section with AWS SAA-C03 badge, feature overview, and quick start
-- **📊 Dashboard:** Track your progress, accuracy, and identify weak areas
-- **❓ Practice Quiz:** 506 SAA-C03 practice questions with instant feedback
-- **📝 Mock Exams:** Full-length timed certification practice exams
-- **🎓 Study Guide:** AI-analyzed tips and strategies (SAA-C03)
-- **💡 Hints/Keywords:** Quick reference for exam keywords and scenarios
-- **📚 Services:** Reference guide for 30+ core AWS services
-- **🏗️ Architecture Builder:** Interactive drag-and-drop canvas for building AWS architectures, drawing service connections, validating solutions, and learning through scenario-based challenges
-- **ℹ️ About:** Learn about the platform, mission, and technology stack
-- **📞 Contact:** Get in touch, contribute, or report issues
-- **🗂️ Glossary & Flashcards:** Interactive learning tools (coming soon)
-- **📖 Resources & FAQ:** Study resources and frequently asked questions (coming soon)
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend:** Vanilla JavaScript (ES6+), HTML5, CSS3
-- **Data Persistence:** LocalStorage API
-- **Design:** Responsive CSS with AWS branding, mobile-first approach
-- **Navigation:** Responsive hamburger menu for mobile devices
-- **Assets:** Custom SVG logo and favicon
-- **Deployment:** GitHub Pages
-- **Dependencies:** Zero external libraries (fully self-contained)
-
----
-
-## 💻 Installation & Usage
-
-### Option 1: Use the Live Site (Recommended)
-Simply visit **[https://isaloum.github.io/AWSPrepAI](https://isaloum.github.io/AWSPrepAI)**
-
-### Option 2: Run Locally
-```bash
-# Clone the repository
-git clone https://github.com/Isaloum/AWSPrepAI.git
-
-# Navigate to project directory
-cd AWSPrepAI
-
-# Open in browser (any local server works)
-# Using Python 3:
-python -m http.server 8000
-
-# Using Node.js:
-npx serve docs
-
-# Then visit: http://localhost:8000
+```
+AWSPrepAI/
+├── 00-brief/         → Working brief & discovery answers
+├── 01-strategy/      → Product strategy, MVP definition
+├── 02-ux/            → User flows, screen list
+├── 03-architecture/  → Tech stack, system design, data model
+├── 04-execution/     → Milestones, build checklist, risks
+├── 05-gtm/           → Positioning, analytics plan
+├── 06-build/         → Production code
+└── docs/             → Live site source (GitHub Pages)
 ```
 
-No build process required—just open `docs/index.html` directly in any modern browser!
+## Progress
 
----
+✅ Phase 0 — Setup
+🔲 Phase 1 — Discovery
+🔲 Phase 2 — Strategy
+🔲 Phase 3 — Architecture
+🔲 Phase 4 — Execution Plan
+🔲 Phase 5 — Go To Market
+🔲 Phase 6 — Build
 
-## 📖 How to Use
+## What Was Built (2026-03-24)
 
-1. **Explore the Landing Page:** Get an overview of the platform and start with the "Start Practicing Now" button
-2. **Study Guide:** Review domain-specific tips and key topics for SAA-C03
-3. **Practice Quiz:** Start with practice mode to learn and track progress
-4. **Mock Exam:** Take timed full-length exams when ready
-5. **Architecture Builder:** Select a scenario, drag AWS service icons onto the canvas, draw connections between services, and validate your architecture design
-6. **Track Progress:** Monitor your weak areas and exam readiness on the dashboard
+### ✅ Access Control — All 12 Cert Pages Wired
 
----
+**Root cause fixed:** All 10 paid cert pages had `payment-system.js` loading AFTER `initPremiumCheck()` was called → function undefined → gate never opened for paid users.
 
-## 📊 Question Breakdown
+**Changes made:**
 
-| Certification | Total Questions | Domains Covered |
-|---------------|----------------|----------------|
-| **SAA-C03** | 506 questions | 4 domains (Secure, Resilient, Performant, Cost-Optimized) |
+| File | Fix |
+|------|-----|
+| `clf-c02.html` | Fixed script load order |
+| `dva-c02.html` | Fixed script load order |
+| `soa-c02.html` | Fixed script load order |
+| `sap-c02.html` | Fixed script load order |
+| `dop-c02.html` | Fixed script load order |
+| `scs-c03.html` | Fixed script load order |
+| `ans-c01.html` | Fixed script load order |
+| `mla-c01.html` | Fixed script load order |
+| `dea-c01.html` | Fixed script load order |
+| `gai-c01.html` | Fixed script load order |
+| `aif-c01.html` | Added `payment-system.js` + `requiresPremium` + `showPremiumOverlay` + section gate |
+| `saa-c03.html` | Added `payment-system.js` + 5-question free limit + mock exam premium gate + upgrade wall |
 
-All questions include:
-- ✅ Detailed explanations
-- ✅ Domain categorization
-- ✅ Multiple-choice format matching real exams
+**How gating works now:**
+- **11 paid certs**: clicking Practice or Mock tab shows `showPremiumOverlay()` if not premium
+- **SAA-C03 (free)**: practice pool is filtered to 5 questions for free users via `filterQuestionsForUser()`; upgrade wall fires after last free question; mock requires premium
+- **chat.html (AI Coach)**: was already correctly wired ✅
 
----
+## What Remains (from Roadmap)
 
-## 🎯 Exam Information
+⚠️ `REPLACE_WITH_17_BUNDLE_PRICE_ID` still missing in `payment-system.js` line 15
+🔲 Subscription cancellation → revoke tier in Supabase on `customer.subscription.deleted`
+🔲 Exam history: cert pages need to write to `_apa_history` on mock complete
+🔲 Progress sync: wire `syncProgressDebounced` + `loadProgressForCert` in all cert pages
+🔲 Monthly tier cert selection (which cert does $7/mo unlock?)
+🔲 Password reset flow — verify Supabase redirect URL
+🔲 Newsletter capture function (`capture-email` Netlify function)
+🔲 Fix share links on `success.html` (still say SAA-C03)
 
-### Solutions Architect Associate (SAA-C03)
-- **Questions:** 65 (50-55 scored)
-- **Duration:** 130 minutes
-- **Pass Score:** 720/1000 (~72%)
-- **Cost:** $150 USD
+## Next Step
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-- Submit bug reports or feature requests via [GitHub Issues](https://github.com/Isaloum/AWSPrepAI/issues)
-- Fork the repo and submit pull requests
-- Suggest new practice questions or improvements
-
----
-
-## 📄 License
-
-MIT License - feel free to use this project for your own learning or build upon it!
-
----
-
-## 👨‍💻 Author
-
-**Ihab Saloum**
-
-[![GitHub](https://img.shields.io/badge/GitHub-Isaloum-181717?style=flat&logo=github)](https://github.com/Isaloum)
-[![Portfolio](https://img.shields.io/badge/Portfolio-More%20Projects-FF9900?style=flat)](https://github.com/Isaloum)
-
----
-
-## ⭐ Support
-
-If this project helped you prepare for your AWS certification, please consider:
-- ⭐ Starring the repository
-- 🔀 Sharing it with others studying for AWS exams
-- 📝 Providing feedback to improve the platform
-
----
-
-<div align="center">
-
-**Built with ☁️ by Ihab Saloum**
-
-[Live Demo](https://isaloum.github.io/AWSPrepAI) • [Source Code](https://github.com/Isaloum/AWSPrepAI) • [Report Bug](https://github.com/Isaloum/AWSPrepAI/issues)
-
-</div>
+Deploy to GitHub Pages using the write-tree push protocol from the roadmap.

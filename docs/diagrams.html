@@ -206,7 +206,6 @@
       </a>
 
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
 
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">
@@ -284,9 +283,6 @@
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
         <div class="mobile-nav-section">
-          <a href="index.html" class="mobile-nav-link">📊 Dashboard</a>
-        </div>
-        <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="index.html#quiz" class="mobile-nav-link" onclick="showTab('quiz')">📝 Practice Quiz</a>
           <a href="index.html#exam" class="mobile-nav-link" onclick="showTab('exam')">⏱️ Mock Exam</a>
@@ -316,8 +312,25 @@
 <!-- PAGE HEADER -->
 <div class="page-header">
   <h1>🏗️ AWS Architecture Diagrams</h1>
-  <p>Full SAA-C03 coverage — click any component to learn what it does and why it matters for your exam.</p>
-  <div class="filter-bar">
+  <p>Interactive architecture diagrams across all 12 AWS certifications — click any component to learn what it does and why it matters for the exam.</p>
+
+  <!-- Cert Selector -->
+  <div class="filter-bar" style="margin-bottom:.75rem;flex-wrap:wrap;">
+    <button class="filter-btn active" onclick="filterCert('saa')">SAA-C03</button>
+    <button class="filter-btn" onclick="filterCert('clf')">CLF-C02</button>
+    <button class="filter-btn" onclick="filterCert('dva')">DVA-C02</button>
+    <button class="filter-btn" onclick="filterCert('soa')">SOA-C02</button>
+    <button class="filter-btn" onclick="filterCert('sap')">SAP-C02</button>
+    <button class="filter-btn" onclick="filterCert('dop')">DOP-C02</button>
+    <button class="filter-btn" onclick="filterCert('ans')">ANS-C01</button>
+    <button class="filter-btn" onclick="filterCert('scs')">SCS-C02</button>
+    <button class="filter-btn" onclick="filterCert('dea')">DEA-C01</button>
+    <button class="filter-btn" onclick="filterCert('mla')">MLA-C01</button>
+    <button class="filter-btn" onclick="filterCert('aif')">AIF-C01</button>
+    <button class="filter-btn" onclick="filterCert('gai')">GAI-C01</button>
+  </div>
+
+  <div class="filter-bar" id="domain-filter-bar">
     <button class="filter-btn active" onclick="filterDomain('all')">All Domains</button>
     <button class="filter-btn" onclick="filterDomain('resilient')">Resilient</button>
     <button class="filter-btn" onclick="filterDomain('secure')">Secure</button>
@@ -328,6 +341,7 @@
 </div>
 
 <div class="content">
+<div class="cert-section" data-cert="saa" style="display:block">
 
 <!-- ═══════════════════════════════════════════════════
      DOMAIN 1: RESILIENT ARCHITECTURES
@@ -2396,6 +2410,336 @@
 </div><!-- end networking section -->
 
 
+</div><!-- end SAA cert-section -->
+
+<!-- ═══════ OTHER CERTS ═══════ -->
+
+<div class="cert-section" data-cert="clf" style="display:none">
+  <div class="domain-section" data-domain="resilient">
+    <div class="section-header"><h2>Cloud Concepts &amp; Core Services</h2><span class="domain-badge badge-resilient">CLF-C02 · 24% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Global Infrastructure</h3><span class="exam-tag">⭐ Foundational</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="480" height="240" rx="12" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="250" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#0c4a6e">AWS Global Infrastructure</text>
+          <rect x="30" y="50" width="130" height="80" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="95" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#1e40af">Region</text>
+          <text x="95" y="90" text-anchor="middle" font-size="9" fill="#1e40af">us-east-1</text>
+          <rect x="45" y="100" width="50" height="22" rx="4" fill="#3b82f6"/><text x="70" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1a</text>
+          <rect x="100" y="100" width="50" height="22" rx="4" fill="#3b82f6"/><text x="125" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1b</text>
+          <rect x="180" y="50" width="130" height="80" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+          <text x="245" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">Region</text>
+          <text x="245" y="90" text-anchor="middle" font-size="9" fill="#15803d">eu-west-1</text>
+          <rect x="195" y="100" width="50" height="22" rx="4" fill="#22c55e"/><text x="220" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1a</text>
+          <rect x="250" y="100" width="50" height="22" rx="4" fill="#22c55e"/><text x="275" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1b</text>
+          <rect x="340" y="50" width="130" height="80" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="405" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">Region</text>
+          <text x="405" y="90" text-anchor="middle" font-size="9" fill="#92400e">ap-southeast-1</text>
+          <rect x="355" y="100" width="50" height="22" rx="4" fill="#f59e0b"/><text x="380" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1a</text>
+          <rect x="410" y="100" width="50" height="22" rx="4" fill="#f59e0b"/><text x="435" y="115" text-anchor="middle" font-size="9" fill="white">AZ-1b</text>
+          <rect x="80" y="155" width="120" height="30" rx="6" fill="#7c3aed" opacity=".9"/>
+          <text x="140" y="174" text-anchor="middle" font-size="10" fill="white" font-weight="700">Edge Location (400+)</text>
+          <rect x="220" y="155" width="120" height="30" rx="6" fill="#7c3aed" opacity=".9"/>
+          <text x="280" y="174" text-anchor="middle" font-size="10" fill="white" font-weight="700">CloudFront CDN</text>
+          <rect x="360" y="155" width="110" height="30" rx="6" fill="#7c3aed" opacity=".9"/>
+          <text x="415" y="174" text-anchor="middle" font-size="10" fill="white" font-weight="700">Route 53 DNS</text>
+          <text x="250" y="220" text-anchor="middle" font-size="10" fill="#64748b">Regions → AZs → Edge Locations: 3 layers of global scale</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Region = geographic area. AZ = isolated data center. Edge = CDN cache. Know the difference!</div>
+      </div>
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Shared Responsibility Model</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="235" height="240" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+          <text x="127" y="35" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">☁️ AWS Responsible FOR</text>
+          <rect x="25" y="45" width="205" height="28" rx="6" fill="#3b82f6"/><text x="127" y="63" text-anchor="middle" font-size="10" fill="white">Physical hardware &amp; data centers</text>
+          <rect x="25" y="80" width="205" height="28" rx="6" fill="#3b82f6"/><text x="127" y="98" text-anchor="middle" font-size="10" fill="white">Network infrastructure</text>
+          <rect x="25" y="115" width="205" height="28" rx="6" fill="#3b82f6"/><text x="127" y="133" text-anchor="middle" font-size="10" fill="white">Hypervisor &amp; virtualization</text>
+          <rect x="25" y="150" width="205" height="28" rx="6" fill="#3b82f6"/><text x="127" y="168" text-anchor="middle" font-size="10" fill="white">Managed service software</text>
+          <rect x="255" y="10" width="235" height="240" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+          <text x="372" y="35" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">👤 Customer Responsible</text>
+          <rect x="270" y="45" width="205" height="28" rx="6" fill="#22c55e"/><text x="372" y="63" text-anchor="middle" font-size="10" fill="white">Data &amp; encryption</text>
+          <rect x="270" y="80" width="205" height="28" rx="6" fill="#22c55e"/><text x="372" y="98" text-anchor="middle" font-size="10" fill="white">IAM users &amp; permissions</text>
+          <rect x="270" y="115" width="205" height="28" rx="6" fill="#22c55e"/><text x="372" y="133" text-anchor="middle" font-size="10" fill="white">OS patching (EC2)</text>
+          <rect x="270" y="150" width="205" height="28" rx="6" fill="#22c55e"/><text x="372" y="168" text-anchor="middle" font-size="10" fill="white">Application code &amp; config</text>
+          <text x="250" y="235" text-anchor="middle" font-size="10" fill="#64748b">Security OF the cloud vs. security IN the cloud</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> AWS = security OF the cloud. You = security IN the cloud. RDS → AWS patches DB engine, you patch OS if EC2.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="dva" style="display:none">
+  <div class="domain-section" data-domain="performance">
+    <div class="section-header"><h2>Developer Services &amp; Serverless</h2><span class="domain-badge badge-performance">DVA-C02 · 32% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Serverless API Architecture</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-dva" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="20" y="100" width="80" height="40" rx="8" fill="#0ea5e9"/><text x="60" y="124" text-anchor="middle" font-size="10" fill="white" font-weight="700">Client</text>
+          <line x1="100" y1="120" x2="145" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dva)"/>
+          <rect x="145" y="90" width="100" height="60" rx="8" fill="#7c3aed"/><text x="195" y="118" text-anchor="middle" font-size="10" fill="white" font-weight="700">API Gateway</text><text x="195" y="133" text-anchor="middle" font-size="9" fill="#e9d5ff">REST / HTTP</text>
+          <line x1="245" y1="120" x2="290" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dva)"/>
+          <rect x="290" y="90" width="90" height="60" rx="8" fill="#f59e0b"/><text x="335" y="118" text-anchor="middle" font-size="10" fill="white" font-weight="700">Lambda</text><text x="335" y="133" text-anchor="middle" font-size="9" fill="white">Node/Python</text>
+          <line x1="380" y1="120" x2="420" y2="100" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dva)"/>
+          <line x1="380" y1="120" x2="420" y2="155" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dva)"/>
+          <rect x="420" y="75" width="60" height="35" rx="6" fill="#22c55e"/><text x="450" y="97" text-anchor="middle" font-size="9" fill="white" font-weight="700">DynamoDB</text>
+          <rect x="420" y="140" width="60" height="35" rx="6" fill="#ef4444"/><text x="450" y="162" text-anchor="middle" font-size="9" fill="white" font-weight="700">S3</text>
+          <text x="250" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Serverless API Pattern</text>
+          <text x="195" y="175" text-anchor="middle" font-size="9" fill="#64748b">Throttling · Auth · Stages</text>
+          <text x="335" y="175" text-anchor="middle" font-size="9" fill="#64748b">15min max · 1M free/mo</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> API Gateway → Lambda → DynamoDB is the classic serverless trio. Know Lambda concurrency limits, cold starts, and X-Ray tracing.</div>
+      </div>
+      <div class="diagram-card"><div class="diagram-card-header"><h3>CI/CD Pipeline</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-cicd" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="15" y="85" width="80" height="50" rx="8" fill="#1e293b"/><text x="55" y="108" text-anchor="middle" font-size="10" fill="white" font-weight="700">CodeCommit</text><text x="55" y="122" text-anchor="middle" font-size="8" fill="#94a3b8">Git repo</text>
+          <line x1="95" y1="110" x2="120" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arr-cicd)"/>
+          <rect x="120" y="85" width="80" height="50" rx="8" fill="#3b82f6"/><text x="160" y="108" text-anchor="middle" font-size="10" fill="white" font-weight="700">CodeBuild</text><text x="160" y="122" text-anchor="middle" font-size="8" fill="white">Build &amp; test</text>
+          <line x1="200" y1="110" x2="225" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arr-cicd)"/>
+          <rect x="225" y="85" width="80" height="50" rx="8" fill="#7c3aed"/><text x="265" y="108" text-anchor="middle" font-size="10" fill="white" font-weight="700">CodeDeploy</text><text x="265" y="122" text-anchor="middle" font-size="8" fill="#e9d5ff">EC2/Lambda</text>
+          <line x1="305" y1="110" x2="330" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arr-cicd)"/>
+          <rect x="330" y="85" width="80" height="50" rx="8" fill="#f59e0b"/><text x="370" y="108" text-anchor="middle" font-size="10" fill="white" font-weight="700">CodePipeline</text><text x="370" y="122" text-anchor="middle" font-size="8" fill="white">Orchestrator</text>
+          <rect x="170" y="155" width="160" height="30" rx="6" fill="#22c55e"/><text x="250" y="174" text-anchor="middle" font-size="9" fill="white" font-weight="700">CodeArtifact (package store)</text>
+          <text x="250" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">AWS CI/CD Pipeline</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> CodePipeline orchestrates. CodeBuild builds. CodeDeploy deploys. All-Blue/Green or rolling deployments — know the difference.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="soa" style="display:none">
+  <div class="domain-section" data-domain="resilient">
+    <div class="section-header"><h2>Monitoring &amp; Operations</h2><span class="domain-badge badge-resilient">SOA-C02 · 20% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>CloudWatch Observability Stack</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-cw" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="15" y="50" width="90" height="40" rx="8" fill="#3b82f6"/><text x="60" y="74" text-anchor="middle" font-size="10" fill="white" font-weight="700">EC2 / RDS</text>
+          <line x1="105" y1="70" x2="145" y2="90" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <line x1="105" y1="70" x2="145" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <rect x="145" y="70" width="110" height="35" rx="8" fill="#f59e0b"/><text x="200" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="700">CW Metrics</text>
+          <rect x="145" y="115" width="110" height="35" rx="8" fill="#ef4444"/><text x="200" y="136" text-anchor="middle" font-size="10" fill="white" font-weight="700">CW Logs</text>
+          <line x1="255" y1="87" x2="295" y2="87" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <line x1="255" y1="132" x2="295" y2="132" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <rect x="295" y="70" width="100" height="35" rx="8" fill="#7c3aed"/><text x="345" y="91" text-anchor="middle" font-size="10" fill="white" font-weight="700">CW Alarms</text>
+          <rect x="295" y="115" width="100" height="35" rx="8" fill="#22c55e"/><text x="345" y="136" text-anchor="middle" font-size="10" fill="white" font-weight="700">Log Insights</text>
+          <line x1="395" y1="87" x2="430" y2="70" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <line x1="395" y1="87" x2="430" y2="110" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-cw)"/>
+          <rect x="430" y="50" width="55" height="30" rx="6" fill="#0ea5e9"/><text x="457" y="69" text-anchor="middle" font-size="9" fill="white">SNS Alert</text>
+          <rect x="430" y="95" width="55" height="30" rx="6" fill="#f59e0b"/><text x="457" y="114" text-anchor="middle" font-size="9" fill="white">Auto Scale</text>
+          <text x="250" y="190" text-anchor="middle" font-size="10" fill="#64748b">Metrics → Alarms → Actions: the core SysOps loop</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> CW Metrics → Alarms → SNS/AutoScaling. Use CloudWatch Agent for memory/disk metrics (not built-in). Logs Insights for queries.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="scs" style="display:none">
+  <div class="domain-section" data-domain="secure">
+    <div class="section-header"><h2>Security Architecture</h2><span class="domain-badge badge-secure">SCS-C02 · 30% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Defense in Depth</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="480" height="230" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="250" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">Layer 1: Edge — WAF + Shield + CloudFront</text>
+          <rect x="30" y="45" width="440" height="170" rx="10" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="250" y="65" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">Layer 2: Network — VPC + SG + NACL + VPN</text>
+          <rect x="60" y="78" width="380" height="120" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+          <text x="250" y="97" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">Layer 3: IAM — Least privilege + MFA + SCPs</text>
+          <rect x="100" y="108" width="300" height="75" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="250" y="128" text-anchor="middle" font-size="11" font-weight="700" fill="#1e40af">Layer 4: Data — KMS + S3 Encryption + Macie</text>
+          <rect x="150" y="140" width="200" height="35" rx="6" fill="#7c3aed"/>
+          <text x="250" y="161" text-anchor="middle" font-size="10" fill="white" font-weight="700">Data at rest + in transit encrypted</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Think in layers: Edge → Network → Identity → Data. GuardDuty detects threats, Security Hub aggregates findings, Macie finds PII in S3.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="dea" style="display:none">
+  <div class="domain-section" data-domain="performance">
+    <div class="section-header"><h2>Data Engineering Pipeline</h2><span class="domain-badge badge-performance">DEA-C01 · 34% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Modern Data Lake Architecture</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-dea" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="10" y="90" width="80" height="60" rx="8" fill="#0ea5e9"/><text x="50" y="118" text-anchor="middle" font-size="9" fill="white" font-weight="700">Kinesis</text><text x="50" y="132" text-anchor="middle" font-size="8" fill="white">Streams/Firehose</text>
+          <line x1="90" y1="120" x2="120" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dea)"/>
+          <rect x="120" y="90" width="80" height="60" rx="8" fill="#f59e0b"/><text x="160" y="118" text-anchor="middle" font-size="9" fill="white" font-weight="700">S3 Data Lake</text><text x="160" y="132" text-anchor="middle" font-size="8" fill="white">Raw / Curated</text>
+          <line x1="200" y1="120" x2="230" y2="95" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dea)"/>
+          <line x1="200" y1="120" x2="230" y2="145" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dea)"/>
+          <rect x="230" y="70" width="80" height="40" rx="8" fill="#7c3aed"/><text x="270" y="93" text-anchor="middle" font-size="9" fill="white" font-weight="700">AWS Glue</text><text x="270" y="105" text-anchor="middle" font-size="8" fill="#e9d5ff">ETL + Catalog</text>
+          <rect x="230" y="125" width="80" height="40" rx="8" fill="#22c55e"/><text x="270" y="148" text-anchor="middle" font-size="9" fill="white" font-weight="700">Athena</text><text x="270" y="160" text-anchor="middle" font-size="8" fill="white">SQL on S3</text>
+          <line x1="310" y1="90" x2="350" y2="90" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dea)"/>
+          <line x1="310" y1="145" x2="350" y2="145" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-dea)"/>
+          <rect x="350" y="70" width="80" height="40" rx="8" fill="#ef4444"/><text x="390" y="93" text-anchor="middle" font-size="9" fill="white" font-weight="700">Redshift</text><text x="390" y="105" text-anchor="middle" font-size="8" fill="white">Data Warehouse</text>
+          <rect x="350" y="125" width="80" height="40" rx="8" fill="#3b82f6"/><text x="390" y="148" text-anchor="middle" font-size="9" fill="white" font-weight="700">QuickSight</text><text x="390" y="160" text-anchor="middle" font-size="8" fill="white">BI / Dashboards</text>
+          <text x="250" y="210" text-anchor="middle" font-size="10" fill="#64748b">Ingest → Store → Process → Analyze → Visualize</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Kinesis = real-time streaming. Glue = ETL + Data Catalog. Athena = serverless SQL on S3. Redshift = large-scale OLAP warehouse.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="mla" style="display:none">
+  <div class="domain-section" data-domain="performance">
+    <div class="section-header"><h2>ML Engineering &amp; SageMaker</h2><span class="domain-badge badge-performance">MLA-C01 · 40% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>SageMaker ML Lifecycle</h3><span class="exam-tag">⭐ Core Concept</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-ml" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="10" y="90" width="75" height="50" rx="8" fill="#0ea5e9"/><text x="47" y="113" text-anchor="middle" font-size="9" fill="white" font-weight="700">S3</text><text x="47" y="126" text-anchor="middle" font-size="8" fill="white">Training Data</text>
+          <line x1="85" y1="115" x2="110" y2="115" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-ml)"/>
+          <rect x="110" y="80" width="80" height="70" rx="8" fill="#7c3aed"/><text x="150" y="108" text-anchor="middle" font-size="9" fill="white" font-weight="700">SageMaker</text><text x="150" y="122" text-anchor="middle" font-size="8" fill="#e9d5ff">Studio / Training</text><text x="150" y="135" text-anchor="middle" font-size="8" fill="#e9d5ff">HPO / Autopilot</text>
+          <line x1="190" y1="115" x2="215" y2="115" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-ml)"/>
+          <rect x="215" y="80" width="80" height="70" rx="8" fill="#f59e0b"/><text x="255" y="108" text-anchor="middle" font-size="9" fill="white" font-weight="700">Model</text><text x="255" y="122" text-anchor="middle" font-size="8" fill="white">Registry</text><text x="255" y="135" text-anchor="middle" font-size="8" fill="white">Versioning</text>
+          <line x1="295" y1="115" x2="320" y2="95" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-ml)"/>
+          <line x1="295" y1="115" x2="320" y2="140" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-ml)"/>
+          <rect x="320" y="70" width="80" height="38" rx="8" fill="#22c55e"/><text x="360" y="91" text-anchor="middle" font-size="9" fill="white" font-weight="700">Real-time</text><text x="360" y="103" text-anchor="middle" font-size="8" fill="white">Endpoint</text>
+          <rect x="320" y="122" width="80" height="38" rx="8" fill="#ef4444"/><text x="360" y="143" text-anchor="middle" font-size="9" fill="white" font-weight="700">Batch</text><text x="360" y="155" text-anchor="middle" font-size="8" fill="white">Transform</text>
+          <rect x="120" y="175" width="260" height="25" rx="6" fill="#1e293b"/><text x="250" y="191" text-anchor="middle" font-size="9" fill="white">MLflow / SageMaker Pipelines (MLOps)</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Know SageMaker's training jobs, endpoint types (real-time vs batch), model registry, and Pipelines for MLOps automation.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="gai" style="display:none">
+  <div class="domain-section" data-domain="performance">
+    <div class="section-header"><h2>Generative AI with Bedrock</h2><span class="domain-badge badge-performance">GAI-C01 · 35% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>RAG Architecture with Bedrock</h3><span class="exam-tag">⭐ Core Concept</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-rag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="10" y="100" width="70" height="40" rx="8" fill="#3b82f6"/><text x="45" y="124" text-anchor="middle" font-size="10" fill="white" font-weight="700">User</text>
+          <line x1="80" y1="120" x2="110" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-rag)"/>
+          <rect x="110" y="88" width="90" height="64" rx="8" fill="#7c3aed"/><text x="155" y="115" text-anchor="middle" font-size="9" fill="white" font-weight="700">Bedrock</text><text x="155" y="129" text-anchor="middle" font-size="8" fill="#e9d5ff">Agent / KB</text><text x="155" y="142" text-anchor="middle" font-size="8" fill="#e9d5ff">Titan / Claude</text>
+          <line x1="155" y1="88" x2="155" y2="65" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-rag)"/>
+          <rect x="100" y="30" width="110" height="35" rx="8" fill="#f59e0b"/><text x="155" y="51" text-anchor="middle" font-size="9" fill="white" font-weight="700">Knowledge Base</text><text x="155" y="61" text-anchor="middle" font-size="8" fill="white">OpenSearch / pgvector</text>
+          <line x1="200" y1="120" x2="235" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-rag)"/>
+          <rect x="235" y="88" width="90" height="64" rx="8" fill="#22c55e"/><text x="280" y="115" text-anchor="middle" font-size="9" fill="white" font-weight="700">Guardrails</text><text x="280" y="129" text-anchor="middle" font-size="8" fill="white">Content filter</text><text x="280" y="142" text-anchor="middle" font-size="8" fill="white">PII redaction</text>
+          <line x1="325" y1="120" x2="360" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-rag)"/>
+          <rect x="360" y="100" width="80" height="40" rx="8" fill="#0ea5e9"/><text x="400" y="124" text-anchor="middle" font-size="10" fill="white" font-weight="700">Response</text>
+          <text x="250" y="200" text-anchor="middle" font-size="10" fill="#64748b">Query → Retrieve context → Augment prompt → Generate</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> RAG = Retrieval Augmented Generation. Bedrock Knowledge Base handles chunking, embedding, and retrieval. Guardrails = safety layer.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="aif" style="display:none">
+  <div class="domain-section" data-domain="resilient">
+    <div class="section-header"><h2>AI Foundations &amp; AWS AI Services</h2><span class="domain-badge badge-resilient">AIF-C01 · 36% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>AWS AI Services Map</h3><span class="exam-tag">⭐ Must Know</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+          <text x="250" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">AWS Managed AI Services</text>
+          <rect x="15" y="40" width="100" height="45" rx="8" fill="#7c3aed"/><text x="65" y="61" text-anchor="middle" font-size="9" fill="white" font-weight="700">Rekognition</text><text x="65" y="76" text-anchor="middle" font-size="8" fill="#e9d5ff">Image/Video AI</text>
+          <rect x="130" y="40" width="100" height="45" rx="8" fill="#3b82f6"/><text x="180" y="61" text-anchor="middle" font-size="9" fill="white" font-weight="700">Comprehend</text><text x="180" y="76" text-anchor="middle" font-size="8" fill="white">NLP / Sentiment</text>
+          <rect x="245" y="40" width="100" height="45" rx="8" fill="#22c55e"/><text x="295" y="61" text-anchor="middle" font-size="9" fill="white" font-weight="700">Polly / Lex</text><text x="295" y="76" text-anchor="middle" font-size="8" fill="white">Speech / Chatbot</text>
+          <rect x="360" y="40" width="120" height="45" rx="8" fill="#f59e0b"/><text x="420" y="61" text-anchor="middle" font-size="9" fill="white" font-weight="700">Transcribe</text><text x="420" y="76" text-anchor="middle" font-size="8" fill="white">Speech → Text</text>
+          <rect x="15" y="105" width="100" height="45" rx="8" fill="#ef4444"/><text x="65" y="126" text-anchor="middle" font-size="9" fill="white" font-weight="700">Translate</text><text x="65" y="141" text-anchor="middle" font-size="8" fill="white">Language AI</text>
+          <rect x="130" y="105" width="100" height="45" rx="8" fill="#0ea5e9"/><text x="180" y="126" text-anchor="middle" font-size="9" fill="white" font-weight="700">Textract</text><text x="180" y="141" text-anchor="middle" font-size="8" fill="white">Doc OCR + AI</text>
+          <rect x="245" y="105" width="100" height="45" rx="8" fill="#1e293b"/><text x="295" y="126" text-anchor="middle" font-size="9" fill="white" font-weight="700">Forecast</text><text x="295" y="141" text-anchor="middle" font-size="8" fill="#94a3b8">Time-series ML</text>
+          <rect x="360" y="105" width="120" height="45" rx="8" fill="#7c3aed"/><text x="420" y="126" text-anchor="middle" font-size="9" fill="white" font-weight="700">Bedrock</text><text x="420" y="141" text-anchor="middle" font-size="8" fill="#e9d5ff">Foundation Models</text>
+          <rect x="100" y="175" width="300" height="35" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="250" y="193" text-anchor="middle" font-size="10" fill="#92400e" font-weight="700">SageMaker — Build custom ML models</text>
+          <text x="250" y="207" text-anchor="middle" font-size="9" fill="#92400e">Train · Tune · Deploy · Monitor</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Know which AI service does what. Rekognition=images, Comprehend=text/NLP, Textract=documents, Lex=chatbots, Bedrock=GenAI.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="sap" style="display:none">
+  <div class="domain-section" data-domain="resilient">
+    <div class="section-header"><h2>Enterprise &amp; Multi-Account</h2><span class="domain-badge badge-resilient">SAP-C02 · 31% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>AWS Organizations Structure</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <rect x="180" y="10" width="140" height="35" rx="8" fill="#1e293b"/><text x="250" y="32" text-anchor="middle" font-size="11" fill="white" font-weight="700">Management Account</text>
+          <line x1="250" y1="45" x2="120" y2="80" stroke="#64748b" stroke-width="1.5"/>
+          <line x1="250" y1="45" x2="250" y2="80" stroke="#64748b" stroke-width="1.5"/>
+          <line x1="250" y1="45" x2="380" y2="80" stroke="#64748b" stroke-width="1.5"/>
+          <rect x="40" y="80" width="110" height="35" rx="8" fill="#3b82f6"/><text x="95" y="101" text-anchor="middle" font-size="10" fill="white" font-weight="700">OU: Dev</text>
+          <rect x="195" y="80" width="110" height="35" rx="8" fill="#f59e0b"/><text x="250" y="101" text-anchor="middle" font-size="10" fill="white" font-weight="700">OU: Production</text>
+          <rect x="350" y="80" width="110" height="35" rx="8" fill="#22c55e"/><text x="405" y="101" text-anchor="middle" font-size="10" fill="white" font-weight="700">OU: Security</text>
+          <rect x="25" y="140" width="70" height="30" rx="6" fill="#93c5fd"/><text x="60" y="159" text-anchor="middle" font-size="9" fill="#1e40af">Acct A</text>
+          <rect x="105" y="140" width="70" height="30" rx="6" fill="#93c5fd"/><text x="140" y="159" text-anchor="middle" font-size="9" fill="#1e40af">Acct B</text>
+          <rect x="185" y="140" width="80" height="30" rx="6" fill="#fcd34d"/><text x="225" y="159" text-anchor="middle" font-size="9" fill="#92400e">Prod Acct</text>
+          <rect x="275" y="140" width="80" height="30" rx="6" fill="#fcd34d"/><text x="315" y="159" text-anchor="middle" font-size="9" fill="#92400e">DR Acct</text>
+          <rect x="365" y="140" width="90" height="30" rx="6" fill="#bbf7d0"/><text x="410" y="159" text-anchor="middle" font-size="9" fill="#15803d">Log Archive</text>
+          <rect x="130" y="195" width="240" height="28" rx="6" fill="#7c3aed" opacity=".9"/>
+          <text x="250" y="213" text-anchor="middle" font-size="9" fill="white" font-weight="700">SCPs applied at OU level — cascades to all accounts</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> SCPs = Service Control Policies, limit what accounts can do (even admins). Control Tower automates landing zones. RAM shares resources across accounts.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="dop" style="display:none">
+  <div class="domain-section" data-domain="resilient">
+    <div class="section-header"><h2>DevOps &amp; IaC</h2><span class="domain-badge badge-resilient">DOP-C02 · 32% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Blue/Green Deployment</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 230" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr-dop" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker></defs>
+          <rect x="180" y="10" width="140" height="35" rx="8" fill="#1e293b"/><text x="250" y="32" text-anchor="middle" font-size="11" fill="white" font-weight="700">Route 53 / ALB</text>
+          <line x1="200" y1="45" x2="130" y2="85" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-dop)"/>
+          <line x1="300" y1="45" x2="370" y2="85" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arr-dop)"/>
+          <rect x="40" y="85" width="180" height="80" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+          <text x="130" y="110" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="700">🔵 Blue (Current)</text>
+          <text x="130" y="128" text-anchor="middle" font-size="9" fill="#1e40af">v1.0 — 100% traffic</text>
+          <text x="130" y="143" text-anchor="middle" font-size="9" fill="#1e40af">EC2 / ECS / Lambda</text>
+          <rect x="280" y="85" width="180" height="80" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="370" y="110" text-anchor="middle" font-size="11" fill="#15803d" font-weight="700">🟢 Green (New)</text>
+          <text x="370" y="128" text-anchor="middle" font-size="9" fill="#15803d">v2.0 — 0% traffic</text>
+          <text x="370" y="143" text-anchor="middle" font-size="9" fill="#15803d">Warm &amp; ready</text>
+          <rect x="140" y="185" width="220" height="28" rx="6" fill="#f59e0b"/>
+          <text x="250" y="203" text-anchor="middle" font-size="9" fill="white" font-weight="700">Shift traffic → validate → cutover or rollback</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Blue/Green = zero-downtime deploy with instant rollback. CodeDeploy supports Blue/Green for EC2, ECS, and Lambda. Canary = gradual traffic shift.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cert-section" data-cert="ans" style="display:none">
+  <div class="domain-section" data-domain="network">
+    <div class="section-header"><h2>Advanced Networking</h2><span class="domain-badge badge-network">ANS-C01 · 30% of exam</span></div>
+    <div class="diagram-grid">
+      <div class="diagram-card"><div class="diagram-card-header"><h3>Transit Gateway Hub-and-Spoke</h3><span class="exam-tag">⭐ High Frequency</span></div>
+        <div class="diagram-svg-wrap"><svg class="arch-svg" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="250" cy="120" r="45" fill="#7c3aed" opacity=".9"/>
+          <text x="250" y="115" text-anchor="middle" font-size="10" fill="white" font-weight="700">Transit</text>
+          <text x="250" y="130" text-anchor="middle" font-size="10" fill="white" font-weight="700">Gateway</text>
+          <rect x="20" y="40" width="90" height="40" rx="8" fill="#3b82f6"/><text x="65" y="64" text-anchor="middle" font-size="9" fill="white" font-weight="700">VPC-Dev</text>
+          <line x1="110" y1="60" x2="210" y2="100" stroke="#7c3aed" stroke-width="2"/>
+          <rect x="20" y="150" width="90" height="40" rx="8" fill="#22c55e"/><text x="65" y="174" text-anchor="middle" font-size="9" fill="white" font-weight="700">VPC-Prod</text>
+          <line x1="110" y1="170" x2="210" y2="140" stroke="#7c3aed" stroke-width="2"/>
+          <rect x="390" y="40" width="90" height="40" rx="8" fill="#f59e0b"/><text x="435" y="64" text-anchor="middle" font-size="9" fill="white" font-weight="700">VPC-Shared</text>
+          <line x1="390" y1="60" x2="290" y2="100" stroke="#7c3aed" stroke-width="2"/>
+          <rect x="390" y="150" width="90" height="40" rx="8" fill="#ef4444"/><text x="435" y="174" text-anchor="middle" font-size="9" fill="white" font-weight="700">On-Prem</text>
+          <text x="435" y="186" text-anchor="middle" font-size="8" fill="white">Direct Connect</text>
+          <line x1="390" y1="170" x2="290" y2="140" stroke="#7c3aed" stroke-width="2"/>
+          <text x="250" y="215" text-anchor="middle" font-size="10" fill="#64748b">TGW replaces VPC peering mesh at scale</text>
+        </svg></div>
+        <div class="diagram-insight">💡 <strong>Exam tip:</strong> Transit Gateway = hub-and-spoke. Replaces complex VPC peering meshes. Supports Direct Connect, VPN, and cross-region peering. Route tables control traffic flow.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- end content -->
 
 <script src="navigation.js"></script>
@@ -2484,6 +2828,26 @@ function explainTGW(c,t,x,tip) { showExplanation('exp-tgw',c,t,x,tip); }
 function explainEndpoint(c,t,x,tip) { showExplanation('exp-endpoint',c,t,x,tip); }
 function explainR53policies(c,t,x,tip) { showExplanation('exp-r53policies',c,t,x,tip); }
 function explainDX(c,t,x,tip) { showExplanation('exp-dx',c,t,x,tip); }
+
+// ─── CERT FILTER ────────────────────────────────────────
+let activeCert = 'saa';
+
+function filterCert(cert) {
+  activeCert = cert;
+  // Update cert buttons
+  document.querySelectorAll('.page-header .filter-bar:first-of-type .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  // Show/hide cert sections
+  document.querySelectorAll('.cert-section').forEach(s => {
+    s.style.display = s.dataset.cert === cert ? 'block' : 'none';
+  });
+  // Reset domain filter
+  document.querySelectorAll('#domain-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#domain-filter-bar .filter-btn').classList.add('active');
+}
+
+// Generic explain for other certs
+function explainCert(id, c, t, x, tip) { showExplanation(id, c, t, x, tip); }
 
 </script>
 </body>

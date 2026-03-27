@@ -133,6 +133,19 @@
     .retake-detail-row td{background:#F8FAFF;padding:.5rem .75rem .5rem 2.5rem;font-size:.82rem;color:#4B5563}
     .retake-detail-row.hidden{display:none}
   </style>
+  <!-- AUTH GUARD — checks custom 24h expiry only; Supabase refreshes JWT automatically -->
+  <script>
+    (function(){
+      var tok = localStorage.getItem('_apa_session');
+      var exp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+      if (!tok) { window.location.replace('login.html'); return; }
+      if (exp && Date.now() > exp) {
+        localStorage.removeItem('_apa_session');
+        localStorage.removeItem('_apa_session_exp');
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -433,27 +446,35 @@
 
 <script>
 // ══════════════════════════════════════════
-// AUTH GUARD — redirect if not logged in
+// AUTH GUARD — handled in <head> before render
 // ══════════════════════════════════════════
 function _clearSession() {
   ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier','_apa_history','_apa_joined'].forEach(k => localStorage.removeItem(k));
 }
 function _jwtExpired(token) {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return Date.now() / 1000 > payload.exp;
-  } catch(e) { return true; }
+  // Use custom 24h expiry only — Supabase refreshes its own JWT automatically
+  var exp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+  if (!token) return true;
+  if (exp && Date.now() > exp) return true;
+  return false;
 }
-(function() {
-  const token = localStorage.getItem('_apa_session');
-  const customExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
-  const expired = !token || _jwtExpired(token) || Date.now() > customExp;
-  if (expired) { _clearSession(); window.location.href = 'login.html'; }
-})();
 
 const userEmail = localStorage.getItem('_apa_email') || '';
 const userName  = localStorage.getItem('_apa_name')  || '';
-const userTier  = localStorage.getItem('_apa_tier')  || 'free';
+// Merge tier from Supabase (_apa_tier) and payment JWT (_apa_jwt) — use the highest paid tier
+const _supaTier = localStorage.getItem('_apa_tier') || 'free';
+const _jwtTier  = (() => {
+  try {
+    const jwt = localStorage.getItem('_apa_jwt');
+    if (!jwt) return 'free';
+    const pl = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (pl.exp && Math.floor(Date.now() / 1000) > pl.exp) return 'free';
+    return pl.tier || 'free';
+  } catch (e) { return 'free'; }
+})();
+const _TIER_RANK = { free: 0, monthly: 1, yearly: 2, lifetime: 3 };
+const userTier = (_TIER_RANK[_jwtTier] || 0) >= (_TIER_RANK[_supaTier] || 0) ? _jwtTier : _supaTier;
+if (userTier !== _supaTier) localStorage.setItem('_apa_tier', userTier);
 
 // ══════════════════════════════════════════
 // CERT CATALOG
