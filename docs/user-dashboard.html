@@ -133,6 +133,19 @@
     .retake-detail-row td{background:#F8FAFF;padding:.5rem .75rem .5rem 2.5rem;font-size:.82rem;color:#4B5563}
     .retake-detail-row.hidden{display:none}
   </style>
+  <!-- AUTH GUARD — checks custom 24h expiry only; Supabase refreshes JWT automatically -->
+  <script>
+    (function(){
+      var tok = localStorage.getItem('_apa_session');
+      var exp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+      if (!tok) { window.location.replace('login.html'); return; }
+      if (exp && Date.now() > exp) {
+        localStorage.removeItem('_apa_session');
+        localStorage.removeItem('_apa_session_exp');
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -240,6 +253,19 @@
           <p>Get unlimited practice questions, full mock exams, and detailed explanations for every cert.</p>
         </div>
         <a href="pricing.html" class="btn-upgrade">See Plans →</a>
+      </div>
+
+      <!-- Monthly cert picker — shown only for monthly users who haven't picked yet -->
+      <div class="section-card" id="monthlyCertPickerCard" style="display:none;border:2px solid #16A34A">
+        <div class="section-card-header" style="background:#F0FDF4">
+          <div>
+            <div class="section-card-title" style="color:#15803D">🎯 Pick Your Cert — Monthly Plan</div>
+            <div style="font-size:.82rem;color:#16A34A;margin-top:.2rem">Your plan unlocks 1 full certification. Choose the one you're studying for.</div>
+          </div>
+        </div>
+        <div class="section-card-body">
+          <div class="cert-access-grid" id="monthlyCertPickerGrid"></div>
+        </div>
       </div>
 
       <!-- Recent Exam History (mini) -->
@@ -433,27 +459,35 @@
 
 <script>
 // ══════════════════════════════════════════
-// AUTH GUARD — redirect if not logged in
+// AUTH GUARD — handled in <head> before render
 // ══════════════════════════════════════════
 function _clearSession() {
   ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier','_apa_history','_apa_joined'].forEach(k => localStorage.removeItem(k));
 }
 function _jwtExpired(token) {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return Date.now() / 1000 > payload.exp;
-  } catch(e) { return true; }
+  // Use custom 24h expiry only — Supabase refreshes its own JWT automatically
+  var exp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+  if (!token) return true;
+  if (exp && Date.now() > exp) return true;
+  return false;
 }
-(function() {
-  const token = localStorage.getItem('_apa_session');
-  const customExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
-  const expired = !token || _jwtExpired(token) || Date.now() > customExp;
-  if (expired) { _clearSession(); window.location.href = 'login.html'; }
-})();
 
 const userEmail = localStorage.getItem('_apa_email') || '';
 const userName  = localStorage.getItem('_apa_name')  || '';
-const userTier  = localStorage.getItem('_apa_tier')  || 'free';
+// Merge tier from Supabase (_apa_tier) and payment JWT (_apa_jwt) — use the highest paid tier
+const _supaTier = localStorage.getItem('_apa_tier') || 'free';
+const _jwtTier  = (() => {
+  try {
+    const jwt = localStorage.getItem('_apa_jwt');
+    if (!jwt) return 'free';
+    const pl = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (pl.exp && Math.floor(Date.now() / 1000) > pl.exp) return 'free';
+    return pl.tier || 'free';
+  } catch (e) { return 'free'; }
+})();
+const _TIER_RANK = { free: 0, monthly: 1, yearly: 2, lifetime: 3 };
+const userTier = (_TIER_RANK[_jwtTier] || 0) >= (_TIER_RANK[_supaTier] || 0) ? _jwtTier : _supaTier;
+if (userTier !== _supaTier) localStorage.setItem('_apa_tier', userTier);
 
 // ══════════════════════════════════════════
 // CERT CATALOG
@@ -539,6 +573,7 @@ function init() {
 
   // Cert grid
   buildCertGrid();
+  buildMonthlyCertPicker();
 
   // History
   buildHistoryFilter();
@@ -568,7 +603,10 @@ function buildStats() {
   const scores  = history.map(h => Math.round((h.score / h.total) * 100));
 
   document.getElementById('statExamsTaken').textContent   = history.length || '0';
-  document.getElementById('statCertsUnlocked').textContent = isPremium ? '12' : '1';
+  const unlocked = (userTier === 'yearly' || userTier === 'lifetime') ? '12'
+                 : (userTier === 'monthly') ? '1'
+                 : '1';
+  document.getElementById('statCertsUnlocked').textContent = unlocked;
 
   if (scores.length) {
     document.getElementById('statBestScore').textContent = Math.max(...scores) + '%';
@@ -583,15 +621,38 @@ function buildStats() {
 // ══════════════════════════════════════════
 function buildCertGrid() {
   const grid = document.getElementById('certAccessGrid');
-  grid.innerHTML = CERTS.map(c => {
-    const accessible = c.free || isPremium;
-    const statusCls  = c.free ? 'cert-status-free' : (accessible ? 'cert-status-active' : 'cert-status-locked');
-    const statusText = c.free ? '✅ Free Tier' : (accessible ? '✅ Unlocked' : '🔒 Premium');
-    const history    = getHistory().filter(h => h.certCode === c.code);
-    const attempts   = history.length;
-    const bestScore  = attempts ? Math.max(...history.map(h => Math.round((h.score/h.total)*100))) : null;
+  const monthlyCert = localStorage.getItem('_apa_monthly_cert'); // e.g. 'CLF-C02'
 
-    return `<a href="${accessible ? c.href : 'pricing.html'}" class="cert-access-card">
+  grid.innerHTML = CERTS.map(c => {
+    let accessible, statusCls, statusText, href;
+
+    if (c.free) {
+      accessible = true;
+      statusCls  = 'cert-status-free';
+      statusText = '✅ Free Tier';
+      href       = c.href;
+    } else if (userTier === 'yearly' || userTier === 'lifetime') {
+      accessible = true;
+      statusCls  = 'cert-status-active';
+      statusText = '✅ Unlocked';
+      href       = c.href;
+    } else if (userTier === 'monthly') {
+      accessible = (monthlyCert === c.code);
+      statusCls  = accessible ? 'cert-status-active' : 'cert-status-locked';
+      statusText = accessible ? '✅ Your Cert' : (monthlyCert ? '🔒 Switch Plan' : '🔒 Pick a Cert');
+      href       = accessible ? c.href : 'pricing.html';
+    } else {
+      accessible = false;
+      statusCls  = 'cert-status-locked';
+      statusText = '🔒 Premium';
+      href       = 'pricing.html';
+    }
+
+    const history   = getHistory().filter(h => h.certCode === c.code);
+    const attempts  = history.length;
+    const bestScore = attempts ? Math.max(...history.map(h => Math.round((h.score/h.total)*100))) : null;
+
+    return `<a href="${href}" class="cert-access-card">
       <div class="cert-icon">${c.icon}</div>
       <div class="cert-name">${c.name}</div>
       <div class="cert-code">${c.code}</div>
@@ -601,6 +662,42 @@ function buildCertGrid() {
       </div>` : ''}
     </a>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+// MONTHLY CERT PICKER
+// ══════════════════════════════════════════
+function buildMonthlyCertPicker() {
+  if (userTier !== 'monthly') return;
+  const already = localStorage.getItem('_apa_monthly_cert');
+
+  // Show "change cert" link in cert grid header if already picked
+  const pickerCard = document.getElementById('monthlyCertPickerCard');
+
+  if (!already) {
+    // No cert picked yet — show the full picker
+    pickerCard.style.display = 'block';
+    const grid = document.getElementById('monthlyCertPickerGrid');
+    grid.innerHTML = CERTS.filter(c => !c.free).map(c => `
+      <div onclick="selectMonthlyCert('${c.code}')" class="cert-access-card" style="cursor:pointer;border:2px solid #E5E7EB">
+        <div class="cert-icon">${c.icon}</div>
+        <div class="cert-name">${c.name}</div>
+        <div class="cert-code">${c.code}</div>
+        <span style="font-size:.78rem;font-weight:700;color:#16A34A;margin-top:.25rem">Tap to select →</span>
+      </div>`).join('');
+  }
+}
+
+function selectMonthlyCert(code) {
+  localStorage.setItem('_apa_monthly_cert', code);
+  document.getElementById('monthlyCertPickerCard').style.display = 'none';
+  buildCertGrid(); // refresh grid to show new status
+  // Show confirmation
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#15803D;color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+  msg.textContent = `✅ ${code} unlocked! You can now study it.`;
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3000);
 }
 
 // ══════════════════════════════════════════
@@ -733,14 +830,58 @@ function showSection(id, mobileBtnCtx) {
 // ══════════════════════════════════════════
 function logout() {
   ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
-  if (typeof supa !== 'undefined') supa.auth.signOut();
+  // Also clear Supabase session so login.html doesn't auto-redirect back
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('sb-') && k.endsWith('-auth-token')) localStorage.removeItem(k);
+  }
   window.location.href = 'login.html';
+}
+
+// ══════════════════════════════════════════
+// TIER REFRESH — sync latest tier from Supabase on every load
+// ══════════════════════════════════════════
+async function refreshTierFromSupabase() {
+  try {
+    const SUPA_URL = 'https://swkqwqtgbxymyhcnhmfv.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3a3F3cXRnYnh5bXloY25obWZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzEwNzcsImV4cCI6MjA4NTc0NzA3N30.RttI8lDSItgTLMR1QwstSfNakyXqsLgt5kEfmhEJxf4';
+    // Find Supabase session key
+    let sessionKey = null;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('sb-') && k.endsWith('-auth-token')) { sessionKey = k; break; }
+    }
+    if (!sessionKey) return;
+    const stored = JSON.parse(localStorage.getItem(sessionKey) || 'null');
+    if (!stored?.refresh_token) return;
+    // Get fresh access token via refresh
+    const res = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+      body: JSON.stringify({ refresh_token: stored.refresh_token })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.access_token) return;
+    // Update stored session with fresh tokens
+    localStorage.setItem(sessionKey, JSON.stringify({ ...stored, access_token: data.access_token, refresh_token: data.refresh_token || stored.refresh_token }));
+    // Extract tier from fresh token
+    const payload = JSON.parse(atob(data.access_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    const freshTier = payload.user_metadata?.tier || 'free';
+    const TIER_RANK = { free: 0, monthly: 1, bundle3: 1, yearly: 2, lifetime: 3 };
+    const currentTier = localStorage.getItem('_apa_tier') || 'free';
+    if (freshTier !== currentTier) {
+      localStorage.setItem('_apa_tier', freshTier);
+      location.reload(); // Re-render with correct tier
+    }
+  } catch(e) {}
 }
 
 // ══════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════
 init();
+refreshTierFromSupabase();
 </script>
 
 <!-- Hook into cert pages to save exam results -->

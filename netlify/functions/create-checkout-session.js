@@ -29,15 +29,21 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { priceId, mode = 'payment', quantity = 1, tier = 'lifetime' } = JSON.parse(event.body || '{}');
+    const { priceId, mode = 'payment', quantity = 1, tier = 'lifetime', addOnPriceId } = JSON.parse(event.body || '{}');
 
     if (!priceId) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing priceId' }) };
     }
 
+    const lineItems = [{ price: priceId, quantity }];
+    // Order bump: add $17 one-time 3-cert bundle if selected
+    if (addOnPriceId) {
+      lineItems.push({ price: addOnPriceId, quantity: 1 });
+    }
+
     const sessionParams = {
       payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity }],
+      line_items: lineItems,
       mode,
       metadata: { product: 'awsprepai_premium', tier },
       success_url: `${process.env.SUCCESS_URL}?session_id={CHECKOUT_SESSION_ID}`,

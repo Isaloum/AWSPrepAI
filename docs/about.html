@@ -39,7 +39,6 @@
       </a>
 
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
 
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">
@@ -107,7 +106,8 @@
         <a href="chat.html" class="nav-link">AI Coach</a>
       </div>
 
-      <a href="index.html" class="nav-cta">Start Practicing</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
+      <a href="index.html" class="nav-cta" id="nav-signup-btn">Start Practicing</a>
 
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span>
@@ -121,9 +121,6 @@
     <div class="mobile-nav-content">
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
-        <div class="mobile-nav-section">
-          <a href="index.html" class="mobile-nav-link">📊 Dashboard</a>
-        </div>
         <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="index.html#quiz" class="mobile-nav-link" onclick="showTab('quiz')">📝 Practice Quiz</a>
@@ -153,51 +150,47 @@
   <main class="container">
     <div class="content-card">
       <h1>About AWSPrepAI</h1>
-      
-      <p>AWSPrepAI is a comprehensive, AI-powered study platform designed to help you master the AWS Solutions Architect Associate (SAA-C03) certification exam with confidence. Built with a focus on quality practice questions and intelligent learning features, we provide everything you need to succeed in your AWS certification journey.</p>
+
+      <p>AWSPrepAI is a comprehensive, AI-powered study platform designed to help you master all 12 AWS certifications with confidence. Built with a focus on quality practice questions, intelligent learning features, and a personal AI Coach, we provide everything you need to succeed in your AWS certification journey.</p>
 
       <h2>Our Mission</h2>
-      <p>To democratize AWS certification preparation by providing high-quality, accessible study materials that help cloud professionals advance their careers and master the Solutions Architect Associate certification.</p>
+      <p>To help cloud professionals pass their AWS certifications faster by combining 3,120 real scenario-based questions, 4 full mock exams per cert, and an AI Coach that teaches like a senior cloud architect — not just a flashcard app.</p>
 
       <h2>What Makes Us Different</h2>
       <div class="feature-list">
         <div class="feature-item">
-          <strong>🎯 Curated Content</strong><br>
-          3,120 real scenario questions across all 12 AWS certifications (260 per cert).
+          <strong>🎯 3,120 Curated Questions</strong><br>
+          260 questions per certification across all 12 AWS certs — split into 4 full mock exams of 65 questions each, so you train the way the real exam feels.
         </div>
         <div class="feature-item">
-          <strong>🧠 AI-Powered Study Guide</strong><br>
-          Our study guides are powered by 733 scenario-based questions across SAA-C03 and AIF-C01, identifying the most tested services, common traps, and key topics you need to master.
+          <strong>🤖 AI Coach — Professor Cloud</strong><br>
+          Get instant answers from a wise, experienced cloud architect who explains <em>why</em> not just <em>what</em>. Covers all 12 AWS certifications. Lifetime plan only.
         </div>
         <div class="feature-item">
-          <strong>📊 Intelligent Tracking</strong><br>
-          Track your progress across domains, identify weak areas, and get personalized insights on your exam readiness.
+          <strong>📊 Smart Progress Tracking</strong><br>
+          Track scores across all 4 mock exams per cert, identify weak domains, and see your readiness improve over time.
         </div>
         <div class="feature-item">
-          <strong>💾 Privacy First</strong><br>
-          All your data stays in your browser using LocalStorage. No account required, no data collection, completely private.
-        </div>
-        <div class="feature-item">
-          <strong>⚡ Zero Dependencies</strong><br>
-          Built with vanilla JavaScript, HTML, and CSS. No external libraries, no build process, works offline.
+          <strong>🏗️ Architecture Diagrams</strong><br>
+          Interactive architecture diagrams for all 12 certifications — visualize how AWS services connect so you understand, not just memorize.
         </div>
         <div class="feature-item">
           <strong>📱 Mobile Optimized</strong><br>
           Study anywhere, anytime. Our responsive design works seamlessly on desktop, tablet, and mobile devices.
         </div>
+        <div class="feature-item">
+          <strong>⚡ Instant Access</strong><br>
+          No waiting, no shipping — get access the moment you subscribe and start practicing within seconds.
+        </div>
       </div>
 
-      <h2>Certifications Supported</h2>
-      <p><strong>AWS Solutions Architect Associate (SAA-C03)</strong> — 260 questions across 4 domains.</p>
-      <p style="margin-top:.75rem"><strong>AWS AI Practitioner (AIF-C01)</strong> — 200 questions across 5 domains: AI Fundamentals (40), Generative AI (48), Foundation Models (56), Responsible AI (28), and AI Security (28). <a href="aif-c01.html" style="color:var(--aws-blue)">Practice now →</a></p>
-
-      <h2>Technology Stack</h2>
-      <p>AWSPrepAI is built using modern web technologies while maintaining simplicity and accessibility:</p>
+      <h2>All 12 AWS Certifications Covered</h2>
+      <p>AWSPrepAI covers every active AWS certification — Foundation, Associate, Professional, and Specialty levels:</p>
       <div class="feature-list">
-        <div class="feature-item">Frontend: Vanilla JavaScript (ES6+), HTML5, CSS3</div>
-        <div class="feature-item">Data Persistence: Browser LocalStorage API</div>
-        <div class="feature-item">Deployment: GitHub Pages</div>
-        <div class="feature-item">Design Philosophy: Responsive, accessible, zero external dependencies</div>
+        <div class="feature-item"><strong>Foundation:</strong> AWS Cloud Practitioner (CLF-C02) · AWS AI Practitioner (AIF-C01)</div>
+        <div class="feature-item"><strong>Associate:</strong> Solutions Architect (SAA-C03) · Developer (DVA-C02) · SysOps Administrator (SOA-C02) · Data Engineer (DEA-C01) · Machine Learning Engineer (MLA-C01)</div>
+        <div class="feature-item"><strong>Professional:</strong> Solutions Architect Pro (SAP-C02) · DevOps Engineer Pro (DOP-C02)</div>
+        <div class="feature-item"><strong>Specialty:</strong> Advanced Networking (ANS-C01) · Security (SCS-C03) · Generative AI (GAI-C01)</div>
       </div>
 
       <h2>Get Started</h2>
@@ -207,9 +200,10 @@
 
   <footer>
     <div class="container">
-      <p>Built with ☁️ by Ihab Saloum | <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-blue)">GitHub</a></p>
+      <p>Built with ☁️ by Ihab Saloum | <a href="mailto:support@awsprepai.com" style="color:var(--aws-blue)">Contact Support</a></p>
     </div>
   </footer>
   <script src="navigation.js"></script>
+<script src="nav-auth.js"></script>
 </body>
 </html>

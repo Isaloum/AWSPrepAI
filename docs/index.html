@@ -297,12 +297,11 @@
   <!-- Professional Navigation Bar -->
   <nav class="main-nav" role="navigation">
     <div class="nav-container">
-      <a href="#" class="nav-logo" aria-label="AWSPrepAI Home" onclick="showTab('home'); return false;">
+      <a href="index.html" class="nav-logo" aria-label="AWSPrepAI Home" onclick="showTab('home'); return false;">
         <img src="logo.svg" alt="AWSPrepAI">
       </a>
 
       <div class="nav-menu" id="navMenu">
-        <a href="#" class="nav-link" onclick="showTab('dashboard'); return false;">Dashboard</a>
 
         <!-- Practice Dropdown -->
         <div class="nav-item-dropdown">
@@ -361,13 +360,16 @@
               <span class="item-icon">🏗️</span>
               <div class="item-content"><div class="item-title">Architecture Diagrams</div><div class="item-desc">Interactive SAA-C03 diagrams</div></div>
             </a>
+            <a href="exam-strategy.html" class="dropdown-item">
+              <span class="item-icon">🎯</span>
+              <div class="item-content"><div class="item-title">How to Read Questions</div><div class="item-desc">Exam technique + video guide</div></div>
+            </a>
           </div>
         </div>
 
         <a href="certifications.html" class="nav-link">Certifications</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="resources.html" class="nav-link">Resources</a>
-        <a href="contact.html" class="nav-link">Contact</a>
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.25);border:1px solid rgba(59,130,246,.5);">AI Coach</a>
       </div>
@@ -390,9 +392,6 @@
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
         <div class="mobile-nav-section">
-          <a href="#" class="mobile-nav-link" onclick="showTab('dashboard'); return false;">📊 Dashboard</a>
-        </div>
-        <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="#" class="mobile-nav-link" onclick="showTab('quiz'); return false;">📝 Practice Quiz</a>
           <a href="#" class="mobile-nav-link" onclick="showTab('exam'); return false;">⏱️ Mock Exam</a>
@@ -410,7 +409,6 @@
         <div class="mobile-nav-section">
           <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
           <a href="resources.html" class="mobile-nav-link">📚 Resources</a>
-          <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
           <a href="pricing.html" class="mobile-nav-link">💰 Pricing</a>
           <a href="chat.html" class="mobile-nav-link">AI Coach</a>
         </div>
@@ -650,48 +648,6 @@
     </div>
   </section>
 
-  <!-- ── PRICING SECTION ── -->
-  <section class="home-pricing-section" aria-labelledby="home-pricing-heading">
-    <div class="section-header">
-      <h2 id="home-pricing-heading" class="section-title">Simple, Honest Pricing</h2>
-      <p class="section-subtitle">Try 5 questions free. Upgrade to unlock every cert, every question, every tool.</p>
-    </div>
-    <div class="home-pricing-grid">
-      <div class="home-pricing-card">
-        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#059669,#10b981);">🎁 3 Days Free Trial</div>
-        <div class="home-pricing-name">Monthly</div>
-        <div class="home-pricing-price"><span>$</span>7<span class="home-pricing-period">/month</span></div>
-        <ul class="home-pricing-list">
-          <li>✓ All 12 certifications</li><li>✓ 3,000+ questions</li>
-          <li>✓ Unlimited mock exams</li><li>✓ Architecture builder</li><li>✓ Cancel anytime</li>
-        </ul>
-        <button class="home-pricing-btn" onclick="typeof openEmailModal==='function'?openEmailModal('trial'):window.location.href='pricing.html'">Start Free Trial →</button>
-      </div>
-      <div class="home-pricing-card home-pricing-featured">
-        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#2563EB,#3B82F6);">💰 Save $35 · Best Value</div>
-        <div class="home-pricing-name">Yearly</div>
-        <div class="home-pricing-price"><span>$</span>49<span class="home-pricing-period">/year</span></div>
-        <ul class="home-pricing-list">
-          <li>✓ Everything in Monthly</li><li>✓ Exam history &amp; versions</li>
-          <li>✓ Domain score breakdowns</li><li>✓ Priority support</li>
-          <li style="color:#2563EB;font-weight:700;">✓ ~$4.08/month</li>
-        </ul>
-        <button class="home-pricing-btn" style="background:#2563EB" onclick="typeof openEmailModal==='function'?openEmailModal('yearly'):window.location.href='pricing.html'">Get Yearly Access →</button>
-      </div>
-      <div class="home-pricing-card">
-        <div class="home-pricing-badge" style="background:linear-gradient(90deg,#7c3aed,#a855f7);">⭐ Pay Once · Use Forever</div>
-        <div class="home-pricing-name">Lifetime</div>
-        <div class="home-pricing-price"><span>$</span>97<span class="home-pricing-period"> one-time</span></div>
-        <ul class="home-pricing-list">
-          <li>✓ Everything in Yearly</li><li>✓ All future certs included</li>
-          <li style="color:#7c3aed;font-weight:700;">✓ 🤖 AI Coach (GPT-4o)</li>
-          <li style="color:#7c3aed;font-weight:700;">✓ Personalised study plans</li><li>✓ 30-day pass guarantee</li>
-        </ul>
-        <button class="home-pricing-btn" style="background:#7c3aed" onclick="typeof openEmailModal==='function'?openEmailModal('lifetime'):window.location.href='pricing.html'">Get Lifetime + AI →</button>
-      </div>
-    </div>
-    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:1.25rem">🔒 Secure checkout via Stripe &bull; 30-day pass guarantee &bull; <a href="pricing.html" style="color:var(--aws-blue)">Full pricing details →</a></p>
-  </section>
 
   <!-- ── CTA ── -->
   <section class="cta-section" aria-labelledby="cta-heading">
@@ -778,12 +734,8 @@
       <div class="card card-orange">
         <div class="card-title">📝 Mock Certification Exam</div>
         <div id="examStart">
-          <div class="stats-grid">
-            <div class="stat-card"><div class="stat-value" id="examQCount">65</div><div class="stat-label">Questions</div></div>
-            <div class="stat-card"><div class="stat-value" id="examTCount">90</div><div class="stat-label">Minutes</div></div>
-            <div class="stat-card"><div class="stat-value" id="examPScore">70%</div><div class="stat-label">Pass Score</div></div>
-          </div>
-          <button class="btn btn-primary" onclick="startExam()" style="width:100%;padding:1rem;font-size:1.1rem">🚀 Start Mock Exam</button>
+          <p style="color:var(--muted);margin-bottom:1rem;font-size:.9rem">65 questions · 90 minutes · 70% to pass — each exam uses a unique set of questions</p>
+          <div class="stats-grid" id="examCardGrid" style="grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1rem"></div>
         </div>
         <div id="examInProgress" style="display:none">
           <div class="exam-timer" id="examTimer">90:00</div>
@@ -801,7 +753,10 @@
             <div class="stat-card"><div class="stat-value" id="examCorrect">0</div><div class="stat-label">Correct</div></div>
             <div class="stat-card"><div class="stat-value" id="examResult">--</div><div class="stat-label">Result</div></div>
           </div>
-          <button class="btn btn-primary" onclick="restartExam()" style="width:100%">Try Again</button>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="restartExam()">🔁 Retry This Exam</button>
+            <button class="btn btn-secondary" onclick="backToExamSelect()">← All Exams</button>
+          </div>
         </div>
       </div>
     </section>
@@ -2109,7 +2064,6 @@
         </div>
       </div>
       <div class="footer-right">
-        <a href="pricing.html" class="footer-link">💳 Pricing</a>
         <a href="contact.html" class="footer-link">📬 Contact</a>
       </div>
     </div>
@@ -2172,6 +2126,11 @@
         // Hide floating tips button when not on quiz tab
         if (tab.dataset.tab !== 'quiz') {
           document.getElementById('floatingTips').style.display = 'none';
+        }
+
+        // Render 4 exam cards when opening exam tab
+        if (tab.dataset.tab === 'exam') {
+          backToExamSelect();
         }
 
         // Initialize architecture builder on first visit
@@ -3166,7 +3125,28 @@
     }
 
     // Exam Functions
-    function startExam() {
+    let currentExamNumber = 1;
+
+    function renderExamCards() {
+      const cert = certifications[currentCert];
+      const scoresKey = `examScores_${currentCert}`;
+      const scores = JSON.parse(localStorage.getItem(scoresKey) || '{}');
+      const grid = document.getElementById('examCardGrid');
+      if (!grid) return;
+      grid.innerHTML = [1,2,3,4].map(n => {
+        const s = scores[n];
+        const badge = s ? `<div style="font-size:.8rem;font-weight:700;color:${s.passed?'#059669':'#ef4444'};margin-top:.25rem">${s.passed?'✅':'❌'} ${s.score}%</div>` : `<div style="font-size:.8rem;color:var(--muted);margin-top:.25rem">Not attempted</div>`;
+        return `<div class="stat-card" style="text-align:center;cursor:pointer;padding:1rem;transition:transform .15s" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''" onclick="startExam(${n})">
+          <div style="font-size:1.5rem">📝</div>
+          <div style="font-weight:800;font-size:1rem;margin:.25rem 0">Exam ${n}</div>
+          <div style="font-size:.78rem;color:var(--muted)">Q${(n-1)*65+1}–${n*65}</div>
+          ${badge}
+          <button class="btn btn-primary" style="margin-top:.75rem;padding:.4rem .9rem;font-size:.82rem;width:100%">${s ? 'Retake' : 'Start'} →</button>
+        </div>`;
+      }).join('');
+    }
+
+    function startExam(examNum) {
       // Mock Exam is premium only
       const _exam_isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
       if (!_exam_isPremium) {
@@ -3174,12 +3154,14 @@
         return;
       }
       const cert = certifications[currentCert];
-      examQuestions = [...questions];
-      shuffleArray(examQuestions);
-      examQuestions = examQuestions.slice(0, cert.questions);
+      currentExamNumber = examNum || 1;
+      const start = (currentExamNumber - 1) * 65;
+      // Use fixed slice — questions sorted, not shuffled, so each exam is unique
+      const allQ = [...questions];
+      examQuestions = allQ.slice(start, start + 65);
       examIndex = 0;
-      examAnswers = new Array(cert.questions).fill(-1);
-      examTimeLeft = cert.time * 60;
+      examAnswers = new Array(65).fill(-1);
+      examTimeLeft = 90 * 60;
 
       document.getElementById('examStart').style.display = 'none';
       document.getElementById('examInProgress').style.display = 'block';
@@ -3236,11 +3218,24 @@
       document.getElementById('examCorrect').textContent = correct + '/' + examQuestions.length;
       document.getElementById('examResult').textContent = passed ? '✅ PASSED' : '❌ FAILED';
       document.getElementById('examResult').style.color = passed ? 'var(--success)' : 'var(--danger)';
+
+      // Save score for this exam number
+      const scoresKey = `examScores_${currentCert}`;
+      const scores = JSON.parse(localStorage.getItem(scoresKey) || '{}');
+      scores[currentExamNumber] = { score, passed, date: new Date().toLocaleDateString() };
+      localStorage.setItem(scoresKey, JSON.stringify(scores));
     }
 
     function restartExam() {
+      startExam(currentExamNumber);
+    }
+
+    function backToExamSelect() {
+      clearInterval(examTimer);
       document.getElementById('examStart').style.display = 'block';
+      document.getElementById('examInProgress').style.display = 'none';
       document.getElementById('examResults').style.display = 'none';
+      renderExamCards();
     }
 
     // Services
@@ -3437,5 +3432,6 @@
   </script>
   <!-- Include sample questions script -->
   <script src="sample-questions.js"></script>
+  <script src="nav-auth.js"></script>
 </body>
 </html>
