@@ -51,7 +51,6 @@
       </a>
 
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
 
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">
@@ -119,7 +118,8 @@
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
       </div>
 
-      <a href="index.html" class="nav-cta">Start Practicing</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
+      <a href="index.html" class="nav-cta" id="nav-signup-btn">Start Practicing</a>
 
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span>
@@ -133,9 +133,6 @@
     <div class="mobile-nav-content">
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
-        <div class="mobile-nav-section">
-          <a href="index.html" class="mobile-nav-link">📊 Dashboard</a>
-        </div>
         <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="index.html#quiz" class="mobile-nav-link" onclick="showTab('quiz')">📝 Practice Quiz</a>
@@ -165,59 +162,43 @@
   <main class="container">
     <div class="content-card">
       <h1>Get in Touch</h1>
-      
-      <p>We'd love to hear from you! Whether you have questions, feedback, or suggestions for improving AWSPrepAI, feel free to reach out through any of the channels below.</p>
+
+      <p>Have a question, billing issue, or feedback? We're here to help — reach out and we'll get back to you within 24 hours.</p>
 
       <div class="contact-grid">
         <div class="contact-card">
           <div class="contact-icon">📧</div>
-          <h3>GitHub Issues</h3>
-          <p>Report bugs, request features, or ask questions</p>
-          <a href="https://github.com/Isaloum/AWSPrepAI/issues" target="_blank" rel="noopener">Open an Issue</a>
+          <h3>Email Support</h3>
+          <p>Questions about your account, billing, or access</p>
+          <a href="mailto:support@awsprepai.com">support@awsprepai.com</a>
         </div>
 
         <div class="contact-card">
           <div class="contact-icon">💬</div>
-          <h3>Discussions</h3>
-          <p>Join the community discussion</p>
-          <a href="https://github.com/Isaloum/AWSPrepAI/discussions" target="_blank" rel="noopener">Start a Discussion</a>
+          <h3>AI Coach</h3>
+          <p>Get instant help on any AWS topic from Professor Cloud</p>
+          <a href="chat.html">Open AI Coach →</a>
         </div>
 
         <div class="contact-card">
-          <div class="contact-icon">👨‍💻</div>
-          <h3>GitHub Profile</h3>
-          <p>Connect with the developer</p>
-          <a href="https://github.com/Isaloum" target="_blank" rel="noopener">@Isaloum</a>
+          <div class="contact-icon">📋</div>
+          <h3>Feature Requests</h3>
+          <p>Have an idea to improve AWSPrepAI?</p>
+          <a href="mailto:feedback@awsprepai.com">Share your feedback</a>
         </div>
       </div>
 
-      <h2>Contribute</h2>
-      <p>AWSPrepAI is open source and we welcome contributions! Here's how you can help:</p>
-      
+      <h2>Frequently Asked Questions</h2>
+
       <div style="background:#f8f9fa;padding:1.5rem;border-radius:var(--radius);margin:1.5rem 0">
-        <p><strong>📝 Submit Questions:</strong> Help expand our question bank with high-quality practice questions</p>
-        <p><strong>🐛 Report Bugs:</strong> Found an issue? Let us know on GitHub Issues</p>
-        <p><strong>💡 Suggest Features:</strong> Have ideas for new features? We'd love to hear them</p>
-        <p><strong>🔀 Pull Requests:</strong> Contribute code, fix typos, or improve documentation</p>
-        <p><strong>⭐ Star the Repo:</strong> Show your support and help others discover AWSPrepAI</p>
+        <p style="margin-bottom:1rem"><strong>How do I access my purchased plan?</strong><br>After payment, your account is activated immediately. Log in at <a href="login.html" style="color:var(--aws-blue)">login.html</a> with the email you used at checkout.</p>
+        <p style="margin-bottom:1rem"><strong>What's the difference between Yearly and Lifetime?</strong><br>Yearly gives you access to any 1 certification for 12 months. Lifetime gives you all 12 certifications forever, plus the AI Coach (Professor Cloud).</p>
+        <p style="margin-bottom:1rem"><strong>Can I switch certifications?</strong><br>Yearly subscribers can contact support to switch their active certification. Lifetime subscribers have all 12 certs unlocked simultaneously.</p>
+        <p><strong>Is there a refund policy?</strong><br>Yes — if you're not satisfied within 7 days of purchase, email us and we'll process a full refund, no questions asked.</p>
       </div>
 
-      <h2>Follow Updates</h2>
-      <p>Stay updated with the latest features and improvements by:</p>
-      <ul style="margin-left:2rem;color:var(--muted)">
-        <li>Watching the <a href="https://github.com/Isaloum/AWSPrepAI" style="color:var(--aws-blue)">GitHub repository</a></li>
-        <li>Checking the releases page for version updates</li>
-        <li>Reading the changelog in the README</li>
-      </ul>
-
-      <h2>Support the Project</h2>
-      <p>If AWSPrepAI has helped you in your AWS certification journey, consider:</p>
-      <ul style="margin-left:2rem;color:var(--muted)">
-        <li>⭐ Starring the repository on GitHub</li>
-        <li>🔀 Sharing it with others preparing for AWS exams</li>
-        <li>📝 Providing feedback to help us improve</li>
-        <li>🤝 Contributing to the project</li>
-      </ul>
+      <h2>Response Times</h2>
+      <p>We typically respond to all support emails within 24 hours on business days. For urgent account issues, mention "URGENT" in your subject line and we'll prioritize your request.</p>
     </div>
   </main>
 
@@ -226,26 +207,26 @@
       <div class="footer-content">
         <div class="footer-left">
           <div class="footer-title">☁️ AWSPrepAI</div>
-          <div class="footer-subtitle">Built by Ihab Saloum • Open Source Project</div>
+          <div class="footer-subtitle">Built by Ihab Saloum • AWS Certification Platform</div>
           <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
-            <span class="tech-badge">JavaScript</span>
-            <span class="tech-badge">HTML5</span>
-            <span class="tech-badge">CSS3</span>
-            <span class="tech-badge">LocalStorage</span>
+            <span class="tech-badge">12 Certifications</span>
+            <span class="tech-badge">3,120 Questions</span>
+            <span class="tech-badge">AI Coach</span>
           </div>
         </div>
         <div class="footer-right">
-          <a href="https://github.com/Isaloum/AWSPrepAI" class="footer-link" target="_blank" rel="noopener">
-            <span>⭐</span>
-            <span>View Source Code</span>
+          <a href="pricing.html" class="footer-link">
+            <span>💰</span>
+            <span>View Plans</span>
           </a>
-          <a href="https://github.com/Isaloum" class="footer-link" target="_blank" rel="noopener">
-            <span>More Projects →</span>
+          <a href="certifications.html" class="footer-link">
+            <span>All Certifications →</span>
           </a>
         </div>
       </div>
     </div>
   </footer>
   <script src="navigation.js"></script>
+<script src="nav-auth.js"></script>
 </body>
 </html>

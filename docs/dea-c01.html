@@ -144,7 +144,6 @@
     <div class="nav-container">
       <a href="index.html" class="nav-logo" aria-label="AWSPrepAI Home"><img src="logo.svg" alt="AWSPrepAI"></a>
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
           <div class="dropdown-menu" role="menu">
@@ -183,9 +182,9 @@
   <div class="container">
     <div class="dea-hero-badge">AWS Data Engineer Associate</div>
     <h1>DEA-C01 Practice Exam</h1>
-    <p>260 scenario-based questions covering data ingestion &amp; transformation, data store management, data operations, and security &amp; governance.</p>
+    <p>260 questions across 4 mock exams — 65 per exam — covering data ingestion &amp; transformation, data store management, data operations, and security &amp; governance.</p>
     <div class="dea-stats-row">
-      <div class="dea-stat"><div class="num">260</div><div class="lbl">Questions</div></div>
+      <div class="dea-stat"><div class="num">65</div><div class="lbl">Per Exam</div></div>
       <div class="dea-stat"><div class="num">4</div><div class="lbl">Domains</div></div>
       <div class="dea-stat"><div class="num">70%</div><div class="lbl">Pass Score</div></div>
       <div class="dea-stat"><div class="num">130min</div><div class="lbl">Exam Time</div></div>
@@ -701,10 +700,11 @@ function restartMock() {
 // ── Init ───────────────────────────────────────────────────────────────────
 renderDashboard();
 </script>
+  <script src="payment-system.js"></script>
   <script>
     initPremiumCheck().then(() => { initPremiumUI(); }).catch(() => {});
   </script>
-  <script src="payment-system.js"></script>
   <script src="navigation.js"></script>
+<script src="nav-auth.js"></script>
 </body>
 </html>

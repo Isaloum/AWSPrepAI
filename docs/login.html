@@ -88,9 +88,31 @@ const SUPA_URL = 'https://swkqwqtgbxymyhcnhmfv.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3a3F3cXRnYnh5bXloY25obWZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzEwNzcsImV4cCI6MjA4NTc0NzA3N30.RttI8lDSItgTLMR1QwstSfNakyXqsLgt5kEfmhEJxf4';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-// Already logged in → go to dashboard
+// Helper: resolve best tier from Supabase metadata + payment JWT
+function resolveBestTier(supaTier) {
+  const TIER_RANK = { free: 0, monthly: 1, yearly: 2, lifetime: 3 };
+  try {
+    const jwt = localStorage.getItem('_apa_jwt');
+    if (!jwt) return supaTier;
+    const pl = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (pl.exp && Math.floor(Date.now() / 1000) > pl.exp) return supaTier;
+    const jwtTier = pl.tier || 'free';
+    return (TIER_RANK[jwtTier] || 0) >= (TIER_RANK[supaTier] || 0) ? jwtTier : supaTier;
+  } catch (e) { return supaTier; }
+}
+
+// Already logged in → refresh localStorage tokens then go to dashboard
 supa.auth.getSession().then(({ data }) => {
-  if (data.session) window.location.href = 'user-dashboard.html';
+  if (data.session) {
+    const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+    localStorage.setItem('_apa_session', data.session.access_token);
+    localStorage.setItem('_apa_session_exp', String(Date.now() + SESSION_TTL_MS));
+    localStorage.setItem('_apa_email', data.session.user?.email || '');
+    localStorage.setItem('_apa_name', data.session.user?.user_metadata?.first_name || data.session.user?.user_metadata?.full_name?.split(' ')[0] || '');
+    const supaTier = data.session.user?.user_metadata?.tier || 'free';
+    localStorage.setItem('_apa_tier', resolveBestTier(supaTier));
+    window.location.href = 'user-dashboard.html';
+  }
 });
 
 async function handleLogin(e) {
@@ -124,7 +146,8 @@ async function handleLogin(e) {
   localStorage.setItem('_apa_session_exp', Date.now() + SESSION_TTL_MS);
   localStorage.setItem('_apa_email', email);
   localStorage.setItem('_apa_name', user.user_metadata?.first_name || user.user_metadata?.full_name?.split(' ')[0] || '');
-  localStorage.setItem('_apa_tier', user.user_metadata?.tier || 'free');
+  const _supaTierLogin = user.user_metadata?.tier || 'free';
+  localStorage.setItem('_apa_tier', resolveBestTier(_supaTierLogin));
 
   successEl.textContent = 'Logged in! Redirecting…';
   successEl.style.display = 'block';

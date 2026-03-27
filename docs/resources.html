@@ -58,7 +58,6 @@
       </a>
 
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
 
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">
@@ -126,7 +125,8 @@
         <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
       </div>
 
-      <a href="index.html" class="nav-cta">Start Practicing</a>
+      <a href="user-dashboard.html" class="nav-cta" id="nav-dashboard-btn" style="display:none;text-decoration:none;background:#10b981;">My Dashboard</a>
+      <a href="index.html" class="nav-cta" id="nav-signup-btn">Start Practicing</a>
 
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">
         <span class="hamburger-line"></span>
@@ -140,9 +140,6 @@
     <div class="mobile-nav-content">
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
-        <div class="mobile-nav-section">
-          <a href="index.html" class="mobile-nav-link">📊 Dashboard</a>
-        </div>
         <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="index.html#quiz" class="mobile-nav-link" onclick="showTab('quiz')">📝 Practice Quiz</a>
@@ -172,19 +169,19 @@
   <main class="container">
     <div class="content-card">
       <h1>📚 Resources & FAQ</h1>
-      <p>Your comprehensive guide to AWS SAA-C03 exam preparation with curated resources and answers to common questions.</p>
+      <p>Your comprehensive guide to AWS certification preparation — covering all 12 certs with curated resources and answers to common questions.</p>
 
       <!-- RESOURCES SECTION -->
       <h2>📖 Study Resources</h2>
-      <p>Carefully curated resources organized by category to help you prepare for the SAA-C03 exam.</p>
+      <p>Carefully curated resources organized by category to help you prepare for any AWS certification.</p>
 
       <div class="resource-grid">
         <div class="resource-card">
-          <h3>🏛️ Official AWS Documentation</h3>
+          <h3>🏛️ Official AWS Certification Pages</h3>
           <ul>
+            <li><a href="https://aws.amazon.com/certification/" target="_blank">All AWS Certifications Overview</a></li>
             <li><a href="https://aws.amazon.com/certification/certified-solutions-architect-associate/" target="_blank">SAA-C03 Exam Guide</a></li>
-            <li><a href="https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Exam-Guide.pdf" target="_blank">Official Exam Guide PDF</a></li>
-            <li><a href="https://d1.awsstatic.com/training-and-certification/docs-sa-assoc/AWS-Certified-Solutions-Architect-Associate_Sample-Questions.pdf" target="_blank">Sample Questions PDF</a></li>
+            <li><a href="https://aws.amazon.com/certification/certified-cloud-practitioner/" target="_blank">CLF-C02 Exam Guide</a></li>
             <li><a href="https://aws.amazon.com/architecture/well-architected/" target="_blank">AWS Well-Architected Framework</a></li>
           </ul>
         </div>
@@ -195,7 +192,7 @@
             <li><a href="https://explore.skillbuilder.aws/learn" target="_blank">AWS Skill Builder (Free Tier)</a></li>
             <li><a href="https://aws.amazon.com/training/digital/" target="_blank">AWS Digital Training</a></li>
             <li><a href="https://aws.amazon.com/training/learn-about/solutions-architect/" target="_blank">Solutions Architect Learning Path</a></li>
-            <li><a href="https://www.aws.training/Details/eLearning?id=49720" target="_blank">Exam Readiness: SAA-C03</a></li>
+            <li><a href="https://aws.amazon.com/training/learn-about/cloud-practitioner/" target="_blank">Cloud Practitioner Learning Path</a></li>
           </ul>
         </div>
 
@@ -214,7 +211,7 @@
           <ul>
             <li><a href="https://www.youtube.com/user/AmazonWebServices" target="_blank">AWS YouTube Channel</a></li>
             <li><a href="https://www.youtube.com/@AWSEventsChannel" target="_blank">AWS Events & Webinars</a></li>
-            <li><a href="https://www.youtube.com/results?search_query=aws+solutions+architect+associate" target="_blank">SAA-C03 Tutorial Videos</a></li>
+            <li><a href="https://www.youtube.com/results?search_query=aws+certification+exam+prep" target="_blank">AWS Certification Prep Videos</a></li>
             <li><a href="https://aws.amazon.com/architecture/this-is-my-architecture/" target="_blank">This Is My Architecture</a></li>
           </ul>
         </div>
@@ -290,101 +287,81 @@
       <!-- FAQ SECTION -->
       <div class="domain-section">
         <h2>❓ Frequently Asked Questions</h2>
-        <p>Answers to the most common questions about the AWS SAA-C03 certification exam.</p>
+        <p>Common questions about AWS certifications and using AWSPrepAI.</p>
+
+        <!-- AWSPrepAI Questions -->
+        <h3 style="margin-top:2rem">🚀 About AWSPrepAI</h3>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Which certifications does AWSPrepAI cover?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>AWSPrepAI covers all 12 active AWS certifications: CLF-C02, AIF-C01, SAA-C03, DVA-C02, SOA-C02, DEA-C01, MLA-C01, SAP-C02, DOP-C02, ANS-C01, SCS-C03, and GAI-C01. Each cert has 260 questions split into 4 full mock exams of 65 questions each.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>What is the AI Coach (Professor Cloud)?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Professor Cloud is your personal AI study coach — a wise, experienced cloud architect who explains AWS concepts the way a senior engineer would. Ask any question about any of the 12 certifications and get a real explanation, not just a definition. The AI Coach is available on the Lifetime plan only.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>How are the 4 mock exams structured?</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer">
+            <p>Each certification has 260 questions split into 4 timed mock exams of 65 questions each — exactly matching the format of the real AWS exam. This trains you to pace yourself and experience the full exam feel. Your score for each exam is saved separately so you can track improvement.</p>
+          </div>
+        </div>
 
         <!-- Exam Format & Logistics -->
-        <h3 style="margin-top:2rem">📋 Exam Format & Logistics</h3>
-        
+        <h3 style="margin-top:2rem">📋 AWS Exam Format & Logistics</h3>
+
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What is the format of the SAA-C03 exam?</span>
+            <span>What is the format of most AWS certification exams?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>The SAA-C03 exam consists of 65 questions (multiple-choice and multiple-response) to be completed in 130 minutes. The exam is available in English, Japanese, Korean, and Simplified Chinese. You can take it at a testing center or online with remote proctoring.</p>
+            <p>Most AWS certification exams consist of 65 questions (multiple-choice and multiple-response) completed in 130 minutes. Specialty exams may vary slightly. All exams are scored on a scale of 100–1000, with a passing score of 720 for most certifications.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What is the passing score for SAA-C03?</span>
+            <span>How much do AWS exams cost?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>The passing score is 720 out of 1000 points (approximately 72%). AWS uses a scaled scoring model, so the exact number of correct answers needed may vary slightly between exam versions.</p>
+            <p>Foundation exams cost $100 USD. Associate exams cost $150 USD. Professional and Specialty exams cost $300 USD. Practice exams available through AWS are $40 USD each. Prices may vary by region.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>How much does the SAA-C03 exam cost?</span>
+            <span>How long are AWS certifications valid?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>The exam costs $150 USD. Practice exams are available for $40 USD. Prices may vary by region and promotional offers.</p>
+            <p>All AWS certifications are valid for 3 years. You can recertify by retaking the same exam, passing a higher-level exam, or completing approved recertification activities. AWS sends reminders 6 months before expiration.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>How long is the SAA-C03 certification valid?</span>
+            <span>What happens if I fail an exam?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>The certification is valid for 3 years from the date you pass the exam. You'll need to recertify before it expires to maintain your credential.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What happens if I fail the exam?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>If you don't pass, you must wait 14 days before retaking the exam. There's no limit to the number of attempts, but you must pay the full exam fee for each attempt. Use your score report to identify weak areas for focused study.</p>
-          </div>
-        </div>
-
-        <!-- Preparation & Study -->
-        <h3 style="margin-top:2rem">📚 Preparation & Study</h3>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>How long should I study before taking the SAA-C03 exam?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>Study time varies based on experience. For those with AWS experience: 1-2 months of focused study. For beginners: 2-3 months with hands-on practice. We recommend at least 40-60 hours of total study time including practice labs and mock exams.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>Do I need hands-on AWS experience to pass?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>While not strictly required, hands-on experience significantly improves your chances. AWS recommends 1+ year of hands-on experience. Use the AWS Free Tier to practice building solutions and get familiar with the AWS Console.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>Are practice exams similar to the real exam?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>Quality practice exams closely mirror the real exam in format, difficulty, and topics. Use official AWS practice exams and reputable third-party resources. Focus on understanding explanations, not just memorizing answers.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What are the prerequisites for SAA-C03?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>There are no formal prerequisites. However, AWS recommends having foundational knowledge of AWS services, plus hands-on experience with cloud computing. Understanding of networking, security, and database concepts is helpful.</p>
+            <p>You must wait 14 days before retaking. There's no limit on attempts, but you pay the full fee each time. Use your score report to identify weak domains and focus your study there before retaking.</p>
           </div>
         </div>
 
@@ -403,21 +380,11 @@
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What's the difference between Multi-AZ and Read Replicas?</span>
+            <span>What is the AWS shared responsibility model?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p><strong>Multi-AZ:</strong> Synchronous replication for high availability. Automatic failover (1-2 min). Standby not accessible for reads. Used for disaster recovery.<br><br><strong>Read Replicas:</strong> Asynchronous replication for read scaling. Manual promotion required. Replicas serve read traffic. Can be cross-region.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>When should I use S3 vs EBS vs EFS?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p><strong>S3:</strong> Object storage for files, backups, static websites. Unlimited scalability, pay per GB.<br><br><strong>EBS:</strong> Block storage attached to single EC2 instance. Boot volumes, databases requiring IOPS.<br><br><strong>EFS:</strong> Shared file system accessible from multiple EC2 instances. NFS protocol, scales automatically.</p>
+            <p><strong>AWS Responsibility (Security OF the cloud):</strong> Physical infrastructure, hardware, networking, facilities.<br><br><strong>Customer Responsibility (Security IN the cloud):</strong> Data encryption, IAM, network configuration, application security, guest OS patching.</p>
           </div>
         </div>
 
@@ -427,22 +394,12 @@
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>The Well-Architected Framework consists of 6 pillars for designing cloud architectures: <strong>Operational Excellence</strong>, <strong>Security</strong>, <strong>Reliability</strong>, <strong>Performance Efficiency</strong>, <strong>Cost Optimization</strong>, and <strong>Sustainability</strong>. The SAA-C03 exam focuses heavily on the middle four pillars.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What is the shared responsibility model?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p><strong>AWS Responsibility (Security OF the cloud):</strong> Physical infrastructure, hardware, networking, facilities.<br><br><strong>Customer Responsibility (Security IN the cloud):</strong> Data encryption, IAM, network configuration, application security, guest OS patching.</p>
+            <p>The Well-Architected Framework has 6 pillars: <strong>Operational Excellence</strong>, <strong>Security</strong>, <strong>Reliability</strong>, <strong>Performance Efficiency</strong>, <strong>Cost Optimization</strong>, and <strong>Sustainability</strong>. These pillars appear heavily across all Associate and Professional-level exams.</p>
           </div>
         </div>
 
         <!-- Best Practices -->
-        <h3 style="margin-top:2rem">💡 Exam Strategy & Best Practices</h3>
+        <h3 style="margin-top:2rem">💡 Exam Strategy</h3>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
@@ -450,17 +407,7 @@
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>• Read each question carefully - they often contain key requirements<br>• Eliminate obviously wrong answers first<br>• Budget ~2 minutes per question (130 min ÷ 65 questions)<br>• Flag difficult questions and return to them later<br>• Look for keywords like "most cost-effective," "least operational overhead," "highly available"<br>• When uncertain, choose managed AWS services over self-managed solutions</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What topics are most heavily tested?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>Based on the exam guide and analysis:<br>• <strong>S3</strong> (storage classes, encryption, lifecycle policies)<br>• <strong>VPC</strong> (subnets, routing, security, endpoints)<br>• <strong>EC2</strong> (instance types, Auto Scaling, pricing models)<br>• <strong>IAM</strong> (roles, policies, cross-account access)<br>• <strong>RDS/Aurora</strong> (Multi-AZ, read replicas, backup)<br>• <strong>Load Balancers</strong> (ALB, NLB, health checks)<br>• <strong>CloudFront & Route 53</strong> (caching, routing policies)</p>
+            <p>• Read each question carefully — they often contain key requirements<br>• Eliminate obviously wrong answers first<br>• Budget ~2 minutes per question (130 min ÷ 65 questions)<br>• Flag difficult questions and return to them later<br>• Look for keywords like "most cost-effective," "least operational overhead," "highly available"<br>• When uncertain, choose managed AWS services over self-managed solutions</p>
           </div>
         </div>
 
@@ -470,30 +417,20 @@
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>You're likely ready when you:<br>• Consistently score 75%+ on practice exams<br>• Can explain the "why" behind answers, not just memorize them<br>• Understand trade-offs between different architectural choices<br>• Are comfortable with all four exam domains<br>• Have completed hands-on labs for core services<br>• Can design solutions considering cost, performance, and security simultaneously</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What's the difference between SAA-C02 and SAA-C03?</span>
-            <span class="faq-toggle">▼</span>
-          </div>
-          <div class="faq-answer">
-            <p>SAA-C03 (launched 2022) replaced SAA-C02. Key differences:<br>• Updated to reflect new AWS services and features<br>• More emphasis on serverless and container technologies<br>• Additional focus on cost optimization and sustainability<br>• Same exam structure (65 questions, 130 minutes, 720/1000 passing score)<br><br><strong>Note:</strong> SAA-C02 content is now legacy. All preparation should focus on SAA-C03.</p>
+            <p>You're likely ready when you:<br>• Consistently score 75%+ on all 4 mock exams<br>• Can explain the "why" behind answers, not just memorize them<br>• Understand trade-offs between different architectural choices<br>• Are comfortable with all exam domains<br>• Can design solutions considering cost, performance, and security simultaneously</p>
           </div>
         </div>
 
         <!-- Career & Next Steps -->
-        <h3 style="margin-top:2rem">🚀 Career & Next Steps</h3>
+        <h3 style="margin-top:2rem">🚀 Career Path</h3>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            <span>What can I do after passing SAA-C03?</span>
+            <span>What's the recommended certification path?</span>
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>After SAA-C03, consider:<br>• <strong>Professional Level:</strong> Solutions Architect Professional (SAP-C02)<br>• <strong>Specialty Certifications:</strong> Security, Advanced Networking, Database, Machine Learning<br>• <strong>Career opportunities:</strong> Cloud Architect, Solutions Architect, DevOps Engineer, Cloud Consultant<br>• <strong>Practical application:</strong> Apply your knowledge to real-world projects and build your portfolio</p>
+            <p>Recommended paths:<br>• <strong>Beginner:</strong> CLF-C02 → SAA-C03<br>• <strong>Developer track:</strong> DVA-C02 → DOP-C02<br>• <strong>Data/ML track:</strong> DEA-C01 → MLA-C01 → AIF-C01<br>• <strong>Security track:</strong> SAA-C03 → SCS-C03<br>• <strong>Networking track:</strong> SAA-C03 → ANS-C01<br>• <strong>Top of ladder:</strong> SAP-C02 or DOP-C02 (Professional level)</p>
           </div>
         </div>
 
@@ -503,7 +440,7 @@
             <span class="faq-toggle">▼</span>
           </div>
           <div class="faq-answer">
-            <p>To recertify before your 3-year expiration:<br>• Retake the current SAA exam<br>• Pass a higher-level exam (Professional or Specialty)<br>• Complete AWS recertification training (when available)<br><br>AWS sends reminders starting 6 months before expiration. Plan your recertification strategy early!</p>
+            <p>To recertify before your 3-year expiration:<br>• Retake the same-level exam<br>• Pass a higher-level exam (Professional or Specialty automatically renews lower certs)<br>• Complete AWS recertification training when available<br><br>AWS sends reminders 6 months before expiration. Plan your recertification early!</p>
           </div>
         </div>
       </div>
@@ -551,5 +488,6 @@
     }
   </script>
   <script src="navigation.js"></script>
+<script src="nav-auth.js"></script>
 </body>
 </html>
