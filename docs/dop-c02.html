@@ -603,7 +603,11 @@ function setFilter(cat, btn) {
 }
 
 function renderPractice() {
-  if (!practicePool.length) buildPool();
+  buildPool();
+  if (!practicePool.length) {
+    document.getElementById('p-question').textContent = 'No questions available for this filter.';
+    return;
+  }
   renderPracticeQ();
 }
 
