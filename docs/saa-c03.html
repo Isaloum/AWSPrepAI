@@ -533,7 +533,26 @@ function renderDashboard() {
   });
 }
 
+
+function checkCertAccess() {
+  var CERT_CODE = 'SAA-C03';
+  var tier = localStorage.getItem('_apa_tier') || 'free';
+  if (tier === 'monthly' || tier === 'monthly3') {
+    var monthlyCert = localStorage.getItem('_apa_monthly_cert') || '';
+    if (!monthlyCert) { window.location.href = 'user-dashboard.html'; return false; }
+    if (monthlyCert !== CERT_CODE) {
+      showWrongCertOverlay();
+      return false;
+    }
+  }
+  if (tier === 'free' || tier === '') {
+    showPremiumOverlay();
+    return false;
+  }
+  return true;
+}
 function startPractice(mode) {
+  if (!checkCertAccess()) return;
   if (mode === 'weak') {
     let worstCat = DOMAINS[0], worstPct = 101;
     DOMAINS.forEach(cat => {
@@ -669,6 +688,7 @@ function showUpgradeWall() {
 
 // ── Mock Exam ──────────────────────────────────────────────────────────────
 function startMock() {
+  if (!checkCertAccess()) return;
   const isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
   if (!isPremium) {
     let overlay = document.getElementById('premium-overlay');
