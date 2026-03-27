@@ -38,6 +38,17 @@
 
   // ── Main ──────────────────────────────────────────────────────────────────
   function initNav() {
+    // Auto-highlight the active nav link based on current page URL
+    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('a.nav-link, a.mobile-nav-link').forEach(function(a) {
+      var linkPage = (a.getAttribute('href') || '').split('/').pop().split('#')[0];
+      if (linkPage && linkPage === currentPage) {
+        a.classList.add('active');
+      } else {
+        a.classList.remove('active');
+      }
+    });
+
     var loggedIn = isLoggedIn();
 
     // 1. Point ALL "Dashboard" nav links to user-dashboard.html
