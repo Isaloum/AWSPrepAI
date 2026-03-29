@@ -26,7 +26,7 @@ const tierInfo: Record<string, { label: string; color: string; bg: string; desc:
 }
 
 export default function Dashboard() {
-  const { user, isPremium, isFullAccess, tier, loading, signOut } = useAuth()
+  const { user, isFullAccess, tier, loading, signOut } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {

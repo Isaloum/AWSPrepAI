@@ -33,7 +33,7 @@ const FREE_LIMIT = 20
 export default function CertDetail() {
   const { certId } = useParams<{ certId: string }>()
   const navigate = useNavigate()
-  const { isFullAccess, tier, user, loading } = useAuth()
+  const { tier, user, loading } = useAuth()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [filtered, setFiltered] = useState<Question[]>([])
