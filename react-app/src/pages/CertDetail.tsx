@@ -48,10 +48,7 @@ export default function CertDetail() {
   const meta = certMeta[certId || ''] || { name: 'Unknown', code: '', icon: '❓', domains: {} }
 
   useEffect(() => {
-    if (!certId || !certMeta[certId]) {
-      navigate('/certifications')
-      return
-    }
+    if (!certId || !certMeta[certId]) { navigate('/certifications'); return }
     import(`../data/${certId}.json`).then((mod) => {
       const qs: Question[] = mod.default
       setQuestions(qs)
@@ -60,14 +57,9 @@ export default function CertDetail() {
   }, [certId, navigate])
 
   useEffect(() => {
-    if (domainFilter === 'all') {
-      setFiltered(questions)
-    } else {
-      setFiltered(questions.filter(q => q.cat === domainFilter))
-    }
-    setCurrent(0)
-    setSelected(null)
-    setRevealed(false)
+    if (domainFilter === 'all') setFiltered(questions)
+    else setFiltered(questions.filter(q => q.cat === domainFilter))
+    setCurrent(0); setSelected(null); setRevealed(false)
   }, [domainFilter, questions])
 
   const handleSelect = useCallback((idx: number) => {
@@ -80,57 +72,33 @@ export default function CertDetail() {
     setRevealed(true)
     setAnswered(a => a + 1)
     setQuestionCount(c => c + 1)
-    if (selected === filtered[current].answer) {
-      setScore(s => s + 1)
-    } else {
-      setWrongQuestions(w => [...w, filtered[current]])
-    }
+    if (selected === filtered[current].answer) setScore(s => s + 1)
+    else setWrongQuestions(w => [...w, filtered[current]])
   }, [selected, revealed, filtered, current])
 
   const handleNext = useCallback(() => {
-    const nextIdx = current + 1
-
-    // Check paywall
-    if (questionCount >= FREE_LIMIT) {
-      setShowPaywall(true)
-      return
-    }
-
-    if (nextIdx >= filtered.length) {
-      setShowResults(true)
-    } else {
-      setCurrent(nextIdx)
-      setSelected(null)
-      setRevealed(false)
-    }
+    if (questionCount >= FREE_LIMIT) { setShowPaywall(true); return }
+    if (current + 1 >= filtered.length) setShowResults(true)
+    else { setCurrent(c => c + 1); setSelected(null); setRevealed(false) }
   }, [current, filtered.length, questionCount])
 
   const handlePrev = () => {
-    if (current > 0) {
-      setCurrent(c => c - 1)
-      setSelected(null)
-      setRevealed(false)
-    }
+    if (current > 0) { setCurrent(c => c - 1); setSelected(null); setRevealed(false) }
   }
 
   const restart = () => {
-    setCurrent(0)
-    setSelected(null)
-    setRevealed(false)
-    setScore(0)
-    setAnswered(0)
-    setQuestionCount(0)
-    setShowResults(false)
-    setWrongQuestions([])
+    setCurrent(0); setSelected(null); setRevealed(false)
+    setScore(0); setAnswered(0); setQuestionCount(0)
+    setShowResults(false); setWrongQuestions([])
   }
 
   if (questions.length === 0) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-4xl mb-4 animate-spin">⚙️</div>
-            <p className="text-gray-500">Loading questions...</p>
+        <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚙️</div>
+            <p style={{ color: '#6b7280' }}>Loading questions...</p>
           </div>
         </div>
       </Layout>
@@ -138,7 +106,7 @@ export default function CertDetail() {
   }
 
   const q = filtered[current]
-  const progress = filtered.length > 0 ? Math.round((current / filtered.length) * 100) : 0
+  const progress = filtered.length > 0 ? Math.round(((current + 1) / filtered.length) * 100) : 0
   const scorePercent = answered > 0 ? Math.round((score / answered) * 100) : 0
   const domains = Object.entries(meta.domains)
 
@@ -147,35 +115,31 @@ export default function CertDetail() {
     const passed = scorePercent >= 72
     return (
       <Layout>
-        <div className="max-w-2xl mx-auto px-4 py-12">
-          <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center shadow-sm">
-            <div className="text-5xl mb-4">{passed ? '🎉' : '📚'}</div>
-            <h1 className="text-2xl font-black text-gray-900 mb-1">{passed ? 'Great Work!' : 'Keep Practicing'}</h1>
-            <p className="text-gray-500 mb-6">{meta.icon} {meta.name}</p>
-            <div className="flex justify-center gap-8 mb-8">
-              <div className="text-center">
-                <div className={`text-3xl font-black ${passed ? 'text-green-600' : 'text-red-500'}`}>{scorePercent}%</div>
-                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Score</div>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '3rem 1.5rem' }}>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.5rem', padding: '3rem', textAlign: 'center', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{passed ? '🎉' : '📚'}</div>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#111827', marginBottom: '0.25rem' }}>{passed ? 'Great Work!' : 'Keep Practicing'}</h1>
+            <p style={{ color: '#6b7280', marginBottom: '2rem' }}>{meta.icon} {meta.name}</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginBottom: '2rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: passed ? '#16a34a' : '#ef4444' }}>{scorePercent}%</div>
+                <div style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 700, marginTop: '0.25rem' }}>Score</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-black text-gray-800">{score}/{answered}</div>
-                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Correct</div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#1f2937' }}>{score}/{answered}</div>
+                <div style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 700, marginTop: '0.25rem' }}>Correct</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-black text-blue-600">72%</div>
-                <div className="text-xs text-gray-400 uppercase font-semibold mt-1">Pass Mark</div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#3b82f6' }}>72%</div>
+                <div style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 700, marginTop: '0.25rem' }}>Pass Mark</div>
               </div>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-3 mb-8">
-              <div className={`h-3 rounded-full ${passed ? 'bg-green-500' : 'bg-red-400'}`} style={{ width: `${scorePercent}%` }} />
+            <div style={{ background: '#f3f4f6', borderRadius: '9999px', height: '12px', marginBottom: '2rem' }}>
+              <div style={{ background: passed ? '#22c55e' : '#f87171', height: '12px', borderRadius: '9999px', width: `${scorePercent}%`, transition: 'width 0.5s' }} />
             </div>
-            <div className="flex gap-3 flex-wrap justify-center">
-              <button onClick={restart} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700">
-                Practice Again
-              </button>
-              <button onClick={() => navigate('/certifications')} className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200">
-                All Certs
-              </button>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button onClick={restart} style={{ padding: '0.75rem 2rem', background: '#3b82f6', color: '#fff', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>Practice Again</button>
+              <button onClick={() => navigate('/certifications')} style={{ padding: '0.75rem 2rem', background: '#f3f4f6', color: '#374151', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>All Certs</button>
             </div>
           </div>
         </div>
@@ -185,147 +149,217 @@ export default function CertDetail() {
 
   if (!q) return null
 
+  const optionColors = (i: number) => {
+    if (!revealed) {
+      if (i === selected) return { background: '#eff6ff', border: '2px solid #3b82f6', color: '#1e40af' }
+      return { background: '#fff', border: '2px solid #e5e7eb', color: '#374151' }
+    }
+    if (i === q.answer) return { background: '#f0fdf4', border: '2px solid #22c55e', color: '#15803d' }
+    if (i === selected) return { background: '#fef2f2', border: '2px solid #ef4444', color: '#b91c1c' }
+    return { background: '#f9fafb', border: '2px solid #f3f4f6', color: '#9ca3af' }
+  }
+
   return (
     <Layout>
       {showPaywall && <Paywall reason="free-user" onClose={() => setShowPaywall(false)} />}
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
-
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => navigate('/certifications')} className="text-gray-400 hover:text-gray-600 text-sm flex items-center gap-1">
-            ← Back
-          </button>
-          <span className="text-gray-300">|</span>
-          <span className="text-sm font-bold text-gray-700">{meta.icon} {meta.code}</span>
-          <span className="ml-auto text-sm text-gray-500">
-            <span className="font-bold text-blue-600">{score}</span> correct · {answered} answered
+      {/* Full-width header bar */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '0.875rem 2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <button onClick={() => navigate('/certifications')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          ← Back
+        </button>
+        <span style={{ color: '#d1d5db' }}>|</span>
+        <span style={{ fontWeight: 800, color: '#111827', fontSize: '0.875rem' }}>{meta.icon} {meta.code} — {meta.name}</span>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+            <span style={{ fontWeight: 800, color: '#3b82f6', fontSize: '1rem' }}>{score}</span> correct &nbsp;·&nbsp; {answered} answered
           </span>
+          {answered > 0 && (
+            <span style={{ fontSize: '0.875rem', fontWeight: 700, color: scorePercent >= 72 ? '#16a34a' : '#d97706' }}>
+              {scorePercent}%
+            </span>
+          )}
         </div>
+      </div>
 
-        {/* Progress bar */}
-        <div className="w-full bg-gray-100 rounded-full h-2 mb-6">
-          <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
-        </div>
+      {/* Progress bar - full width */}
+      <div style={{ height: '4px', background: '#e5e7eb', width: '100%' }}>
+        <div style={{ height: '4px', background: '#3b82f6', width: `${progress}%`, transition: 'width 0.3s' }} />
+      </div>
 
-        {/* Domain filter */}
-        <div className="flex gap-2 flex-wrap mb-6 overflow-x-auto pb-1">
-          <button
-            onClick={() => setDomainFilter('all')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${domainFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-400'}`}
-          >
-            All ({questions.length})
-          </button>
-          {domains.map(([cat, label]) => {
-            const count = questions.filter(q => q.cat === cat).length
-            if (count === 0) return null
-            return (
-              <button
-                key={cat}
-                onClick={() => setDomainFilter(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${domainFilter === cat ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-400'}`}
-              >
-                {label} ({count})
-              </button>
-            )
-          })}
-        </div>
+      {/* Main content - two columns */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', maxWidth: '1200px', margin: '0 auto', padding: '2rem 2rem' }}>
 
-        {/* Question card */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{meta.domains[q.cat] || q.cat}</span>
-            <span className="text-xs text-gray-400">{current + 1} / {filtered.length}</span>
-          </div>
-
-          <p className="text-gray-900 font-medium text-base leading-relaxed mb-6">{q.q}</p>
-
-          {/* Options */}
-          <div className="space-y-3 mb-6">
-            {q.options.map((opt, i) => {
-              let cls = 'border border-gray-200 bg-white text-gray-700 hover:border-blue-400 hover:bg-blue-50'
-              if (revealed) {
-                if (i === q.answer) cls = 'border-green-500 bg-green-50 text-green-800'
-                else if (i === selected) cls = 'border-red-400 bg-red-50 text-red-700'
-                else cls = 'border-gray-100 bg-gray-50 text-gray-400'
-              } else if (i === selected) {
-                cls = 'border-blue-500 bg-blue-50 text-blue-800'
-              }
+        {/* LEFT: Question + Options */}
+        <div>
+          {/* Domain filter tabs */}
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+            <button
+              onClick={() => setDomainFilter('all')}
+              style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: domainFilter === 'all' ? '#111827' : '#fff', color: domainFilter === 'all' ? '#fff' : '#6b7280', boxShadow: domainFilter === 'all' ? 'none' : '0 0 0 1px #e5e7eb' }}
+            >
+              All ({questions.length})
+            </button>
+            {domains.map(([cat, label]) => {
+              const count = questions.filter(q => q.cat === cat).length
+              if (count === 0) return null
+              const active = domainFilter === cat
               return (
-                <button
-                  key={i}
-                  onClick={() => handleSelect(i)}
-                  disabled={revealed}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all border-2 ${cls} ${!revealed ? 'cursor-pointer' : 'cursor-default'}`}
+                <button key={cat} onClick={() => setDomainFilter(cat)}
+                  style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: active ? '#111827' : '#fff', color: active ? '#fff' : '#6b7280', boxShadow: active ? 'none' : '0 0 0 1px #e5e7eb' }}
                 >
-                  <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
-                  {opt}
-                  {revealed && i === q.answer && <span className="ml-2 text-green-600">✓</span>}
-                  {revealed && i === selected && i !== q.answer && <span className="ml-2 text-red-500">✗</span>}
+                  {label} ({count})
                 </button>
               )
             })}
           </div>
 
-          {/* Explanation */}
-          {revealed && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-2">
-              <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1">Explanation</p>
-              <p className="text-sm text-blue-900 leading-relaxed">{q.explain}</p>
+          {/* Question card */}
+          <div style={{ background: '#fff', borderRadius: '1.25rem', border: '1px solid #e5e7eb', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+            {/* Card header */}
+            <div style={{ padding: '1.25rem 1.75rem', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#3b82f6', background: '#eff6ff', padding: '0.25rem 0.75rem', borderRadius: '9999px' }}>
+                {meta.domains[q.cat] || q.cat}
+              </span>
+              <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600 }}>
+                {current + 1} / {filtered.length}
+              </span>
             </div>
-          )}
-        </div>
 
-        {/* Free limit warning */}
-        {questionCount >= FREE_LIMIT - 5 && questionCount < FREE_LIMIT && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 text-sm text-amber-800">
-            ⚠️ <span className="font-semibold">{FREE_LIMIT - questionCount} free questions left.</span> Upgrade to unlock all 260 questions.
-          </div>
-        )}
+            {/* Question text */}
+            <div style={{ padding: '1.75rem 1.75rem 1.25rem' }}>
+              <p style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827', lineHeight: 1.65, margin: 0 }}>{q.q}</p>
+            </div>
 
-        {/* Action buttons */}
-        <div className="flex gap-3 justify-between">
-          <button
-            onClick={handlePrev}
-            disabled={current === 0}
-            className="px-5 py-2.5 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed text-sm"
-          >
-            ← Prev
-          </button>
+            {/* Options */}
+            <div style={{ padding: '0 1.75rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              {q.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(i)}
+                  disabled={revealed}
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '1rem 1.25rem',
+                    borderRadius: '0.875rem', fontSize: '0.925rem', fontWeight: 500,
+                    cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s',
+                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+                    ...optionColors(i)
+                  }}
+                >
+                  <span style={{ fontWeight: 800, minWidth: '1.5rem', flexShrink: 0 }}>{String.fromCharCode(65 + i)}.</span>
+                  <span>{opt}</span>
+                  {revealed && i === q.answer && <span style={{ marginLeft: 'auto', color: '#16a34a', fontWeight: 800, flexShrink: 0 }}>✓</span>}
+                  {revealed && i === selected && i !== q.answer && <span style={{ marginLeft: 'auto', color: '#ef4444', fontWeight: 800, flexShrink: 0 }}>✗</span>}
+                </button>
+              ))}
+            </div>
 
-          {!revealed ? (
-            <button
-              onClick={handleReveal}
-              disabled={selected === null}
-              className="flex-1 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
-            >
-              Submit Answer
-            </button>
-          ) : (
-            <button
-              onClick={handleNext}
-              className="flex-1 py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-700 text-sm"
-            >
-              {current + 1 >= filtered.length ? 'See Results' : 'Next Question →'}
-            </button>
-          )}
-        </div>
-
-        {/* Score tracker */}
-        {answered > 0 && (
-          <div className="mt-6 bg-gray-50 rounded-xl p-4 flex items-center justify-between">
-            <span className="text-sm text-gray-500">Session score</span>
-            <div className="flex items-center gap-3">
-              <div className="w-32 bg-gray-200 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all ${scorePercent >= 72 ? 'bg-green-500' : 'bg-amber-500'}`}
-                  style={{ width: `${scorePercent}%` }}
-                />
+            {/* Explanation */}
+            {revealed && (
+              <div style={{ margin: '0 1.75rem 1.75rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '1.25rem' }}>
+                <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6', marginBottom: '0.5rem' }}>Explanation</p>
+                <p style={{ fontSize: '0.9rem', color: '#1e40af', lineHeight: 1.6, margin: 0 }}>{q.explain}</p>
               </div>
-              <span className={`text-sm font-bold ${scorePercent >= 72 ? 'text-green-600' : 'text-amber-600'}`}>{scorePercent}%</span>
+            )}
+          </div>
+
+          {/* Free limit warning */}
+          {questionCount >= FREE_LIMIT - 5 && questionCount < FREE_LIMIT && (
+            <div style={{ marginTop: '1rem', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '0.875rem', padding: '0.875rem 1.25rem', fontSize: '0.875rem', color: '#92400e', fontWeight: 500 }}>
+              ⚠️ <strong>{FREE_LIMIT - questionCount} free questions left.</strong> Upgrade to unlock all {filtered.length} questions.
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+            <button onClick={handlePrev} disabled={current === 0}
+              style={{ padding: '0.875rem 1.5rem', border: '1.5px solid #e5e7eb', background: '#fff', color: '#6b7280', fontWeight: 700, borderRadius: '0.875rem', cursor: current === 0 ? 'not-allowed' : 'pointer', opacity: current === 0 ? 0.35 : 1, fontSize: '0.9rem' }}>
+              ← Prev
+            </button>
+            {!revealed ? (
+              <button onClick={handleReveal} disabled={selected === null}
+                style={{ flex: 1, padding: '0.875rem', background: selected !== null ? '#3b82f6' : '#93c5fd', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: selected !== null ? 'pointer' : 'not-allowed', fontSize: '0.95rem', transition: 'background 0.15s' }}>
+                Submit Answer
+              </button>
+            ) : (
+              <button onClick={handleNext}
+                style={{ flex: 1, padding: '0.875rem', background: '#111827', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>
+                {current + 1 >= filtered.length ? 'See Results 🎯' : 'Next Question →'}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT: Sidebar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+          {/* Score card */}
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.25rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#9ca3af', marginBottom: '1rem', letterSpacing: '0.06em' }}>Session Score</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: scorePercent >= 72 ? '#16a34a' : answered === 0 ? '#111827' : '#f59e0b' }}>
+                  {answered === 0 ? '—' : `${scorePercent}%`}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 600 }}>Current score</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: '#3b82f6' }}>{score}/{answered}</div>
+                <div style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: 600 }}>Correct</div>
+              </div>
+            </div>
+            {answered > 0 && (
+              <>
+                <div style={{ background: '#f3f4f6', borderRadius: '9999px', height: '8px', marginBottom: '0.5rem' }}>
+                  <div style={{ height: '8px', borderRadius: '9999px', background: scorePercent >= 72 ? '#22c55e' : '#f59e0b', width: `${scorePercent}%`, transition: 'width 0.4s' }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#9ca3af', fontWeight: 600 }}>
+                  <span>0%</span>
+                  <span style={{ color: '#3b82f6', fontWeight: 800 }}>72% to pass</span>
+                  <span>100%</span>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Progress card */}
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.25rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#9ca3af', marginBottom: '1rem', letterSpacing: '0.06em' }}>Progress</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.875rem', color: '#374151', fontWeight: 600 }}>Question {current + 1} of {filtered.length}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: '#3b82f6' }}>{progress}%</span>
+            </div>
+            <div style={{ background: '#f3f4f6', borderRadius: '9999px', height: '8px' }}>
+              <div style={{ height: '8px', borderRadius: '9999px', background: '#3b82f6', width: `${progress}%`, transition: 'width 0.3s' }} />
             </div>
           </div>
-        )}
+
+          {/* Free limit card */}
+          {questionCount < FREE_LIMIT && (
+            <div style={{ background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)', border: '1px solid #bfdbfe', borderRadius: '1.25rem', padding: '1.5rem' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#3b82f6', marginBottom: '0.75rem', letterSpacing: '0.06em' }}>Free Tier</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.875rem', color: '#374151', fontWeight: 600 }}>{questionCount} / {FREE_LIMIT} used</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 800, color: '#3b82f6' }}>{FREE_LIMIT - questionCount} left</span>
+              </div>
+              <div style={{ background: '#dbeafe', borderRadius: '9999px', height: '6px', marginBottom: '1rem' }}>
+                <div style={{ height: '6px', borderRadius: '9999px', background: '#3b82f6', width: `${(questionCount / FREE_LIMIT) * 100}%`, transition: 'width 0.3s' }} />
+              </div>
+              <button onClick={() => navigate('/pricing')}
+                style={{ width: '100%', padding: '0.625rem', background: '#3b82f6', color: '#fff', fontWeight: 700, borderRadius: '0.625rem', border: 'none', cursor: 'pointer', fontSize: '0.825rem' }}>
+                Unlock All 260 Questions →
+              </button>
+            </div>
+          )}
+
+          {/* Tip card */}
+          <div style={{ background: '#f9fafb', border: '1px solid #f3f4f6', borderRadius: '1.25rem', padding: '1.25rem' }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#9ca3af', marginBottom: '0.5rem', letterSpacing: '0.06em' }}>💡 Exam Tip</p>
+            <p style={{ fontSize: '0.825rem', color: '#6b7280', lineHeight: 1.55, margin: 0 }}>
+              Read every option carefully. AWS exams often have 2 correct-sounding answers — the right one is the <strong>most cost-effective or operationally efficient</strong>.
+            </p>
+          </div>
+        </div>
       </div>
     </Layout>
   )
