@@ -63,7 +63,7 @@ export default function MockExam() {
     if (!certId || !certMeta[certId]) { navigate('/certifications'); return }
     if (!isPremium) return // show gate below
     import(`../data/${certId}.json`).then((mod) => {
-      const qs: Question[] = shuffle(mod.default).slice(0, EXAM_QUESTIONS)
+      const qs = shuffle(mod.default as Question[]).slice(0, EXAM_QUESTIONS)
       setQuestions(qs)
       setAnswers(new Array(qs.length).fill(null))
     }).catch(() => navigate('/certifications'))
@@ -94,7 +94,7 @@ export default function MockExam() {
     })
   }
 
-  const score = answers.reduce((acc, ans, i) => acc + (ans === questions[i]?.answer ? 1 : 0), 0)
+  const score = answers.reduce((acc: number, ans, i) => acc + (ans === questions[i]?.answer ? 1 : 0), 0)
   const pct = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
   const passed = pct >= 72
 
