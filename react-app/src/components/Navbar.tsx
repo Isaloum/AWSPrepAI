@@ -75,7 +75,7 @@ export default function Navbar() {
             onMouseEnter={() => setPracticeOpen(true)}
             onMouseLeave={() => setPracticeOpen(false)}
           >
-            <button style={{ ...navItem(location.pathname.startsWith('/cert/') || location.pathname.startsWith('/mock-exam') || location.pathname.startsWith('/architecture-builder') || location.pathname.startsWith('/visual-exam') || location.pathname.startsWith('/sample-questions')) }}>
+            <button style={{ ...navItem(location.pathname.startsWith('/cert/') || location.pathname === '/mock-exam' || location.pathname.startsWith('/mock-exam/') || location.pathname === '/architecture-builder' || location.pathname === '/visual-exam' || location.pathname === '/sample-questions') }}>
               Practice <ChevronDown />
             </button>
             {practiceOpen && (

@@ -238,7 +238,7 @@ export default function Home() {
             })}
           </div>
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link to="/certifications" style={{ display: 'inline-block', padding: '0.75rem 2rem', background: '#f1f5f9', color: '#374151', fontWeight: 700, borderRadius: '0.875rem', textDecoration: 'none', fontSize: '0.95rem', border: '1px solid #e2e8f0' }}>
+            <Link to="/certifications" onClick={() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })} style={{ display: 'inline-block', padding: '0.75rem 2rem', background: '#f1f5f9', color: '#374151', fontWeight: 700, borderRadius: '0.875rem', textDecoration: 'none', fontSize: '0.95rem', border: '1px solid #e2e8f0' }}>
               Browse All Certifications →
             </Link>
           </div>
