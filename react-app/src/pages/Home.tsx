@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 
@@ -100,6 +101,7 @@ const SampleQuestion = () => (
 
 export default function Home() {
   const navigate = useNavigate()
+  const [hoveredPlan, setHoveredPlan] = useState<string | null>(null)
 
   return (
     <Layout>
@@ -244,30 +246,143 @@ export default function Home() {
       </section>
 
       {/* ── Pricing teaser ── */}
-      <section style={{ padding: '4rem 1.5rem', background: '#eff6ff' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '1.875rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Simple, honest pricing</h2>
-          <p style={{ color: '#6b7280', marginBottom: '2rem' }}>Start free. Upgrade when you need more.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-            {[
-              { label: 'Monthly', price: '$7', period: '/mo', desc: 'Cancel anytime' },
-              { label: 'Yearly', price: '$67', period: '/yr', desc: 'Save $41 — 38% off', popular: true },
-              { label: 'Lifetime', price: '$147', period: ' once', desc: 'Pay once, use forever' },
-            ].map(p => (
-              <div key={p.label} style={{ background: '#fff', border: `2px solid ${p.popular ? '#2563eb' : '#bfdbfe'}`, borderRadius: '0.875rem', padding: '1.25rem 0.75rem', textAlign: 'center', position: 'relative' }}>
-                {p.popular && <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: '#2563eb', color: '#fff', fontSize: '0.65rem', fontWeight: 800, padding: '2px 10px', borderRadius: '999px', whiteSpace: 'nowrap' }}>⭐ Most Popular</div>}
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>{p.label}</div>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '1px' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#111827' }}>{p.price}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{p.period}</div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>{p.desc}</div>
-              </div>
-            ))}
+      <section style={{ padding: '5rem 1.5rem', background: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 100%)', position: 'relative', overflow: 'hidden' }}>
+        {/* Background glow blobs */}
+        <div style={{ position: 'absolute', top: '-80px', left: '10%', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(37,99,235,0.15)', filter: 'blur(80px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '-60px', right: '5%', width: '320px', height: '320px', borderRadius: '50%', background: 'rgba(99,102,241,0.12)', filter: 'blur(70px)', pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '999px', padding: '0.3rem 1rem', fontSize: '0.78rem', fontWeight: 700, color: '#93c5fd', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+              Pricing
+            </div>
+            <h2 style={{ fontSize: '2.25rem', fontWeight: 900, color: '#fff', margin: '0 0 0.6rem', letterSpacing: '-0.02em' }}>
+              Simple, honest pricing
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '1.05rem', margin: 0 }}>
+              Start free — no card needed. Upgrade when you're ready.
+            </p>
           </div>
-          <Link to="/pricing" style={{ display: 'inline-block', padding: '0.875rem 2rem', background: '#2563eb', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', textDecoration: 'none', fontSize: '1rem', boxShadow: '0 4px 14px rgba(37,99,235,0.3)' }}>
-            See Full Pricing →
-          </Link>
+
+          {/* Plan cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.25rem', marginBottom: '2.5rem' }}>
+            {[
+              {
+                id: 'free', label: 'Free', price: '$0', period: '/forever',
+                badge: null, highlight: false,
+                color: '#60a5fa',
+                features: ['20 free questions', 'No sign-up needed', 'Instant explanations'],
+              },
+              {
+                id: 'monthly', label: 'Monthly', price: '$7', period: '/mo',
+                badge: '⚡ Flexible', highlight: false,
+                color: '#60a5fa',
+                features: ['All 12 certs', '3,120 questions', 'Mock exams', 'Cancel anytime'],
+              },
+              {
+                id: 'yearly', label: 'Yearly', price: '$67', period: '/yr',
+                badge: '⭐ Most Popular', highlight: true,
+                color: '#fff',
+                features: ['Everything in Monthly', 'Save $17/year', '~$5.60/month', 'Best for studiers'],
+              },
+              {
+                id: 'lifetime', label: 'Lifetime', price: '$147', period: '/once',
+                badge: '🔥 Best Value', highlight: false,
+                color: '#60a5fa',
+                features: ['Pay once forever', 'AI Coach included', 'All future certs', 'No fees ever'],
+              },
+            ].map(p => {
+              const isHov = hoveredPlan === p.id
+              return (
+                <div
+                  key={p.id}
+                  onMouseEnter={() => setHoveredPlan(p.id)}
+                  onMouseLeave={() => setHoveredPlan(null)}
+                  onClick={() => navigate('/pricing')}
+                  style={{
+                    background: p.highlight
+                      ? 'linear-gradient(145deg, #2563eb, #1d4ed8)'
+                      : 'rgba(255,255,255,0.06)',
+                    border: p.highlight
+                      ? '2px solid #3b82f6'
+                      : isHov
+                      ? '2px solid rgba(255,255,255,0.35)'
+                      : '2px solid rgba(255,255,255,0.1)',
+                    borderRadius: '1rem',
+                    padding: '1.75rem 1.4rem',
+                    textAlign: 'center',
+                    position: 'relative',
+                    cursor: 'pointer',
+                    transform: isHov ? 'translateY(-8px) scale(1.03)' : p.highlight ? 'translateY(-4px)' : 'translateY(0)',
+                    boxShadow: isHov
+                      ? '0 20px 48px rgba(0,0,0,0.35)'
+                      : p.highlight
+                      ? '0 12px 32px rgba(37,99,235,0.4)'
+                      : '0 2px 8px rgba(0,0,0,0.2)',
+                    transition: 'all 0.22s ease',
+                    backdropFilter: 'blur(10px)',
+                  }}
+                >
+                  {/* Badge */}
+                  {p.badge && (
+                    <div style={{
+                      position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)',
+                      background: p.highlight ? '#fff' : 'rgba(255,255,255,0.15)',
+                      color: p.highlight ? '#1d4ed8' : '#fff',
+                      fontSize: '0.65rem', fontWeight: 800,
+                      padding: '3px 12px', borderRadius: '999px', whiteSpace: 'nowrap',
+                      border: p.highlight ? 'none' : '1px solid rgba(255,255,255,0.2)',
+                    }}>
+                      {p.badge}
+                    </div>
+                  )}
+
+                  {/* Plan name */}
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: p.highlight ? 'rgba(255,255,255,0.7)' : '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+                    {p.label}
+                  </div>
+
+                  {/* Price */}
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', marginBottom: '1.25rem' }}>
+                    <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{p.price}</span>
+                    <span style={{ fontSize: '0.8rem', color: p.highlight ? 'rgba(255,255,255,0.6)' : '#64748b', marginBottom: '0.3rem' }}>{p.period}</span>
+                  </div>
+
+                  {/* Features */}
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {p.features.map(f => (
+                      <li key={f} style={{ fontSize: '0.78rem', color: p.highlight ? 'rgba(255,255,255,0.85)' : '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
+                        <span style={{ color: p.highlight ? '#bfdbfe' : '#3b82f6', fontSize: '0.7rem' }}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* CTA */}
+          <div style={{ textAlign: 'center' }}>
+            <Link
+              to="/pricing"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.9rem 2.25rem', background: '#fff', color: '#1e3a8a',
+                fontWeight: 800, borderRadius: '0.875rem', textDecoration: 'none',
+                fontSize: '1rem', boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.3)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.25)' }}
+            >
+              See Full Pricing & Features →
+            </Link>
+            <p style={{ color: '#475569', fontSize: '0.82rem', marginTop: '0.85rem' }}>
+              No credit card required · Cancel anytime · 7-day money-back guarantee
+            </p>
+          </div>
         </div>
       </section>
 
