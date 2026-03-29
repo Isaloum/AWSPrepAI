@@ -257,22 +257,22 @@ function IllustrationVisual() {
 ════════════════════════════════════════════════════════════ */
 function IllustrationSubscriptions() {
   return (
-    <svg width="220" height="140" viewBox="0 0 220 140" fill="none">
+    <svg width="240" height="140" viewBox="0 0 240 140" fill="none">
 
       {/* ── LEFT: 3 subscription cards ── */}
 
       {/* Udemy */}
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="6" width="70" height="34" rx="7" fill="#fef3c7" stroke="#d97706" strokeWidth="2"/>
-        <text x="10" y="21" fontSize="8.5" fontWeight="900" fill="#92400e">Udemy</text>
+        <rect x="4" y="6" width="84" height="34" rx="7" fill="#fef3c7" stroke="#d97706" strokeWidth="2"/>
+        <text x="10" y="21" fontSize="9" fontWeight="900" fill="#92400e">Udemy</text>
         <text x="10" y="32" fontSize="7.5" fill="#b45309">Video Course</text>
-        <rect x="44" y="8" width="26" height="16" rx="4" fill="#f59e0b"/>
-        <text x="47" y="19.5" fontSize="8.5" fontWeight="900" fill="white">$23+</text>
+        <rect x="56" y="8" width="28" height="16" rx="4" fill="#f59e0b"/>
+        <text x="59" y="19.5" fontSize="8.5" fontWeight="900" fill="white">$23+</text>
       </g>
 
       {/* + */}
-      <text x="32" y="52" fontSize="18" fontWeight="900" fill="#fb923c">
+      <text x="38" y="52" fontSize="18" fontWeight="900" fill="#fb923c">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
         +
       </text>
@@ -280,15 +280,15 @@ function IllustrationSubscriptions() {
       {/* YouTube */}
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="2.7s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="54" width="70" height="34" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
-        <text x="10" y="69" fontSize="8.5" fontWeight="900" fill="#991b1b">YouTube</text>
+        <rect x="4" y="54" width="84" height="34" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
+        <text x="10" y="69" fontSize="9" fontWeight="900" fill="#991b1b">YouTube</text>
         <text x="10" y="80" fontSize="7.5" fill="#b91c1c">Video walk-throughs</text>
-        <rect x="44" y="56" width="26" height="16" rx="4" fill="#dc2626"/>
-        <text x="47" y="67.5" fontSize="8.5" fontWeight="900" fill="white">free?</text>
+        <rect x="56" y="56" width="28" height="16" rx="4" fill="#dc2626"/>
+        <text x="59" y="67.5" fontSize="8.5" fontWeight="900" fill="white">free?</text>
       </g>
 
       {/* + */}
-      <text x="32" y="100" fontSize="18" fontWeight="900" fill="#fb923c">
+      <text x="38" y="100" fontSize="18" fontWeight="900" fill="#fb923c">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" begin="0.2s" repeatCount="indefinite"/>
         +
       </text>
@@ -296,29 +296,29 @@ function IllustrationSubscriptions() {
       {/* Dojo */}
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="102" width="70" height="34" rx="7" fill="#ffedd5" stroke="#f97316" strokeWidth="2"/>
-        <text x="10" y="117" fontSize="8.5" fontWeight="900" fill="#9a3412">T. Dojo</text>
+        <rect x="4" y="102" width="84" height="34" rx="7" fill="#ffedd5" stroke="#f97316" strokeWidth="2"/>
+        <text x="10" y="117" fontSize="9" fontWeight="900" fill="#9a3412">T. Dojo</text>
         <text x="10" y="128" fontSize="7.5" fill="#c2410c">Practice Tests</text>
-        <rect x="44" y="104" width="26" height="16" rx="4" fill="#ea580c"/>
-        <text x="49" y="115.5" fontSize="8.5" fontWeight="900" fill="white">$15</text>
+        <rect x="56" y="104" width="28" height="16" rx="4" fill="#ea580c"/>
+        <text x="62" y="115.5" fontSize="8.5" fontWeight="900" fill="white">$15</text>
       </g>
 
       {/* ── MERGE ARROW ── */}
-      <line x1="80" y1="70" x2="96" y2="70" stroke="#f97316" strokeWidth="4" strokeLinecap="round">
+      <line x1="92" y1="70" x2="108" y2="70" stroke="#f97316" strokeWidth="4" strokeLinecap="round">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </line>
-      <polyline points="90,62 98,70 90,78" stroke="#ea580c" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="102,62 110,70 102,78" stroke="#ea580c" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </polyline>
 
       {/* ── AWSPrepAI result card ── */}
-      <rect x="102" y="6" width="114" height="128" rx="12" fill="#fff7ed" stroke="#ea580c" strokeWidth="2.5">
+      <rect x="114" y="6" width="122" height="128" rx="12" fill="#fff7ed" stroke="#ea580c" strokeWidth="2.5">
         <animate attributeName="opacity" values="0.9;1;0.9" dur="2.5s" repeatCount="indefinite"/>
       </rect>
       {/* Header */}
-      <rect x="102" y="6" width="114" height="30" rx="12" fill="#ea580c"/>
-      <rect x="102" y="26" width="114" height="10" fill="#ea580c"/>
-      <text x="118" y="26" fontSize="11" fontWeight="900" fill="white">AWSPrepAI</text>
+      <rect x="114" y="6" width="122" height="30" rx="12" fill="#ea580c"/>
+      <rect x="114" y="26" width="122" height="10" fill="#ea580c"/>
+      <text x="175" y="26" fontSize="11" fontWeight="900" fill="white" textAnchor="middle">AWSPrepAI</text>
 
       {/* Feature rows */}
       {[
@@ -327,17 +327,17 @@ function IllustrationSubscriptions() {
         {y:92, t:'✓  Visual Diagrams'},
         {y:110, t:'✓  Explanations'},
       ].map((f,i)=>(
-        <text key={i} x="112" y={f.y} fontSize="9" fontWeight="700" fill="#c2410c">
+        <text key={i} x="124" y={f.y} fontSize="9" fontWeight="700" fill="#c2410c">
           {f.t}
           <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin={`${i*0.35}s`} repeatCount="indefinite"/>
         </text>
       ))}
 
       {/* "1 tab" badge */}
-      <rect x="110" y="118" width="98" height="20" rx="7" fill="#16a34a">
+      <rect x="118" y="118" width="112" height="20" rx="7" fill="#16a34a">
         <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
       </rect>
-      <text x="159" y="131" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
+      <text x="174" y="131" fontSize="9" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
     </svg>
   )
 }
