@@ -35,7 +35,7 @@ export default function Navbar() {
         </Link>
 
         {/* Nav Links */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-2">
 
           {/* Practice dropdown */}
           <div className="relative" onMouseEnter={() => setPracticeOpen(true)} onMouseLeave={() => setPracticeOpen(false)}>
