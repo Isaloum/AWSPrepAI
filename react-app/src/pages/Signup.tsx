@@ -3,9 +3,20 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { supabase } from '../lib/supabase'
 
-const STRIPE_MONTHLY_LINK = import.meta.env.VITE_STRIPE_MONTHLY_LINK as string
-const STRIPE_YEARLY_LINK = import.meta.env.VITE_STRIPE_YEARLY_LINK as string
-const STRIPE_LIFETIME_LINK = import.meta.env.VITE_STRIPE_LIFETIME_LINK as string
+// Existing Netlify function — already live with Stripe secret key configured
+const CHECKOUT_API = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
+
+const PLAN_PRICE_IDS: Record<string, string> = {
+  monthly:  'price_1TB1YCE9neqrFM5LDbyzVSnv',
+  yearly:   'price_1TED8EE9neqrFM5LCIL9P0Yp',
+  lifetime: 'price_1TED9ME9neqrFM5LeKAAEWTO',
+}
+
+const PLAN_MODES: Record<string, string> = {
+  monthly:  'subscription',
+  yearly:   'subscription',
+  lifetime: 'payment',
+}
 
 export default function Signup() {
   const navigate = useNavigate()
@@ -21,36 +32,43 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (!email || !password) {
-      setError('Please fill in all fields.')
-      return
-    }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
-      return
-    }
+    if (!email || !password) { setError('Please fill in all fields.'); return }
+    if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
+
     setLoading(true)
 
+    // 1. Create Supabase account
     const { error: authError } = await supabase.auth.signUp({ email, password })
+    if (authError) { setLoading(false); setError(authError.message); return }
+
+    // 2. Paid plan — call Netlify checkout function → redirect to Stripe
+    if (plan !== 'free' && PLAN_PRICE_IDS[plan]) {
+      try {
+        const res = await fetch(CHECKOUT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId: PLAN_PRICE_IDS[plan],
+            mode: PLAN_MODES[plan],
+            tier: plan,
+            email,
+          }),
+        })
+        const data = await res.json()
+        if (data.url) {
+          window.location.href = data.url
+          return
+        }
+        setError(data.error || 'Checkout failed. Please try again.')
+      } catch {
+        setError('Network error. Please try again.')
+      }
+      setLoading(false)
+      return
+    }
+
+    // 3. Free plan — show confirmation screen
     setLoading(false)
-
-    if (authError) {
-      setError(authError.message)
-      return
-    }
-
-    // Paid plan — redirect to Stripe with email prefilled
-    const stripeLinks: Record<string, string> = {
-      monthly: STRIPE_MONTHLY_LINK,
-      yearly: STRIPE_YEARLY_LINK,
-      lifetime: STRIPE_LIFETIME_LINK,
-    }
-    if (plan !== 'free' && stripeLinks[plan]) {
-      window.location.href = `${stripeLinks[plan]}?prefilled_email=${encodeURIComponent(email)}`
-      return
-    }
-
-    // Free plan — confirm email then go to certifications
     setConfirmSent(true)
   }
 
@@ -122,11 +140,7 @@ export default function Signup() {
                 disabled={loading}
                 className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-60 text-sm"
               >
-                {loading
-                  ? 'Creating account...'
-                  : plan === 'free'
-                  ? 'Sign Up Free'
-                  : `Sign Up & Pay →`}
+                {loading ? 'Creating account...' : plan === 'free' ? 'Sign Up Free' : 'Sign Up & Pay →'}
               </button>
             </form>
 

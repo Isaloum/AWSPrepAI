@@ -1,0 +1,9 @@
+{
+  "name": "checkout",
+  "version": "1.0.0",
+  "description": "Stripe Checkout session creator",
+  "main": "index.js",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}
