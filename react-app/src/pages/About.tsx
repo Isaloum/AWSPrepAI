@@ -30,10 +30,10 @@ function IllustrationElectrical() {
       {/* 4 CPU cores — blinking in sequence */}
       {[{x:18,y:44,id:'C1',d:'0s'},{x:46,y:44,id:'C2',d:'0.4s'},{x:18,y:72,id:'C3',d:'0.8s'},{x:46,y:72,id:'C4',d:'1.2s'}].map(c=>(
         <g key={c.id}>
-          <rect x={c.x} y={c.y} width="24" height="24" rx="5" fill="#93c5fd" stroke="#3b82f6" strokeWidth="1.8">
+          <rect x={c.x} y={c.y} width="24" height="24" rx="5" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.8">
             <animate attributeName="opacity" values="0.3;1;0.3" dur="1.6s" begin={c.d} repeatCount="indefinite"/>
           </rect>
-          <text x={c.x+7} y={c.y+16} fontSize="9" fontWeight="800" fill="#1d4ed8">{c.id}</text>
+          <text x={c.x+7} y={c.y+16} fontSize="9" fontWeight="800" fill="white">{c.id}</text>
         </g>
       ))}
       {/* Core trace connectors */}
@@ -43,8 +43,8 @@ function IllustrationElectrical() {
       <line x1="58" y1="68" x2="58" y2="72" stroke="#bfdbfe" strokeWidth="2"/>
 
       {/* Chip footer */}
-      <text x="14" y="108" fontSize="8" fontWeight="700" fill="#1d4ed8">⚡ Electrical</text>
-      <text x="18" y="122" fontSize="7.5" fill="#3b82f6">Engineer</text>
+      <text x="15" y="107" fontSize="7" fontWeight="900" fill="#1d4ed8" letterSpacing="1.5">ELECTRICAL</text>
+      <text x="19" y="120" fontSize="7" fontWeight="700" fill="#3b82f6" letterSpacing="1">ENGINEER</text>
 
       {/* Left pins × 6 */}
       {[30,46,62,78,94,110].map((y,i)=>(
@@ -184,12 +184,12 @@ function IllustrationVisual() {
       {[38,50,62,74,86,98,110,122].map((y,i)=>(
         <rect key={i} x="12" y={y} width={i%3===0?54:i%3===1?44:60} height="7" rx="3" fill="#c4b5fd" opacity="0.65"/>
       ))}
-      {/* ❌ badge — top right of panel */}
-      <circle cx="74" cy="20" r="13" fill="#fecaca" stroke="#ef4444" strokeWidth="2">
+      {/* ❌ badge — top right corner of panel */}
+      <circle cx="81" cy="12" r="9" fill="#fecaca" stroke="#ef4444" strokeWidth="2">
         <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
       </circle>
-      <line x1="67" y1="13" x2="81" y2="27" stroke="#ef4444" strokeWidth="3" strokeLinecap="round"/>
-      <line x1="81" y1="13" x2="67" y2="27" stroke="#ef4444" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="75" y1="7" x2="87" y2="17" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="87" y1="7" x2="75" y2="17" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round"/>
 
       {/* ── CENTER: Animated eye ── */}
       {/* Eye whites */}
@@ -214,11 +214,11 @@ function IllustrationVisual() {
       <rect x="138" y="22" width="78" height="10" fill="#6d28d9"/>
       <text x="145" y="24.5" fontSize="8.5" fontWeight="800" fill="white">🏗  Diagram</text>
 
-      {/* ✅ badge */}
-      <circle cx="207" cy="20" r="13" fill="#bbf7d0" stroke="#16a34a" strokeWidth="2">
+      {/* ✅ badge — top right corner of panel */}
+      <circle cx="211" cy="12" r="9" fill="#bbf7d0" stroke="#16a34a" strokeWidth="2">
         <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
       </circle>
-      <polyline points="201,20 205,25 213,14" stroke="#16a34a" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <polyline points="206,12 210,17 217,7" stroke="#16a34a" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
 
       {/* Node: User */}
       <rect x="148" y="34" width="56" height="22" rx="6" fill="#ddd6fe" stroke="#7c3aed" strokeWidth="1.8"/>
@@ -265,10 +265,10 @@ function IllustrationSubscriptions() {
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
         <rect x="4" y="6" width="70" height="34" rx="7" fill="#fef3c7" stroke="#d97706" strokeWidth="2"/>
-        <text x="10" y="21" fontSize="9.5" fontWeight="900" fill="#92400e">Udemy</text>
+        <text x="10" y="21" fontSize="8.5" fontWeight="900" fill="#92400e">Udemy</text>
         <text x="10" y="32" fontSize="7.5" fill="#b45309">Video Course</text>
-        <rect x="42" y="8" width="28" height="16" rx="4" fill="#f59e0b"/>
-        <text x="46" y="19.5" fontSize="8.5" fontWeight="900" fill="white">$23+</text>
+        <rect x="44" y="8" width="26" height="16" rx="4" fill="#f59e0b"/>
+        <text x="47" y="19.5" fontSize="8.5" fontWeight="900" fill="white">$23+</text>
       </g>
 
       {/* + */}
@@ -281,9 +281,9 @@ function IllustrationSubscriptions() {
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="2.7s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
         <rect x="4" y="54" width="70" height="34" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
-        <text x="10" y="69" fontSize="9.5" fontWeight="900" fill="#991b1b">YouTube</text>
+        <text x="10" y="69" fontSize="8.5" fontWeight="900" fill="#991b1b">YouTube</text>
         <text x="10" y="80" fontSize="7.5" fill="#b91c1c">Video walk-throughs</text>
-        <rect x="42" y="56" width="28" height="16" rx="4" fill="#dc2626"/>
+        <rect x="44" y="56" width="26" height="16" rx="4" fill="#dc2626"/>
         <text x="47" y="67.5" fontSize="8.5" fontWeight="900" fill="white">free?</text>
       </g>
 
@@ -297,10 +297,10 @@ function IllustrationSubscriptions() {
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
         <rect x="4" y="102" width="70" height="34" rx="7" fill="#ffedd5" stroke="#f97316" strokeWidth="2"/>
-        <text x="10" y="117" fontSize="9.5" fontWeight="900" fill="#9a3412">T. Dojo</text>
+        <text x="10" y="117" fontSize="8.5" fontWeight="900" fill="#9a3412">T. Dojo</text>
         <text x="10" y="128" fontSize="7.5" fill="#c2410c">Practice Tests</text>
-        <rect x="42" y="104" width="28" height="16" rx="4" fill="#ea580c"/>
-        <text x="47" y="115.5" fontSize="8.5" fontWeight="900" fill="white">$15</text>
+        <rect x="44" y="104" width="26" height="16" rx="4" fill="#ea580c"/>
+        <text x="49" y="115.5" fontSize="8.5" fontWeight="900" fill="white">$15</text>
       </g>
 
       {/* ── MERGE ARROW ── */}
@@ -337,7 +337,7 @@ function IllustrationSubscriptions() {
       <rect x="110" y="118" width="98" height="20" rx="7" fill="#16a34a">
         <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
       </rect>
-      <text x="117" y="131" fontSize="9.5" fontWeight="900" fill="white">1 tab. Everything. ✓</text>
+      <text x="159" y="131" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
     </svg>
   )
 }
