@@ -93,7 +93,6 @@ const faqs = [
   { q: "What's the pass rate for AWS exams?", a: 'AWS exams require 72% or higher. Our questions are scenario-based and match the real exam difficulty.' },
   { q: 'Does Lifetime include future certs?', a: 'Yes. Any new AWS certification we add is included in your Lifetime plan at no extra cost.' },
   { q: 'Can I cancel Monthly or Yearly anytime?', a: 'Yes, cancel from your dashboard with one click. No cancellation fees.' },
-  { q: 'Is there a refund policy?', a: "We offer a 7-day money-back guarantee if you're not satisfied." },
   { q: 'What is the AI Coach?', a: "AI Coach is an intelligent tutor that answers your questions, explains concepts, and gives personalized study plans. It's exclusively available on the Lifetime plan." },
 ]
 

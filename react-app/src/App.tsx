@@ -16,6 +16,7 @@ import SampleQuestions from './pages/SampleQuestions'
 import VisualExam from './pages/VisualExam'
 import ArchitectureBuilder from './pages/ArchitectureBuilder'
 import Diagrams from './pages/Diagrams'
+import Terms from './pages/Terms'
 
 const NotFound = () => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/visual-exam" element={<VisualExam />} />
           <Route path="/architecture-builder" element={<ArchitectureBuilder />} />
           <Route path="/diagrams" element={<Diagrams />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
