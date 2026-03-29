@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
-// Proper SVG chevron — clearly a dropdown arrow, not a bullet
 const ChevronDown = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style={{ display: 'inline-block', verticalAlign: 'middle', opacity: 0.5 }}>
-    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: '3px' }}>
+    <path d="M3 5l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
@@ -17,7 +16,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { user, isPremium, tier, signOut, loading } = useAuth()
 
-  const isActive = (path: string) => location.pathname === path
+  const isActive = (path: string) => location.pathname.startsWith(path) && path !== '/'
 
   const handleSignOut = async () => {
     await signOut()
@@ -32,42 +31,77 @@ export default function Navbar() {
     free: '🆓 Free',
   }
 
-  const linkClass = (path: string) =>
-    `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-      isActive(path) ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
-    }`
+  const navItem = (active: boolean) => ({
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    gap: '2px',
+    padding: '6px 14px',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: active ? 600 : 500,
+    color: active ? '#1d4ed8' : '#374151',
+    background: active ? '#eff6ff' : 'transparent',
+    border: 'none',
+    cursor: 'pointer' as const,
+    textDecoration: 'none' as const,
+    transition: 'background 0.15s, color 0.15s',
+    whiteSpace: 'nowrap' as const,
+  })
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+    <nav style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      background: 'rgba(255,255,255,0.95)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      borderBottom: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
 
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg text-blue-600 no-underline shrink-0">
-          ☁️ <span>AWSPrepAI</span>
+        {/* ── Logo ── */}
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', flexShrink: 0 }}>
+          <span style={{ fontSize: '20px' }}>☁️</span>
+          <span style={{ fontWeight: 800, fontSize: '16px', color: '#111827', letterSpacing: '-0.02em' }}>AWSPrepAI</span>
         </Link>
 
-        {/* Nav Links */}
-        <div className="hidden md:flex items-center" style={{ gap: '4px' }}>
+        {/* ── Center nav ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, justifyContent: 'center' }}>
 
           {/* Practice dropdown */}
-          <div className="relative" onMouseEnter={() => setPracticeOpen(true)} onMouseLeave={() => setPracticeOpen(false)}>
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-50 transition-colors">
+          <div style={{ position: 'relative' }}
+            onMouseEnter={() => setPracticeOpen(true)}
+            onMouseLeave={() => setPracticeOpen(false)}
+          >
+            <button
+              style={{ ...navItem(location.pathname.startsWith('/certifications') || location.pathname.startsWith('/cert/')) }}
+              onMouseEnter={e => { if (!location.pathname.startsWith('/certifications')) { (e.currentTarget as HTMLButtonElement).style.background = '#f9fafb'; (e.currentTarget as HTMLButtonElement).style.color = '#111827' } }}
+              onMouseLeave={e => { if (!location.pathname.startsWith('/certifications')) { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#374151' } }}
+            >
               Practice <ChevronDown />
             </button>
             {practiceOpen && (
-              <div className="absolute top-full left-0 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50 mt-1">
-                <Link to="/certifications" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <span>📝</span>
+              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '220px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', padding: '6px', zIndex: 100 }}>
+                <Link to="/certifications" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div style={{ width: '32px', height: '32px', background: '#eff6ff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📝</div>
                   <div>
-                    <div className="font-semibold">Practice Quiz</div>
-                    <div className="text-xs text-gray-400">All certifications</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Practice Quiz</div>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>All 12 certifications</div>
                   </div>
                 </Link>
-                <Link to="/certifications" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <span>⏱️</span>
+                <Link to="/certifications" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div style={{ width: '32px', height: '32px', background: '#f0fdf4', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>⏱️</div>
                   <div>
-                    <div className="font-semibold">Mock Exam</div>
-                    <div className="text-xs text-gray-400">65q · 90 min timed</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Mock Exam</div>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>65 questions · 90 min</div>
                   </div>
                 </Link>
               </div>
@@ -75,73 +109,120 @@ export default function Navbar() {
           </div>
 
           {/* Study dropdown */}
-          <div className="relative" onMouseEnter={() => setStudyOpen(true)} onMouseLeave={() => setStudyOpen(false)}>
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-50 transition-colors">
+          <div style={{ position: 'relative' }}
+            onMouseEnter={() => setStudyOpen(true)}
+            onMouseLeave={() => setStudyOpen(false)}
+          >
+            <button
+              style={{ ...navItem(location.pathname === '/glossary' || location.pathname === '/resources') }}
+              onMouseEnter={e => { if (!isActive('/glossary') && !isActive('/resources')) { (e.currentTarget as HTMLButtonElement).style.background = '#f9fafb'; (e.currentTarget as HTMLButtonElement).style.color = '#111827' } }}
+              onMouseLeave={e => { if (!isActive('/glossary') && !isActive('/resources')) { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#374151' } }}
+            >
               Study <ChevronDown />
             </button>
             {studyOpen && (
-              <div className="absolute top-full left-0 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50 mt-1">
-                <Link to="/glossary" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <span>📖</span>
+              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '220px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', padding: '6px', zIndex: 100 }}>
+                <Link to="/glossary" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div style={{ width: '32px', height: '32px', background: '#faf5ff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📖</div>
                   <div>
-                    <div className="font-semibold">Glossary</div>
-                    <div className="text-xs text-gray-400">AWS terminology</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Glossary</div>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>50+ AWS terms explained</div>
                   </div>
                 </Link>
-                <Link to="/resources" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                  <span>📚</span>
+                <Link to="/resources" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div style={{ width: '32px', height: '32px', background: '#fff7ed', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📚</div>
                   <div>
-                    <div className="font-semibold">Resources</div>
-                    <div className="text-xs text-gray-400">Study materials</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Resources</div>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>Curated study materials</div>
                   </div>
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Thin divider */}
-          <div style={{ width: '1px', height: '20px', background: '#e5e7eb', margin: '0 8px', flexShrink: 0 }} />
+          {/* Divider */}
+          <div style={{ width: '1px', height: '18px', background: '#e5e7eb', margin: '0 6px', flexShrink: 0 }} />
 
-          <Link to="/certifications" className={linkClass('/certifications')} style={{ letterSpacing: '0.01em' }}>Certifications</Link>
-          <Link to="/about" className={linkClass('/about')} style={{ letterSpacing: '0.01em' }}>About</Link>
-          <Link to="/pricing" className={linkClass('/pricing')} style={{ letterSpacing: '0.01em', fontWeight: 700, color: '#2563eb' }}>Pricing</Link>
+          {/* Plain links */}
+          <Link to="/certifications"
+            style={{ ...navItem(isActive('/certifications')) }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/certifications') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/certifications') ? '#1d4ed8' : '#374151' }}
+          >Certifications</Link>
+
+          <Link to="/about"
+            style={{ ...navItem(isActive('/about')) }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/about') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/about') ? '#1d4ed8' : '#374151' }}
+          >About</Link>
+
+          <Link to="/pricing"
+            style={{ ...navItem(isActive('/pricing')) }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/pricing') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/pricing') ? '#1d4ed8' : '#374151' }}
+          >Pricing</Link>
         </div>
 
-        {/* Auth area */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* ── Auth ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           {loading ? (
-            <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f3f4f6' }} />
           ) : user ? (
-            /* Logged-in user menu */
-            <div className="relative" onMouseEnter={() => setUserMenuOpen(true)} onMouseLeave={() => setUserMenuOpen(false)}>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
-                <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+            <div style={{ position: 'relative' }}
+              onMouseEnter={() => setUserMenuOpen(true)}
+              onMouseLeave={() => setUserMenuOpen(false)}
+            >
+              <button style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', borderRadius: '10px', border: '1px solid #e5e7eb', background: '#fff', cursor: 'pointer', transition: 'border-color 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = '#93c5fd')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = '#e5e7eb')}
+              >
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 700 }}>
                   {(user.email?.[0] ?? 'U').toUpperCase()}
                 </div>
-                <span className="text-sm font-medium text-gray-700 hidden sm:block max-w-[120px] truncate">
+                <span style={{ fontSize: '14px', fontWeight: 500, color: '#374151', maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {user.email?.split('@')[0]}
                 </span>
                 <ChevronDown />
               </button>
               {userMenuOpen && (
-                <div className="absolute top-full right-0 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50 mt-1">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <div className="text-xs text-gray-400 truncate">{user.email}</div>
-                    <div className="text-xs font-semibold text-blue-600 mt-0.5">{tierBadge[tier] ?? '🆓 Free'}</div>
+                <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: '0', width: '220px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', padding: '6px', zIndex: 100 }}>
+                  <div style={{ padding: '10px 12px 10px', borderBottom: '1px solid #f3f4f6', marginBottom: '4px' }}>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: '#2563eb', marginTop: '2px' }}>{tierBadge[tier] ?? '🆓 Free'}</div>
                   </div>
-                  <Link to="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    <span>🏠</span> My Dashboard
-                  </Link>
-                  <Link to="/certifications" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                    <span>📝</span> Practice
-                  </Link>
+                  {[
+                    { to: '/dashboard', icon: '🏠', label: 'My Dashboard' },
+                    { to: '/certifications', icon: '📝', label: 'Practice' },
+                  ].map(item => (
+                    <Link key={item.to} to={item.to} onClick={() => setUserMenuOpen(false)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', color: '#374151', fontWeight: 500 }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <span>{item.icon}</span> {item.label}
+                    </Link>
+                  ))}
                   {!isPremium && (
-                    <Link to="/pricing" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-yellow-600 font-semibold hover:bg-yellow-50">
+                    <Link to="/pricing" onClick={() => setUserMenuOpen(false)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', color: '#d97706', fontWeight: 600 }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#fffbeb')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
                       <span>⚡</span> Upgrade to Premium
                     </Link>
                   )}
-                  <div className="border-t border-gray-100 mt-1 pt-1">
-                    <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50">
+                  <div style={{ borderTop: '1px solid #f3f4f6', marginTop: '4px', paddingTop: '4px' }}>
+                    <button onClick={handleSignOut}
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '8px', fontSize: '14px', color: '#ef4444', fontWeight: 500, background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#fef2f2')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
                       <span>👋</span> Sign Out
                     </button>
                   </div>
@@ -149,10 +230,15 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            /* Guest buttons */
             <>
-              <Link to="/login" className="px-3 py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors">Log In</Link>
-              <Link to="/signup" className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">Sign Up Free</Link>
+              <Link to="/login" style={{ padding: '7px 16px', fontSize: '14px', fontWeight: 500, color: '#374151', textDecoration: 'none', borderRadius: '8px' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = '#374151' }}
+              >Log In</Link>
+              <Link to="/signup" style={{ padding: '7px 18px', fontSize: '14px', fontWeight: 600, color: '#fff', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', borderRadius: '8px', textDecoration: 'none', boxShadow: '0 1px 3px rgba(37,99,235,0.3)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)' }}
+              >Sign Up Free</Link>
             </>
           )}
         </div>
