@@ -78,21 +78,21 @@ function IllustrationElectrical() {
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.4s" repeatCount="indefinite"/>
       </polyline>
 
-      {/* ── AWS CLOUD ── */}
-      <path d="M130 134 Q114 134 114 120 Q114 105 128 103 Q126 88 140 85 Q145 74 162 78 Q171 67 183 76 Q200 76 200 92 Q217 92 217 108 Q217 134 202 134 Z"
+      {/* ── AWS CLOUD — perfectly symmetric around x=165 ── */}
+      <path d="M 112 128 Q 112 112 120 108 Q 116 94 130 90 Q 130 76 144 74 Q 150 66 165 64 Q 180 66 186 74 Q 200 76 200 90 Q 214 94 218 108 Q 218 112 218 128 Q 218 134 210 134 L 120 134 Q 112 134 112 128 Z"
         fill="url(#g1-cloud)" stroke="#2563eb" strokeWidth="2.5">
         <animate attributeName="opacity" values="0.85;1;0.85" dur="2.5s" repeatCount="indefinite"/>
       </path>
-      {/* AWS text */}
-      <text x="145" y="109" fontSize="26" fontWeight="900" fill="#1d4ed8">AWS</text>
-      {/* Service dot row */}
-      {[{cx:122,lb:'EC2',d:'0s'},{cx:139,lb:'S3',d:'0.35s'},{cx:156,lb:'RDS',d:'0.7s'},{cx:173,lb:'λ',d:'1.05s'},{cx:190,lb:'VPC',d:'1.4s'}].map(s=>(
+      {/* AWS text — centered */}
+      <text x="165" y="106" fontSize="26" fontWeight="900" fill="#1d4ed8" textAnchor="middle">AWS</text>
+      {/* Service dot row — 5 dots symmetric around cx=165, step=17 */}
+      {[{cx:131,lb:'EC2',d:'0s'},{cx:148,lb:'S3',d:'0.35s'},{cx:165,lb:'RDS',d:'0.7s'},{cx:182,lb:'λ',d:'1.05s'},{cx:199,lb:'VPC',d:'1.4s'}].map(s=>(
         <g key={s.lb}>
           <circle cx={s.cx} cy="123" r="10" fill="#2563eb">
             <animate attributeName="opacity" values="0.45;1;0.45" dur="2s" begin={s.d} repeatCount="indefinite"/>
             <animate attributeName="r" values="9;11;9" dur="2s" begin={s.d} repeatCount="indefinite"/>
           </circle>
-          <text x={s.cx-(s.lb.length===3?7:s.lb.length===2?5:3)} y="127" fontSize="6.5" fontWeight="900" fill="white">{s.lb}</text>
+          <text x={s.cx} y="127" fontSize="6.5" fontWeight="900" fill="white" textAnchor="middle">{s.lb}</text>
         </g>
       ))}
     </svg>
@@ -257,87 +257,85 @@ function IllustrationVisual() {
 ════════════════════════════════════════════════════════════ */
 function IllustrationSubscriptions() {
   return (
-    <svg width="240" height="140" viewBox="0 0 240 140" fill="none">
+    <svg width="240" height="162" viewBox="0 0 240 162" fill="none">
 
-      {/* ── LEFT: 3 subscription cards ── */}
+      {/* ── LEFT: 3 subscription cards — each 38px tall, 10px gap ── */}
 
-      {/* Udemy */}
+      {/* Udemy — y=6..44 */}
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="6" width="84" height="34" rx="7" fill="#fef3c7" stroke="#d97706" strokeWidth="2"/>
-        <text x="10" y="21" fontSize="9" fontWeight="900" fill="#92400e">Udemy</text>
-        <text x="10" y="32" fontSize="7.5" fill="#b45309">Video Course</text>
-        <rect x="56" y="8" width="28" height="16" rx="4" fill="#f59e0b"/>
-        <text x="59" y="19.5" fontSize="8.5" fontWeight="900" fill="white">$23+</text>
+        <rect x="4" y="6" width="84" height="38" rx="7" fill="#fef3c7" stroke="#d97706" strokeWidth="2"/>
+        <text x="10" y="24" fontSize="9.5" fontWeight="900" fill="#92400e">Udemy</text>
+        <text x="10" y="36" fontSize="8" fill="#b45309">Video Course</text>
+        <rect x="56" y="10" width="28" height="16" rx="4" fill="#f59e0b"/>
+        <text x="70" y="22" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">$23+</text>
       </g>
 
-      {/* + */}
-      <text x="38" y="52" fontSize="18" fontWeight="900" fill="#fb923c">
-        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
-        +
+      {/* + centered between y=44 and y=62 */}
+      <text x="46" y="57" fontSize="18" fontWeight="900" fill="#fb923c" textAnchor="middle">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>+
       </text>
 
-      {/* YouTube */}
+      {/* YouTube — y=62..100 */}
       <g>
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="2.7s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="54" width="84" height="34" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
-        <text x="10" y="69" fontSize="9" fontWeight="900" fill="#991b1b">YouTube</text>
-        <text x="10" y="80" fontSize="7.5" fill="#b91c1c">Video walk-throughs</text>
-        <rect x="56" y="56" width="28" height="16" rx="4" fill="#dc2626"/>
-        <text x="59" y="67.5" fontSize="8.5" fontWeight="900" fill="white">free?</text>
+        <rect x="4" y="62" width="84" height="38" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
+        <text x="10" y="80" fontSize="9.5" fontWeight="900" fill="#991b1b">YouTube</text>
+        <text x="10" y="92" fontSize="8" fill="#b91c1c">Video walk-throughs</text>
+        <rect x="56" y="66" width="28" height="16" rx="4" fill="#dc2626"/>
+        <text x="70" y="78" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">free?</text>
       </g>
 
-      {/* + */}
-      <text x="38" y="100" fontSize="18" fontWeight="900" fill="#fb923c">
-        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" begin="0.2s" repeatCount="indefinite"/>
-        +
+      {/* + centered between y=100 and y=118 */}
+      <text x="46" y="113" fontSize="18" fontWeight="900" fill="#fb923c" textAnchor="middle">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" begin="0.2s" repeatCount="indefinite"/>+
       </text>
 
-      {/* Dojo */}
+      {/* Dojo — y=118..156 */}
       <g>
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="4" y="102" width="84" height="34" rx="7" fill="#ffedd5" stroke="#f97316" strokeWidth="2"/>
-        <text x="10" y="117" fontSize="9" fontWeight="900" fill="#9a3412">T. Dojo</text>
-        <text x="10" y="128" fontSize="7.5" fill="#c2410c">Practice Tests</text>
-        <rect x="56" y="104" width="28" height="16" rx="4" fill="#ea580c"/>
-        <text x="62" y="115.5" fontSize="8.5" fontWeight="900" fill="white">$15</text>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+        <rect x="4" y="118" width="84" height="38" rx="7" fill="#ffedd5" stroke="#f97316" strokeWidth="2"/>
+        <text x="10" y="136" fontSize="9.5" fontWeight="900" fill="#9a3412">T. Dojo</text>
+        <text x="10" y="148" fontSize="8" fill="#c2410c">Practice Tests</text>
+        <rect x="56" y="122" width="28" height="16" rx="4" fill="#ea580c"/>
+        <text x="70" y="134" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">$15</text>
       </g>
 
-      {/* ── MERGE ARROW ── */}
-      <line x1="92" y1="70" x2="108" y2="70" stroke="#f97316" strokeWidth="4" strokeLinecap="round">
+      {/* ── MERGE ARROW — centered at y=81 (mid of left area 6..156) ── */}
+      <line x1="92" y1="81" x2="108" y2="81" stroke="#f97316" strokeWidth="4" strokeLinecap="round">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </line>
-      <polyline points="102,62 110,70 102,78" stroke="#ea580c" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="102,73 110,81 102,89" stroke="#ea580c" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </polyline>
 
-      {/* ── AWSPrepAI result card ── */}
-      <rect x="114" y="6" width="122" height="128" rx="12" fill="#fff7ed" stroke="#ea580c" strokeWidth="2.5">
+      {/* ── AWSPrepAI result card — y=6..156, height=150 ── */}
+      <rect x="114" y="6" width="122" height="150" rx="12" fill="#fff7ed" stroke="#ea580c" strokeWidth="2.5">
         <animate attributeName="opacity" values="0.9;1;0.9" dur="2.5s" repeatCount="indefinite"/>
       </rect>
       {/* Header */}
-      <rect x="114" y="6" width="122" height="30" rx="12" fill="#ea580c"/>
-      <rect x="114" y="26" width="122" height="10" fill="#ea580c"/>
-      <text x="175" y="26" fontSize="11" fontWeight="900" fill="white" textAnchor="middle">AWSPrepAI</text>
+      <rect x="114" y="6" width="122" height="32" rx="12" fill="#ea580c"/>
+      <rect x="114" y="28" width="122" height="10" fill="#ea580c"/>
+      <text x="175" y="27" fontSize="11.5" fontWeight="900" fill="white" textAnchor="middle">AWSPrepAI</text>
 
-      {/* Feature rows */}
+      {/* Feature rows — 20px spacing, comfortable padding */}
       {[
-        {y:56, t:'✓  Practice Questions'},
-        {y:74, t:'✓  Mock Exams'},
-        {y:92, t:'✓  Visual Diagrams'},
-        {y:110, t:'✓  Explanations'},
+        {y:62, t:'✓  Practice Questions'},
+        {y:84, t:'✓  Mock Exams'},
+        {y:106, t:'✓  Visual Diagrams'},
+        {y:128, t:'✓  Explanations'},
       ].map((f,i)=>(
-        <text key={i} x="124" y={f.y} fontSize="9" fontWeight="700" fill="#c2410c">
+        <text key={i} x="124" y={f.y} fontSize="9.5" fontWeight="700" fill="#c2410c">
           {f.t}
           <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin={`${i*0.35}s`} repeatCount="indefinite"/>
         </text>
       ))}
 
       {/* "1 tab" badge */}
-      <rect x="118" y="118" width="112" height="20" rx="7" fill="#16a34a">
+      <rect x="118" y="140" width="112" height="16" rx="7" fill="#16a34a">
         <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
       </rect>
-      <text x="174" y="131" fontSize="9" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
+      <text x="174" y="152" fontSize="9" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
     </svg>
   )
 }
