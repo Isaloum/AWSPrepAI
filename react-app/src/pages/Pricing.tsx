@@ -136,8 +136,6 @@ export default function Pricing() {
                   borderRadius: '1rem',
                   border: isHovered
                     ? `2px solid ${plan.ctaBg}`
-                    : plan.highlight
-                    ? '2px solid #2563eb'
                     : '2px solid #e5e7eb',
                   padding: '1.75rem 1.5rem',
                   display: 'flex',
@@ -145,8 +143,6 @@ export default function Pricing() {
                   position: 'relative',
                   boxShadow: isHovered
                     ? '0 16px 40px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.07)'
-                    : plan.highlight
-                    ? '0 4px 24px rgba(37,99,235,0.12)'
                     : '0 1px 4px rgba(0,0,0,0.06)',
                   transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
                   transition: 'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease',

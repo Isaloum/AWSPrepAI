@@ -270,26 +270,26 @@ export default function Home() {
             {[
               {
                 id: 'free', label: 'Free', price: '$0', period: '/forever',
-                badge: null, highlight: false,
-                color: '#60a5fa',
+                badge: null,
+                bg: 'rgba(186,230,253,0.08)', border: 'rgba(186,230,253,0.18)',
                 features: ['20 free questions', 'No sign-up needed', 'Instant explanations'],
               },
               {
                 id: 'monthly', label: 'Monthly', price: '$7', period: '/mo',
-                badge: '⚡ Flexible', highlight: false,
-                color: '#60a5fa',
+                badge: '⚡ Flexible',
+                bg: 'rgba(96,165,250,0.16)', border: 'rgba(96,165,250,0.32)',
                 features: ['All 12 certs', '3,120 questions', 'Mock exams', 'Cancel anytime'],
               },
               {
                 id: 'yearly', label: 'Yearly', price: '$67', period: '/yr',
-                badge: '⭐ Most Popular', highlight: false,
-                color: '#60a5fa',
+                badge: '⭐ Most Popular',
+                bg: 'rgba(59,130,246,0.26)', border: 'rgba(59,130,246,0.5)',
                 features: ['Everything in Monthly', 'Save $17/year', '~$5.60/month', 'Best for studiers'],
               },
               {
                 id: 'lifetime', label: 'Lifetime', price: '$147', period: '/once',
-                badge: '🔥 Best Value', highlight: false,
-                color: '#60a5fa',
+                badge: '🔥 Best Value',
+                bg: 'rgba(29,78,216,0.42)', border: 'rgba(29,78,216,0.7)',
                 features: ['Pay once forever', 'AI Coach included', 'All future certs', 'No fees ever'],
               },
             ].map(p => {
@@ -301,25 +301,15 @@ export default function Home() {
                   onMouseLeave={() => setHoveredPlan(null)}
                   onClick={() => navigate('/pricing')}
                   style={{
-                    background: p.highlight
-                      ? 'linear-gradient(145deg, #2563eb, #1d4ed8)'
-                      : 'rgba(255,255,255,0.06)',
-                    border: p.highlight
-                      ? '2px solid #3b82f6'
-                      : isHov
-                      ? '2px solid rgba(255,255,255,0.35)'
-                      : '2px solid rgba(255,255,255,0.1)',
+                    background: p.bg,
+                    border: `2px solid ${isHov ? 'rgba(255,255,255,0.45)' : p.border}`,
                     borderRadius: '1rem',
                     padding: '1.75rem 1.4rem',
                     textAlign: 'center',
                     position: 'relative',
                     cursor: 'pointer',
-                    transform: isHov ? 'translateY(-8px) scale(1.03)' : p.highlight ? 'translateY(-4px)' : 'translateY(0)',
-                    boxShadow: isHov
-                      ? '0 20px 48px rgba(0,0,0,0.35)'
-                      : p.highlight
-                      ? '0 12px 32px rgba(37,99,235,0.4)'
-                      : '0 2px 8px rgba(0,0,0,0.2)',
+                    transform: isHov ? 'translateY(-8px) scale(1.03)' : 'translateY(0)',
+                    boxShadow: isHov ? '0 20px 48px rgba(0,0,0,0.35)' : '0 2px 8px rgba(0,0,0,0.2)',
                     transition: 'all 0.22s ease',
                     backdropFilter: 'blur(10px)',
                   }}
@@ -328,32 +318,33 @@ export default function Home() {
                   {p.badge && (
                     <div style={{
                       position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)',
-                      background: p.highlight ? '#fff' : 'rgba(255,255,255,0.15)',
-                      color: p.highlight ? '#1d4ed8' : '#fff',
+                      background: 'rgba(255,255,255,0.15)',
+                      color: '#fff',
                       fontSize: '0.65rem', fontWeight: 800,
                       padding: '3px 12px', borderRadius: '999px', whiteSpace: 'nowrap',
-                      border: p.highlight ? 'none' : '1px solid rgba(255,255,255,0.2)',
+                      border: '1px solid rgba(255,255,255,0.25)',
+                      backdropFilter: 'blur(8px)',
                     }}>
                       {p.badge}
                     </div>
                   )}
 
                   {/* Plan name */}
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: p.highlight ? 'rgba(255,255,255,0.7)' : '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
                     {p.label}
                   </div>
 
                   {/* Price */}
                   <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '2px', marginBottom: '1.25rem' }}>
                     <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{p.price}</span>
-                    <span style={{ fontSize: '0.8rem', color: p.highlight ? 'rgba(255,255,255,0.6)' : '#64748b', marginBottom: '0.3rem' }}>{p.period}</span>
+                    <span style={{ fontSize: '0.8rem', color: '#93c5fd', marginBottom: '0.3rem' }}>{p.period}</span>
                   </div>
 
                   {/* Features */}
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {p.features.map(f => (
-                      <li key={f} style={{ fontSize: '0.78rem', color: p.highlight ? 'rgba(255,255,255,0.85)' : '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
-                        <span style={{ color: p.highlight ? '#bfdbfe' : '#3b82f6', fontSize: '0.7rem' }}>✓</span>
+                      <li key={f} style={{ fontSize: '0.78rem', color: '#bfdbfe', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
+                        <span style={{ color: '#60a5fa', fontSize: '0.7rem' }}>✓</span>
                         {f}
                       </li>
                     ))}
