@@ -120,7 +120,7 @@ export default function Navbar() {
             onMouseEnter={() => setStudyOpen(true)}
             onMouseLeave={() => setStudyOpen(false)}
           >
-            <button style={{ ...navItem(isActive('/glossary') || isActive('/resources') || isActive('/about')) }}>
+            <button style={{ ...navItem(isActive('/glossary') || isActive('/diagrams')) }}>
               Study <ChevronDown />
             </button>
             {studyOpen && (
