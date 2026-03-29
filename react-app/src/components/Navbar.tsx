@@ -81,23 +81,35 @@ export default function Navbar() {
             {practiceOpen && (
               <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '260px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)', padding: '8px', zIndex: 100 }}>
                 {[
-                  { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,120 questions · 12 certs' },
-                  { to: '/certifications', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 90 min' },
-                  { to: '/certifications', bg: '#fff7ed', icon: '🎯', label: 'Domain Filter', sub: 'Focus on your weakest domains' },
-                  { to: '/certifications', bg: '#f5f3ff', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up' },
+                  { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,120 questions · 12 certs', soon: false },
+                  { to: '/certifications', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 90 min', soon: false },
+                  { to: null, bg: '#f5f3ff', icon: '🏗️', label: 'Architecture Builder', sub: 'Drag & drop AWS services', soon: true },
+                  { to: null, bg: '#fff0f0', icon: '🎯', label: 'Visual Exam', sub: 'Diagram-based questions', soon: true },
+                  { to: '/certifications', bg: '#fffbeb', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up', soon: false },
                 ].map(item => (
-                  <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      {item.icon}
+                  item.to ? (
+                    <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{item.icon}</div>
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', opacity: 0.5, cursor: 'default' }}>
+                      <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{item.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          {item.label}
+                          <span style={{ fontSize: '9px', fontWeight: 700, background: '#f3f4f6', color: '#6b7280', padding: '1px 6px', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Soon</span>
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
-                      <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
-                    </div>
-                  </Link>
+                  )
                 ))}
               </div>
             )}
@@ -114,24 +126,36 @@ export default function Navbar() {
             {studyOpen && (
               <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '260px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)', padding: '8px', zIndex: 100 }}>
                 {[
-                  { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources' },
-                  { to: '/glossary', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers & AWS glossary' },
-                  { to: '/resources', bg: '#f0fdf4', icon: '🛠️', label: 'AWS Services', sub: '40+ service references & cheat sheets' },
-                  { to: '/glossary', bg: '#fff7ed', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply' },
-                  { to: '/about', bg: '#f5f3ff', icon: 'ℹ️', label: 'About AWSPrepAI', sub: 'Our mission & cert coverage' },
+                  { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources', soon: false },
+                  { to: '/glossary', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers & AWS glossary', soon: false },
+                  { to: '/resources', bg: '#f0fdf4', icon: '🛠️', label: 'AWS Services', sub: '40+ service references & cheat sheets', soon: false },
+                  { to: '/glossary', bg: '#fff7ed', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply', soon: false },
+                  { to: null, bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams', soon: true },
+                  { to: '/about', bg: '#f0f9ff', icon: 'ℹ️', label: 'About AWSPrepAI', sub: 'Our mission & cert coverage', soon: false },
                 ].map(item => (
-                  <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                      {item.icon}
+                  item.to ? (
+                    <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{item.icon}</div>
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', opacity: 0.5, cursor: 'default' }}>
+                      <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{item.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          {item.label}
+                          <span style={{ fontSize: '9px', fontWeight: 700, background: '#f3f4f6', color: '#6b7280', padding: '1px 6px', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Soon</span>
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
-                      <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
-                    </div>
-                  </Link>
+                  )
                 ))}
               </div>
             )}
