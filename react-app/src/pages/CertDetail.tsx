@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 
 interface Question {
   cat: string
@@ -44,11 +45,20 @@ export default function CertDetail() {
   const [domainFilter, setDomainFilter] = useState('all')
   const [showResults, setShowResults] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
-  const [questionCount, setQuestionCount] = useState(0)
   const [_wrongQuestions, setWrongQuestions] = useState<Question[]>([])
+
+  // Persisted free usage from Supabase
+  const [usedCount, setUsedCount] = useState(0)
+  const [usageLoaded, setUsageLoaded] = useState(false)
 
   const meta = certMeta[certId || ''] || { name: 'Unknown', code: '', icon: '❓', domains: {} }
 
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!loading && !user) { navigate('/signup') }
+  }, [loading, user, navigate])
+
+  // Load questions
   useEffect(() => {
     if (!certId || !certMeta[certId]) { navigate('/certifications'); return }
     import(`../data/${certId}.json`).then((mod) => {
@@ -58,9 +68,20 @@ export default function CertDetail() {
     }).catch(() => navigate('/certifications'))
   }, [certId, navigate])
 
+  // Load persisted usage count from Supabase
   useEffect(() => {
-    if (!loading && !user) { navigate('/signup') }
-  }, [loading, user, navigate])
+    if (!user || !certId || isPremium) { setUsageLoaded(true); return }
+    supabase
+      .from('free_usage')
+      .select('questions_answered')
+      .eq('user_id', user.id)
+      .eq('cert_id', certId)
+      .maybeSingle()
+      .then(({ data }) => {
+        setUsedCount(data?.questions_answered ?? 0)
+        setUsageLoaded(true)
+      })
+  }, [user, certId, isPremium])
 
   useEffect(() => {
     if (domainFilter === 'all') setFiltered(questions)
@@ -73,20 +94,38 @@ export default function CertDetail() {
     setSelected(idx)
   }, [revealed])
 
-  const handleReveal = useCallback(() => {
+  const handleReveal = useCallback(async () => {
     if (selected === null) return
+
+    // Block if free limit reached
+    if (!isPremium && usedCount >= FREE_LIMIT) {
+      setShowPaywall(true)
+      return
+    }
+
     setRevealed(true)
     setAnswered(a => a + 1)
-    setQuestionCount(c => c + 1)
     if (selected === filtered[current].answer) setScore(s => s + 1)
     else setWrongQuestions(w => [...w, filtered[current]])
-  }, [selected, revealed, filtered, current])
+
+    // Persist +1 to Supabase for free users
+    if (!isPremium && user) {
+      const newCount = usedCount + 1
+      setUsedCount(newCount)
+      await supabase
+        .from('free_usage')
+        .upsert(
+          { user_id: user.id, cert_id: certId, questions_answered: newCount },
+          { onConflict: 'user_id,cert_id' }
+        )
+    }
+  }, [selected, revealed, filtered, current, isPremium, usedCount, user, certId])
 
   const handleNext = useCallback(() => {
-    if (!isPremium && questionCount >= FREE_LIMIT) { setShowPaywall(true); return }
+    if (!isPremium && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
     if (current + 1 >= filtered.length) setShowResults(true)
     else { setCurrent(c => c + 1); setSelected(null); setRevealed(false) }
-  }, [current, filtered.length, questionCount])
+  }, [current, filtered.length, isPremium, usedCount])
 
   const handlePrev = () => {
     if (current > 0) { setCurrent(c => c - 1); setSelected(null); setRevealed(false) }
@@ -94,11 +133,11 @@ export default function CertDetail() {
 
   const restart = () => {
     setCurrent(0); setSelected(null); setRevealed(false)
-    setScore(0); setAnswered(0); setQuestionCount(0)
+    setScore(0); setAnswered(0)
     setShowResults(false); setWrongQuestions([])
   }
 
-  if (questions.length === 0 || (!loading && !user)) {
+  if (questions.length === 0 || (!loading && !user) || (!isPremium && !usageLoaded)) {
     return (
       <Layout>
         <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -115,6 +154,7 @@ export default function CertDetail() {
   const progress = filtered.length > 0 ? Math.round(((current + 1) / filtered.length) * 100) : 0
   const scorePercent = answered > 0 ? Math.round((score / answered) * 100) : 0
   const domains = Object.entries(meta.domains)
+  const freeRemaining = FREE_LIMIT - usedCount
 
   // Results screen
   if (showResults) {
@@ -270,9 +310,9 @@ export default function CertDetail() {
           </div>
 
           {/* Free limit warning */}
-          {questionCount >= FREE_LIMIT - 5 && questionCount < FREE_LIMIT && (
+          {!isPremium && freeRemaining <= 5 && freeRemaining > 0 && (
             <div style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '0.875rem 1.25rem', fontSize: '0.875rem', color: '#1e3a8a', fontWeight: 500 }}>
-              ⚠️ <strong>{FREE_LIMIT - questionCount} free questions left.</strong> Upgrade to unlock all {filtered.length} questions.
+              ⚠️ <strong>{freeRemaining} free questions left for this cert.</strong> Upgrade to unlock all {filtered.length} questions.
             </div>
           )}
 
@@ -340,20 +380,22 @@ export default function CertDetail() {
             </div>
           </div>
 
-          {/* Free limit card */}
-          {questionCount < FREE_LIMIT && (
+          {/* Free tier card */}
+          {!isPremium && (
             <div style={{ background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)', border: '1px solid #bfdbfe', borderRadius: '1.25rem', padding: '1.5rem' }}>
               <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#3b82f6', marginBottom: '0.75rem', letterSpacing: '0.06em' }}>Free Tier</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.875rem', color: '#374151', fontWeight: 600 }}>{questionCount} / {FREE_LIMIT} used</span>
-                <span style={{ fontSize: '0.875rem', fontWeight: 800, color: '#3b82f6' }}>{FREE_LIMIT - questionCount} left</span>
+                <span style={{ fontSize: '0.875rem', color: '#374151', fontWeight: 600 }}>{usedCount} / {FREE_LIMIT} used</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 800, color: freeRemaining === 0 ? '#ef4444' : '#3b82f6' }}>
+                  {freeRemaining === 0 ? 'Limit reached' : `${freeRemaining} left`}
+                </span>
               </div>
               <div style={{ background: '#dbeafe', borderRadius: '9999px', height: '6px', marginBottom: '1rem' }}>
-                <div style={{ height: '6px', borderRadius: '9999px', background: '#3b82f6', width: `${(questionCount / FREE_LIMIT) * 100}%`, transition: 'width 0.3s' }} />
+                <div style={{ height: '6px', borderRadius: '9999px', background: freeRemaining === 0 ? '#ef4444' : '#3b82f6', width: `${(usedCount / FREE_LIMIT) * 100}%`, transition: 'width 0.3s' }} />
               </div>
               <button onClick={() => navigate('/pricing')}
                 style={{ width: '100%', padding: '0.625rem', background: '#3b82f6', color: '#fff', fontWeight: 700, borderRadius: '0.625rem', border: 'none', cursor: 'pointer', fontSize: '0.825rem' }}>
-                Unlock All 260 Questions →
+                Unlock All {filtered.length} Questions →
               </button>
             </div>
           )}
