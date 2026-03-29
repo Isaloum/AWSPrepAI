@@ -104,59 +104,62 @@ function IllustrationElectrical() {
    220 × 140  |  3 floating service blocks  →  assembled result
 ════════════════════════════════════════════════════════════ */
 function IllustrationLego() {
+  // All 3 top blocks: identical size 60×52, same baseline y=10
+  // Evenly spaced: EC2 x=10, S3 x=80, Lambda x=150 (gap=10px each)
+  // Architecture result: x=10, width=200 — spans full block area
   return (
     <svg width="220" height="140" viewBox="0 0 220 140" fill="none">
 
-      {/* ── Block: EC2 (left, floating up) ── */}
+      {/* ── Block: EC2 — x=10..70, y=10..62 ── */}
       <g>
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="2.2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="6" y="34" width="62" height="48" rx="8" fill="#bbf7d0" stroke="#16a34a" strokeWidth="2.5"/>
-        <ellipse cx="26" cy="34" rx="10" ry="6" fill="#86efac" stroke="#16a34a" strokeWidth="2"/>
-        <ellipse cx="52" cy="34" rx="10" ry="6" fill="#86efac" stroke="#16a34a" strokeWidth="2"/>
-        <text x="12" y="56" fontSize="11" fontWeight="900" fill="#166534">🖥 EC2</text>
-        <text x="14" y="70" fontSize="8" fill="#15803d" fontWeight="600">compute</text>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="2.2s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+        <rect x="10" y="10" width="60" height="52" rx="8" fill="#bbf7d0" stroke="#16a34a" strokeWidth="2.5"/>
+        <ellipse cx="28" cy="10" rx="9" ry="6" fill="#86efac" stroke="#16a34a" strokeWidth="2"/>
+        <ellipse cx="52" cy="10" rx="9" ry="6" fill="#86efac" stroke="#16a34a" strokeWidth="2"/>
+        <text x="14" y="38" fontSize="11" fontWeight="900" fill="#166534">🖥 EC2</text>
+        <text x="16" y="52" fontSize="8" fill="#15803d" fontWeight="600">compute</text>
       </g>
 
-      {/* ── Block: S3 (center, floating more) ── */}
+      {/* ── Block: S3 — x=80..140, y=10..62 ── */}
       <g>
-        <animateTransform attributeName="transform" type="translate" values="0,-4;0,6;0,-4" dur="2.8s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="79" y="18" width="62" height="48" rx="8" fill="#6ee7b7" stroke="#059669" strokeWidth="2.5"/>
-        <ellipse cx="99" cy="18" rx="10" ry="6" fill="#34d399" stroke="#059669" strokeWidth="2"/>
-        <ellipse cx="125" cy="18" rx="10" ry="6" fill="#34d399" stroke="#059669" strokeWidth="2"/>
-        <text x="86" y="40" fontSize="11" fontWeight="900" fill="#065f46">🪣 S3</text>
-        <text x="88" y="54" fontSize="8" fill="#047857" fontWeight="600">storage</text>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-9;0,0" dur="2.8s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+        <rect x="80" y="10" width="60" height="52" rx="8" fill="#6ee7b7" stroke="#059669" strokeWidth="2.5"/>
+        <ellipse cx="98" cy="10" rx="9" ry="6" fill="#34d399" stroke="#059669" strokeWidth="2"/>
+        <ellipse cx="122" cy="10" rx="9" ry="6" fill="#34d399" stroke="#059669" strokeWidth="2"/>
+        <text x="87" y="38" fontSize="11" fontWeight="900" fill="#065f46">🪣 S3</text>
+        <text x="89" y="52" fontSize="8" fill="#047857" fontWeight="600">storage</text>
       </g>
 
-      {/* ── Block: Lambda (right, floating medium) ── */}
+      {/* ── Block: Lambda — x=150..210, y=10..62 ── */}
       <g>
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="2.5s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
-        <rect x="152" y="34" width="62" height="48" rx="8" fill="#a7f3d0" stroke="#10b981" strokeWidth="2.5"/>
-        <ellipse cx="172" cy="34" rx="10" ry="6" fill="#6ee7b7" stroke="#10b981" strokeWidth="2"/>
-        <ellipse cx="198" cy="34" rx="10" ry="6" fill="#6ee7b7" stroke="#10b981" strokeWidth="2"/>
-        <text x="158" y="56" fontSize="11" fontWeight="900" fill="#065f46">⚡ λ</text>
-        <text x="155" y="70" fontSize="8" fill="#047857" fontWeight="600">serverless</text>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="2.5s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
+        <rect x="150" y="10" width="60" height="52" rx="8" fill="#a7f3d0" stroke="#10b981" strokeWidth="2.5"/>
+        <ellipse cx="168" cy="10" rx="9" ry="6" fill="#6ee7b7" stroke="#10b981" strokeWidth="2"/>
+        <ellipse cx="192" cy="10" rx="9" ry="6" fill="#6ee7b7" stroke="#10b981" strokeWidth="2"/>
+        <text x="156" y="38" fontSize="11" fontWeight="900" fill="#065f46">⚡ λ</text>
+        <text x="153" y="52" fontSize="8" fill="#047857" fontWeight="600">serverless</text>
       </g>
 
-      {/* ── Dashed connecting lines (down to result) ── */}
-      <line x1="37" y1="82" x2="72" y2="100" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
+      {/* ── Vertical connecting lines — straight down from block centres ── */}
+      <line x1="40" y1="62" x2="40" y2="96" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
         <animate attributeName="opacity" values="0.3;1;0.3" dur="1.6s" repeatCount="indefinite"/>
       </line>
-      <line x1="110" y1="66" x2="110" y2="100" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
+      <line x1="110" y1="62" x2="110" y2="96" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
         <animate attributeName="opacity" values="0.3;1;0.3" dur="1.6s" begin="0.3s" repeatCount="indefinite"/>
       </line>
-      <line x1="183" y1="82" x2="148" y2="100" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
+      <line x1="180" y1="62" x2="180" y2="96" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,3">
         <animate attributeName="opacity" values="0.3;1;0.3" dur="1.6s" begin="0.6s" repeatCount="indefinite"/>
       </line>
 
-      {/* ── Assembled Result ── */}
-      <rect x="46" y="100" width="128" height="36" rx="10" fill="#dcfce7" stroke="#16a34a" strokeWidth="2.5">
+      {/* ── Assembled Result — same width as block area ── */}
+      <rect x="10" y="96" width="200" height="38" rx="10" fill="#dcfce7" stroke="#16a34a" strokeWidth="2.5">
         <animate attributeName="opacity" values="0.75;1;0.75" dur="2s" repeatCount="indefinite"/>
       </rect>
-      <text x="58" y="116" fontSize="10.5" fontWeight="900" fill="#166534">🏗 Architecture</text>
-      <text x="60" y="128" fontSize="8.5" fill="#15803d" fontWeight="600">EC2  +  S3  +  Lambda</text>
+      <text x="110" y="112" fontSize="10.5" fontWeight="900" fill="#166534" textAnchor="middle">🏗 Architecture</text>
+      <text x="110" y="125" fontSize="8.5" fill="#15803d" fontWeight="600" textAnchor="middle">EC2  +  S3  +  Lambda</text>
 
       {/* Snap sparkles at junctions */}
-      {[[72,100],[110,100],[148,100]].map(([cx,cy],i)=>(
+      {[[40,96],[110,96],[180,96]].map(([cx,cy],i)=>(
         <circle key={i} cx={cx} cy={cy} r="4" fill="#16a34a">
           <animate attributeName="r" values="3;7;3" dur="1.8s" begin={`${i*0.4}s`} repeatCount="indefinite"/>
           <animate attributeName="opacity" values="1;0;1" dur="1.8s" begin={`${i*0.4}s`} repeatCount="indefinite"/>
@@ -281,7 +284,7 @@ function IllustrationSubscriptions() {
         <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="2.7s" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" repeatCount="indefinite"/>
         <rect x="4" y="62" width="84" height="38" rx="7" fill="#fee2e2" stroke="#ef4444" strokeWidth="2"/>
         <text x="10" y="80" fontSize="9.5" fontWeight="900" fill="#991b1b">YouTube</text>
-        <text x="10" y="92" fontSize="8" fill="#b91c1c">Video walk-throughs</text>
+        <text x="10" y="92" fontSize="8" fill="#b91c1c">Walk-throughs</text>
         <rect x="56" y="66" width="28" height="16" rx="4" fill="#dc2626"/>
         <text x="70" y="78" fontSize="8.5" fontWeight="900" fill="white" textAnchor="middle">free?</text>
       </g>
@@ -331,11 +334,11 @@ function IllustrationSubscriptions() {
         </text>
       ))}
 
-      {/* "1 tab" badge */}
-      <rect x="118" y="140" width="112" height="16" rx="7" fill="#16a34a">
+      {/* "1 tab" badge — 6px margin from card bottom */}
+      <rect x="118" y="133" width="112" height="16" rx="7" fill="#16a34a">
         <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
       </rect>
-      <text x="174" y="152" fontSize="9" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
+      <text x="174" y="145" fontSize="9" fontWeight="900" fill="white" textAnchor="middle">1 tab. Everything. ✓</text>
     </svg>
   )
 }
