@@ -57,18 +57,25 @@ export default function Footer() {
         {/* Pricing */}
         <div>
           <h4 style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.85rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Plans</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
             {[
-              { to: '/signup?plan=monthly', label: 'Monthly — $7/mo' },
-              { to: '/signup?plan=yearly', label: 'Yearly — $67/yr' },
-              { to: '/signup?plan=lifetime', label: 'Lifetime — $147' },
-              { to: '/pricing', label: 'Compare Plans' },
+              { to: '/signup?plan=monthly', name: 'Monthly', price: '$7/mo' },
+              { to: '/signup?plan=yearly', name: 'Yearly', price: '$67/yr' },
+              { to: '/signup?plan=lifetime', name: 'Lifetime', price: '$147' },
             ].map(l => (
-              <Link key={l.label} to={l.to} style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
-              >{l.label}</Link>
+              <Link key={l.name} to={l.to} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', color: '#64748b' }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#93c5fd' }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#64748b' }}
+              >
+                <span style={{ fontSize: '0.85rem', whiteSpace: 'nowrap' }}>{l.name}</span>
+                <span style={{ flex: 1, borderBottom: '1px dotted #1e293b', marginBottom: '2px' }} />
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap' }}>{l.price}</span>
+              </Link>
             ))}
+            <Link to="/pricing" style={{ marginTop: '0.35rem', fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#3b82f6')}
+            >Compare all plans →</Link>
           </div>
         </div>
 
