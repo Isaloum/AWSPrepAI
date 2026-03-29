@@ -51,7 +51,7 @@ export default function Certifications() {
           <div className="flex justify-center gap-8 mt-4">
             <div className="text-center"><div className="text-2xl font-black text-blue-600">3,120</div><div className="text-xs text-gray-400 uppercase font-semibold">Questions</div></div>
             <div className="text-center"><div className="text-2xl font-black text-blue-600">12</div><div className="text-xs text-gray-400 uppercase font-semibold">Certs Live</div></div>
-            <div className="text-center"><div className="text-2xl font-black text-blue-600">4</div><div className="text-xs text-gray-400 uppercase font-semibold">Mock Exams Each</div></div>
+            <div className="text-center"><div className="text-2xl font-black text-blue-600">90</div><div className="text-xs text-gray-400 uppercase font-semibold">Min Mock Exam</div></div>
           </div>
         </div>
 
