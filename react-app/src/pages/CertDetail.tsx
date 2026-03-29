@@ -68,20 +68,19 @@ export default function CertDetail() {
     }).catch(() => navigate('/certifications'))
   }, [certId, navigate])
 
-  // Load persisted usage count from Supabase
+  // Load persisted usage count from Supabase (total across ALL certs)
   useEffect(() => {
-    if (!user || !certId || isPremium) { setUsageLoaded(true); return }
+    if (!user || isPremium) { setUsageLoaded(true); return }
     supabase
       .from('free_usage')
       .select('questions_answered')
       .eq('user_id', user.id)
-      .eq('cert_id', certId)
       .maybeSingle()
       .then(({ data }) => {
         setUsedCount(data?.questions_answered ?? 0)
         setUsageLoaded(true)
       })
-  }, [user, certId, isPremium])
+  }, [user, isPremium])
 
   useEffect(() => {
     if (domainFilter === 'all') setFiltered(questions)
@@ -108,18 +107,18 @@ export default function CertDetail() {
     if (selected === filtered[current].answer) setScore(s => s + 1)
     else setWrongQuestions(w => [...w, filtered[current]])
 
-    // Persist +1 to Supabase for free users
+    // Persist +1 to Supabase for free users (total across all certs)
     if (!isPremium && user) {
       const newCount = usedCount + 1
       setUsedCount(newCount)
       await supabase
         .from('free_usage')
         .upsert(
-          { user_id: user.id, cert_id: certId, questions_answered: newCount },
-          { onConflict: 'user_id,cert_id' }
+          { user_id: user.id, questions_answered: newCount },
+          { onConflict: 'user_id' }
         )
     }
-  }, [selected, revealed, filtered, current, isPremium, usedCount, user, certId])
+  }, [selected, revealed, filtered, current, isPremium, usedCount, user])
 
   const handleNext = useCallback(() => {
     if (!isPremium && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
