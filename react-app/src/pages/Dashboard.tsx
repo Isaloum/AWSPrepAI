@@ -26,7 +26,7 @@ const tierInfo: Record<string, { label: string; color: string; bg: string; desc:
 }
 
 export default function Dashboard() {
-  const { user, isPremium, tier, loading, signOut } = useAuth()
+  const { user, isPremium, isFullAccess, tier, loading, signOut } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -81,12 +81,17 @@ export default function Dashboard() {
             <div style={{ fontWeight: 800, color: info.color, fontSize: '1rem' }}>{info.label}</div>
             <div style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '0.2rem' }}>{info.desc}</div>
           </div>
-          {!isPremium && (
+          {tier === 'free' && (
             <Link to="/pricing" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
-              ⚡ Upgrade to Premium
+              ⚡ Upgrade
             </Link>
           )}
-          {isPremium && (
+          {tier === 'monthly' && (
+            <Link to="/pricing" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
+              ↑ Upgrade to Yearly
+            </Link>
+          )}
+          {isFullAccess && (
             <div style={{ padding: '0.5rem 1rem', background: '#ffffff80', borderRadius: '0.75rem', fontSize: '0.875rem', fontWeight: 600, color: info.color }}>
               ✅ Full Access Unlocked
             </div>
@@ -98,7 +103,7 @@ export default function Dashboard() {
           {[
             { label: 'Certifications', value: '12', icon: '📋' },
             { label: 'Total Questions', value: '3,120', icon: '❓' },
-            { label: 'Available to you', value: isPremium ? '3,120' : '240', icon: '🔓' },
+            { label: 'Available to you', value: isFullAccess ? '3,120' : tier === 'monthly' ? '260' : '20', icon: '🔓' },
           ].map(stat => (
             <div key={stat.label} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.875rem', padding: '1rem 1.25rem', textAlign: 'center' }}>
               <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{stat.icon}</div>
@@ -134,7 +139,7 @@ export default function Dashboard() {
           <Link to="/resources" style={{ padding: '0.6rem 1.25rem', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', color: '#374151', textDecoration: 'none', background: '#fff' }}>
             📚 Resources
           </Link>
-          {!isPremium && (
+          {!isFullAccess && (
             <Link to="/pricing" style={{ padding: '0.6rem 1.25rem', border: '1px solid #93c5fd', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', color: '#1d4ed8', textDecoration: 'none', background: '#eff6ff' }}>
               ⚡ View Plans
             </Link>

@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null
   loading: boolean
   isPremium: boolean
+  isFullAccess: boolean
   tier: 'free' | 'monthly' | 'yearly' | 'lifetime'
   signOut: () => Promise<void>
   refreshUser: () => Promise<void>
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   isPremium: false,
+  isFullAccess: false,
   tier: 'free',
   signOut: async () => {},
   refreshUser: async () => {},
@@ -48,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const tier = getTier(user)
   const isPremium = tier !== 'free'
+  const isFullAccess = tier === 'yearly' || tier === 'lifetime'
 
   const signOut = async () => {
     await supabase.auth.signOut()
@@ -55,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, isPremium, tier, signOut, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, isPremium, isFullAccess, tier, signOut, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

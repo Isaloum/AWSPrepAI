@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
@@ -33,7 +33,7 @@ const FREE_LIMIT = 20
 export default function CertDetail() {
   const { certId } = useParams<{ certId: string }>()
   const navigate = useNavigate()
-  const { isPremium, user, loading } = useAuth()
+  const { isFullAccess, tier, user, loading } = useAuth()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [filtered, setFiltered] = useState<Question[]>([])
@@ -47,15 +47,20 @@ export default function CertDetail() {
   const [showPaywall, setShowPaywall] = useState(false)
   const [_wrongQuestions, setWrongQuestions] = useState<Question[]>([])
 
-  // Persisted free usage from Supabase
+  // Free tier usage (total across all certs)
   const [usedCount, setUsedCount] = useState(0)
   const [usageLoaded, setUsageLoaded] = useState(false)
+
+  // Monthly cert selection
+  const [monthlySelection, setMonthlySelection] = useState<{ cert_id: string; selected_at: string } | null>(null)
+  const [monthlyLoaded, setMonthlyLoaded] = useState(false)
+  const [switching, setSwitching] = useState(false)
 
   const meta = certMeta[certId || ''] || { name: 'Unknown', code: '', icon: '❓', domains: {} }
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!loading && !user) { navigate('/signup') }
+    if (!loading && !user) navigate('/signup')
   }, [loading, user, navigate])
 
   // Load questions
@@ -68,9 +73,9 @@ export default function CertDetail() {
     }).catch(() => navigate('/certifications'))
   }, [certId, navigate])
 
-  // Load persisted usage count from Supabase (total across ALL certs)
+  // Load free usage (free tier only)
   useEffect(() => {
-    if (!user || isPremium) { setUsageLoaded(true); return }
+    if (!user || tier !== 'free') { setUsageLoaded(true); return }
     supabase
       .from('free_usage')
       .select('questions_answered')
@@ -80,13 +85,45 @@ export default function CertDetail() {
         setUsedCount(data?.questions_answered ?? 0)
         setUsageLoaded(true)
       })
-  }, [user, isPremium])
+  }, [user, tier])
+
+  // Load monthly cert selection (monthly tier only)
+  useEffect(() => {
+    if (!user || tier !== 'monthly') { setMonthlyLoaded(true); return }
+    supabase
+      .from('monthly_cert_selection')
+      .select('cert_id, selected_at')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setMonthlySelection(data)
+        setMonthlyLoaded(true)
+      })
+  }, [user, tier])
 
   useEffect(() => {
     if (domainFilter === 'all') setFiltered(questions)
     else setFiltered(questions.filter(q => q.cat === domainFilter))
     setCurrent(0); setSelected(null); setRevealed(false)
   }, [domainFilter, questions])
+
+  const canSwitchMonthly = () => {
+    if (!monthlySelection) return true // no cert selected yet
+    const selected_at = new Date(monthlySelection.selected_at)
+    const now = new Date()
+    const diffDays = (now.getTime() - selected_at.getTime()) / (1000 * 60 * 60 * 24)
+    return diffDays >= 30
+  }
+
+  const handleSelectMonthlyCert = async () => {
+    if (!user || !certId) return
+    setSwitching(true)
+    await supabase
+      .from('monthly_cert_selection')
+      .upsert({ user_id: user.id, cert_id: certId, selected_at: new Date().toISOString() }, { onConflict: 'user_id' })
+    setMonthlySelection({ cert_id: certId, selected_at: new Date().toISOString() })
+    setSwitching(false)
+  }
 
   const handleSelect = useCallback((idx: number) => {
     if (revealed) return
@@ -95,36 +132,28 @@ export default function CertDetail() {
 
   const handleReveal = useCallback(async () => {
     if (selected === null) return
-
-    // Block if free limit reached
-    if (!isPremium && usedCount >= FREE_LIMIT) {
-      setShowPaywall(true)
-      return
-    }
+    if (tier === 'free' && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
 
     setRevealed(true)
     setAnswered(a => a + 1)
     if (selected === filtered[current].answer) setScore(s => s + 1)
     else setWrongQuestions(w => [...w, filtered[current]])
 
-    // Persist +1 to Supabase for free users (total across all certs)
-    if (!isPremium && user) {
+    // Persist free usage
+    if (tier === 'free' && user) {
       const newCount = usedCount + 1
       setUsedCount(newCount)
       await supabase
         .from('free_usage')
-        .upsert(
-          { user_id: user.id, questions_answered: newCount },
-          { onConflict: 'user_id' }
-        )
+        .upsert({ user_id: user.id, questions_answered: newCount }, { onConflict: 'user_id' })
     }
-  }, [selected, revealed, filtered, current, isPremium, usedCount, user])
+  }, [selected, revealed, filtered, current, tier, usedCount, user])
 
   const handleNext = useCallback(() => {
-    if (!isPremium && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
+    if (tier === 'free' && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
     if (current + 1 >= filtered.length) setShowResults(true)
     else { setCurrent(c => c + 1); setSelected(null); setRevealed(false) }
-  }, [current, filtered.length, isPremium, usedCount])
+  }, [current, filtered.length, tier, usedCount])
 
   const handlePrev = () => {
     if (current > 0) { setCurrent(c => c - 1); setSelected(null); setRevealed(false) }
@@ -136,13 +165,95 @@ export default function CertDetail() {
     setShowResults(false); setWrongQuestions([])
   }
 
-  if (questions.length === 0 || (!loading && !user) || (!isPremium && !usageLoaded)) {
+  // ── Loading state ──
+  const isLoading = questions.length === 0
+    || (!loading && !user)
+    || (tier === 'free' && !usageLoaded)
+    || (tier === 'monthly' && !monthlyLoaded)
+
+  if (isLoading) {
     return (
       <Layout>
         <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚙️</div>
             <p style={{ color: '#6b7280' }}>Loading questions...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Monthly: locked cert screen ──
+  if (tier === 'monthly' && monthlySelection && monthlySelection.cert_id !== certId) {
+    const lockedMeta = certMeta[monthlySelection.cert_id] || { name: monthlySelection.cert_id, code: '', icon: '📝' }
+    const canSwitch = canSwitchMonthly()
+    const selectedAt = new Date(monthlySelection.selected_at)
+    const nextSwitch = new Date(selectedAt.getTime() + 30 * 24 * 60 * 60 * 1000)
+    const daysLeft = Math.ceil((nextSwitch.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+
+    return (
+      <Layout>
+        <div style={{ maxWidth: '520px', margin: '4rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.5rem', padding: '3rem 2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Monthly Plan — 1 Cert at a Time</h1>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.75rem' }}>
+              Your current cert is <strong>{lockedMeta.icon} {lockedMeta.code} — {lockedMeta.name}</strong>. Monthly plan allows 1 active certification at a time.
+            </p>
+
+            <Link to={`/cert/${monthlySelection.cert_id}`}
+              style={{ display: 'block', padding: '0.875rem', background: '#2563eb', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem', marginBottom: '1rem' }}>
+              Go to {lockedMeta.code} →
+            </Link>
+
+            {canSwitch ? (
+              <button
+                onClick={handleSelectMonthlyCert}
+                disabled={switching}
+                style={{ width: '100%', padding: '0.875rem', background: '#f3f4f6', color: '#374151', borderRadius: '0.875rem', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.95rem', marginBottom: '1rem' }}>
+                {switching ? 'Switching...' : `Switch to ${meta.code}`}
+              </button>
+            ) : (
+              <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '0.875rem', padding: '0.875rem', marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.82rem', color: '#92400e', margin: 0, fontWeight: 600 }}>
+                  Next switch available in <strong>{daysLeft} days</strong>
+                </p>
+              </div>
+            )}
+
+            <Link to="/pricing"
+              style={{ display: 'block', fontSize: '0.82rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' }}>
+              Upgrade to Yearly for all 12 certs →
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Monthly: no cert selected yet — prompt to select this one ──
+  if (tier === 'monthly' && !monthlySelection) {
+    return (
+      <Layout>
+        <div style={{ maxWidth: '520px', margin: '4rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.5rem', padding: '3rem 2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{meta.icon}</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Activate Your Cert</h1>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.75rem' }}>
+              Your Monthly plan includes <strong>1 certification at a time</strong>. You're about to activate <strong>{meta.code} — {meta.name}</strong>.
+              <br /><br />
+              You get 1 switch per month, so choose wisely.
+            </p>
+            <button
+              onClick={handleSelectMonthlyCert}
+              disabled={switching}
+              style={{ width: '100%', padding: '0.875rem', background: '#2563eb', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.95rem', marginBottom: '1rem' }}>
+              {switching ? 'Activating...' : `Activate ${meta.code}`}
+            </button>
+            <Link to="/certifications" style={{ display: 'block', fontSize: '0.82rem', color: '#6b7280', textDecoration: 'none' }}>
+              ← Choose a different cert
+            </Link>
           </div>
         </div>
       </Layout>
@@ -208,41 +319,39 @@ export default function CertDetail() {
     <Layout>
       {showPaywall && <Paywall reason="free-user" onClose={() => setShowPaywall(false)} />}
 
-      {/* Full-width header bar */}
+      {/* Header bar */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '0.875rem 2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button onClick={() => navigate('/certifications')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
           ← Back
         </button>
         <span style={{ color: '#d1d5db' }}>|</span>
         <span style={{ fontWeight: 800, color: '#111827', fontSize: '0.875rem' }}>{meta.icon} {meta.code} — {meta.name}</span>
+        {tier === 'monthly' && (
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#dbeafe', color: '#1d4ed8', padding: '0.2rem 0.6rem', borderRadius: '999px' }}>Monthly — Active Cert</span>
+        )}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
             <span style={{ fontWeight: 800, color: '#3b82f6', fontSize: '1rem' }}>{score}</span> correct &nbsp;·&nbsp; {answered} answered
           </span>
           {answered > 0 && (
-            <span style={{ fontSize: '0.875rem', fontWeight: 700, color: scorePercent >= 72 ? '#16a34a' : '#2563eb' }}>
-              {scorePercent}%
-            </span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 700, color: scorePercent >= 72 ? '#16a34a' : '#2563eb' }}>{scorePercent}%</span>
           )}
         </div>
       </div>
 
-      {/* Progress bar - full width */}
+      {/* Progress bar */}
       <div style={{ height: '4px', background: '#e5e7eb', width: '100%' }}>
         <div style={{ height: '4px', background: '#3b82f6', width: `${progress}%`, transition: 'width 0.3s' }} />
       </div>
 
-      {/* Main content - two columns */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', maxWidth: '1200px', margin: '0 auto', padding: '2rem 2rem' }}>
+      {/* Main content */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
 
-        {/* LEFT: Question + Options */}
+        {/* LEFT */}
         <div>
-          {/* Domain filter tabs */}
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-            <button
-              onClick={() => setDomainFilter('all')}
-              style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: domainFilter === 'all' ? '#111827' : '#fff', color: domainFilter === 'all' ? '#fff' : '#6b7280', boxShadow: domainFilter === 'all' ? 'none' : '0 0 0 1px #e5e7eb' }}
-            >
+            <button onClick={() => setDomainFilter('all')}
+              style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: domainFilter === 'all' ? '#111827' : '#fff', color: domainFilter === 'all' ? '#fff' : '#6b7280', boxShadow: domainFilter === 'all' ? 'none' : '0 0 0 1px #e5e7eb' }}>
               All ({questions.length})
             </button>
             {domains.map(([cat, label]) => {
@@ -251,46 +360,29 @@ export default function CertDetail() {
               const active = domainFilter === cat
               return (
                 <button key={cat} onClick={() => setDomainFilter(cat)}
-                  style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: active ? '#111827' : '#fff', color: active ? '#fff' : '#6b7280', boxShadow: active ? 'none' : '0 0 0 1px #e5e7eb' }}
-                >
+                  style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: active ? '#111827' : '#fff', color: active ? '#fff' : '#6b7280', boxShadow: active ? 'none' : '0 0 0 1px #e5e7eb' }}>
                   {label} ({count})
                 </button>
               )
             })}
           </div>
 
-          {/* Question card */}
           <div style={{ background: '#fff', borderRadius: '1.25rem', border: '1px solid #e5e7eb', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
-            {/* Card header */}
             <div style={{ padding: '1.25rem 1.75rem', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#3b82f6', background: '#eff6ff', padding: '0.25rem 0.75rem', borderRadius: '9999px' }}>
                 {meta.domains[q.cat] || q.cat}
               </span>
-              <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600 }}>
-                {current + 1} / {filtered.length}
-              </span>
+              <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600 }}>{current + 1} / {filtered.length}</span>
             </div>
 
-            {/* Question text */}
             <div style={{ padding: '1.75rem 1.75rem 1.25rem' }}>
               <p style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827', lineHeight: 1.65, margin: 0 }}>{q.q}</p>
             </div>
 
-            {/* Options */}
             <div style={{ padding: '0 1.75rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
               {q.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelect(i)}
-                  disabled={revealed}
-                  style={{
-                    width: '100%', textAlign: 'left', padding: '1rem 1.25rem',
-                    borderRadius: '0.875rem', fontSize: '0.925rem', fontWeight: 500,
-                    cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s',
-                    display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-                    ...optionColors(i)
-                  }}
-                >
+                <button key={i} onClick={() => handleSelect(i)} disabled={revealed}
+                  style={{ width: '100%', textAlign: 'left', padding: '1rem 1.25rem', borderRadius: '0.875rem', fontSize: '0.925rem', fontWeight: 500, cursor: revealed ? 'default' : 'pointer', transition: 'all 0.15s', display: 'flex', alignItems: 'flex-start', gap: '0.75rem', ...optionColors(i) }}>
                   <span style={{ fontWeight: 800, minWidth: '1.5rem', flexShrink: 0 }}>{String.fromCharCode(65 + i)}.</span>
                   <span>{opt}</span>
                   {revealed && i === q.answer && <span style={{ marginLeft: 'auto', color: '#16a34a', fontWeight: 800, flexShrink: 0 }}>✓</span>}
@@ -299,7 +391,6 @@ export default function CertDetail() {
               ))}
             </div>
 
-            {/* Explanation */}
             {revealed && (
               <div style={{ margin: '0 1.75rem 1.75rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '1.25rem' }}>
                 <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6', marginBottom: '0.5rem' }}>Explanation</p>
@@ -308,14 +399,12 @@ export default function CertDetail() {
             )}
           </div>
 
-          {/* Free limit warning */}
-          {!isPremium && freeRemaining <= 5 && freeRemaining > 0 && (
+          {tier === 'free' && freeRemaining <= 5 && freeRemaining > 0 && (
             <div style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '0.875rem 1.25rem', fontSize: '0.875rem', color: '#1e3a8a', fontWeight: 500 }}>
-              ⚠️ <strong>{freeRemaining} free questions left for this cert.</strong> Upgrade to unlock all {filtered.length} questions.
+              ⚠️ <strong>{freeRemaining} free questions left.</strong> Upgrade to unlock all questions.
             </div>
           )}
 
-          {/* Action buttons */}
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
             <button onClick={handlePrev} disabled={current === 0}
               style={{ padding: '0.875rem 1.5rem', border: '1.5px solid #e5e7eb', background: '#fff', color: '#6b7280', fontWeight: 700, borderRadius: '0.875rem', cursor: current === 0 ? 'not-allowed' : 'pointer', opacity: current === 0 ? 0.35 : 1, fontSize: '0.9rem' }}>
@@ -359,9 +448,7 @@ export default function CertDetail() {
                   <div style={{ height: '8px', borderRadius: '9999px', background: scorePercent >= 72 ? '#22c55e' : '#3b82f6', width: `${scorePercent}%`, transition: 'width 0.4s' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#9ca3af', fontWeight: 600 }}>
-                  <span>0%</span>
-                  <span style={{ color: '#3b82f6', fontWeight: 800 }}>72% to pass</span>
-                  <span>100%</span>
+                  <span>0%</span><span style={{ color: '#3b82f6', fontWeight: 800 }}>72% to pass</span><span>100%</span>
                 </div>
               </>
             )}
@@ -380,7 +467,7 @@ export default function CertDetail() {
           </div>
 
           {/* Free tier card */}
-          {!isPremium && (
+          {tier === 'free' && (
             <div style={{ background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)', border: '1px solid #bfdbfe', borderRadius: '1.25rem', padding: '1.5rem' }}>
               <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#3b82f6', marginBottom: '0.75rem', letterSpacing: '0.06em' }}>Free Tier</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -394,7 +481,19 @@ export default function CertDetail() {
               </div>
               <button onClick={() => navigate('/pricing')}
                 style={{ width: '100%', padding: '0.625rem', background: '#3b82f6', color: '#fff', fontWeight: 700, borderRadius: '0.625rem', border: 'none', cursor: 'pointer', fontSize: '0.825rem' }}>
-                Unlock All {filtered.length} Questions →
+                Unlock All Questions →
+              </button>
+            </div>
+          )}
+
+          {/* Monthly plan card */}
+          {tier === 'monthly' && (
+            <div style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '1px solid #bfdbfe', borderRadius: '1.25rem', padding: '1.5rem' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#1d4ed8', marginBottom: '0.5rem', letterSpacing: '0.06em' }}>Monthly Plan</p>
+              <p style={{ fontSize: '0.8rem', color: '#1e40af', margin: '0 0 0.75rem', fontWeight: 600 }}>Active: {meta.code}</p>
+              <button onClick={() => navigate('/pricing')}
+                style={{ width: '100%', padding: '0.625rem', background: '#2563eb', color: '#fff', fontWeight: 700, borderRadius: '0.625rem', border: 'none', cursor: 'pointer', fontSize: '0.825rem' }}>
+                Upgrade to Yearly →
               </button>
             </div>
           )}
