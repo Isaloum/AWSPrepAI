@@ -75,35 +75,30 @@ export default function Navbar() {
             onMouseEnter={() => setPracticeOpen(true)}
             onMouseLeave={() => setPracticeOpen(false)}
           >
-            <button
-              style={{ ...navItem(location.pathname.startsWith('/certifications') || location.pathname.startsWith('/cert/')) }}
-              onMouseEnter={e => { if (!location.pathname.startsWith('/certifications')) { (e.currentTarget as HTMLButtonElement).style.background = '#f9fafb'; (e.currentTarget as HTMLButtonElement).style.color = '#111827' } }}
-              onMouseLeave={e => { if (!location.pathname.startsWith('/certifications')) { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#374151' } }}
-            >
+            <button style={{ ...navItem(location.pathname.startsWith('/certifications') || location.pathname.startsWith('/cert/')) }}>
               Practice <ChevronDown />
             </button>
             {practiceOpen && (
-              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '220px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', padding: '6px', zIndex: 100 }}>
-                <Link to="/certifications" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <div style={{ width: '32px', height: '32px', background: '#eff6ff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📝</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Practice Quiz</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>All 12 certifications</div>
-                  </div>
-                </Link>
-                <Link to="/certifications" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <div style={{ width: '32px', height: '32px', background: '#f0fdf4', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>⏱️</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Mock Exam</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>65 questions · 90 min</div>
-                  </div>
-                </Link>
+              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '260px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)', padding: '8px', zIndex: 100 }}>
+                {[
+                  { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,120 questions · 12 certs' },
+                  { to: '/certifications', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 90 min' },
+                  { to: '/certifications', bg: '#fff7ed', icon: '🎯', label: 'Domain Filter', sub: 'Focus on your weakest domains' },
+                  { to: '/certifications', bg: '#f5f3ff', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up' },
+                ].map(item => (
+                  <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
+                      <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                    </div>
+                  </Link>
+                ))}
               </div>
             )}
           </div>
@@ -113,35 +108,31 @@ export default function Navbar() {
             onMouseEnter={() => setStudyOpen(true)}
             onMouseLeave={() => setStudyOpen(false)}
           >
-            <button
-              style={{ ...navItem(location.pathname === '/glossary' || location.pathname === '/resources') }}
-              onMouseEnter={e => { if (!isActive('/glossary') && !isActive('/resources')) { (e.currentTarget as HTMLButtonElement).style.background = '#f9fafb'; (e.currentTarget as HTMLButtonElement).style.color = '#111827' } }}
-              onMouseLeave={e => { if (!isActive('/glossary') && !isActive('/resources')) { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#374151' } }}
-            >
+            <button style={{ ...navItem(isActive('/glossary') || isActive('/resources') || isActive('/about')) }}>
               Study <ChevronDown />
             </button>
             {studyOpen && (
-              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '220px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', padding: '6px', zIndex: 100 }}>
-                <Link to="/glossary" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <div style={{ width: '32px', height: '32px', background: '#faf5ff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📖</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Glossary</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>50+ AWS terms explained</div>
-                  </div>
-                </Link>
-                <Link to="/resources" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none', color: '#374151' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <div style={{ width: '32px', height: '32px', background: '#fff7ed', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>📚</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Resources</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '1px' }}>Curated study materials</div>
-                  </div>
-                </Link>
+              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: '0', width: '260px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)', padding: '8px', zIndex: 100 }}>
+                {[
+                  { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources' },
+                  { to: '/glossary', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers & AWS glossary' },
+                  { to: '/resources', bg: '#f0fdf4', icon: '🛠️', label: 'AWS Services', sub: '40+ service references & cheat sheets' },
+                  { to: '/glossary', bg: '#fff7ed', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply' },
+                  { to: '/about', bg: '#f5f3ff', icon: 'ℹ️', label: 'About AWSPrepAI', sub: 'Our mission & cert coverage' },
+                ].map(item => (
+                  <Link key={item.label} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
+                      <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+                    </div>
+                  </Link>
+                ))}
               </div>
             )}
           </div>
@@ -150,23 +141,18 @@ export default function Navbar() {
           <div style={{ width: '1px', height: '18px', background: '#e5e7eb', margin: '0 6px', flexShrink: 0 }} />
 
           {/* Plain links */}
-          <Link to="/certifications"
-            style={{ ...navItem(isActive('/certifications')) }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/certifications') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/certifications') ? '#1d4ed8' : '#374151' }}
-          >Certifications</Link>
-
-          <Link to="/about"
-            style={{ ...navItem(isActive('/about')) }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/about') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/about') ? '#1d4ed8' : '#374151' }}
-          >About</Link>
-
-          <Link to="/pricing"
-            style={{ ...navItem(isActive('/pricing')) }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive('/pricing') ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive('/pricing') ? '#1d4ed8' : '#374151' }}
-          >Pricing</Link>
+          {[
+            { to: '/certifications', label: 'Certifications' },
+            { to: '/about', label: 'About' },
+            { to: '/resources', label: 'Resources' },
+            { to: '/pricing', label: 'Pricing' },
+          ].map(link => (
+            <Link key={link.to} to={link.to}
+              style={{ ...navItem(isActive(link.to)) }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#f9fafb'; (e.currentTarget as HTMLAnchorElement).style.color = '#111827' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = isActive(link.to) ? '#eff6ff' : 'transparent'; (e.currentTarget as HTMLAnchorElement).style.color = isActive(link.to) ? '#1d4ed8' : '#374151' }}
+            >{link.label}</Link>
+          ))}
         </div>
 
         {/* ── Auth ── */}
