@@ -88,7 +88,7 @@ export default function About() {
             20 free questions — no credit card required.
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/certifications" style={{ padding: '0.75rem 1.5rem', background: '#2563eb', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, textDecoration: 'none' }}>
+            <Link to="/sample-questions" style={{ padding: '0.75rem 1.5rem', background: '#2563eb', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, textDecoration: 'none' }}>
               Start Practicing Free
             </Link>
             <Link to="/pricing" style={{ padding: '0.75rem 1.5rem', border: '1px solid #e5e7eb', background: '#fff', color: '#374151', borderRadius: '0.875rem', fontWeight: 700, textDecoration: 'none' }}>
