@@ -3,20 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 
-const CHECKOUT_API = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
-
-const PLAN_PRICE_IDS: Record<string, string> = {
-  monthly:  'price_1TB1YCE9neqrFM5LDbyzVSnv',
-  yearly:   'price_1TED8EE9neqrFM5LCIL9P0Yp',
-  lifetime: 'price_1TED9ME9neqrFM5LeKAAEWTO',
-}
-
-const PLAN_MODES: Record<string, string> = {
-  monthly:  'subscription',
-  yearly:   'subscription',
-  lifetime: 'payment',
-}
-
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, yearly: 2, lifetime: 3 }
 
 const DOWNGRADE_LABEL: Record<string, string> = {
@@ -126,7 +112,7 @@ export default function Pricing() {
   const { tier } = useAuth()
   const [hovered, setHovered] = useState<string | null>(null)
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null)
-  const [checkingOut, setCheckingOut] = useState<string | null>(null) // kept for button label
+  const [checkingOut] = useState<string | null>(null)
   const yearlyRef = useRef<HTMLDivElement>(null)
   const [pulseYearly, setPulseYearly] = useState(false)
 
