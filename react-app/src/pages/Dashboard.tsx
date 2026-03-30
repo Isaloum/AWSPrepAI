@@ -1,7 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
+
+const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
+  'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
+  'aif-c01': { name: 'AI Practitioner', code: 'AIF-C01', icon: '🤖' },
+  'saa-c03': { name: 'Solutions Architect Associate', code: 'SAA-C03', icon: '🏗️' },
+  'dva-c02': { name: 'Developer Associate', code: 'DVA-C02', icon: '💻' },
+  'soa-c02': { name: 'SysOps Administrator', code: 'SOA-C02', icon: '⚙️' },
+  'dea-c01': { name: 'Data Engineer Associate', code: 'DEA-C01', icon: '📊' },
+  'mla-c01': { name: 'ML Engineer Associate', code: 'MLA-C01', icon: '🧠' },
+  'gai-c01': { name: 'Generative AI Developer', code: 'GAI-C01', icon: '✨' },
+  'sap-c02': { name: 'Solutions Architect Professional', code: 'SAP-C02', icon: '🏆' },
+  'dop-c02': { name: 'DevOps Engineer Professional', code: 'DOP-C02', icon: '🔧' },
+  'scs-c03': { name: 'Security Specialty', code: 'SCS-C03', icon: '🔒' },
+  'ans-c01': { name: 'Advanced Networking', code: 'ANS-C01', icon: '🌐' },
+}
 
 const CERTS = [
   { id: 'clf-c02', name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️', level: 'Foundational' },
@@ -28,10 +44,21 @@ const tierInfo: Record<string, { label: string; color: string; bg: string; desc:
 export default function Dashboard() {
   const { user, isFullAccess, tier, loading, signOut } = useAuth()
   const navigate = useNavigate()
+  const [monthlyCert, setMonthlyCert] = useState<{ cert_id: string; selected_at: string } | null | undefined>(undefined)
 
   useEffect(() => {
     if (!loading && !user) navigate('/login')
   }, [user, loading, navigate])
+
+  useEffect(() => {
+    if (!user || tier !== 'monthly') { setMonthlyCert(null); return }
+    supabase
+      .from('monthly_cert_selection')
+      .select('cert_id, selected_at')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => setMonthlyCert(data ?? null))
+  }, [user, tier])
 
   if (loading || !user) {
     return (
@@ -97,6 +124,55 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+
+        {/* Monthly: current cert card */}
+        {tier === 'monthly' && monthlyCert !== undefined && (() => {
+          if (!monthlyCert) {
+            return (
+              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem' }}>
+                <div style={{ fontWeight: 700, color: '#92400e', fontSize: '0.95rem', marginBottom: '0.3rem' }}>📋 No certification selected yet</div>
+                <div style={{ color: '#78350f', fontSize: '0.85rem', marginBottom: '0.75rem' }}>Pick a cert below to start practicing. You can switch once every 30 days.</div>
+                <Link to="/certifications" style={{ display: 'inline-block', padding: '0.5rem 1.1rem', background: '#d97706', color: '#fff', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
+                  Choose a Certification →
+                </Link>
+              </div>
+            )
+          }
+          const meta = CERT_META[monthlyCert.cert_id]
+          const selectedAt = new Date(monthlyCert.selected_at)
+          const nextSwitch = new Date(selectedAt.getTime() + 30 * 24 * 60 * 60 * 1000)
+          const now = new Date()
+          const canSwitch = now >= nextSwitch
+          const daysLeft = Math.ceil((nextSwitch.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+          return (
+            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontSize: '2rem' }}>{meta?.icon ?? '📋'}</span>
+                <div>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.1rem' }}>Your Current Certification</div>
+                  <div style={{ fontWeight: 800, color: '#0c4a6e', fontSize: '1rem' }}>{meta?.name ?? monthlyCert.cert_id}</div>
+                  <div style={{ fontSize: '0.78rem', color: '#0369a1', marginTop: '0.15rem' }}>
+                    {meta?.code} · Selected {selectedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                {canSwitch ? (
+                  <Link to="/certifications" style={{ display: 'inline-block', padding: '0.5rem 1.1rem', background: '#0284c7', color: '#fff', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none' }}>
+                    🔄 Switch Certification
+                  </Link>
+                ) : (
+                  <div style={{ fontSize: '0.8rem', color: '#0369a1', fontWeight: 600 }}>
+                    🔒 Switch available in <strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong>
+                    <div style={{ fontSize: '0.72rem', color: '#7dd3fc', marginTop: '0.1rem' }}>
+                      {nextSwitch.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
