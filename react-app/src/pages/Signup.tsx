@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
-const CHECKOUT_API = '/api/checkout'
+const CHECKOUT_API = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
 
 const PLAN_PRICE_IDS: Record<string, string> = {
   monthly:  'price_1TB1YCE9neqrFM5LDbyzVSnv',
