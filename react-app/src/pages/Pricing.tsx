@@ -1,6 +1,23 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Layout from '../components/Layout'
+import { useAuth } from '../contexts/AuthContext'
+
+const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, yearly: 2, lifetime: 3 }
+
+const DOWNGRADE_LABEL: Record<string, string> = {
+  Free:     'Switch to Free',
+  Monthly:  'Switch to Monthly',
+  Yearly:   'Switch to Yearly',
+  Lifetime: 'Get Lifetime',
+}
+
+const MOTIVATE_NOTE: Record<string, string> = {
+  // shown above the CTA when a plan is the next upgrade
+  Monthly:  '🚀 Try full access — cancel anytime',
+  Yearly:   '🔥 Save $17 vs monthly — most popular',
+  Lifetime: '🏆 Pay once. Study forever. Best ROI.',
+}
 
 const plans = [
   {
@@ -92,10 +109,13 @@ const plans = [
 export default function Pricing() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { tier } = useAuth()
   const [hovered, setHovered] = useState<string | null>(null)
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null)
   const yearlyRef = useRef<HTMLDivElement>(null)
   const [pulseYearly, setPulseYearly] = useState(false)
+
+  const userRank = TIER_RANK[tier ?? 'free'] ?? 0
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -135,6 +155,10 @@ export default function Pricing() {
             const isHovered = hovered === plan.name
             const isYearly = plan.name === 'Yearly'
             const isPulsing = isYearly && pulseYearly
+            const planRank = TIER_RANK[plan.name.toLowerCase()] ?? 0
+            const isCurrent  = tier && planRank === userRank
+            const isNextUp   = tier && planRank === userRank + 1
+            const isDowngrade = tier && planRank < userRank
             return (
               <div
                 key={plan.name}
@@ -142,32 +166,55 @@ export default function Pricing() {
                 onMouseEnter={() => setHovered(plan.name)}
                 onMouseLeave={() => setHovered(null)}
                 style={{
-                  background: '#fff',
+                  background: isCurrent ? '#f0fdf4' : isDowngrade ? '#fafafa' : '#fff',
                   borderRadius: '1rem',
-                  border: isPulsing
-                    ? '3px solid #7c3aed'
-                    : isHovered
-                      ? `2px solid ${plan.ctaBg}`
-                      : '2px solid #e5e7eb',
+                  border: isCurrent
+                    ? '2px solid #16a34a'
+                    : isPulsing
+                      ? '3px solid #7c3aed'
+                      : isHovered
+                        ? `2px solid ${plan.ctaBg}`
+                        : isDowngrade
+                          ? '2px solid #e5e7eb'
+                          : '2px solid #e5e7eb',
                   padding: '1.75rem 1.5rem',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  boxShadow: isPulsing
-                    ? '0 0 0 6px rgba(124,58,237,0.18), 0 16px 40px rgba(0,0,0,0.13)'
-                    : isHovered
-                      ? '0 16px 40px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.07)'
-                      : '0 1px 4px rgba(0,0,0,0.06)',
+                  opacity: isDowngrade ? 0.72 : 1,
+                  boxShadow: isCurrent
+                    ? '0 0 0 4px rgba(22,163,74,0.12)'
+                    : isPulsing
+                      ? '0 0 0 6px rgba(124,58,237,0.18), 0 16px 40px rgba(0,0,0,0.13)'
+                      : isHovered
+                        ? '0 16px 40px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.07)'
+                        : '0 1px 4px rgba(0,0,0,0.06)',
                   transform: isPulsing
                     ? 'translateY(-10px) scale(1.03)'
                     : isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
-                  transition: 'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease',
-                  cursor: 'pointer',
-                  zIndex: isPulsing || isHovered ? 2 : 1,
+                  transition: 'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, opacity 0.22s ease',
+                  cursor: isCurrent ? 'default' : 'pointer',
+                  zIndex: isCurrent || isPulsing || isHovered ? 2 : 1,
                 }}
               >
-                {/* Badge */}
-                {plan.badge && (
+                {/* "Your Plan" badge — takes priority over marketing badges */}
+                {isCurrent ? (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-14px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#16a34a',
+                    color: '#fff',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '999px',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    ✓ Your Plan
+                  </div>
+                ) : plan.badge && (
                   <div style={{
                     position: 'absolute',
                     top: '-14px',
@@ -230,26 +277,51 @@ export default function Pricing() {
                   ))}
                 </ul>
 
+                {/* Motivational note — shown above CTA when this is the next upgrade */}
+                {isNextUp && MOTIVATE_NOTE[plan.name] && (
+                  <div style={{
+                    marginBottom: '0.6rem',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    color: '#1d4ed8',
+                    background: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    borderRadius: '0.5rem',
+                    padding: '0.3rem 0.6rem',
+                    textAlign: 'center',
+                  }}>
+                    {MOTIVATE_NOTE[plan.name]}
+                  </div>
+                )}
+
                 {/* CTA Button */}
                 <button
-                  onClick={() => navigate(plan.action)}
+                  onClick={() => isCurrent ? undefined : navigate(plan.action)}
                   onMouseEnter={() => setHoveredBtn(plan.name)}
                   onMouseLeave={() => setHoveredBtn(null)}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
-                    background: hoveredBtn === plan.name ? plan.ctaBg : plan.ctaBg,
-                    color: '#fff',
+                    background: isCurrent
+                      ? '#d1fae5'
+                      : isDowngrade
+                        ? '#f3f4f6'
+                        : plan.ctaBg,
+                    color: isCurrent ? '#15803d' : isDowngrade ? '#6b7280' : '#fff',
                     fontWeight: 700,
                     fontSize: '0.85rem',
-                    border: 'none',
+                    border: isCurrent ? '1.5px solid #86efac' : isDowngrade ? '1.5px solid #e5e7eb' : 'none',
                     borderRadius: '0.75rem',
-                    cursor: 'pointer',
-                    opacity: hoveredBtn === plan.name ? 0.85 : 1,
+                    cursor: isCurrent ? 'default' : 'pointer',
+                    opacity: hoveredBtn === plan.name && !isCurrent ? 0.85 : 1,
                     transition: 'opacity 0.15s',
                   }}
                 >
-                  {plan.cta}
+                  {isCurrent
+                    ? '✓ Your Current Plan'
+                    : isDowngrade
+                      ? DOWNGRADE_LABEL[plan.name]
+                      : plan.cta}
                 </button>
               </div>
             )
