@@ -8,6 +8,7 @@ const ALLOWED_ORIGINS = [
   'https://isaloum.github.io',
   'https://awsprepai.netlify.app',
   'https://main.d2pm3jfcsesli7.amplifyapp.com',
+  'https://awsprepai.isaloumapps.com',
 ];
 
 function corsHeaders(origin) {
