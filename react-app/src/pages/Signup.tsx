@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../contexts/AuthContext'
 
 const CHECKOUT_API = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
 
@@ -29,24 +28,6 @@ export default function Signup() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const plan = searchParams.get('plan') || 'free'
-  const { user, loading: authLoading } = useAuth()
-
-  // Already logged in + paid plan → skip the form, go straight to Stripe
-  useEffect(() => {
-    if (authLoading) return
-    if (user && plan !== 'free' && PLAN_PRICE_IDS[plan]) {
-      setLoading(true)
-      fetch(CHECKOUT_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: PLAN_PRICE_IDS[plan], mode: PLAN_MODES[plan], tier: plan, email: user.email }),
-      })
-        .then(r => r.json())
-        .then(d => { if (d.url) window.location.href = d.url })
-        .catch(() => setLoading(false))
-    }
-  }, [user, authLoading, plan])
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')

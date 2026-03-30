@@ -3,6 +3,17 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 
+// Same constants + payload as Signup.tsx — proven to work
+const CHECKOUT_API   = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
+const PLAN_PRICE_IDS: Record<string,string> = {
+  monthly:  'price_1TB1YCE9neqrFM5LDbyzVSnv',
+  yearly:   'price_1TED8EE9neqrFM5LCIL9P0Yp',
+  lifetime: 'price_1TED9ME9neqrFM5LeKAAEWTO',
+}
+const PLAN_MODES: Record<string,string> = {
+  monthly: 'subscription', yearly: 'subscription', lifetime: 'payment',
+}
+
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, yearly: 2, lifetime: 3 }
 
 const DOWNGRADE_LABEL: Record<string, string> = {
@@ -109,16 +120,31 @@ const plans = [
 export default function Pricing() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { tier } = useAuth()
+  const { tier, user } = useAuth()
   const [hovered, setHovered] = useState<string | null>(null)
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null)
-  const [checkingOut] = useState<string | null>(null)
+  const [checkingOut, setCheckingOut] = useState<string | null>(null)
   const yearlyRef = useRef<HTMLDivElement>(null)
   const [pulseYearly, setPulseYearly] = useState(false)
 
   const userRank = TIER_RANK[tier ?? 'free'] ?? 0
 
-  const handlePlanClick = (plan: typeof plans[0]) => {
+  const handlePlanClick = async (plan: typeof plans[0]) => {
+    const key = plan.name.toLowerCase()
+    // Logged-in user + paid plan → direct Stripe checkout, skip signup
+    if (user?.email && PLAN_PRICE_IDS[key]) {
+      setCheckingOut(plan.name)
+      try {
+        const res  = await fetch(CHECKOUT_API, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ priceId: PLAN_PRICE_IDS[key], mode: PLAN_MODES[key], tier: key, email: user.email }),
+        })
+        const data = await res.json()
+        if (data.url) { window.location.href = data.url; return }
+      } finally { setCheckingOut(null) }
+    }
+    // Not logged in → signup flow
     navigate(plan.action)
   }
 
@@ -325,7 +351,7 @@ export default function Pricing() {
                   {isCurrent
                     ? '✓ Your Current Plan'
                     : checkingOut === plan.name
-                      ? 'Redirecting…'
+                      ? '⏳ Opening checkout…'
                       : isDowngrade
                         ? DOWNGRADE_LABEL[plan.name]
                         : plan.cta}
