@@ -61,10 +61,9 @@ const plans = [
     highlight: false,
     features: [
       '1 AWS certification at a time',
+      'Switch cert once every 30 days',
       '260 questions for your chosen cert',
       'Timed mock exam (65q, 90 min)',
-      'Visual Exam + Architecture Builder',
-      'Architecture Diagrams library',
       'Domain filtering — focus weak areas',
       'Cancel anytime',
     ],
