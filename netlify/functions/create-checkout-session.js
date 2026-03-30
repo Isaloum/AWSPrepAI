@@ -7,6 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const ALLOWED_ORIGINS = [
   'https://isaloum.github.io',
   'https://awsprepai.netlify.app',
+  'https://main.d2pm3jfcsesli7.amplifyapp.com',
 ];
 
 function corsHeaders(origin) {
