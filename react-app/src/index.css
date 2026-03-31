@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+:root {
+  --aws-orange: #FF9900;
+  --aws-dark: #1F2937;
+  --aws-blue: #3B82F6;
+  --success: #10b981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }

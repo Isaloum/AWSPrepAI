@@ -1088,7 +1088,8 @@ function veGenerateArchitectures(question) {
 // skipping any questions already included above.
 
 (function extendFromSaaQuestions() {
-  if (typeof saaQuestions === 'undefined') return;
+  const saaQuestions = (typeof SAA_QUESTIONS !== 'undefined') ? SAA_QUESTIONS : null;
+  if (!saaQuestions) return;
   const existingTexts = new Set(VISUAL_EXAM_QUESTIONS.map(q => q.q));
   let nextId = VISUAL_EXAM_QUESTIONS.length + 1;
   saaQuestions.forEach(sq => {

@@ -165,7 +165,7 @@
         <a href="resources.html" class="nav-link">Resources</a>
         
         <a href="pricing.html" class="nav-link">Pricing</a>
-        <a href="chat.html" class="nav-link" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);">AI Coach</a>
+        <a href="chat.html" class="nav-link">AI Coach</a>
       </div>
       <a href="login.html" class="nav-link" id="nav-login-btn" style="font-weight:700;">Log In</a>
       <a href="signup.html" class="nav-cta" id="nav-signup-btn" style="text-decoration:none;">Sign Up Free</a>
@@ -549,6 +549,23 @@ function renderDashboard() {
 }
 
 function startPractice(mode) {
+  // ── Cert access gate (blocks wrong monthly cert) ──────────────────────
+  if (requiresPremium && requiresPremium('practice')) {
+    const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+    if (!_isPremium) { if(typeof showPremiumOverlay==='function') showPremiumOverlay(); return; }
+    const _tier = (typeof getPremiumTier === 'function') ? getPremiumTier() : localStorage.getItem('_apa_tier');
+    if (_tier === 'monthly') {
+      const _mc = localStorage.getItem('_apa_monthly_cert');
+      if (!_mc || _mc !== 'AIF-C01') { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+    }
+    if (_tier === 'bundle3') {
+      try {
+        const _bc = JSON.parse(localStorage.getItem('_apa_bundle_certs') || '[]');
+        if (!_bc.includes('AIF-C01')) { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+      } catch(e) { window.location.href = 'user-dashboard.html'; return; }
+    }
+  }
+
   if (mode === 'weak') {
     // find weakest domain
     let worstCat = DOMAINS[0], worstPct = 101;
@@ -666,6 +683,23 @@ function skipQ() {
 
 // ── Mock Exam ──────────────────────────────────────────────────────────────
 function startMock() {
+  // ── Mock exam cert access gate ─────────────────────────────────────────
+  if (typeof requiresPremium === 'function' && requiresPremium('mock')) {
+    const _isPremium = (typeof hasPremiumAccess === 'function') ? hasPremiumAccess() : false;
+    if (!_isPremium) { if(typeof showPremiumOverlay==='function') showPremiumOverlay(); return; }
+    const _tier = (typeof getPremiumTier === 'function') ? getPremiumTier() : localStorage.getItem('_apa_tier');
+    if (_tier === 'monthly') {
+      const _mc = localStorage.getItem('_apa_monthly_cert');
+      if (!_mc || _mc !== 'AIF-C01') { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+    }
+    if (_tier === 'bundle3') {
+      try {
+        const _bc = JSON.parse(localStorage.getItem('_apa_bundle_certs') || '[]');
+        if (!_bc.includes('AIF-C01')) { if(typeof showWrongCertOverlay==='function') showWrongCertOverlay(); return; }
+      } catch(e) { window.location.href = 'user-dashboard.html'; return; }
+    }
+  }
+
   // Sample ~proportional to weights
   const buckets = {};
   DOMAINS.forEach(cat => {

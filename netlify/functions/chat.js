@@ -83,7 +83,7 @@ function verifyToken(token) {
     if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) return null;
     const data = JSON.parse(Buffer.from(payload, 'base64').toString());
     // Token must have a valid tier
-    if (!['monthly', 'yearly', 'lifetime'].includes(data.tier)) return null;
+    if (!['monthly', 'bundle3', 'yearly', 'lifetime'].includes(data.tier)) return null;
     // Token must be tied to a real Stripe PaymentIntent (pi_ prefix)
     if (!data.pi || !/^pi_/.test(data.pi)) return null;
     // Check expiry
@@ -130,7 +130,7 @@ exports.handler = async (event) => {
   } else if (!SECRET_CONFIGURED) {
     // Legacy mode — secret not configured yet, trust client (temporary)
     const { tier } = body;
-    validTier = ['monthly', 'yearly', 'lifetime'].includes(tier) ? tier : null;
+    validTier = ['monthly', 'bundle3', 'yearly', 'lifetime'].includes(tier) ? tier : null;
   }
 
   if (!validTier) {

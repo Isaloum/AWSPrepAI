@@ -36,7 +36,7 @@ const VE_MAX_POINTS              = VE_TOTAL_QUESTIONS * 2;
 const VE_PASS_POINTS             = Math.round(VE_MAX_POINTS * VE_PASS_PERCENTAGE);
 const VE_CANVAS_GRID             = 20;
 const VE_ICON_OFFSET             = 36;
-const VE_TIMED_SECONDS           = VE_TOTAL_QUESTIONS * 60; // 1 min per question
+const VE_TIMED_SECONDS           = VE_TOTAL_QUESTIONS * 120; // 2 min per question (mirrors real SAA-C03 pace)
 const VE_MAX_PAUSES              = 2;
 const VE_PAUSE_SECS              = 5 * 60;   // 5 minutes per pause
 const VE_TIMER_WARNING_MINS      = 60;        // yellow warning threshold (minutes)
@@ -183,15 +183,34 @@ function veLoadQuestion(index) {
   // Restore or clear canvas
   veClearCanvas();
 
-  // If previously checked, restore the canvas services from saved state
+  // If previously checked, restore the canvas services and connections from saved state
   const saved = veState.answers[index];
   if (saved.checked && saved.architecture.services.length > 0) {
     const spacingX = 150, spacingY = 130;
+    const instanceMap = {}; // serviceId -> instanceId for connection restore
     saved.architecture.services.forEach((sid, i) => {
       const col = i % 4;
       const row = Math.floor(i / 4);
       vePlaceServiceOnCanvas(sid, 40 + col * spacingX, 40 + row * spacingY);
+      // Track the instanceId just placed (last item added)
+      const placed = veState.placedServices[veState.placedServices.length - 1];
+      if (placed) instanceMap[sid] = placed.instanceId;
     });
+    // Restore connections using the instance IDs we just created
+    if (saved.architecture.connections && saved.architecture.connections.length > 0) {
+      saved.architecture.connections.forEach(conn => {
+        // conn.from/to may be old instanceIds or serviceIds — try both
+        let fromInst = veState.placedServices.find(p => p.instanceId === conn.from || p.serviceId === conn.from);
+        let toInst   = veState.placedServices.find(p => p.instanceId === conn.to   || p.serviceId === conn.to);
+        if (fromInst && toInst && fromInst.instanceId !== toInst.instanceId) {
+          const exists = veState.connections.some(c => c.fromInstanceId === fromInst.instanceId && c.toInstanceId === toInst.instanceId);
+          if (!exists) {
+            veState.connections.push({ id: 've_conn_' + Date.now() + '_' + Math.random(), fromInstanceId: fromInst.instanceId, toInstanceId: toInst.instanceId });
+          }
+        }
+      });
+      setTimeout(() => veRenderConnections(), 50); // slight delay to ensure DOM is ready
+    }
   }
 
   // Populate question UI
