@@ -4,7 +4,37 @@
  * SECURITY: verifies webhook signature — cannot be forged.
  */
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { issueJWT } = require('./_jwt');
+
+async function upgradeSupabaseUser(email, tier) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) throw new Error('Missing Supabase env vars');
+
+  const listRes = await fetch(
+    `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(email)}`,
+    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+  );
+  const listData = await listRes.json();
+  const user = listData.users?.[0];
+  if (!user) throw new Error(`No Supabase user found for: ${email}`);
+
+  const updateRes = await fetch(
+    `${supabaseUrl}/auth/v1/admin/users/${user.id}`,
+    {
+      method: 'PUT',
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_metadata: { ...user.user_metadata, tier },
+      }),
+    }
+  );
+  if (!updateRes.ok) throw new Error(`Supabase update failed: ${updateRes.status}`);
+  return user.id;
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -35,8 +65,52 @@ exports.handler = async (event) => {
   }
 
   if (stripeEvent.type === 'customer.subscription.deleted') {
-    console.log('[webhook] Subscription cancelled:', stripeEvent.data.object.id);
-    return { statusCode: 200, body: JSON.stringify({ received: true, action: 'subscription_cancelled' }) };
+    const sub = stripeEvent.data.object;
+    console.log('[webhook] Subscription cancelled:', sub.id);
+
+    try {
+      // 1. Get customer email from Stripe
+      const customer = await stripe.customers.retrieve(sub.customer);
+      const email = customer.email;
+      if (!email) throw new Error('No email on Stripe customer');
+
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (!supabaseUrl || !serviceKey) throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars');
+
+      // 2. Find Supabase user by email
+      const listRes = await fetch(
+        `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(email)}`,
+        { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+      );
+      const listData = await listRes.json();
+      const user = listData.users?.[0];
+      if (!user) throw new Error(`No Supabase user found for: ${email}`);
+
+      // 3. Downgrade tier to 'free' — preserve other metadata fields
+      const updateRes = await fetch(
+        `${supabaseUrl}/auth/v1/admin/users/${user.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_metadata: { ...user.user_metadata, tier: 'free' },
+          }),
+        }
+      );
+      if (!updateRes.ok) throw new Error(`Supabase update failed: ${updateRes.status}`);
+
+      console.log(`[webhook] Tier revoked → free for ${email}`);
+    } catch (err) {
+      // Log but still return 200 — prevents Stripe from retrying endlessly
+      console.error('[webhook] Failed to revoke tier:', err.message);
+    }
+
+    return { statusCode: 200, body: JSON.stringify({ received: true, action: 'tier_revoked' }) };
   }
 
   if (stripeEvent.type !== 'checkout.session.completed') {
@@ -51,20 +125,28 @@ exports.handler = async (event) => {
   }
 
   const tier = session.metadata?.tier || 'lifetime';
-  const piId = session.payment_intent || session.subscription || null;
-  const now  = Math.floor(Date.now() / 1000);
 
-  let exp = null;
-  if (isTrial)               exp = now + 3   * 86400;
-  else if (tier === 'monthly') exp = now + 32  * 86400;
-  else if (tier === 'yearly')  exp = now + 366 * 86400;
+  // Get email from session
+  const email =
+    session.customer_details?.email ||
+    (typeof session.customer === 'string'
+      ? (await stripe.customers.retrieve(session.customer)).email
+      : session.customer?.email) ||
+    null;
 
-  const accessToken = issueJWT({ tier, pi: piId, ...(exp ? { exp } : {}) });
+  console.log(`[webhook] ${isTrial ? 'Trial' : 'Payment'} confirmed — tier: ${tier}, email: ${email}`);
 
-  console.log(`[webhook] ${isTrial ? 'Trial' : 'Payment'} confirmed — tier: ${tier}, pi: ${piId}`);
+  // Upgrade Supabase user metadata
+  if (email) {
+    try {
+      await upgradeSupabaseUser(email, tier);
+      console.log(`[webhook] Upgraded Supabase user ${email} → ${tier}`);
+    } catch (err) {
+      console.error('[webhook] Supabase upgrade failed:', err.message);
+      // Non-fatal: verify-session acts as backup
+    }
+  }
 
-  // NOTE: This response goes to Stripe, not the user.
-  // The user gets their token via verify-session after the checkout redirect.
   return {
     statusCode: 200,
     body: JSON.stringify({ received: true, tier }),

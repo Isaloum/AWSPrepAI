@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWSPrepAI — User Path Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0F172A; color: #F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 2rem; }
+  h1 { text-align: center; font-size: 1.4rem; color: #60A5FA; margin-bottom: .25rem; }
+  .subtitle { text-align: center; color: #64748B; font-size: .85rem; margin-bottom: 2.5rem; }
+
+  .map { display: flex; flex-direction: column; gap: 2rem; }
+
+  /* LANES */
+  .lane { background: #1E293B; border-radius: 14px; padding: 1.5rem; border: 1px solid #334155; }
+  .lane-title { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #64748B; margin-bottom: 1.25rem; }
+
+  /* STEPS */
+  .steps { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: flex-start; gap: 0; }
+  .step-box { background: #0F172A; border-radius: 10px; padding: .75rem 1rem; min-width: 140px; max-width: 180px; border: 1.5px solid #334155; }
+  .step-box.trigger { border-color: #F59E0B; }
+  .step-box.good { border-color: #10B981; }
+  .step-box.danger { border-color: #EF4444; }
+  .step-box.save { border-color: #8B5CF6; }
+  .step-box.upgrade { border-color: #60A5FA; }
+  .step-icon { font-size: 1.2rem; margin-bottom: .3rem; }
+  .step-label { font-size: .78rem; font-weight: 700; color: #F1F5F9; line-height: 1.3; }
+  .step-sub { font-size: .68rem; color: #64748B; margin-top: .2rem; line-height: 1.4; }
+
+  .arrow { display: flex; align-items: center; padding: 0 .4rem; color: #334155; font-size: 1rem; align-self: center; flex-shrink: 0; }
+  .arrow.down { transform: rotate(90deg); }
+
+  /* BRANCH */
+  .branch { margin-top: 1rem; padding-left: 1rem; border-left: 2px dashed #334155; display: flex; flex-direction: column; gap: .75rem; }
+  .branch-label { font-size: .65rem; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+
+  .badge { display: inline-block; font-size: .65rem; font-weight: 800; padding: .15rem .5rem; border-radius: 4px; margin-top: .3rem; }
+  .badge-yellow { background: #78350F; color: #FCD34D; }
+  .badge-green  { background: #064E3B; color: #34D399; }
+  .badge-red    { background: #7F1D1D; color: #FCA5A5; }
+  .badge-purple { background: #4C1D95; color: #C4B5FD; }
+  .badge-blue   { background: #1E3A5F; color: #93C5FD; }
+
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 200px; }
+  .col-title { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .75rem; padding-bottom: .4rem; border-bottom: 1px solid #334155; }
+  .col-title.monthly  { color: #F59E0B; }
+  .col-title.bundle   { color: #60A5FA; }
+  .col-title.yearly   { color: #10B981; }
+  .col-title.lifetime { color: #A78BFA; }
+
+  hr { border: none; border-top: 1px dashed #1E293B; margin: .5rem 0; }
+
+  .note { font-size: .72rem; color: #475569; margin-top: .5rem; font-style: italic; }
+  .highlight { color: #FBBF24; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>AWSPrepAI — User Path Map</h1>
+<p class="subtitle">Every path a user can take, from first visit to long-term retention</p>
+
+<div class="map">
+
+  <!-- LANE 1: DISCOVERY -->
+  <div class="lane">
+    <div class="lane-title">① Discovery & Entry</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-box">
+          <div class="step-icon">🌐</div>
+          <div class="step-label">Lands on Homepage</div>
+          <div class="step-sub">Google / social / referral</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box good">
+          <div class="step-icon">🆓</div>
+          <div class="step-label">Free Access</div>
+          <div class="step-sub">SAA-C03 · 5 questions<br>No sign-up required</div>
+          <span class="badge badge-green">Zero friction</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box trigger">
+          <div class="step-icon">🔒</div>
+          <div class="step-label">Hits Paywall</div>
+          <div class="step-sub">After 5 questions<br>or on wrong cert page</div>
+          <span class="badge badge-yellow">Upgrade prompt</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box upgrade">
+          <div class="step-icon">💳</div>
+          <div class="step-label">Pricing Page</div>
+          <div class="step-sub">4 plans shown<br>Monthly / Bundle / Yearly / Lifetime</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANE 2: PLANS -->
+  <div class="lane">
+    <div class="lane-title">② Plan Selection → Onboarding</div>
+    <div class="row">
+
+      <!-- MONTHLY -->
+      <div class="col">
+        <div class="col-title monthly">Monthly · $7/mo · 1 Cert</div>
+        <div class="steps" style="flex-direction:column;gap:.5rem">
+          <div class="step-box trigger">
+            <div class="step-label">Buys Monthly</div>
+            <div class="step-sub">Stripe → sets tier: monthly</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box">
+            <div class="step-label">Picks 1 Cert</div>
+            <div class="step-sub">Dashboard cert picker<br>Stored in localStorage</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box good">
+            <div class="step-label">Studies That Cert</div>
+            <div class="step-sub">Practice + Mock Exam<br>Full access to 1 cert</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUNDLE -->
+      <div class="col">
+        <div class="col-title bundle">Bundle · $17/mo · 3 Certs</div>
+        <div class="steps" style="flex-direction:column;gap:.5rem">
+          <div class="step-box upgrade">
+            <div class="step-label">Buys Bundle</div>
+            <div class="step-sub">Stripe → sets tier: bundle3</div>
+            <span class="badge badge-blue">⚠️ Not built yet</span>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box">
+            <div class="step-label">Picks 3 Certs</div>
+            <div class="step-sub">Selects 3 slots simultaneously</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box good">
+            <div class="step-label">Studies All 3</div>
+            <div class="step-sub">All 3 active at same time<br>Can swap 1 slot / 30 days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YEARLY -->
+      <div class="col">
+        <div class="col-title yearly">Yearly · $67/yr · All 12</div>
+        <div class="steps" style="flex-direction:column;gap:.5rem">
+          <div class="step-box good">
+            <div class="step-label">Buys Yearly</div>
+            <div class="step-sub">Stripe → sets tier: yearly</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box good">
+            <div class="step-label">All 12 Unlocked</div>
+            <div class="step-sub">No picking, no switching<br>Full access immediately</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box good">
+            <div class="step-label">Studies Freely</div>
+            <div class="step-sub">Jump between any cert<br>anytime, no restrictions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIFETIME -->
+      <div class="col">
+        <div class="col-title lifetime">Lifetime · $147 · All 12 Forever</div>
+        <div class="steps" style="flex-direction:column;gap:.5rem">
+          <div class="step-box save">
+            <div class="step-label">Buys Lifetime</div>
+            <div class="step-sub">One-time payment</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box save">
+            <div class="step-label">All 12 Forever</div>
+            <div class="step-sub">Includes AI Coach (chat.html)<br>No expiry, no restrictions</div>
+          </div>
+          <div class="arrow down">→</div>
+          <div class="step-box save">
+            <div class="step-label">New Certs Auto-Unlocked</div>
+            <div class="step-sub">Any future certs added<br>included automatically</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LANE 3: ACTIVE USE -->
+  <div class="lane">
+    <div class="lane-title">③ Active Use Loop</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-box good">
+          <div class="step-icon">📚</div>
+          <div class="step-label">Practice Mode</div>
+          <div class="step-sub">Domain filters<br>Weak area focus</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box good">
+          <div class="step-icon">📝</div>
+          <div class="step-label">Mock Exam</div>
+          <div class="step-sub">Full timed exam<br>Pass/fail feedback</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box">
+          <div class="step-icon">📊</div>
+          <div class="step-label">Dashboard</div>
+          <div class="step-sub">Score history<br>Best score · Trends</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box trigger">
+          <div class="step-icon">🔁</div>
+          <div class="step-label">Repeat or Switch</div>
+          <div class="step-sub">Monthly: 1 switch/30 days<br>Bundle: 1 slot swap/30 days<br>Yearly/Lifetime: free</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANE 4: UPGRADE TRIGGERS -->
+  <div class="lane">
+    <div class="lane-title">④ Upgrade Triggers (Monthly → Higher)</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-box trigger">
+          <div class="step-icon">😤</div>
+          <div class="step-label">Switch Blocked</div>
+          <div class="step-sub">Hit 30-day limit<br>Modal shows upgrade</div>
+          <span class="badge badge-yellow">Upgrade Now CTA</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box trigger">
+          <div class="step-icon">🔒</div>
+          <div class="step-label">Locked Cert Page</div>
+          <div class="step-sub">Visits cert not in their plan<br>Full-screen gate shown</div>
+          <span class="badge badge-yellow">Upgrade Now CTA</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box trigger">
+          <div class="step-icon">🎓</div>
+          <div class="step-label">Passes First Cert</div>
+          <div class="step-sub">Natural milestone<br>Wants next cert now</div>
+          <span class="badge badge-yellow">Upgrade CTA in dashboard</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box upgrade">
+          <div class="step-icon">⬆️</div>
+          <div class="step-label">Upgrades Plan</div>
+          <div class="step-sub">Monthly → Bundle<br>Monthly → Yearly<br>Bundle → Yearly<br>Any → Lifetime</div>
+          <span class="badge badge-blue">Revenue event</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANE 5: CANCELLATION & RETENTION -->
+  <div class="lane">
+    <div class="lane-title">⑤ Cancellation & Retention (Save Flow)</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-box danger">
+          <div class="step-icon">😞</div>
+          <div class="step-label">User Wants to Cancel</div>
+          <div class="step-sub">Clicks cancel in dashboard<br>or stops renewing</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box save">
+          <div class="step-icon">🎁</div>
+          <div class="step-label">Save Offer Shown</div>
+          <div class="step-sub"><span class="highlight">Wife's idea ✅</span><br>Free cert switch, no timer<br>"Pick a different cert before you go"</div>
+          <span class="badge badge-purple">Retention play</span>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-box good">
+          <div class="step-label">Accepts → Stays</div>
+          <div class="step-sub">Switches cert<br>Re-engages with product</div>
+          <span class="badge badge-green">Churn prevented</span>
+        </div>
+      </div>
+      <div class="arrow" style="align-self:center">or</div>
+      <div class="step">
+        <div class="step-box danger">
+          <div class="step-label">Declines → Leaves</div>
+          <div class="step-sub">Tier drops to free<br>SAA-C03 5Q only</div>
+          <span class="badge badge-red">Re-engagement email needed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANE 6: WHAT'S NOT BUILT -->
+  <div class="lane" style="border-color:#7F1D1D">
+    <div class="lane-title" style="color:#EF4444">⚠️ Gaps — Not Built Yet (in priority order)</div>
+    <div class="row" style="gap:.75rem;flex-wrap:wrap">
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">Bundle tier (bundle3)</div>
+        <div class="step-sub">Backend + dashboard + cert pages — nothing exists</div>
+      </div>
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">Cancel-save flow</div>
+        <div class="step-sub">No cancellation screen built yet</div>
+      </div>
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">AI Coach gate</div>
+        <div class="step-sub">chat.html — should be lifetime only, not gated</div>
+      </div>
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">Session timeout</div>
+        <div class="step-sub">1hr inactivity logout — not built</div>
+      </div>
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">Re-engagement email</div>
+        <div class="step-sub">Churned users get no win-back email</div>
+      </div>
+      <div class="step-box danger" style="min-width:160px">
+        <div class="step-label">Upgrade CTA in dashboard</div>
+        <div class="step-sub">No visible upgrade button after passing a cert</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

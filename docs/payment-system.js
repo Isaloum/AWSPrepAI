@@ -10,6 +10,13 @@ const PRICING = {
     interval: 'month',
     mode: 'subscription'
   },
+  bundle3: {
+    price: 17,
+    stripePriceId: 'price_1TEh73E9neqrFM5L2Q38zGJF',
+    label: '3-Cert Bundle',
+    interval: 'month',
+    mode: 'subscription'
+  },
   yearly: {
     price: 67,
     stripePriceId: 'price_1TED8EE9neqrFM5LCIL9P0Yp',
@@ -36,8 +43,8 @@ if (typeof Stripe !== 'undefined') {
   stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
 }
 
-// API base — functions live on Netlify, site is served from GitHub Pages
-const API_BASE = 'https://awsprepai.netlify.app';
+// API base — Lambda Function URL (migrated from Netlify)
+const API_BASE = 'https://alwdh4nsomuznniu6yhjgf5i6y0xbzve.lambda-url.us-east-1.on.aws';
 
 // ==================== RSA-JWT VERIFICATION ====================
 // Public key embedded at build time — private key never leaves the server.
@@ -241,19 +248,18 @@ function filterQuestionsForUser(questions) {
 
 // ==================== STRIPE PAYMENT FLOW ====================
 
-async function initiatePayment(tier) {
+async function initiatePayment(tier, addOnPriceId) {
   const plan = PRICING[tier];
   if (!plan) return;
 
+  const body = { priceId: plan.stripePriceId, mode: plan.mode, tier };
+  if (addOnPriceId) body.addOnPriceId = addOnPriceId;
+
   try {
-    const resp = await fetch(API_BASE + '/.netlify/functions/create-checkout-session', {
+    const resp = await fetch(API_BASE + '/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        priceId: plan.stripePriceId,
-        mode: plan.mode,
-        tier,
-      }),
+      body: JSON.stringify(body),
     });
     const data = await resp.json();
     if (data.url) {

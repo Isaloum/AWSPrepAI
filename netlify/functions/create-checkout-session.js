@@ -7,6 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const ALLOWED_ORIGINS = [
   'https://isaloum.github.io',
   'https://awsprepai.netlify.app',
+  'https://main.d2pm3jfcsesli7.amplifyapp.com',
 ];
 
 function corsHeaders(origin) {
@@ -29,17 +30,26 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { priceId, mode = 'payment', quantity = 1, tier = 'lifetime' } = JSON.parse(event.body || '{}');
+    const { priceId, mode = 'payment', quantity = 1, tier = 'lifetime', addOnPriceId } = JSON.parse(event.body || '{}');
 
     if (!priceId) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing priceId' }) };
     }
 
+    const lineItems = [{ price: priceId, quantity }];
+    // Order bump: 3-cert bundle add-on → upgrades tier to bundle3
+    if (addOnPriceId) {
+      lineItems.push({ price: addOnPriceId, quantity: 1 });
+    }
+
+    // If user added the bundle bump, elevate tier to bundle3
+    const effectiveTier = addOnPriceId ? 'bundle3' : tier;
+
     const sessionParams = {
       payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity }],
+      line_items: lineItems,
       mode,
-      metadata: { product: 'awsprepai_premium', tier },
+      metadata: { product: 'awsprepai_premium', tier: effectiveTier },
       success_url: `${process.env.SUCCESS_URL}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: process.env.CANCEL_URL,
     };

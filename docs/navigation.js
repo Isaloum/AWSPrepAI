@@ -72,15 +72,16 @@ document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
 (function () {
   const session = localStorage.getItem('_apa_session');
   const sessionExp = parseInt(localStorage.getItem('_apa_session_exp') || '0');
+  // Check only: token exists AND custom 24h expiry not passed
+  // Do NOT decode JWT — Supabase uses base64url which breaks atob(), and refreshes tokens automatically
   let isValid = false;
   if (session) {
-    try {
-      const payload = JSON.parse(atob(session.split('.')[1]));
-      isValid = (Date.now() / 1000 < payload.exp) && (Date.now() < sessionExp);
-    } catch(e) { isValid = false; }
-  }
-  if (!isValid && session) {
-    ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
+    if (sessionExp && Date.now() > sessionExp) {
+      // Custom expiry passed — clear session
+      ['_apa_session','_apa_session_exp','_apa_email','_apa_name','_apa_tier'].forEach(k => localStorage.removeItem(k));
+    } else {
+      isValid = true;
+    }
   }
   const loginBtn = document.getElementById('nav-login-btn');
   const signupBtn = document.getElementById('nav-signup-btn');

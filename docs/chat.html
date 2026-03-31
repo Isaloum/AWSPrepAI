@@ -336,7 +336,6 @@
         <img src="logo.svg" alt="AWSPrepAI">
       </a>
       <div class="nav-menu" id="navMenu">
-        <a href="index.html" class="nav-link">Dashboard</a>
         <div class="nav-item-dropdown">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">Practice<svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></button>
           <div class="dropdown-menu" role="menu">
@@ -360,7 +359,7 @@
         <a href="certifications.html" class="nav-link">Certifications</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="resources.html" class="nav-link">Resources</a>
-        <a href="contact.html" class="nav-link">Contact</a>
+        
         <a href="pricing.html" class="nav-link">Pricing</a>
         <a href="chat.html" class="nav-link active">AI Coach</a>
       </div>
@@ -377,7 +376,6 @@
     <div class="mobile-nav-content">
       <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">&times;</button>
       <div class="mobile-nav-menu">
-        <div class="mobile-nav-section"><a href="index.html" class="mobile-nav-link">📊 Dashboard</a></div>
         <div class="mobile-nav-section">
           <div class="mobile-nav-title">Practice</div>
           <a href="index.html#quiz" class="mobile-nav-link">📝 Practice Quiz</a>
@@ -395,7 +393,7 @@
         <div class="mobile-nav-section">
           <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
           <a href="resources.html" class="mobile-nav-link">📚 Resources</a>
-          <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+          
           <a href="pricing.html" class="mobile-nav-link">💰 Pricing</a>
           <a href="chat.html" class="mobile-nav-link">AI Coach</a>
         </div>
@@ -410,26 +408,17 @@
   <!-- Paywall shown to non-premium users -->
   <div id="paywall-view" class="paywall-card" style="display:none;">
     <div class="lock-icon">🔒</div>
-    <h2>Unlock Your AI Coach</h2>
-    <p>Get instant concept explanations, SAA-C03 practice questions on demand, and a personalised study plan — all powered by GPT-4o.</p>
+    <h2>AI Coach — Lifetime Only</h2>
+    <p>Ask anything about all 12 AWS certifications — concept explanations, practice questions on demand, personalised study plans, and wrong-answer diagnosis. Powered by GPT-4o.</p>
     <div class="plan-cards">
-      <div class="mini-plan popular" onclick="initiatePayment('yearly')">
-        <div class="popular-badge">⭐ BEST VALUE</div>
-        <div class="plan-name">Yearly</div>
-        <div class="plan-price">$67</div>
-        <div class="plan-sub">/ year · AI Coach included</div>
-      </div>
-      <div class="mini-plan" onclick="initiatePayment('lifetime')"><div class="plan-badge-slot"></div><div class="plan-badge-slot"></div>
+      <div class="mini-plan popular" onclick="initiatePayment('lifetime')">
+        <div class="popular-badge">🤖 INCLUDES AI COACH</div>
         <div class="plan-name">Lifetime</div>
         <div class="plan-price">$147</div>
-        <div class="plan-sub">one-time · AI Coach included</div>
-      </div>
-      <div class="mini-plan" onclick="initiatePayment('monthly')"><div class="plan-badge-slot"></div><div class="plan-badge-slot"></div>
-        <div class="plan-name">Monthly</div>
-        <div class="plan-price">$7</div>
-        <div class="plan-sub">/ mo · 5 free AI messages</div>
+        <div class="plan-sub">one-time · all 12 certs · AI Coach unlimited</div>
       </div>
     </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:.75rem;">All 12 certifications · 3,120 questions · 4 exams per cert · Unlimited AI Coach</p>
     <a href="pricing.html" style="font-size:.85rem;color:var(--muted);">Compare all plans →</a>
     <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.08);">
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem;">Already paid? Lost access after clearing your browser?</p>
@@ -546,7 +535,7 @@ async function silentTokenRefresh() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  currentTier = getSubscriptionTier();
+  currentTier = getPremiumTier();
   let hasPremium = hasPremiumAccess();
 
   // Silently refresh token if missing (e.g. 24h expiry passed)
@@ -561,7 +550,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     hasPremium = true;
-    currentTier = getSubscriptionTier();
+    currentTier = getPremiumTier();
   }
 
   // Has premium — show chat
@@ -677,13 +666,7 @@ async function sendMessage() {
 
     if (!res.ok) {
       removeTyping(typingId);
-      if (data.error === 'limit_reached') {
-        // Increment to show accurate count
-        incrementMonthlyCount();
-        showLimitReached();
-        return;
-      }
-      if (data.error === 'no_access') {
+      if (data.error === 'limit_reached' || data.error === 'lifetime_required' || data.error === 'no_access') {
         document.getElementById('chat-view').style.display = 'none';
         document.getElementById('paywall-view').style.display = 'block';
         return;
@@ -818,5 +801,6 @@ async function doRestore() {
   }
 }
 </script>
+<script src="nav-auth.js"></script>
 </body>
 </html>
