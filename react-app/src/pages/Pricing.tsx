@@ -4,7 +4,7 @@ import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 
 // Same constants + payload as Signup.tsx — proven to work
-const CHECKOUT_API   = 'https://awsprepai.netlify.app/.netlify/functions/create-checkout-session'
+const CHECKOUT_API   = 'https://alwdh4nsomuznniu6yhjgf5i6y0xbzve.lambda-url.us-east-1.on.aws/'
 const PLAN_PRICE_IDS: Record<string,string> = {
   monthly:  'price_1TB1YCE9neqrFM5LDbyzVSnv',
   yearly:   'price_1TED8EE9neqrFM5LCIL9P0Yp',
