@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
-import { signUp } from '../lib/cognito'
+import { signUp, confirmSignUp } from '../lib/cognito'
 
 const CHECKOUT_API = 'https://alwdh4nsomuznniu6yhjgf5i6y0xbzve.lambda-url.us-east-1.on.aws/'
 
@@ -33,6 +33,8 @@ export default function Signup() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirmSent, setConfirmSent] = useState(false)
+  const [code, setCode] = useState('')
+  const [confirming, setConfirming] = useState(false)
   const [focusField, setFocusField] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -79,20 +81,46 @@ export default function Signup() {
   }
 
   if (confirmSent) {
+    const handleConfirm = async (e: React.FormEvent) => {
+      e.preventDefault()
+      if (!code) { setError('Please enter the verification code.'); return }
+      setConfirming(true)
+      setError('')
+      try {
+        await confirmSignUp(email, code)
+        navigate('/login?verified=1')
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Invalid code. Please try again.')
+      }
+      setConfirming(false)
+    }
+
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: '2rem' }}>
-        <div style={{ textAlign: 'center', maxWidth: '360px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '360px', width: '100%' }}>
           <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>📬</div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Check your email</h2>
           <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-            We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+            We sent a 6-digit code to <strong>{email}</strong>. Enter it below to activate your account.
           </p>
-          <button
-            onClick={() => navigate('/sample-questions')}
-            style={{ padding: '0.75rem 1.75rem', background: '#2563eb', color: '#fff', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '0.9rem' }}
-          >
-            Start practicing (20 free questions)
-          </button>
+          <form onSubmit={handleConfirm}>
+            <input
+              type="text"
+              placeholder="Enter 6-digit code"
+              value={code}
+              onChange={e => setCode(e.target.value)}
+              maxLength={6}
+              style={{ width: '100%', padding: '0.75rem 1rem', fontSize: '1.2rem', letterSpacing: '0.3em', textAlign: 'center', border: '1.5px solid #d1d5db', borderRadius: '0.75rem', marginBottom: '1rem', boxSizing: 'border-box' }}
+            />
+            {error && <p style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>}
+            <button
+              type="submit"
+              disabled={confirming}
+              style={{ width: '100%', padding: '0.75rem', background: '#2563eb', color: '#fff', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}
+            >
+              {confirming ? 'Verifying…' : 'Verify & Log In'}
+            </button>
+          </form>
         </div>
       </div>
     )
