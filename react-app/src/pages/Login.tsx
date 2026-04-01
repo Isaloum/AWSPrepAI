@@ -57,7 +57,7 @@ export default function Login() {
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '3rem' }}>
             <span style={{ fontSize: '1.4rem' }}>☁️</span>
-            <span style={{ color: '#fff', fontWeight: 900, fontSize: '1.15rem' }}>AWSPrepAI</span>
+            <span style={{ color: '#fff', fontWeight: 900, fontSize: '1.15rem' }}>CertiPrepAI</span>
           </div>
 
           <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', lineHeight: 1.2, marginBottom: '0.75rem' }}>

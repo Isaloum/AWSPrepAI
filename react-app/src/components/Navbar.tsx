@@ -64,7 +64,7 @@ export default function Navbar() {
         {/* ── Logo ── */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', flexShrink: 0 }}>
           <span style={{ fontSize: '20px' }}>☁️</span>
-          <span style={{ fontWeight: 800, fontSize: '16px', color: '#111827', letterSpacing: '-0.02em' }}>AWSPrepAI</span>
+          <span style={{ fontWeight: 800, fontSize: '16px', color: '#111827', letterSpacing: '-0.02em' }}>CertiPrepAI</span>
         </Link>
 
         {/* ── Center nav ── */}

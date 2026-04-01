@@ -191,7 +191,7 @@ export default function Resources() {
           <div>
             <p style={{ fontSize: '0.9rem', fontWeight: 800, color: '#fff', margin: '0 0 0.375rem' }}>My study combo that works</p>
             <p style={{ fontSize: '0.85rem', color: '#93c5fd', margin: 0, lineHeight: 1.65 }}>
-              One solid video course (Stephane Maarek or Adrian Cantrill) + practice questions here on AWSPrepAI + one cheat sheet set for last-minute review. That trio is what passes most AWS exams.
+              One solid video course (Stephane Maarek or Adrian Cantrill) + practice questions here on CertiPrepAI + one cheat sheet set for last-minute review. That trio is what passes most AWS exams.
             </p>
           </div>
         </div>

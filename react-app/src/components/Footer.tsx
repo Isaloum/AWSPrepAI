@@ -9,7 +9,7 @@ export default function Footer() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '1.25rem' }}>☁️</span>
-            <span style={{ color: '#f1f5f9', fontWeight: 800, fontSize: '1rem' }}>AWSPrepAI</span>
+            <span style={{ color: '#f1f5f9', fontWeight: 800, fontSize: '1rem' }}>CertiPrepAI</span>
           </div>
           <p style={{ fontSize: '0.8rem', lineHeight: 1.7, color: '#64748b', maxWidth: '200px' }}>
             Scenario-based practice questions for every active AWS certification.
@@ -81,10 +81,10 @@ export default function Footer() {
         <div>
           <h4 style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.85rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Support</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            <a href="mailto:support@awsprepai.com" style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
+            <a href="mailto:support@certiprepai.com" style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
               onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
-            >support@awsprepai.com</a>
+            >support@certiprepai.com</a>
             <Link to="/pricing#faq" style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
               onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
@@ -100,8 +100,8 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '1.25rem 1.5rem', maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <span style={{ fontSize: '0.78rem', color: '#475569' }}>© {new Date().getFullYear()} AWSPrepAI. Not affiliated with Amazon Web Services.</span>
-        <a href="https://github.com/Isaloum/AWSPrepAI" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
+        <span style={{ fontSize: '0.78rem', color: '#475569' }}>© {new Date().getFullYear()} CertiPrepAI. Not affiliated with Amazon Web Services.</span>
+        <a href="https://github.com/Isaloum/CertiPrepAI" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
           onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
           onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
         >GitHub ↗</a>

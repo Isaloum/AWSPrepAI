@@ -15,11 +15,11 @@ export default function Terms() {
         {[
           {
             title: '1. Acceptance of Terms',
-            body: 'By accessing or using AWSPrepAI, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.',
+            body: 'By accessing or using CertiPrepAI, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.',
           },
           {
             title: '2. Description of Service',
-            body: 'AWSPrepAI provides scenario-based AWS certification practice questions, mock exams, architecture tools, and study resources. We are not affiliated with or endorsed by Amazon Web Services.',
+            body: 'CertiPrepAI provides scenario-based AWS certification practice questions, mock exams, architecture tools, and study resources. We are not affiliated with or endorsed by Amazon Web Services.',
           },
           {
             title: '3. User Accounts',
@@ -31,15 +31,15 @@ export default function Terms() {
           },
           {
             title: '5. Intellectual Property',
-            body: 'All content on AWSPrepAI — including questions, explanations, diagrams, and study materials — is the property of AWSPrepAI and may not be copied, reproduced, or distributed without written permission.',
+            body: 'All content on CertiPrepAI — including questions, explanations, diagrams, and study materials — is the property of CertiPrepAI and may not be copied, reproduced, or distributed without written permission.',
           },
           {
             title: '6. Prohibited Use',
-            body: 'You may not use AWSPrepAI to scrape content, share account credentials, attempt unauthorized access, or use the platform in any way that violates applicable laws.',
+            body: 'You may not use CertiPrepAI to scrape content, share account credentials, attempt unauthorized access, or use the platform in any way that violates applicable laws.',
           },
           {
             title: '7. Disclaimer',
-            body: 'AWSPrepAI is an independent study tool. We do not guarantee exam results. AWS certifications are administered by Amazon Web Services — passing any exam depends on individual preparation and performance.',
+            body: 'CertiPrepAI is an independent study tool. We do not guarantee exam results. AWS certifications are administered by Amazon Web Services — passing any exam depends on individual preparation and performance.',
           },
           {
             title: '8. Privacy Policy',
@@ -47,7 +47,7 @@ export default function Terms() {
           },
           {
             title: '9. Data Retention',
-            body: 'Your account data is retained for as long as your account is active. You may request deletion of your account and associated data by emailing support@awsprepai.com.',
+            body: 'Your account data is retained for as long as your account is active. You may request deletion of your account and associated data by emailing support@certiprepai.com.',
           },
           {
             title: '10. Changes to Terms',
@@ -55,7 +55,7 @@ export default function Terms() {
           },
           {
             title: '11. Contact',
-            body: 'For any questions about these terms, contact us at support@awsprepai.com.',
+            body: 'For any questions about these terms, contact us at support@certiprepai.com.',
           },
         ].map(section => (
           <div key={section.title} style={{ marginBottom: '1.75rem' }}>
@@ -70,7 +70,7 @@ export default function Terms() {
 
         <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem', marginTop: '1rem' }}>
           <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-            AWSPrepAI is not affiliated with, endorsed by, or in any way officially connected with Amazon Web Services or its affiliates.
+            CertiPrepAI is not affiliated with, endorsed by, or in any way officially connected with Amazon Web Services or its affiliates.
           </p>
         </div>
 

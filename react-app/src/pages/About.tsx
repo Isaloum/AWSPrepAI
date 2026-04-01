@@ -312,14 +312,14 @@ function IllustrationSubscriptions() {
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </polyline>
 
-      {/* ── AWSPrepAI result card — y=6..156, height=150 ── */}
+      {/* ── CertiPrepAI result card — y=6..156, height=150 ── */}
       <rect x="114" y="6" width="122" height="150" rx="12" fill="#fff7ed" stroke="#ea580c" strokeWidth="2.5">
         <animate attributeName="opacity" values="0.9;1;0.9" dur="2.5s" repeatCount="indefinite"/>
       </rect>
       {/* Header */}
       <rect x="114" y="6" width="122" height="32" rx="12" fill="#ea580c"/>
       <rect x="114" y="28" width="122" height="10" fill="#ea580c"/>
-      <text x="175" y="27" fontSize="11.5" fontWeight="900" fill="white" textAnchor="middle">AWSPrepAI</text>
+      <text x="175" y="27" fontSize="11.5" fontWeight="900" fill="white" textAnchor="middle">CertiPrepAI</text>
 
       {/* Feature rows — 20px spacing, comfortable padding */}
       {[
@@ -401,7 +401,7 @@ export default function About() {
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Built by an engineer, for engineers</span>
           </div>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, color: '#fff', marginBottom: '1rem', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-            Hi, I'm Ihab.<br />This is why I built AWSPrepAI.
+            Hi, I'm Ihab.<br />This is why I built CertiPrepAI.
           </h1>
           <p style={{ color: '#93c5fd', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '540px', margin: '0 auto 3rem' }}>
             An electrical engineer shifting into cloud — and tired of paying for five different things just to study for one exam.
@@ -463,7 +463,7 @@ export default function About() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <h3 style={{ fontWeight: 800, color: '#c2410c', marginBottom: '0.5rem', fontSize: '1rem' }}>The real problem: too many tabs, too many subscriptions</h3>
                 <p style={{ color: '#9a3412', lineHeight: 1.75, margin: 0, fontSize: '0.925rem' }}>
-                  When I started studying, the typical path looked like this: a Udemy course — which is genuinely great, easily worth more than $23 — then YouTube to find someone walking through exam questions, then a platform like Dojo for more practice. These are all legitimate, high-quality resources. My only problem wasn't the quality — it was the fragmentation. Suddenly you've paid for three separate things and you're still jumping between tabs. I built AWSPrepAI to bring everything into one place: the questions, the explanations, the diagrams, and the resources — so you can focus on learning, not on managing five browser tabs.
+                  When I started studying, the typical path looked like this: a Udemy course — which is genuinely great, easily worth more than $23 — then YouTube to find someone walking through exam questions, then a platform like Dojo for more practice. These are all legitimate, high-quality resources. My only problem wasn't the quality — it was the fragmentation. Suddenly you've paid for three separate things and you're still jumping between tabs. I built CertiPrepAI to bring everything into one place: the questions, the explanations, the diagrams, and the resources — so you can focus on learning, not on managing five browser tabs.
                 </p>
               </div>
               <div style={{ flexShrink: 0 }}><IllustrationSubscriptions /></div>

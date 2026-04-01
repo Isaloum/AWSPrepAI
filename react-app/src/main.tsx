@@ -5,7 +5,7 @@ import App from './App.tsx'
 
 // Redirect old Amplify URL to custom domain
 if (window.location.hostname === 'main.d2pm3jfcsesli7.amplifyapp.com') {
-  window.location.replace('https://awsprepai.isaloumapps.com' + window.location.pathname + window.location.search)
+  window.location.replace('https://certiprepai.com' + window.location.pathname + window.location.search)
 }
 
 createRoot(document.getElementById('root')!).render(
