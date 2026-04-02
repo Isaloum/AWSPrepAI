@@ -25,7 +25,6 @@ const DOWNGRADE_LABEL: Record<string, string> = {
 
 const MOTIVATE_NOTE: Record<string, string> = {
   // shown above the CTA when a plan is the next upgrade
-  Monthly:  '🚀 Try full access — cancel anytime',
   Yearly:   '🔥 Save $17 vs monthly — most popular',
   Lifetime: '🏆 Pay once. Study forever. Best ROI.',
 }
@@ -65,7 +64,6 @@ const plans = [
       '260 questions for your chosen cert',
       'Timed mock exam (65q, 130 min)',
       'Domain filtering — focus weak areas',
-      'Cancel anytime',
     ],
     cta: 'Start Monthly',
     ctaBg: '#2563eb',
