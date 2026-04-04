@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 
 const certs = [
@@ -38,6 +38,8 @@ const levels: Level[] = ['All', 'Foundation', 'Associate', 'Professional', 'Spec
 export default function Certifications() {
   const [filter, setFilter] = useState<Level>('All')
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const isMockMode = searchParams.get('mode') === 'mock'
 
   const filtered = filter === 'All' ? certs : certs.filter(c => c.level === filter)
 
@@ -110,7 +112,7 @@ export default function Certifications() {
             return (
               <div
                 key={cert.id}
-                onClick={() => navigate(`/cert/${cert.id}`)}
+                onClick={() => navigate(isMockMode ? `/mock-exam/${cert.id}` : `/cert/${cert.id}`)}
                 style={{
                   background: '#fff',
                   border: '1px solid #e5e7eb',
