@@ -9,6 +9,8 @@ interface Question {
   options: string[]
   answer: number
   explain: string
+  hint?: string
+  keywords?: string[]
 }
 
 const certMeta: Record<string, { name: string; code: string; icon: string }> = {
@@ -213,9 +215,19 @@ export default function MockExam() {
                   <div style={{ fontSize: '0.8rem', color: '#16a34a', marginBottom: '0.4rem' }}>
                     Correct: {q.options[q.answer]}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#6b7280', background: '#f9fafb', borderRadius: '0.5rem', padding: '0.5rem 0.75rem' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#6b7280', background: '#f9fafb', borderRadius: '0.5rem', padding: '0.5rem 0.75rem', marginBottom: q.keywords?.length ? '0.5rem' : 0 }}>
                     {q.explain}
                   </div>
+                  {q.keywords && q.keywords.length > 0 && (
+                    <div style={{ marginTop: '0.4rem' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#16a34a', marginBottom: '0.3rem', letterSpacing: '0.05em' }}>Keywords &amp; Terms</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
+                        {q.keywords.map((kw, ki) => (
+                          <span key={ki} style={{ fontSize: '0.7rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '1px 8px' }}>{kw}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}

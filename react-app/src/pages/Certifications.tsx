@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 
 const certs = [
@@ -38,6 +38,8 @@ const levels: Level[] = ['All', 'Foundation', 'Associate', 'Professional', 'Spec
 export default function Certifications() {
   const [filter, setFilter] = useState<Level>('All')
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const isMockMode = searchParams.get('mode') === 'mock'
 
   const filtered = filter === 'All' ? certs : certs.filter(c => c.level === filter)
 
@@ -47,9 +49,18 @@ export default function Certifications() {
 
         {/* ── Hero ── */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Choose Your AWS Certification</h1>
+          {isMockMode && (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1.5px solid #bbf7d0', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#15803d', marginBottom: '0.75rem' }}>
+              ⏱️ MOCK EXAM MODE — 65 questions · 130 minutes
+            </div>
+          )}
+          <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>
+            {isMockMode ? 'Select a Certification to Start Mock Exam' : 'Choose Your AWS Certification'}
+          </h1>
           <p style={{ color: '#6b7280', fontSize: '1rem', maxWidth: '520px', margin: '0 auto 1.5rem' }}>
-            Scenario-based questions for every active AWS certification. 260 questions per cert.
+            {isMockMode
+              ? 'Timed simulation · 65 questions · 130 min · scored at the end'
+              : 'Scenario-based questions for every active AWS certification. 260 questions per cert.'}
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem' }}>
             {[
@@ -110,7 +121,7 @@ export default function Certifications() {
             return (
               <div
                 key={cert.id}
-                onClick={() => navigate(`/cert/${cert.id}`)}
+                onClick={() => navigate(isMockMode ? `/mock-exam/${cert.id}` : `/cert/${cert.id}`)}
                 style={{
                   background: '#fff',
                   border: '1px solid #e5e7eb',
@@ -177,7 +188,7 @@ export default function Certifications() {
                   onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)')}
                 >
-                  Start Practicing →
+                  {isMockMode ? '⏱️ Start Mock Exam →' : 'Start Practicing →'}
                 </button>
               </div>
             )

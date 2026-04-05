@@ -11,6 +11,8 @@ interface Question {
   options: string[]
   answer: number
   explain: string
+  hint?: string
+  keywords?: string[]
 }
 
 const certMeta: Record<string, { name: string; code: string; icon: string; domains: Record<string, string> }> = {
@@ -55,6 +57,7 @@ export default function CertDetail() {
   const [monthlySelection, setMonthlySelection] = useState<{ cert_id: string; selected_at: string } | null>(null)
   const [monthlyLoaded, setMonthlyLoaded] = useState(false)
   const [switching, setSwitching] = useState(false)
+  const [showHint, setShowHint] = useState(false)
 
   const meta = certMeta[certId || ''] || { name: 'Unknown', code: '', icon: '❓', domains: {} }
 
@@ -138,11 +141,11 @@ export default function CertDetail() {
   const handleNext = useCallback(() => {
     if (tier === 'free' && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }
     if (current + 1 >= filtered.length) setShowResults(true)
-    else { setCurrent(c => c + 1); setSelected(null); setRevealed(false) }
+    else { setCurrent(c => c + 1); setSelected(null); setRevealed(false); setShowHint(false) }
   }, [current, filtered.length, tier, usedCount])
 
   const handlePrev = () => {
-    if (current > 0) { setCurrent(c => c - 1); setSelected(null); setRevealed(false) }
+    if (current > 0) { setCurrent(c => c - 1); setSelected(null); setRevealed(false); setShowHint(false) }
   }
 
   const restart = () => {
@@ -363,6 +366,20 @@ export default function CertDetail() {
 
             <div style={{ padding: '1.75rem 1.75rem 1.25rem' }}>
               <p style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827', lineHeight: 1.65, margin: 0 }}>{q.q}</p>
+              {q.hint && !revealed && (
+                <div style={{ marginTop: '1rem' }}>
+                  <button onClick={() => setShowHint(h => !h)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#d97706', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '999px', cursor: 'pointer' }}>
+                    💡 {showHint ? 'Hide Hint' : 'Show Thinking Path'}
+                  </button>
+                  {showHint && (
+                    <div style={{ marginTop: '0.75rem', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '0.75rem', padding: '1rem 1.25rem' }}>
+                      <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#d97706', marginBottom: '0.5rem' }}>Thinking Path</p>
+                      <p style={{ fontSize: '0.875rem', color: '#78350f', lineHeight: 1.65, margin: 0 }}>{q.hint}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div style={{ padding: '0 1.75rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
@@ -378,9 +395,21 @@ export default function CertDetail() {
             </div>
 
             {revealed && (
-              <div style={{ margin: '0 1.75rem 1.75rem', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '1.25rem' }}>
-                <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6', marginBottom: '0.5rem' }}>Explanation</p>
-                <p style={{ fontSize: '0.9rem', color: '#1e40af', lineHeight: 1.6, margin: 0 }}>{q.explain}</p>
+              <div style={{ margin: '0 1.75rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.875rem', padding: '1.25rem' }}>
+                  <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6', marginBottom: '0.5rem' }}>Explanation</p>
+                  <p style={{ fontSize: '0.9rem', color: '#1e40af', lineHeight: 1.6, margin: 0 }}>{q.explain}</p>
+                </div>
+                {q.keywords && q.keywords.length > 0 && (
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '0.875rem', padding: '1.25rem' }}>
+                    <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#16a34a', marginBottom: '0.625rem' }}>Keywords &amp; Terms</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                      {q.keywords.map((kw, i) => (
+                        <span key={i} style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '2px 10px' }}>{kw}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

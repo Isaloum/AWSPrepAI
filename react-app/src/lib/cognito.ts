@@ -83,6 +83,10 @@ export async function getSession(): Promise<AuthUser | null> {
 export function signOut(): void {
   const user = userPool.getCurrentUser()
   user?.signOut()
+  // Force-clear all Cognito tokens from localStorage as a safety net
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('CognitoIdentityServiceProvider'))
+    .forEach(k => localStorage.removeItem(k))
 }
 
 // ─── Forgot Password ─────────────────────────────────────────────
