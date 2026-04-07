@@ -44,6 +44,7 @@ export async function signUp(email: string, password: string): Promise<void> {
 
 // ─── Confirm Sign Up ─────────────────────────────────────────────
 export async function confirmSignUp(email: string, code: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
     user.confirmRegistration(code, true, (err) => {
