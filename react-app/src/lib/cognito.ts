@@ -56,7 +56,7 @@ export async function confirmSignUp(email: string, code: string): Promise<void> 
 }
 
 // ─── Sign In ─────────────────────────────────────────────────────
-export async function signIn(email: string, password: string): Promise<AuthUser> {
+export async function signIn(email: string, password: string): Promise<AuthUser | 'MFA_REQUIRED'> {
   const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
@@ -65,6 +65,11 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
       onSuccess: (session) => resolve(sessionToUser(normalizedEmail, session)),
       onFailure: (err) => reject(err),
       newPasswordRequired: () => reject(new Error('Password reset required.')),
+      totpRequired: () => {
+        _pendingMFAUser  = user
+        _pendingMFAEmail = normalizedEmail
+        resolve('MFA_REQUIRED')
+      },
     })
   })
 }
@@ -130,4 +135,90 @@ function sessionToUser(email: string, session: CognitoUserSession): AuthUser {
     accessToken:  accessToken.getJwtToken(),
     idToken:      idToken.getJwtToken(),
   }
+}
+
+// ─── MFA helpers ─────────────────────────────────────────────────
+// Holds the CognitoUser mid-way through an MFA login (between password OK and TOTP entry)
+let _pendingMFAUser: CognitoUser | null = null
+let _pendingMFAEmail = ''
+
+export async function getMFAStatus(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const user = userPool.getCurrentUser()
+    if (!user) return resolve(false)
+    user.getSession((err: Error | null, session: CognitoUserSession | null) => {
+      if (err || !session?.isValid()) return resolve(false)
+      user.getUserData((err2, data) => {
+        if (err2 || !data) return resolve(false)
+        resolve(data.PreferredMfaSetting === 'SOFTWARE_TOKEN_MFA')
+      })
+    })
+  })
+}
+
+export async function setupTOTP(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const user = userPool.getCurrentUser()
+    if (!user) return reject(new Error('Not authenticated'))
+    user.getSession((err: Error | null, session: CognitoUserSession | null) => {
+      if (err || !session?.isValid()) return reject(new Error('Session expired. Please log in again.'))
+      user.associateSoftwareToken({
+        associateSecretCode: (secretCode) => resolve(secretCode),
+        onFailure: (err2) => reject(err2),
+      })
+    })
+  })
+}
+
+export async function verifyAndEnableTOTP(totpCode: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const user = userPool.getCurrentUser()
+    if (!user) return reject(new Error('Not authenticated'))
+    user.getSession((err: Error | null, session: CognitoUserSession | null) => {
+      if (err || !session?.isValid()) return reject(new Error('Session expired. Please log in again.'))
+      user.verifySoftwareToken(totpCode, 'CertiPrepAI', {
+        onSuccess: () => {
+          user.setUserMfaPreference(null, { Enabled: true, PreferredMfa: true }, (err2) => {
+            if (err2) reject(err2)
+            else resolve()
+          })
+        },
+        onFailure: (err2) => reject(err2),
+      })
+    })
+  })
+}
+
+export async function disableTOTP(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const user = userPool.getCurrentUser()
+    if (!user) return reject(new Error('Not authenticated'))
+    user.getSession((err: Error | null, session: CognitoUserSession | null) => {
+      if (err || !session?.isValid()) return reject(new Error('Session expired. Please log in again.'))
+      user.setUserMfaPreference(null, { Enabled: false, PreferredMfa: false }, (err2) => {
+        if (err2) reject(err2)
+        else resolve()
+      })
+    })
+  })
+}
+
+export async function completeMFASignIn(totpCode: string): Promise<AuthUser> {
+  if (!_pendingMFAUser) throw new Error('No pending MFA session.')
+  const user = _pendingMFAUser
+  const email = _pendingMFAEmail
+  return new Promise((resolve, reject) => {
+    user.sendMFACode(totpCode, {
+      onSuccess: (session) => {
+        _pendingMFAUser = null
+        _pendingMFAEmail = ''
+        resolve(sessionToUser(email, session))
+      },
+      onFailure: (err) => {
+        _pendingMFAUser = null
+        _pendingMFAEmail = ''
+        reject(err)
+      },
+    }, 'SOFTWARE_TOKEN_MFA')
+  })
 }

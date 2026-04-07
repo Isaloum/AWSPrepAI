@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
+import { getMFAStatus, setupTOTP, verifyAndEnableTOTP, disableTOTP } from '../lib/cognito'
 
 const CANCEL_API = import.meta.env.VITE_CANCEL_API as string | undefined
 
@@ -51,6 +52,12 @@ export default function Dashboard() {
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState('')
   const [progress, setProgress] = useState<CertProgress[]>([])
+  const [mfaEnabled, setMfaEnabled] = useState<boolean | null>(null)
+  const [mfaSetup, setMfaSetup] = useState(false)
+  const [mfaSecret, setMfaSecret] = useState('')
+  const [mfaCode, setMfaCode] = useState('')
+  const [mfaLoading, setMfaLoading] = useState(false)
+  const [mfaError, setMfaError] = useState('')
 
   useEffect(() => {
     if (!loading && !user) navigate('/login')
@@ -64,6 +71,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
     getAllProgress(user.idToken).then(setProgress).catch(() => {})
+    getMFAStatus().then(setMfaEnabled).catch(() => setMfaEnabled(false))
   }, [user])
 
   if (loading || !user) {
@@ -86,6 +94,35 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut()
     navigate('/')
+  }
+
+  const handleEnableMFA = async () => {
+    setMfaLoading(true); setMfaError('')
+    try {
+      const secret = await setupTOTP()
+      setMfaSecret(secret)
+      setMfaSetup(true)
+    } catch (err: unknown) { setMfaError(err instanceof Error ? err.message : 'Failed to start MFA setup.') }
+    setMfaLoading(false)
+  }
+
+  const handleVerifyMFA = async () => {
+    if (!mfaCode) { setMfaError('Enter your 6-digit code.'); return }
+    setMfaLoading(true); setMfaError('')
+    try {
+      await verifyAndEnableTOTP(mfaCode)
+      setMfaEnabled(true); setMfaSetup(false); setMfaSecret(''); setMfaCode('')
+    } catch (err: unknown) { setMfaError(err instanceof Error ? err.message : 'Invalid code. Try again.') }
+    setMfaLoading(false)
+  }
+
+  const handleDisableMFA = async () => {
+    setMfaLoading(true); setMfaError('')
+    try {
+      await disableTOTP()
+      setMfaEnabled(false)
+    } catch (err: unknown) { setMfaError(err instanceof Error ? err.message : 'Failed to disable MFA.') }
+    setMfaLoading(false)
   }
 
   const handleCancelSubscription = async () => {
@@ -297,6 +334,63 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* Security / MFA section */}
+      {mfaEnabled !== null && (
+        <div style={{ marginTop: '2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <div style={{ fontWeight: 700, color: '#111827', fontSize: '0.95rem' }}>🔐 Two-Factor Authentication</div>
+              <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.2rem' }}>
+                {mfaEnabled ? '✅ Enabled — Google Authenticator / Authy' : 'Add an extra layer of security to your account'}
+              </div>
+            </div>
+            {!mfaSetup && (
+              <button
+                onClick={mfaEnabled ? handleDisableMFA : handleEnableMFA}
+                disabled={mfaLoading}
+                style={{ padding: '0.5rem 1.1rem', background: mfaEnabled ? '#fff' : '#2563eb', color: mfaEnabled ? '#dc2626' : '#fff', border: mfaEnabled ? '1px solid #fca5a5' : 'none', borderRadius: '0.65rem', fontWeight: 600, fontSize: '0.82rem', cursor: mfaLoading ? 'not-allowed' : 'pointer' }}
+              >
+                {mfaLoading ? '…' : mfaEnabled ? 'Disable MFA' : 'Enable MFA'}
+              </button>
+            )}
+          </div>
+
+          {mfaSetup && mfaSecret && (
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f3f4f6' }}>
+              <p style={{ fontSize: '0.83rem', color: '#374151', marginBottom: '0.75rem' }}>
+                Open <strong>Google Authenticator</strong> or <strong>Authy</strong> and add a new account using the key below:
+              </p>
+              <div style={{ background: '#f3f4f6', borderRadius: '0.5rem', padding: '0.75rem 1rem', fontFamily: 'monospace', fontSize: '0.85rem', letterSpacing: '0.1em', wordBreak: 'break-all', marginBottom: '1rem', color: '#1d4ed8', fontWeight: 700 }}>
+                {mfaSecret}
+              </div>
+              <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+                Then enter the 6-digit code your app shows:
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input
+                  type="text"
+                  value={mfaCode}
+                  onChange={e => setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                  maxLength={6}
+                  style={{ flex: 1, padding: '0.6rem 0.75rem', fontSize: '1.1rem', letterSpacing: '0.3em', textAlign: 'center', border: '2px solid #e5e7eb', borderRadius: '0.5rem', outline: 'none' }}
+                />
+                <button onClick={handleVerifyMFA} disabled={mfaLoading || mfaCode.length < 6}
+                  style={{ padding: '0.6rem 1rem', background: mfaCode.length < 6 ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', borderRadius: '0.5rem', fontWeight: 700, fontSize: '0.83rem', cursor: mfaCode.length < 6 ? 'not-allowed' : 'pointer' }}>
+                  {mfaLoading ? '…' : 'Verify'}
+                </button>
+                <button onClick={() => { setMfaSetup(false); setMfaSecret(''); setMfaCode(''); setMfaError('') }}
+                  style={{ padding: '0.6rem 0.75rem', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontWeight: 600, fontSize: '0.83rem', cursor: 'pointer' }}>
+                  Cancel
+                </button>
+              </div>
+              {mfaError && <p style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.5rem' }}>{mfaError}</p>}
+            </div>
+          )}
+          {mfaError && !mfaSetup && <p style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.5rem' }}>{mfaError}</p>}
+        </div>
+      )}
 
       {/* Cancel Subscription Modal */}
       {showCancelModal && (
