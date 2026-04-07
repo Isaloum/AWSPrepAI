@@ -3,8 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 
-// Same constants + payload as Signup.tsx — proven to work
-const CHECKOUT_API   = 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
+const CHECKOUT_API = import.meta.env.VITE_CHECKOUT_API || 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
 const PAID_PLANS = new Set(['monthly', 'yearly', 'lifetime'])
 
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, yearly: 2, lifetime: 3 }

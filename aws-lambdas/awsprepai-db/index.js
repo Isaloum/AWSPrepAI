@@ -16,8 +16,10 @@ const verifier = CognitoJwtVerifier.create({
 });
 
 const ALLOWED_ORIGINS = [
-  'https://awsprepai.isaloumapps.com',
+  'https://certiprepai.com',
+  'https://www.certiprepai.com',
   'https://main.d2pm3jfcsesli7.amplifyapp.com',
+  'https://awsprepai.isaloumapps.com',
   'https://awsprepai.netlify.app',
 ];
 

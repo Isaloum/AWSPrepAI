@@ -4,6 +4,8 @@ import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert } from '../lib/db'
 
+const CANCEL_API = import.meta.env.VITE_CANCEL_API as string | undefined
+
 const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
   'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
   'aif-c01': { name: 'AI Practitioner', code: 'AIF-C01', icon: '🤖' },
@@ -45,6 +47,9 @@ export default function Dashboard() {
   const { user, isFullAccess, tier, loading, signOut } = useAuth()
   const navigate = useNavigate()
   const [monthlyCert, setMonthlyCert] = useState<{ cert_id: string; selected_at: string } | null | undefined>(undefined)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState('')
 
   useEffect(() => {
     if (!loading && !user) navigate('/login')
@@ -75,6 +80,26 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut()
     navigate('/')
+  }
+
+  const handleCancelSubscription = async () => {
+    if (!CANCEL_API || !user) return
+    setCancelling(true)
+    setCancelError('')
+    try {
+      const res = await fetch(CANCEL_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.accessToken}` },
+      })
+      const data = await res.json()
+      if (!res.ok) { setCancelError(data.error || 'Cancellation failed. Please try again.'); setCancelling(false); return }
+      // Success — sign out so stale JWT isn't used, send to pricing
+      await signOut()
+      navigate('/pricing?cancelled=1')
+    } catch {
+      setCancelError('Network error. Please try again.')
+      setCancelling(false)
+    }
   }
 
   return (
@@ -109,9 +134,21 @@ export default function Dashboard() {
             </Link>
           )}
           {tier === 'monthly' && (
-            <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
-              ↑ Upgrade to Yearly
-            </Link>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
+                ↑ Upgrade to Yearly
+              </Link>
+              {CANCEL_API && (
+                <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+                  Cancel Plan
+                </button>
+              )}
+            </div>
+          )}
+          {tier === 'yearly' && CANCEL_API && (
+            <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+              Cancel Plan
+            </button>
           )}
           {isFullAccess && (
             <div style={{ padding: '0.5rem 1rem', background: '#ffffff80', borderRadius: '0.75rem', fontSize: '0.875rem', fontWeight: 600, color: info.color }}>
@@ -218,6 +255,40 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* Cancel Subscription Modal */}
+      {showCancelModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '2rem', maxWidth: '420px', width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+            <div style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>⚠️</div>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#111827', textAlign: 'center', marginBottom: '0.5rem' }}>Cancel your subscription?</h2>
+            <p style={{ color: '#6b7280', fontSize: '0.875rem', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              You'll keep full access until the end of your current billing period. After that, your account will revert to the free plan.
+            </p>
+            {cancelError && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '0.5rem', padding: '0.6rem 0.85rem', fontSize: '0.83rem', color: '#b91c1c', marginBottom: '1rem', textAlign: 'center' }}>
+                {cancelError}
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                disabled={cancelling}
+                style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
+              >
+                Keep My Plan
+              </button>
+              <button
+                onClick={handleCancelSubscription}
+                disabled={cancelling}
+                style={{ flex: 1, padding: '0.75rem', background: cancelling ? '#fca5a5' : '#dc2626', color: '#fff', border: 'none', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', cursor: cancelling ? 'not-allowed' : 'pointer' }}
+              >
+                {cancelling ? 'Cancelling…' : 'Yes, Cancel'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   )
 }

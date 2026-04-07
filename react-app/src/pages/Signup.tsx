@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { signUp, confirmSignUp } from '../lib/cognito'
 
-const CHECKOUT_API = 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
+const CHECKOUT_API = import.meta.env.VITE_CHECKOUT_API || 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
 
 const PAID_PLANS = new Set(['monthly', 'yearly', 'lifetime'])
 
@@ -27,6 +27,16 @@ export default function Signup() {
   const [confirming, setConfirming] = useState(false)
   const [focusField, setFocusField] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [passwordTouched, setPasswordTouched] = useState(false)
+
+  const pwChecks = {
+    length:    password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number:    /[0-9]/.test(password),
+    symbol:    /[^A-Za-z0-9]/.test(password),
+  }
+  const pwValid = Object.values(pwChecks).every(Boolean)
 
   const planLabel =
     plan === 'lifetime' ? '🔥 Lifetime — pay once, use forever'
@@ -38,7 +48,7 @@ export default function Signup() {
     e.preventDefault()
     setError('')
     if (!email || !password) { setError('Please fill in all fields.'); return }
-    if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
+    if (!pwValid) { setPasswordTouched(true); setError('Password does not meet all requirements.'); return }
 
     setLoading(true)
     try {
@@ -259,7 +269,7 @@ export default function Signup() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                onFocus={() => setFocusField('password')}
+                onFocus={() => { setFocusField('password'); setPasswordTouched(true) }}
                 onBlur={() => setFocusField(null)}
                 placeholder="Min 8 characters"
                 style={{
@@ -280,6 +290,22 @@ export default function Signup() {
                 }
               </button>
             </div>
+            {passwordTouched && (
+              <div style={{ marginTop: '0.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem 1rem' }}>
+                {([
+                  ['length',    '8+ characters'],
+                  ['uppercase', 'Uppercase letter'],
+                  ['lowercase', 'Lowercase letter'],
+                  ['number',    'Number'],
+                  ['symbol',    'Symbol (!@#$…)'],
+                ] as [keyof typeof pwChecks, string][]).map(([key, label]) => (
+                  <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', color: pwChecks[key] ? '#15803d' : '#9ca3af' }}>
+                    <span style={{ fontWeight: 700 }}>{pwChecks[key] ? '✓' : '✗'}</span>
+                    {label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {error && error !== '__EXISTS__' && (

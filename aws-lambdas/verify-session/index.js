@@ -9,8 +9,10 @@ const cognito = new CognitoIdentityProviderClient({ region: 'us-east-1' });
 const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
 
 const ALLOWED_ORIGINS = [
-  'https://awsprepai.isaloumapps.com',
+  'https://certiprepai.com',
+  'https://www.certiprepai.com',
   'https://main.d2pm3jfcsesli7.amplifyapp.com',
+  'https://awsprepai.isaloumapps.com',
   'https://awsprepai.netlify.app',
 ];
 
