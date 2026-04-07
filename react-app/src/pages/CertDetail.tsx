@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
-import { getFreeUsage, updateFreeUsage, getMonthlyCert, setMonthlyCert } from '../lib/db'
+import { getFreeUsage, updateFreeUsage, getMonthlyCert, setMonthlyCert, updateProgress } from '../lib/db'
 
 interface Question {
   cat: string
@@ -144,7 +144,12 @@ export default function CertDetail() {
       setUsedCount(newCount)
       await updateFreeUsage(certId || '', newCount, user.idToken)
     }
-  }, [selected, revealed, filtered, current, tier, usedCount, user])
+
+    // Track progress for all authenticated users
+    if (user && certId) {
+      updateProgress(certId, selected === filtered[current].answer, user.idToken).catch(() => {})
+    }
+  }, [selected, revealed, filtered, current, tier, usedCount, user, certId])
 
   const handleNext = useCallback(() => {
     if (tier === 'free' && usedCount >= FREE_LIMIT) { setShowPaywall(true); return }

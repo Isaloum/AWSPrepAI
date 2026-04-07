@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
-import { getMonthlyCert } from '../lib/db'
+import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
 
 const CANCEL_API = import.meta.env.VITE_CANCEL_API as string | undefined
 
@@ -50,6 +50,7 @@ export default function Dashboard() {
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState('')
+  const [progress, setProgress] = useState<CertProgress[]>([])
 
   useEffect(() => {
     if (!loading && !user) navigate('/login')
@@ -59,6 +60,11 @@ export default function Dashboard() {
     if (!user || tier !== 'monthly') { setMonthlyCert(null); return }
     getMonthlyCert(user.idToken).then((data) => setMonthlyCert(data ?? null)).catch(() => setMonthlyCert(null))
   }, [user, tier])
+
+  useEffect(() => {
+    if (!user) return
+    getAllProgress(user.idToken).then(setProgress).catch(() => {})
+  }, [user])
 
   if (loading || !user) {
     return (
@@ -220,6 +226,42 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
+        {/* Progress section */}
+        {progress.length > 0 && (
+          <>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 800, color: '#111827', marginBottom: '1rem' }}>Your Progress</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '2rem' }}>
+              {progress
+                .sort((a, b) => new Date(b.last_practiced).getTime() - new Date(a.last_practiced).getTime())
+                .map(p => {
+                  const meta = CERT_META[p.cert_id]
+                  if (!meta) return null
+                  const pct = p.questions_attempted > 0 ? Math.round((p.correct_answers / p.questions_attempted) * 100) : 0
+                  const scoreColor = pct >= 72 ? '#16a34a' : pct >= 50 ? '#d97706' : '#dc2626'
+                  const practiced = new Date(p.last_practiced).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                  return (
+                    <Link key={p.cert_id} to={`/cert/${p.cert_id}`} style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.875rem', padding: '0.875rem 1.125rem', textDecoration: 'none' }}>
+                      <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{meta.icon}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                          <span style={{ fontWeight: 700, color: '#111827', fontSize: '0.85rem' }}>{meta.name}</span>
+                          <span style={{ fontSize: '0.75rem', color: '#6b7280', flexShrink: 0, marginLeft: '0.5rem' }}>Last: {practiced}</span>
+                        </div>
+                        <div style={{ background: '#f3f4f6', borderRadius: '999px', height: '6px', overflow: 'hidden' }}>
+                          <div style={{ width: `${Math.min(pct, 100)}%`, height: '100%', background: scoreColor, borderRadius: '999px', transition: 'width 0.4s ease' }} />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#6b7280' }}>{p.questions_attempted} answered</span>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: scoreColor }}>{pct}% correct</span>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+            </div>
+          </>
+        )}
 
         {/* Certifications grid */}
         <h2 style={{ fontSize: '1.125rem', fontWeight: 800, color: '#111827', marginBottom: '1rem' }}>Practice by Certification</h2>

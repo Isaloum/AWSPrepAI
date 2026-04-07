@@ -36,3 +36,19 @@ export async function getFreeUsage(idToken: string) {
 export async function updateFreeUsage(certId: string, count: number, idToken: string) {
   await call('update_free_usage', { cert_id: certId, count }, idToken)
 }
+
+export interface CertProgress {
+  cert_id: string
+  questions_attempted: number
+  correct_answers: number
+  last_practiced: string
+}
+
+export async function getAllProgress(idToken: string) {
+  const { data } = await call('get_progress', null, idToken)
+  return data as CertProgress[]
+}
+
+export async function updateProgress(certId: string, correct: boolean, idToken: string) {
+  await call('update_progress', { cert_id: certId, correct }, idToken)
+}

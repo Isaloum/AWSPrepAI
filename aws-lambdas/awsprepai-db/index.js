@@ -4,7 +4,7 @@
  * Protected by Cognito JWT (Authorization header).
  */
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
 const { CognitoJwtVerifier } = require('aws-jwt-verify');
 
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({ region: 'us-east-1' }));
@@ -87,6 +87,32 @@ exports.handler = async (event) => {
       await dynamo.send(new PutCommand({
         TableName: 'awsprepai-free-usage',
         Item: { user_id: userId, cert_id, count, updated_at: new Date().toISOString() },
+      }));
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true }) };
+    }
+
+    // --- progress tracking ---
+    if (action === 'get_progress') {
+      // Returns progress for all certs for this user
+      const res = await dynamo.send(new QueryCommand({
+        TableName: 'awsprepai-progress',
+        KeyConditionExpression: 'user_id = :uid',
+        ExpressionAttributeValues: { ':uid': userId },
+      }));
+      return { statusCode: 200, headers, body: JSON.stringify({ data: res.Items || [] }) };
+    }
+
+    if (action === 'update_progress') {
+      const { cert_id, correct } = data; // correct: boolean
+      await dynamo.send(new UpdateCommand({
+        TableName: 'awsprepai-progress',
+        Key: { user_id: userId, cert_id },
+        UpdateExpression: 'ADD questions_attempted :one, correct_answers :correct SET last_practiced = :now',
+        ExpressionAttributeValues: {
+          ':one':     1,
+          ':correct': correct ? 1 : 0,
+          ':now':     new Date().toISOString(),
+        },
       }));
       return { statusCode: 200, headers, body: JSON.stringify({ success: true }) };
     }
