@@ -13,6 +13,7 @@ AWS certification prep SaaS. Live at **https://certiprepai.com**
 | Cognito User Pool | `us-east-1_bqEVRsi2b` |
 | Cognito Client ID | `4j9mnlkhtu023takbj0qb1g10h` |
 | API Gateway | `34zglioc5a.execute-api.us-east-1.amazonaws.com` |
+| CloudFront | `d2xfdvrubb6op2.cloudfront.net` (ID: `E3885PO59ILHI0`) |
 
 ## Architecture
 - **`react-app/`** — React 19 + Vite 8 + TypeScript + Tailwind. Deployed via AWS Amplify (auto-deploy on push to `main`)
@@ -39,11 +40,13 @@ AWS certification prep SaaS. Live at **https://certiprepai.com**
 ### Amplify Console (react-app)
 Set at: AWS Amplify → CertiPrepAI → main branch → Environment variables
 ```
-VITE_COGNITO_USER_POOL_ID = us-east-1_bqEVRsi2b
-VITE_COGNITO_CLIENT_ID    = 4j9mnlkhtu023takbj0qb1g10h
+VITE_COGNITO_USER_POOL_ID   = us-east-1_bqEVRsi2b
+VITE_COGNITO_CLIENT_ID      = 4j9mnlkhtu023takbj0qb1g10h
 VITE_STRIPE_PUBLISHABLE_KEY = pk_live_51T0D2ZE9neqrFM5L...
-VITE_CHECKOUT_API         = https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout
-VITE_CANCEL_API           = <Lambda Function URL — set after cancel Lambda is deployed>
+VITE_DB_API_URL             = https://d2xfdvrubb6op2.cloudfront.net
+VITE_CHECKOUT_API           = https://d2xfdvrubb6op2.cloudfront.net/checkout
+VITE_CANCEL_API             = https://d2xfdvrubb6op2.cloudfront.net/cancel
+VITE_VERIFY_SESSION_URL     = https://d2xfdvrubb6op2.cloudfront.net/verify
 ```
 
 ### Lambda Env Vars
