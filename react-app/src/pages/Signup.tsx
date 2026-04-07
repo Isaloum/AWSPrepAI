@@ -10,7 +10,7 @@ const perks = [
   { icon: '📋', text: '3,120 scenario-based questions' },
   { icon: '⏱️', text: 'Timed mock exams — 65q / 130 min' },
   { icon: '🗺️', text: 'Architecture diagrams & visual exam' },
-  { icon: '🤖', text: 'AI Coach (Lifetime plan)' },
+  { icon: '🎯', text: 'Domain filtering — focus weak areas' },
   { icon: '🏆', text: 'All 12 active AWS certifications' },
 ]
 

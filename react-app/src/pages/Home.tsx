@@ -290,7 +290,7 @@ export default function Home() {
                 id: 'lifetime', label: 'Lifetime', price: '$147', period: '/once',
                 badge: '🔥 Best Value',
                 bg: 'rgba(29,78,216,0.42)', border: 'rgba(29,78,216,0.7)',
-                features: ['Pay once forever', 'AI Coach included', 'All future certs', 'No fees ever'],
+                features: ['Pay once forever', 'All future certs included', 'No recurring fees ever', 'Best ROI'],
               },
             ].map(p => {
               const isHov = hoveredPlan === p.id
