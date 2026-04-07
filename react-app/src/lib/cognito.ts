@@ -33,9 +33,10 @@ export interface AuthUser {
 
 // ─── Sign Up ─────────────────────────────────────────────────────
 export async function signUp(email: string, password: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
-    const attrs = [new CognitoUserAttribute({ Name: 'email', Value: email })]
-    userPool.signUp(email, password, attrs, [], (err) => {
+    const attrs = [new CognitoUserAttribute({ Name: 'email', Value: normalizedEmail })]
+    userPool.signUp(normalizedEmail, password, attrs, [], (err) => {
       if (err) reject(err)
       else resolve()
     })
@@ -61,7 +62,7 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
     const authDetails = new AuthenticationDetails({ Username: normalizedEmail, Password: password })
     user.authenticateUser(authDetails, {
-      onSuccess: (session) => resolve(sessionToUser(email, session)),
+      onSuccess: (session) => resolve(sessionToUser(normalizedEmail, session)),
       onFailure: (err) => reject(err),
       newPasswordRequired: () => reject(new Error('Password reset required.')),
     })
@@ -85,7 +86,6 @@ export async function getSession(): Promise<AuthUser | null> {
 export function signOut(): void {
   const user = userPool.getCurrentUser()
   user?.signOut()
-  // Force-clear all Cognito tokens from localStorage as a safety net
   Object.keys(localStorage)
     .filter(k => k.startsWith('CognitoIdentityServiceProvider'))
     .forEach(k => localStorage.removeItem(k))
@@ -93,6 +93,7 @@ export function signOut(): void {
 
 // ─── Forgot Password ─────────────────────────────────────────────
 export async function forgotPassword(email: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
     user.forgotPassword({
@@ -104,6 +105,7 @@ export async function forgotPassword(email: string): Promise<void> {
 
 // ─── Confirm New Password ─────────────────────────────────────────
 export async function confirmNewPassword(email: string, code: string, newPassword: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
     user.confirmPassword(code, newPassword, {
