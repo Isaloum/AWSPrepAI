@@ -73,20 +73,27 @@ export default function Navbar() {
     whiteSpace: 'nowrap' as const,
   })
 
-  const practiceItems = [
+  const practiceItemsPublic = [
     { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,120 questions · 12 certs' },
     { to: '/certifications?mode=mock', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 130 min' },
-    { to: '/architecture-builder', bg: '#f5f3ff', icon: '🏗️', label: 'Architecture Builder', sub: 'Drag & drop AWS services' },
-    { to: '/visual-exam', bg: '#fff0f0', icon: '🎯', label: 'Visual Exam', sub: 'Diagram-based questions' },
     { to: '/sample-questions', bg: '#eff6ff', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up' },
   ]
+  const practiceItemsPremium = [
+    { to: '/architecture-builder', bg: '#f5f3ff', icon: '🏗️', label: 'Architecture Builder', sub: 'Drag & drop AWS services' },
+    { to: '/visual-exam', bg: '#fff0f0', icon: '🎯', label: 'Visual Exam', sub: 'Diagram-based questions' },
+  ]
+  const practiceItems = user
+    ? [...practiceItemsPublic, ...practiceItemsPremium]
+    : practiceItemsPublic
 
-  const studyItems = [
+  const studyItemsPublic = [
     { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources' },
     { to: '/keywords', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers — spot the right service' },
     { to: '/glossary', bg: '#eff6ff', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply' },
-    { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams' },
   ]
+  const studyItems = user
+    ? [...studyItemsPublic, { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams' }]
+    : studyItemsPublic
 
   const DropdownItem = ({ item }: { item: typeof practiceItems[0] }) => (
     <Link to={item.to} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '9px 10px', borderRadius: '10px', textDecoration: 'none' }}
