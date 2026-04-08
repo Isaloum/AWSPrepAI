@@ -1,6 +1,6 @@
 /**
  * lib/db.ts
- * DynamoDB API wrapper — calls awsprepai-db Lambda.
+ * DynamoDB API wrapper — calls awsprepai-db Lambda (internal name, not user-facing).
  * Uses Cognito ID token (has aud claim required for JWT verification).
  */
 

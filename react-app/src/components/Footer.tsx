@@ -101,7 +101,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '1.25rem 1.5rem', maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
         <span style={{ fontSize: '0.78rem', color: '#475569' }}>© {new Date().getFullYear()} CertiPrepAI. Not affiliated with Amazon Web Services.</span>
-        <a href="https://github.com/Isaloum/AWSPrepAI" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
+        <a href="https://github.com/Isaloum/CertiPrepAI" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
           onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
           onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
         >GitHub ↗</a>
