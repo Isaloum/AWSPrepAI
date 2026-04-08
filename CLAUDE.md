@@ -5,7 +5,7 @@ AWS certification prep SaaS. Live at **https://certiprepai.com**
 
 | Field | Value |
 |-------|-------|
-| GitHub | https://github.com/Isaloum/AWSPrepAI |
+| GitHub | https://github.com/Isaloum/CertiPrepAI |
 | Active branch (deploy) | `main` |
 | Amplify App ID | `d2pm3jfcsesli7` |
 | AWS Account | `441393059130` (Fridayaiapp) |
@@ -13,6 +13,7 @@ AWS certification prep SaaS. Live at **https://certiprepai.com**
 | Cognito User Pool | `us-east-1_bqEVRsi2b` |
 | Cognito Client ID | `4j9mnlkhtu023takbj0qb1g10h` |
 | API Gateway | `34zglioc5a.execute-api.us-east-1.amazonaws.com` |
+| CloudFront | `d2xfdvrubb6op2.cloudfront.net` (ID: `E3885PO59ILHI0`) |
 
 ## Architecture
 - **`react-app/`** — React 19 + Vite 8 + TypeScript + Tailwind. Deployed via AWS Amplify (auto-deploy on push to `main`)
@@ -39,11 +40,13 @@ AWS certification prep SaaS. Live at **https://certiprepai.com**
 ### Amplify Console (react-app)
 Set at: AWS Amplify → CertiPrepAI → main branch → Environment variables
 ```
-VITE_COGNITO_USER_POOL_ID = us-east-1_bqEVRsi2b
-VITE_COGNITO_CLIENT_ID    = 4j9mnlkhtu023takbj0qb1g10h
+VITE_COGNITO_USER_POOL_ID   = us-east-1_bqEVRsi2b
+VITE_COGNITO_CLIENT_ID      = 4j9mnlkhtu023takbj0qb1g10h
 VITE_STRIPE_PUBLISHABLE_KEY = pk_live_51T0D2ZE9neqrFM5L...
-VITE_CHECKOUT_API         = https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout
-VITE_CANCEL_API           = <Lambda Function URL — set after cancel Lambda is deployed>
+VITE_DB_API_URL             = https://d2xfdvrubb6op2.cloudfront.net
+VITE_CHECKOUT_API           = https://d2xfdvrubb6op2.cloudfront.net/checkout
+VITE_CANCEL_API             = https://d2xfdvrubb6op2.cloudfront.net/cancel
+VITE_VERIFY_SESSION_URL     = https://d2xfdvrubb6op2.cloudfront.net/verify
 ```
 
 ### Lambda Env Vars
@@ -57,7 +60,7 @@ awsprepai-cancel-subscription:  STRIPE_SECRET_KEY, COGNITO_USER_POOL_ID, COGNITO
 
 ---
 
-## Current Status (as of April 7, 2026)
+## Current Status (as of April 8, 2026)
 
 ### ✅ Done
 - Login fixed (email normalization `.trim().toLowerCase()` in cognito.ts, Login.tsx, Signup.tsx)
@@ -69,80 +72,41 @@ awsprepai-cancel-subscription:  STRIPE_SECRET_KEY, COGNITO_USER_POOL_ID, COGNITO
 - Cancel button + confirmation modal added to `Dashboard.tsx`
 - Password strength indicator added to `Signup.tsx`
 - `CHECKOUT_API` moved to `VITE_CHECKOUT_API` env var in `Pricing.tsx` and `Signup.tsx`
+- MFA (TOTP) support added — setup, login flow, Dashboard toggle
+- Progress tracking added — per-cert bars in Dashboard, updates on every answer
+- docs/ pages replaced with redirect stubs → certiprepai.com
+- CloudFront distribution in front of all Lambda URLs — POST allowed on default behavior ✓
+- awsprepai-db tokenUse fixed ('access' → 'id' to match frontend ID token)
+- awsprepai-db redeployed with `npm install` + `zip -r` (node_modules included, CodeSize ~3.7MB)
+- awsprepai-cancel-subscription deployed (node_modules included, CodeSize ~5.9MB)
+- Repo renamed AWSPrepAI → CertiPrepAI on GitHub and locally
 
-### 🔴 Critical — Do First
+### 🔴 Still Needed (AWS CLI required)
 
-**1. Deploy cancel-subscription Lambda (NEW)**
+**1. Redeploy awsprepai-verify-session (node_modules + CORS fix)**
+The current deployed zip is missing node_modules — `stripe` and `@aws-sdk/client-cognito-identity-provider` are not bundled.
 ```bash
-cd ~/Desktop/Projects/AWSPrepAI
-git checkout claude/full-repo-scan-debug-aTKPc
-git pull origin claude/full-repo-scan-debug-aTKPc
-
-cd aws-lambdas/cancel-subscription
-zip cancel-lambda.zip index.mjs
-aws lambda create-function \
-  --function-name awsprepai-cancel-subscription \
-  --runtime nodejs20.x \
-  --role arn:aws:iam::441393059130:role/awsprepai-checkout-role \
-  --handler index.handler \
-  --zip-file fileb://cancel-lambda.zip \
-  --timeout 15 \
-  --environment Variables="{STRIPE_SECRET_KEY=<from Secrets Manager or your env>,COGNITO_USER_POOL_ID=us-east-1_bqEVRsi2b,COGNITO_CLIENT_ID=4j9mnlkhtu023takbj0qb1g10h}"
+cd ~/Desktop/Projects/CertiPrepAI/aws-lambdas/verify-session
+npm install
+zip -r verify-lambda.zip index.js node_modules
+aws lambda update-function-code --function-name awsprepai-verify-session --zip-file fileb://verify-lambda.zip
 ```
 
-**2. Create Function URL for cancel Lambda**
+**IMPORTANT — Always `npm install` + `zip -r` for Lambdas**
+Lambda runtime does NOT include third-party packages. Always bundle node_modules:
 ```bash
-aws lambda create-function-url-config \
-  --function-name awsprepai-cancel-subscription \
-  --auth-type NONE \
-  --cors '{"AllowOrigins":["*"],"AllowMethods":["POST"],"AllowHeaders":["Content-Type","Authorization"]}'
-```
-Copy the `FunctionUrl` from the output → add as `VITE_CANCEL_API` in Amplify env vars.
-
-**3. Redeploy awsprepai-db (CORS fix — certiprepai.com was missing)**
-```bash
-cd ~/Desktop/Projects/AWSPrepAI/aws-lambdas/awsprepai-db
-zip db-lambda.zip index.js
-aws lambda update-function-code \
-  --function-name awsprepai-db \
-  --zip-file fileb://db-lambda.zip
-```
-
-**4. Redeploy awsprepai-verify-session (CORS fix)**
-```bash
-cd ~/Desktop/Projects/AWSPrepAI/aws-lambdas/verify-session
-zip verify-lambda.zip index.js
-aws lambda update-function-code \
-  --function-name awsprepai-verify-session \
-  --zip-file fileb://verify-lambda.zip
-```
-
-**5. Fix awsprepai-checkout syntax error (redeploy)**
-```bash
-cd ~/Desktop/Projects/AWSPrepAI/amplify/functions/checkout
-zip checkout-lambda.zip index.js
-aws lambda update-function-code \
-  --function-name awsprepai-checkout \
-  --zip-file fileb://checkout-lambda.zip
-```
-
-**6. Merge branch to main → triggers Amplify deploy**
-```bash
-cd ~/Desktop/Projects/AWSPrepAI
-git checkout main
-git merge claude/full-repo-scan-debug-aTKPc
-git push origin main
+# Template for any Lambda redeploy:
+cd ~/Desktop/Projects/CertiPrepAI/aws-lambdas/<lambda-dir>
+npm install
+zip -r <name>-lambda.zip index.js node_modules   # or index.mjs
+aws lambda update-function-code --function-name <function-name> --zip-file fileb://<name>-lambda.zip
 ```
 
 ### 🟡 Important — This Week
-- Add progress tracking to Dashboard (score + questions attempted per cert)
-- Add password strength indicator to Signup form ✅ Done
 - Increase Lambda concurrency: Service Quotas → Lambda → Request increase to 1000
 
 ### 🟢 Nice to Have
-- Consolidate `docs/` static HTML into React app
-- CloudFront in front of Lambda URLs (~$1-2/mo extra — fits budget)
-- Optional MFA (TOTP) — Cognito supports it, needs UI toggle
+- Optional MFA (TOTP) — Cognito supports it, UI is ready, needs testing
 
 ---
 
@@ -155,6 +119,8 @@ git push origin main
 - **CertiPrepAI costs $0/mo** — Amplify, Lambda, Cognito, API Gateway all within free tier
 - **Monthly AWS bill ~$14-17** (WAF $6, WorkMail $3.89, VPC $3.21, Route53 $0.51, Secrets Manager $0.40)
 - **Budget: $20/mo** — CloudFront (~$1-2 extra) fits, don't add anything else
+- **awsprepai-db uses ID token** (`tokenUse: 'id'`) — frontend sends `user.idToken`, not `user.accessToken`
+- **CloudFront default behavior must allow POST** — GET/HEAD only by default, causes 403
 
 ## Test Accounts
 | Email | Password | Plan |
@@ -165,7 +131,7 @@ git push origin main
 ## Common Commands
 ```bash
 # Local dev
-cd ~/Desktop/Projects/AWSPrepAI/react-app && npm run dev
+cd ~/Desktop/Projects/CertiPrepAI/react-app && npm run dev
 
 # Build
 npm run build
