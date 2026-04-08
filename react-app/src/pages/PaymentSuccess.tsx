@@ -25,7 +25,7 @@ export default function PaymentSuccess() {
         })
         const data = await res.json()
         if (data.verified) {
-          setTier(data.tier || 'premium')
+          setTier(data.tier || 'monthly')
           await refreshUser()
           setStatus('success')
         } else {

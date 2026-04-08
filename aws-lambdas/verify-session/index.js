@@ -49,8 +49,7 @@ async function upgradeCognitoUser(email, tier) {
 }
 
 exports.handler = async (event) => {
-  const origin = event.headers?.origin || event.headers?.Origin || '';
-  const headers = corsHeaders(origin);
+  const headers = corsHeaders();
 
   if (event.requestContext?.http?.method === 'OPTIONS' || event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
@@ -76,10 +75,11 @@ exports.handler = async (event) => {
     const tier = session.metadata?.tier || 'lifetime';
     const email = session.customer_details?.email || (typeof session.customer === 'object' ? session.customer?.email : null);
 
-    if (email) {
-      try { await upgradeCognitoUser(email, tier); }
-      catch (err) { console.error('[verify-session] Cognito upgrade failed:', err.message); }
+    if (!email) {
+      return { statusCode: 400, headers, body: JSON.stringify({ verified: false, error: 'No email found in session' }) };
     }
+
+    await upgradeCognitoUser(email, tier);
 
     return { statusCode: 200, headers, body: JSON.stringify({ verified: true, tier }) };
   } catch (err) {
