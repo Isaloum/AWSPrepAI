@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
 import { getMFAStatus, setupTOTP, verifyAndEnableTOTP, disableTOTP } from '../lib/cognito'
 
-const CANCEL_API = import.meta.env.VITE_CANCEL_API as string | undefined
+const CANCEL_API = "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
 
 const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
   'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
