@@ -201,7 +201,14 @@ export default function Dashboard() {
         </div>
 
         {/* Monthly: current cert card */}
-        {tier === 'monthly' && monthlyCert !== undefined && (() => {
+        {tier === 'monthly' && (() => {
+          if (monthlyCert === undefined) return (
+            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: '#e5e7eb', borderRadius: '0.5rem', height: '1rem', width: '55%', marginBottom: '0.5rem' }} />
+              <div style={{ background: '#e5e7eb', borderRadius: '0.5rem', height: '0.75rem', width: '75%', marginBottom: '0.75rem' }} />
+              <div style={{ background: '#e5e7eb', borderRadius: '0.6rem', height: '2rem', width: '9rem' }} />
+            </div>
+          )
           if (!monthlyCert) {
             return (
               <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem' }}>
