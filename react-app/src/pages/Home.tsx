@@ -157,7 +157,7 @@ export default function Home() {
             { n: '12', label: 'Certifications' },
             { n: '3,120', label: 'Questions' },
             { n: '65', label: 'Questions / Mock Exam' },
-            { n: '90', label: 'Min Timer' },
+            { n: '130', label: 'Min Timer' },
             { n: '72%', label: 'AWS Pass Mark' },
           ].map(s => (
             <div key={s.label} style={{ textAlign: 'center', padding: '0.5rem' }}>
