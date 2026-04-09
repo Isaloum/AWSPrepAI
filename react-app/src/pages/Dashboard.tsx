@@ -136,9 +136,9 @@ export default function Dashboard() {
       })
       const data = await res.json()
       if (!res.ok) { setCancelError(data.error || 'Cancellation failed. Please try again.'); setCancelling(false); return }
-      // Success — sign out so stale JWT isn't used, send to pricing
-      await signOut()
-      navigate('/pricing?cancelled=1')
+      // Success — plan cancelled at period end, stay on dashboard
+      setCancelDialogOpen(false)
+      alert('Your plan has been cancelled. You will keep access until the end of your billing period.')
     } catch {
       setCancelError('Network error. Please try again.')
       setCancelling(false)
