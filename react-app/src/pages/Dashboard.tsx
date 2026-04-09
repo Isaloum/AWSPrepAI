@@ -51,6 +51,7 @@ export default function Dashboard() {
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState('')
+  const [cancelScheduled, setCancelScheduled] = useState(false)
   const [progress, setProgress] = useState<CertProgress[]>([])
   const [mfaEnabled, setMfaEnabled] = useState<boolean | null>(null)
   const [mfaSetup, setMfaSetup] = useState(false)
@@ -138,7 +139,7 @@ export default function Dashboard() {
       if (!res.ok) { setCancelError(data.error || 'Cancellation failed. Please try again.'); setCancelling(false); return }
       // Success — plan cancelled at period end, stay on dashboard
       setShowCancelModal(false)
-      alert('Your plan has been cancelled. You will keep access until the end of your billing period.')
+      setCancelScheduled(true)
     } catch {
       setCancelError('Network error. Please try again.')
       setCancelling(false)
@@ -177,21 +178,21 @@ export default function Dashboard() {
             </Link>
           )}
           {tier === 'monthly' && (
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
                 ↑ Upgrade to Yearly
               </Link>
               {CANCEL_API && (
-                <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
-                  Cancel Plan
-                </button>
+                cancelScheduled
+                  ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
+                  : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
               )}
             </div>
           )}
           {tier === 'yearly' && CANCEL_API && (
-            <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
-              Cancel Plan
-            </button>
+            cancelScheduled
+              ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
+              : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
           )}
           {isFullAccess && (
             <div style={{ padding: '0.5rem 1rem', background: '#ffffff80', borderRadius: '0.75rem', fontSize: '0.875rem', fontWeight: 600, color: info.color }}>
