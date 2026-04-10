@@ -50,8 +50,8 @@ export default function Certifications() {
         {/* ── Hero ── */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           {isMockMode && (
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1.5px solid #bbf7d0', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#15803d', marginBottom: '0.75rem' }}>
-              ⏱️ MOCK EXAM MODE — 65 questions · 130 minutes
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#dc2626', marginBottom: '0.75rem' }}>
+              🔴 EXAM MODE — 65 questions · 130 minutes · timed
             </div>
           )}
           <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>
@@ -184,9 +184,9 @@ export default function Certifications() {
 
                 {/* CTA */}
                 <button
-                  style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', fontWeight: 700, fontSize: '13px', border: 'none', borderRadius: '10px', cursor: 'pointer', marginTop: 'auto', boxShadow: '0 1px 3px rgba(37,99,235,0.25)' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)')}
+                  style={{ width: '100%', padding: '10px', background: isMockMode ? 'linear-gradient(135deg, #dc2626, #b91c1c)' : 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', fontWeight: 700, fontSize: '13px', border: 'none', borderRadius: '10px', cursor: 'pointer', marginTop: 'auto', boxShadow: isMockMode ? '0 1px 3px rgba(220,38,38,0.25)' : '0 1px 3px rgba(37,99,235,0.25)' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = isMockMode ? 'linear-gradient(135deg, #b91c1c, #991b1b)' : 'linear-gradient(135deg, #1d4ed8, #1e40af)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = isMockMode ? 'linear-gradient(135deg, #dc2626, #b91c1c)' : 'linear-gradient(135deg, #2563eb, #1d4ed8)')}
                 >
                   {isMockMode ? '⏱️ Start Mock Exam →' : 'Start Practicing →'}
                 </button>
