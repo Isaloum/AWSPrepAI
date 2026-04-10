@@ -54,7 +54,7 @@ export default function Dashboard() {
   const [cancelError, setCancelError] = useState('')
   const [cancelScheduled, setCancelScheduled] = useState(false)
   const [progress, setProgress] = useState<CertProgress[]>([])
-  const [mfaEnabled, setMfaEnabled] = useState<boolean | null>(null)
+  const [mfaEnabled, setMfaEnabled] = useState<boolean>(false)
   const [mfaSetup, setMfaSetup] = useState(false)
   const [mfaSecret, setMfaSecret] = useState('')
   const [mfaCode, setMfaCode] = useState('')
@@ -353,7 +353,7 @@ export default function Dashboard() {
       </div>
 
       {/* Security / MFA section */}
-      {mfaEnabled !== null && (
+      {(
         <div style={{ marginTop: '2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
@@ -375,9 +375,11 @@ export default function Dashboard() {
 
           {mfaSetup && mfaSecret && (
             <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f3f4f6' }}>
-              <p style={{ fontSize: '0.83rem', color: '#374151', marginBottom: '0.75rem' }}>
-                Scan this QR code with <strong>Google Authenticator</strong> or <strong>Authy</strong>:
-              </p>
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.5rem', padding: '0.65rem 0.85rem', marginBottom: '0.85rem', fontSize: '0.78rem', color: '#1e40af' }}>
+                <strong>Step 1:</strong> Open <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone<br />
+                <strong>Step 2:</strong> Tap <strong>+</strong> → <strong>Scan QR code</strong><br />
+                <strong>Step 3:</strong> Point your phone at the code below
+              </div>
               {qrCodeUrl && (
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
                   <img src={qrCodeUrl} alt="MFA QR Code" style={{ width: '180px', height: '180px', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }} />
