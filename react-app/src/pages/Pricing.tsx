@@ -172,7 +172,7 @@ export default function Pricing() {
         {/* Plans Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: '1.25rem',
           marginBottom: '4rem',
           alignItems: 'stretch',
