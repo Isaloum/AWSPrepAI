@@ -79,7 +79,7 @@ export default function CertDetail() {
   // Load free usage (free tier only)
   useEffect(() => {
     if (!user || tier !== 'free') { setUsageLoaded(true); return }
-    getFreeUsage(user.idToken).then((data) => {
+    getFreeUsage(user.accessToken).then((data) => {
       setUsedCount(data?.count ?? 0)
       setUsageLoaded(true)
     }).catch(() => {
@@ -92,7 +92,7 @@ export default function CertDetail() {
   // Load monthly cert selection (monthly tier only)
   useEffect(() => {
     if (!user || tier !== 'monthly') { setMonthlyLoaded(true); return }
-    getMonthlyCert(user.idToken).then((data) => {
+    getMonthlyCert(user.accessToken).then((data) => {
       setMonthlySelection(data)
       setMonthlyLoaded(true)
     }).catch(() => {
@@ -119,7 +119,7 @@ export default function CertDetail() {
   const handleSelectMonthlyCert = async () => {
     if (!user || !certId) return
     setSwitching(true)
-    await setMonthlyCert(certId, user.idToken)
+    await setMonthlyCert(certId, user.accessToken)
     setMonthlySelection({ cert_id: certId, selected_at: new Date().toISOString() })
     setSwitching(false)
   }
@@ -142,12 +142,12 @@ export default function CertDetail() {
     if (tier === 'free' && user) {
       const newCount = usedCount + 1
       setUsedCount(newCount)
-      await updateFreeUsage(certId || '', newCount, user.idToken)
+      await updateFreeUsage(certId || '', newCount, user.accessToken)
     }
 
     // Track progress for all authenticated users
     if (user && certId) {
-      updateProgress(certId, selected === filtered[current].answer, user.idToken).catch(() => {})
+      updateProgress(certId, selected === filtered[current].answer, user.accessToken).catch(() => {})
     }
   }, [selected, revealed, filtered, current, tier, usedCount, user, certId])
 

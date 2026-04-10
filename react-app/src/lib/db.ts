@@ -4,7 +4,7 @@
  * Uses Cognito ID token (has aud claim required for JWT verification).
  */
 
-const DB_API = "https://dzhvi7oz29.execute-api.us-east-1.amazonaws.com"
+const DB_API = import.meta.env.VITE_DB_API_URL as string
 
 async function call(action: string, data: object | null, idToken: string) {
   const res = await fetch(DB_API, {
