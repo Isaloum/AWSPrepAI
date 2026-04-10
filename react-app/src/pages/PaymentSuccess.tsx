@@ -79,7 +79,6 @@ export default function PaymentSuccess() {
     monthly: '📦 Monthly Plan',
     yearly: '📅 Yearly Plan',
     lifetime: '🔥 Lifetime Plan',
-    bundle3: '🎁 3-Cert Bundle',
   }
 
   return (

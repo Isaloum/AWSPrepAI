@@ -25,7 +25,7 @@ export default function Footer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             {[
               { to: '/certifications', label: 'All Certifications' },
-              { to: '/certifications', label: 'Mock Exams' },
+              { to: '/certifications?mode=mock', label: 'Mock Exams' },
               { to: '/sample-questions', label: 'Sample Questions' },
             ].map(l => (
               <Link key={l.label} to={l.to} style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
@@ -101,10 +101,10 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '1.25rem 1.5rem', maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
         <span style={{ fontSize: '0.78rem', color: '#475569' }}>© {new Date().getFullYear()} CertiPrepAI. Not affiliated with Amazon Web Services.</span>
-        <a href="https://github.com/Isaloum/CertiPrepAI" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
+        <a href="mailto:support@certiprepai.com" style={{ color: '#475569', fontSize: '0.78rem', textDecoration: 'none' }}
           onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
           onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
-        >GitHub ↗</a>
+        >support@certiprepai.com</a>
       </div>
     </footer>
   )
