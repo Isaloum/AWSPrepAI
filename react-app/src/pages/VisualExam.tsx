@@ -291,6 +291,14 @@ export default function VisualExam() {
               {CAT_LABELS[q.cat]}
             </div>
 
+            {/* Architecture diagram preview — always visible */}
+            {ARCH_DIAGRAMS[q.id] && !answered && (
+              <div style={{ marginBottom: '20px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>📐 Architecture Diagram</div>
+                <ArchDiagram questionId={q.id} />
+              </div>
+            )}
+
             <p style={{ fontSize: '1rem', fontWeight: 600, color: '#1e293b', lineHeight: '1.6', margin: '0 0 20px' }}>
               {q.q}
             </p>
