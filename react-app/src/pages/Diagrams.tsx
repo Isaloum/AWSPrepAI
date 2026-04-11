@@ -523,7 +523,7 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
         // Label position: midpoint offset perpendicular toward "upper" side
         const mx = (lax + lbx) / 2, my = (lay + lby) / 2
         const sign = (py < 0 ? 1 : py > 0 ? -1 : px < 0 ? -1 : 1) * (e.labelFlip ? -1 : 1)
-        const lw = e.label ? Math.max(e.label.length * 6.8 + 20, 40) : 0
+        const lw = e.label ? Math.max(e.label.length * 8.2 + 28, 50) : 0
         // Offset must clear the pill's projected extent onto the perpendicular direction
         const lo = Math.max(55, lw / 2 * Math.abs(px) + 13 * Math.abs(py) + 10)
         const llx = mx + sign * px * lo
@@ -541,10 +541,10 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
             {/* Label pill floating above/beside the line */}
             {e.label && (
               <g filter="url(#ls)">
-                <rect x={llx - lw / 2} y={lly - 11} width={lw} height={22} rx="11" fill={edgeColor} />
+                <rect x={llx - lw / 2} y={lly - 14} width={lw} height={28} rx="14" fill={edgeColor} />
                 <text
-                  x={llx} y={lly + 4.5}
-                  fontSize="10.5" fontWeight="700" fill="#fff"
+                  x={llx} y={lly + 5}
+                  fontSize="13" fontWeight="700" fill="#fff"
                   textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif"
                 >
                   {e.label}
