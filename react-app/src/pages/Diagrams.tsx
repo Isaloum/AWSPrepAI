@@ -17,6 +17,7 @@ interface DiagramEdge {
   to: string
   label?: string
   dashed?: boolean
+  labelFlip?: boolean
 }
 
 interface Diagram {
@@ -77,8 +78,8 @@ const DIAGRAMS: Diagram[] = [
       { id: 'ec2a',  label: 'EC2\n(AZ-a)',              x: 110, y: 330, color: '#FF9900' },
       { id: 'ec2b',  label: 'EC2\n(AZ-b)',              x: 310, y: 330, color: '#FF9900' },
       { id: 'ec2c',  label: 'EC2\n(AZ-c)',              x: 510, y: 330, color: '#FF9900' },
-      { id: 'asg',   label: 'Auto Scaling\nGroup',      x: 210, y: 470, color: '#16a34a' },
-      { id: 'cw',    label: 'CloudWatch\nAlarms',       x: 470, y: 470, color: '#0369A1' },
+      { id: 'asg',   label: 'Auto Scaling\nGroup',      x: 310, y: 470, color: '#16a34a' },
+      { id: 'cw',    label: 'CloudWatch\nAlarms',       x: 530, y: 470, color: '#0369A1' },
     ],
     edges: [
       { from: 'users', to: 'alb' },
@@ -88,7 +89,7 @@ const DIAGRAMS: Diagram[] = [
       { from: 'asg',   to: 'ec2a' },
       { from: 'asg',   to: 'ec2b' },
       { from: 'asg',   to: 'ec2c' },
-      { from: 'cw',    to: 'asg',  label: 'scale trigger' },
+      { from: 'cw',    to: 'asg',  label: 'scale trigger', labelFlip: true },
     ],
   },
   {
@@ -501,7 +502,7 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
 
         // Label position: midpoint offset perpendicular toward "upper" side
         const mx = (lax + lbx) / 2, my = (lay + lby) / 2
-        const sign = py < 0 ? 1 : py > 0 ? -1 : px < 0 ? -1 : 1
+        const sign = (py < 0 ? 1 : py > 0 ? -1 : px < 0 ? -1 : 1) * (e.labelFlip ? -1 : 1)
         const lw = e.label ? Math.max(e.label.length * 6.8 + 20, 40) : 0
         // Offset must clear the pill's projected extent onto the perpendicular direction
         const lo = Math.max(42, lw / 2 * Math.abs(px) + 11 * Math.abs(py) + 10)
