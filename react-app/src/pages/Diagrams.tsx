@@ -351,27 +351,30 @@ const DIAGRAMS: Diagram[] = [
     category: 'cost',
     description: 'AWS S3 has 7 storage classes. Lifecycle policies transition objects automatically based on age — moving from expensive fast-access tiers to cheap archive tiers over time.',
     keyPoints: [
-      'S3 Standard: frequent access, ms retrieval. Most expensive.',
-      'Intelligent-Tiering: auto-moves objects between tiers based on access patterns. No retrieval fee.',
-      'Standard-IA / One Zone-IA: infrequent access. Retrieval fee applies. One Zone = single AZ, cheaper.',
-      'Glacier Instant: archive with ms retrieval. Glacier Flexible: minutes–hours. Deep Archive: 12–48 hrs, cheapest.',
+      '① S3 Standard: frequent access, ms retrieval. Most expensive.',
+      '② Intelligent-Tiering: auto-moves data between access tiers. No retrieval fee.',
+      '③ S3 Standard-IA: infrequent access, cheaper than Standard. Retrieval fee applies.',
+      '④ One Zone-IA: same as Standard-IA but single AZ — cheaper, less resilient.',
+      '⑤ Glacier Instant: archive tier, still millisecond retrieval.',
+      '⑥ Glacier Flexible: archive, minutes–hours retrieval. Lower cost.',
+      '⑦ Glacier Deep Archive: cheapest of all. 12–48 hr retrieval. Compliance archives.',
     ],
     nodes: [
-      { id: 'std',      label: 'S3 Standard\n0+ days',             x: 310, y: 70,  color: '#1A73E8' },
-      { id: 'int-tier', label: 'Intelligent\nTiering',             x: 90,  y: 240, color: '#0891b2' },
-      { id: 'std-ia',   label: 'S3 Standard-IA\nafter 30 days',    x: 310, y: 240, color: '#16a34a' },
-      { id: 'one-zone', label: 'One Zone-IA\nSingle AZ',           x: 540, y: 240, color: '#ca8a04' },
-      { id: 'gl-inst',  label: 'Glacier Instant\nafter 90 days',   x: 310, y: 420, color: '#7C3AED' },
-      { id: 'gl-flex',  label: 'Glacier Flexible\nafter 180 days', x: 310, y: 590, color: '#475569' },
-      { id: 'deep',     label: 'Glacier Deep\nArchive\n365+ days', x: 310, y: 770, color: '#374151' },
+      { id: 'std',      label: 'S3 Standard\n0+ days',             x: 310, y: 80,  color: '#1A73E8' },
+      { id: 'int-tier', label: 'Intelligent\nTiering',             x: 310, y: 220, color: '#0891b2' },
+      { id: 'std-ia',   label: 'S3 Standard-IA\nafter 30 days',    x: 310, y: 360, color: '#16a34a' },
+      { id: 'one-zone', label: 'One Zone-IA\nSingle AZ',           x: 310, y: 500, color: '#ca8a04' },
+      { id: 'gl-inst',  label: 'Glacier Instant\nafter 90 days',   x: 310, y: 640, color: '#7C3AED' },
+      { id: 'gl-flex',  label: 'Glacier Flexible\nafter 180 days', x: 310, y: 780, color: '#475569' },
+      { id: 'deep',     label: 'Glacier Deep\nArchive\n365+ days', x: 310, y: 930, color: '#374151' },
     ],
     edges: [
-      { from: 'std',     to: 'std-ia' },
-      { from: 'std',     to: 'int-tier', label: 'auto-tier', dashed: true },
-      { from: 'std-ia',  to: 'gl-inst' },
-      { from: 'std-ia',  to: 'one-zone', label: 'single AZ', dashed: true },
-      { from: 'gl-inst', to: 'gl-flex' },
-      { from: 'gl-flex', to: 'deep' },
+      { from: 'std',      to: 'int-tier', label: 'auto-tier' },
+      { from: 'int-tier', to: 'std-ia' },
+      { from: 'std-ia',   to: 'one-zone', label: 'single AZ' },
+      { from: 'one-zone', to: 'gl-inst' },
+      { from: 'gl-inst',  to: 'gl-flex' },
+      { from: 'gl-flex',  to: 'deep' },
     ],
   },
   {
@@ -459,7 +462,7 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
   return (
     <svg
       viewBox={`${vx} ${vy} ${vw} ${vh}`}
-      style={{ width: '100%', height: 'auto', maxHeight: '500px', display: 'block' }}
+      style={{ width: '100%', height: 'auto', maxHeight: '700px', display: 'block' }}
     >
       <defs>
         <filter id="ns" x="-30%" y="-30%" width="160%" height="160%">
