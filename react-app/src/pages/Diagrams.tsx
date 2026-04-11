@@ -302,14 +302,14 @@ const DIAGRAMS: Diagram[] = [
       { id: 'client', label: 'Client\n(Browser/App)', x: 310, y: 60,  color: '#475569' },
       { id: 'apigw',  label: 'API Gateway',           x: 310, y: 190, color: '#8B5CF6' },
       { id: 'lambda', label: 'Lambda\nFunction',      x: 310, y: 320, color: '#FF9900' },
-      { id: 'dynamo', label: 'DynamoDB',               x: 160, y: 450, color: '#1A73E8' },
-      { id: 's3',     label: 'S3\n(files)',            x: 460, y: 450, color: '#3F8624' },
+      { id: 'dynamo', label: 'DynamoDB\n(NoSQL)',      x: 140, y: 470, color: '#1A73E8' },
+      { id: 's3',     label: 'S3\n(files)',            x: 480, y: 470, color: '#3F8624' },
     ],
     edges: [
       { from: 'client', to: 'apigw',  label: 'HTTPS' },
       { from: 'apigw',  to: 'lambda', label: 'invoke' },
-      { from: 'lambda', to: 'dynamo', label: 'read/write' },
-      { from: 'lambda', to: 's3',     label: 'store files' },
+      { from: 'lambda', to: 'dynamo', label: 'read/write',  labelFlip: true },
+      { from: 'lambda', to: 's3',     label: 'store files', labelFlip: true },
     ],
   },
   {
