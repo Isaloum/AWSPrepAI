@@ -663,23 +663,23 @@ export default function Diagrams() {
                 </button>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'stretch' }}>
                 {/* SVG */}
                 <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '20px', border: '1px solid #e2e8f0' }}>
                   <DiagramSVG nodes={activeDiagram.nodes} edges={activeDiagram.edges} />
                 </div>
 
                 {/* Info */}
-                <div>
-                  <p style={{ color: '#475569', lineHeight: '1.7', fontSize: '0.93rem', marginBottom: '20px' }}>{activeDiagram.description}</p>
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <p style={{ color: '#475569', lineHeight: '1.7', fontSize: '1rem', marginBottom: '20px' }}>{activeDiagram.description}</p>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
                     Key Exam Points
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', flexGrow: 1, gap: '4px' }}>
                     {activeDiagram.keyPoints.map((point, i) => (
-                      <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '10px 0', borderBottom: '1px solid #f1f5f9' }}>
                         <span style={{ color: '#2563eb', fontWeight: 700, flexShrink: 0, marginTop: '2px' }}>→</span>
-                        <span style={{ color: '#374151', fontSize: '0.88rem', lineHeight: '1.5' }}>{point}</span>
+                        <span style={{ color: '#374151', fontSize: '0.97rem', lineHeight: '1.55' }}>{point}</span>
                       </div>
                     ))}
                   </div>
