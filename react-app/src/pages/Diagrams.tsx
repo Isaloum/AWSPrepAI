@@ -496,7 +496,7 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
 
         // Label position: midpoint offset perpendicular toward "upper" side
         const mx = (lax + lbx) / 2, my = (lay + lby) / 2
-        const sign = py < 0 ? 1 : py > 0 ? -1 : px < 0 ? 1 : -1
+        const sign = py < 0 ? 1 : py > 0 ? -1 : px < 0 ? -1 : 1
         const lo = 42
         const llx = mx + sign * px * lo
         const lly = my + sign * py * lo
