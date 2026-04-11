@@ -60,16 +60,14 @@ awsprepai-cancel-subscription:  STRIPE_SECRET_KEY, COGNITO_USER_POOL_ID, COGNITO
 
 ---
 
-## Current Status (as of April 9, 2026)
+## Current Status (as of April 11, 2026)
 
 ### ✅ Done
 - Login fixed (email normalization `.trim().toLowerCase()` in cognito.ts, Login.tsx, Signup.tsx)
 - Password policy enforced in Cognito (uppercase + lowercase + numbers + symbols)
-- Build #142 deployed successfully
 - Study Guide page added (`/study-guide`)
 - CORS fix committed for `awsprepai-db` and `awsprepai-verify-session` (added `certiprepai.com`)
-- Cancel subscription Lambda code written (`aws-lambdas/cancel-subscription/index.mjs`)
-- Cancel button + confirmation modal added to `Dashboard.tsx`
+- Cancel subscription Lambda + cancel button + confirmation modal in `Dashboard.tsx`
 - Password strength indicator added to `Signup.tsx`
 - `CHECKOUT_API` moved to `VITE_CHECKOUT_API` env var in `Pricing.tsx` and `Signup.tsx`
 - MFA (TOTP) support added — setup, login flow, Dashboard toggle
@@ -77,17 +75,22 @@ awsprepai-cancel-subscription:  STRIPE_SECRET_KEY, COGNITO_USER_POOL_ID, COGNITO
 - docs/ pages replaced with redirect stubs → certiprepai.com
 - CloudFront distribution in front of all Lambda URLs — POST allowed on default behavior ✓
 - awsprepai-db tokenUse fixed ('access' → 'id' to match frontend ID token)
-- awsprepai-db redeployed with `npm install` + `zip -r` (node_modules included, CodeSize ~3.7MB)
-- awsprepai-cancel-subscription deployed (node_modules included, CodeSize ~5.9MB)
-- Repo renamed AWSPrepAI → CertiPrepAI on GitHub and locally
-- awsprepai-checkout redeployed with node_modules (1.9 MB) — stripe bundled ✅
-- awsprepai-verify-session redeployed with node_modules + CORS fix (5.6 MB) ✅
+- All Lambdas redeployed with node_modules bundled ✅
 - Footer: GitHub link removed, support@certiprepai.com added
-- Home.tsx: mock exam timer corrected to 130 min, monthly plan copy corrected
-- Pricing.tsx: monthly plan copy corrected (1 cert at a time)
-- PaymentSuccess.tsx: dead bundle3 label removed
-- Mock Exam: dark navy header + red EXAM badge to visually distinguish from Practice mode
-- Practice Quiz: green PRACTICE badge added to header
+- Home.tsx: mock exam timer corrected to 130 min
+- Mock Exam: dark navy header + red EXAM badge
+- Practice Quiz: green PRACTICE badge
+- **Architecture Diagrams (`/diagrams`) — full professional SVG renderer** (Deployment ~200)
+  - Ray-box intersection for exact arrow connection points
+  - Straight lines only — NO curves, NO bezier
+  - Per-node gradient fills + drop shadows
+  - Dynamic label pill offset: `lo = max(42, lw/2 * |px| + 11 * |py| + 10)` — pills never overlap arrows
+  - viewBox auto-centers content with PAD=70
+  - All 11 diagrams redesigned with symmetric, grid-based layouts
+- **VisualExam diagrams** — same professional renderer applied to all 3 arch diagrams
+- **SEO** — `sitemap.xml` and `robots.txt` live in `react-app/public/`
+  - Site already indexed on Google, showing 2 results ✅
+  - Sitemap includes all real public pages only
 
 **IMPORTANT — Always `npm install` + `zip -r` for Lambdas**
 Lambda runtime does NOT include third-party packages. Always bundle node_modules:
@@ -99,10 +102,27 @@ zip -r <name>-lambda.zip index.js node_modules   # or index.mjs
 aws lambda update-function-code --function-name <function-name> --zip-file fileb://<name>-lambda.zip
 ```
 
+**IMPORTANT — Diagram renderer key facts**
+- File: `react-app/src/pages/Diagrams.tsx` — `DiagramSVG` function
+- File: `react-app/src/pages/VisualExam.tsx` — `ArchDiagram` function (same renderer)
+- Node width: `NW=140`, height: 40 (1 line) / 54 (2 lines) / 68 (3 lines)
+- Bidirectional edges: offset ±9px perpendicular — always check for visual crossing
+- Label pill: `lo = Math.max(42, lw/2 * Math.abs(px) + 11 * Math.abs(py) + 10)`
+- When adding new diagrams: space nodes ≥200px apart horizontally, use grid layouts not triangles
+
+**IMPORTANT — Git + Amplify deployment**
+- Sandbox git commits do NOT auto-push to GitHub — user must `git pull && git push` from their terminal
+- If Amplify doesn't trigger after push: `git commit --allow-empty -m "trigger redeploy" && git push`
+- CloudFront cache (Amplify CDN ID: `E149XOHRPMJ4D1`) must be invalidated after each deploy:
+```bash
+git push origin main && sleep 100 && aws cloudfront create-invalidation --distribution-id E149XOHRPMJ4D1 --paths "/*"
+```
+- If `.git/HEAD.lock` blocks commit: `rm -f .git/HEAD.lock .git/index.lock`
+
 ### 🟡 Important — This Week
 - Increase Lambda concurrency: Service Quotas → Lambda → Request increase to 1000
 - MFA end-to-end testing (TOTP setup + login flow)
-- Add sitemap.xml and robots.txt for SEO
+- Submit sitemap to Google Search Console → Sitemaps → `https://certiprepai.com/sitemap.xml`
 
 ### 🟢 Nice to Have
 - Analytics instrumentation (Plausible or similar, free tier)
