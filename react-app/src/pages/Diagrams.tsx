@@ -383,18 +383,23 @@ const DIAGRAMS: Diagram[] = [
     category: 'cost',
     description: 'AWS offers multiple EC2 pricing models. The right choice depends on workload predictability, duration, and fault tolerance. Mixing models is the optimal strategy.',
     keyPoints: [
-      'On-Demand: pay per second. No commitment. Most expensive. Best for unpredictable short-term.',
-      'Reserved (1 or 3 yr): up to 72% off. Best for steady, predictable 24/7 workloads.',
-      'Spot: up to 90% off. Can be interrupted with 2-min notice. Best for batch/fault-tolerant.',
-      'Savings Plans: like Reserved but more flexible — commit to $/hr spend, not specific instance type.',
+      'On-Demand: pay per second, no commitment. Most expensive. Best for unpredictable workloads.',
+      'Savings Plans: commit to a $/hr spend (1 or 3 yr). Flexible — any instance type or region. Saves up to 66%.',
+      'Reserved Instances: commit to specific instance type + region (1 or 3 yr). Saves up to 72%.',
+      'Spot: bid on spare AWS capacity. Up to 90% off — but AWS can interrupt with 2-min notice.',
+      'Mix models: use Reserved/Savings Plans for baseline, On-Demand for spikes, Spot for batch jobs.',
     ],
     nodes: [
-      { id: 'od',   label: 'On-Demand\n(baseline)',     x: 90,  y: 180, color: '#475569' },
-      { id: 'sp',   label: 'Savings Plans\n(-66%)',      x: 290, y: 180, color: '#2563eb' },
-      { id: 'ri',   label: 'Reserved\n(-72%)',           x: 490, y: 180, color: '#16a34a' },
-      { id: 'spot', label: 'Spot\n(-90%)',               x: 690, y: 180, color: '#EA580C' },
+      { id: 'od',   label: 'On-Demand\nPay per second',          x: 310, y: 80,  color: '#475569' },
+      { id: 'sp',   label: 'Savings Plans\n−66% vs On-Demand',   x: 310, y: 250, color: '#2563eb' },
+      { id: 'ri',   label: 'Reserved Instance\n−72% vs On-Demand', x: 310, y: 420, color: '#16a34a' },
+      { id: 'spot', label: 'Spot Instances\n−90% vs On-Demand',  x: 310, y: 590, color: '#EA580C' },
     ],
-    edges: [],
+    edges: [
+      { from: 'od',   to: 'sp',   label: 'commit $/hr' },
+      { from: 'sp',   to: 'ri',   label: 'commit type' },
+      { from: 'ri',   to: 'spot', label: 'accept risk' },
+    ],
   },
 ]
 
