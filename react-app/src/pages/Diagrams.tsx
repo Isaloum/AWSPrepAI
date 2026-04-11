@@ -103,11 +103,11 @@ const DIAGRAMS: Diagram[] = [
       'Can have both: Multi-AZ primary + Read Replicas for reads',
     ],
     nodes: [
-      { id: 'app',      label: 'Application',        x: 310, y: 60,  color: '#475569' },
-      { id: 'primary',  label: 'RDS Primary\n(AZ-a)', x: 170, y: 210, color: '#1A73E8' },
-      { id: 'standby',  label: 'RDS Standby\n(AZ-b)', x: 460, y: 210, color: '#9ca3af' },
-      { id: 'replica1', label: 'Read\nReplica 1',     x: 100, y: 380, color: '#16a34a' },
-      { id: 'replica2', label: 'Read\nReplica 2',     x: 310, y: 380, color: '#16a34a' },
+      { id: 'app',      label: 'Application',         x: 240, y: 60,  color: '#475569' },
+      { id: 'primary',  label: 'RDS Primary\n(AZ-a)', x: 240, y: 200, color: '#1A73E8' },
+      { id: 'standby',  label: 'RDS Standby\n(AZ-b)', x: 500, y: 200, color: '#9ca3af' },
+      { id: 'replica1', label: 'Read\nReplica 1',     x: 110, y: 370, color: '#16a34a' },
+      { id: 'replica2', label: 'Read\nReplica 2',     x: 370, y: 370, color: '#16a34a' },
     ],
     edges: [
       { from: 'app',     to: 'primary',  label: 'writes' },
