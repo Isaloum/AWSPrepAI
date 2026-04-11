@@ -419,12 +419,12 @@ const CAT_COLORS: Record<string, string> = {
 }
 
 function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge[] }) {
-  const NW = 140 // node width
+  const NW = 170 // node width
 
   // Node height based on line count
   const NH = (n: DiagramNode) => {
     const lines = n.label.split('\n').length
-    return lines >= 3 ? 68 : lines === 2 ? 54 : 40
+    return lines >= 3 ? 82 : lines === 2 ? 64 : 50
   }
 
   // Gradient: lighter top to base color bottom
@@ -452,10 +452,11 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
   // Auto viewBox — fit all nodes with padding
   const PAD = 70
   const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y)
+  const maxHH = Math.max(...nodes.map(n => NH(n) / 2))
   const x0 = Math.min(...xs) - NW / 2 - PAD
   const x1 = Math.max(...xs) + NW / 2 + PAD
-  const y0 = Math.min(...ys) - 40 - PAD
-  const y1 = Math.max(...ys) + 40 + PAD
+  const y0 = Math.min(...ys) - maxHH - PAD
+  const y1 = Math.max(...ys) + maxHH + PAD
   const contentW = x1 - x0
   const contentH = y1 - y0
   const vw = Math.max(520, contentW)
@@ -572,8 +573,8 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
             {/* Text */}
             {lines.map((line, li) => (
               <text key={li}
-                x={n.x} y={n.y + (li - (lines.length - 1) / 2) * 16 + 5}
-                textAnchor="middle" fontSize="12" fontWeight="700" fill="#fff"
+                x={n.x} y={n.y + (li - (lines.length - 1) / 2) * 19 + 6}
+                textAnchor="middle" fontSize="14" fontWeight="700" fill="#fff"
                 fontFamily="system-ui, -apple-system, sans-serif"
                 style={{ letterSpacing: '0.015em' }}
               >
