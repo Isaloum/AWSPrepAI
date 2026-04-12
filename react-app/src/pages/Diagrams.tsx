@@ -674,7 +674,7 @@ export default function Diagrams() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '24px', alignItems: 'stretch' }}>
                 {/* SVG */}
-                <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '20px', border: '1px solid #e2e8f0' }}>
+                <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '20px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <DiagramSVG nodes={activeDiagram.nodes} edges={activeDiagram.edges} />
                 </div>
 
