@@ -339,9 +339,12 @@ function ArchDiagram({ questionId }: { questionId: number }) {
 
   const PAD = 44
   const xs = diagram.nodes.map(n=>n.x), ys = diagram.nodes.map(n=>n.y)
-  const x0 = Math.min(...xs)-NW/2-PAD, x1 = Math.max(...xs)+NW/2+PAD
-  const y0 = Math.min(...ys)-38-PAD,   y1 = Math.max(...ys)+38+PAD
-  const vw = Math.max(400, x1-x0), vh = Math.max(300, y1-y0)
+  const cx0 = Math.min(...xs)-NW/2-PAD, cx1 = Math.max(...xs)+NW/2+PAD
+  const cy0 = Math.min(...ys)-38-PAD,   cy1 = Math.max(...ys)+38+PAD
+  const contentW = cx1-cx0, contentH = cy1-cy0
+  const vw = Math.max(400, contentW), vh = Math.max(300, contentH)
+  const vx = cx0 - (vw - contentW) / 2
+  const vy = cy0 - (vh - contentH) / 2
 
   return (
     <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '16px', marginBottom: '20px' }}>
@@ -349,7 +352,7 @@ function ArchDiagram({ questionId }: { questionId: number }) {
         📐 Architecture Diagram
         <span style={{ fontWeight: 500, color: '#94a3b8', textTransform: 'none', letterSpacing: 0, fontSize: '0.72rem' }}>— {diagram.label}</span>
       </div>
-      <svg viewBox={`${x0} ${y0} ${vw} ${vh}`} style={{ width:'100%', height:'auto', maxHeight:'320px', display:'block' }}>
+      <svg viewBox={`${vx} ${vy} ${vw} ${vh}`} style={{ width:'100%', height:'auto', maxHeight:'320px', display:'block' }}>
         <defs>
           <filter id="ans" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="3" stdDeviation="5" floodColor="#0f172a" floodOpacity="0.14"/>
@@ -370,8 +373,8 @@ function ArchDiagram({ questionId }: { questionId: number }) {
           </pattern>
         </defs>
 
-        <rect x={x0} y={y0} width={vw} height={vh} rx="12" fill="#f1f5f9"/>
-        <rect x={x0} y={y0} width={vw} height={vh} rx="12" fill="url(#adg)"/>
+        <rect x={vx} y={vy} width={vw} height={vh} rx="12" fill="#f1f5f9"/>
+        <rect x={vx} y={vy} width={vw} height={vh} rx="12" fill="url(#adg)"/>
 
         {/* Arrows */}
         {diagram.arrows.map((arrow, i) => {
