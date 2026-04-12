@@ -1,487 +1,399 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
-interface VisualQuestion {
-  id: number
-  cat: string
-  q: string
-  options: string[]
-  answer: number
-  explain: string
+// ── Types ────────────────────────────────────────────────────────────────────
+type DNode   = { id: string; label: string; icon: string; color: string; x: number; y: number }
+type ConnKey = string   // "a:b" — always sorted alphabetically for uniqueness
+
+interface Question {
+  id:       number
+  scenario: string
+  task:     string
+  hint:     string
+  nodes:    DNode[]
+  correct:  ConnKey[]
 }
 
-const visualQuestions: VisualQuestion[] = [
-  { id: 1, cat: 'design-resilient', q: "A company needs to deploy a highly available web application that can handle unexpected traffic spikes. The application must distribute traffic across multiple Availability Zones and scale automatically based on demand. Which solution best meets these requirements?", options: ["A) Single EC2 instance with an Elastic IP address", "B) Auto Scaling Group behind an Application Load Balancer deployed across multiple AZs", "C) AWS Lambda with Amazon API Gateway", "D) EC2 instances in a single Availability Zone behind an Amazon CloudFront distribution"], answer: 1, explain: "An Auto Scaling Group automatically adjusts the number of EC2 instances based on demand. The Application Load Balancer distributes traffic across healthy instances in multiple Availability Zones, providing both elasticity and high availability." },
-  { id: 2, cat: 'design-secure', q: "A company stores sensitive customer data in Amazon S3. A compliance requirement mandates that all data must be encrypted at rest using customer-managed keys so the company can rotate or revoke keys at any time. Which solution meets this requirement?", options: ["A) Enable S3 server-side encryption with Amazon S3-managed keys (SSE-S3)", "B) Enable S3 server-side encryption with AWS KMS customer-managed keys (SSE-KMS)", "C) Enable S3 server-side encryption with customer-provided keys (SSE-C)", "D) Enable client-side encryption before uploading to S3"], answer: 1, explain: "SSE-KMS uses AWS KMS customer-managed keys (CMKs). The company controls key rotation and can revoke access at any time via IAM policies, meeting the compliance requirement for customer-managed encryption keys." },
-  { id: 3, cat: 'design-resilient', q: "A company runs a critical e-commerce application with a relational database. The application requires a recovery point objective (RPO) of 1 hour and a recovery time objective (RTO) of 15 minutes. Which solution meets these requirements at the LOWEST cost?", options: ["A) Amazon RDS Multi-AZ deployment with automated backups", "B) Amazon RDS read replica promoted on failure", "C) Amazon Aurora Global Database", "D) Amazon RDS with manual snapshots taken daily"], answer: 0, explain: "RDS Multi-AZ maintains a synchronous standby replica that can automatically fail over within minutes (RTO < 15 min). Automated backups can be configured up to every 5 minutes with Point-in-Time Recovery (RPO <= 1 hour). This is the most cost-effective solution meeting both requirements." },
-  { id: 4, cat: 'design-performant', q: "A company has a web application that frequently reads the same product catalog data from an Amazon RDS MySQL database. The database is experiencing high read traffic causing slow response times. The data changes only a few times per day. Which solution improves read performance with MINIMAL application changes?", options: ["A) Add Amazon ElastiCache for Redis as a caching layer in front of RDS", "B) Create an RDS Read Replica and update the application to send reads there", "C) Migrate to Amazon DynamoDB for lower latency reads", "D) Enable RDS Performance Insights and optimize slow queries"], answer: 0, explain: "ElastiCache for Redis caches the query results in memory, reducing database load. Since the catalog data changes rarely, the cache hit rate will be very high. This provides the greatest performance improvement with minimal application changes." },
-  { id: 5, cat: 'design-cost', q: "A company runs a batch processing workload every night from 10 PM to 4 AM. The workload requires significant compute capacity but can tolerate interruptions. The company wants to minimize costs. Which EC2 purchasing option should they use?", options: ["A) On-Demand Instances", "B) Reserved Instances (1-year, Standard)", "C) Spot Instances", "D) Dedicated Hosts"], answer: 2, explain: "Spot Instances offer up to 90% discount compared to On-Demand. Since the batch job runs nightly and can tolerate interruptions, Spot Instances are the most cost-effective choice." },
-  { id: 6, cat: 'design-secure', q: "A company has a three-tier web application (web, app, and database tiers) running in a VPC. The security team requires that the database tier should only accept connections from the application tier and must not be directly accessible from the internet. Which architecture enforces this requirement?", options: ["A) Place all tiers in public subnets, use Security Groups to restrict database access", "B) Place the database in a private subnet, use a Security Group that allows inbound traffic only from the application tier Security Group", "C) Place the database in a public subnet, use a Network ACL to block all internet traffic to the database", "D) Place all tiers in private subnets, use a NAT Gateway for all internet traffic"], answer: 1, explain: "The database should be in a private subnet (no direct internet route) AND protected by a Security Group that only allows inbound traffic from the application tier's Security Group. Defense in depth: network isolation + access control." },
-  { id: 7, cat: 'design-resilient', q: "A company needs to process messages from thousands of IoT sensors. The messages must be processed in order per sensor, and the system must retain failed messages for manual review. Which AWS service architecture meets these requirements?", options: ["A) Amazon SQS Standard Queue with Lambda consumer", "B) Amazon SQS FIFO Queue with a Dead Letter Queue and Lambda consumer", "C) Amazon SNS with Lambda subscription", "D) Amazon Kinesis Data Streams with Lambda consumer"], answer: 1, explain: "SQS FIFO queues guarantee exactly-once processing and ordering per message group (sensor ID). A Dead Letter Queue captures messages that fail after maximum retry attempts for manual review." },
-  { id: 8, cat: 'design-performant', q: "A global media company serves video content to users worldwide. Users in distant regions report high latency when loading content. The company uses Amazon S3 to store the video files. Which solution reduces latency for global users with MINIMAL infrastructure changes?", options: ["A) Enable S3 Transfer Acceleration", "B) Deploy Amazon CloudFront with the S3 bucket as the origin", "C) Create S3 buckets in multiple AWS regions and use Route 53 geolocation routing", "D) Use AWS Global Accelerator to route requests to the nearest S3 endpoint"], answer: 1, explain: "CloudFront is a CDN that caches content at 400+ edge locations worldwide. Users are served from the nearest edge location instead of the S3 origin, dramatically reducing latency with minimal infrastructure changes." },
-  { id: 9, cat: 'design-secure', q: "A company wants to implement centralized logging for all API calls made to AWS services across multiple AWS accounts. The logs must be stored securely in a central S3 bucket and should be tamper-proof. Which solution meets these requirements?", options: ["A) Enable AWS CloudTrail in each account and deliver logs to a central S3 bucket with S3 Object Lock enabled", "B) Enable Amazon CloudWatch Logs in each account and forward to a central account", "C) Use AWS Config to record configuration changes and store in S3", "D) Enable VPC Flow Logs in each account and deliver to a central S3 bucket"], answer: 0, explain: "CloudTrail records all API calls. S3 Object Lock in WORM (Write Once Read Many) mode prevents logs from being modified or deleted, making them tamper-proof. This is the standard solution for compliance audit trails across multiple accounts." },
-  { id: 10, cat: 'design-resilient', q: "A company is designing a microservices architecture where services need to communicate asynchronously. When one service produces an event, multiple other services need to receive it independently. Which architecture pattern should be used?", options: ["A) Each service polls an Amazon SQS Standard Queue for messages", "B) Use Amazon SNS to publish events; each consuming service subscribes with its own SQS queue", "C) Services communicate directly via HTTP REST API calls", "D) Use AWS Step Functions to orchestrate service-to-service communication"], answer: 1, explain: "The SNS fan-out pattern delivers the same message to multiple SQS queues simultaneously. Each consuming service processes messages from its own queue independently, enabling loose coupling and independent scaling." },
-  { id: 11, cat: 'design-cost', q: "A company stores large amounts of log files in Amazon S3. Logs are accessed frequently for the first 30 days, occasionally from day 31 to 90, and rarely after 90 days. The company wants to minimize storage costs while maintaining accessibility. Which solution is MOST cost-effective?", options: ["A) Store all logs in S3 Standard indefinitely", "B) Store logs in S3 Standard, transition to S3 Standard-IA after 30 days, then to S3 Glacier after 90 days using an S3 Lifecycle policy", "C) Store all logs in S3 Glacier from day one", "D) Store logs in S3 Standard for 30 days, then delete them"], answer: 1, explain: "S3 Lifecycle policies automate tiering: S3 Standard for frequent access, S3 Standard-IA for occasional access at lower cost, and S3 Glacier for archival storage at minimal cost. Each tier is optimized for its access pattern." },
-  { id: 12, cat: 'design-performant', q: "A company runs a web application where users upload large files (up to 5 GB) directly to Amazon S3. Users complain about slow upload speeds, especially from regions far from the S3 bucket. Which solution improves upload performance?", options: ["A) Use S3 Transfer Acceleration to upload files through CloudFront edge locations", "B) Use Amazon CloudFront for uploads", "C) Use a multi-part upload with a larger part size", "D) Increase the EC2 instance size handling the upload proxy"], answer: 0, explain: "S3 Transfer Acceleration routes uploads through the nearest CloudFront edge location and then uses AWS's optimized global network backbone to reach the S3 bucket. This can improve upload speeds by up to 500% for long-distance transfers." },
-  { id: 13, cat: 'design-secure', q: "A company uses AWS Lambda functions that need to access secrets stored in AWS Secrets Manager and read from an Amazon DynamoDB table. Following the principle of least privilege, how should permissions be granted to the Lambda function?", options: ["A) Embed AWS access keys in the Lambda function environment variables", "B) Create an IAM role with only the required permissions and attach it to the Lambda function as its execution role", "C) Create an IAM user with the required permissions and pass the credentials as Lambda environment variables", "D) Use the AWS root account credentials in the Lambda function"], answer: 1, explain: "IAM roles for Lambda (execution roles) provide temporary credentials automatically. The role should have only the minimum permissions needed (least privilege): SecretsManager:GetSecretValue and DynamoDB:GetItem. No credentials are stored in code." },
-  { id: 14, cat: 'design-resilient', q: "A company has an application that experiences unpredictable traffic spikes. The application needs to process requests without losing any messages even during traffic spikes. Which architecture ensures no messages are lost?", options: ["A) Increase the EC2 instance size to handle the peak load", "B) Use Amazon SQS to queue requests, with Auto Scaling EC2 instances processing the queue based on queue depth", "C) Deploy the application on AWS Lambda with provisioned concurrency", "D) Use Amazon ElastiCache to buffer requests in memory"], answer: 1, explain: "SQS acts as a durable buffer that accepts all incoming requests without loss. Auto Scaling adds EC2 workers based on queue depth, ensuring messages are processed even during spikes. SQS retains messages for up to 14 days." },
-  { id: 15, cat: 'design-cost', q: "A company has an Amazon RDS database that is used only during business hours (9 AM to 6 PM) on weekdays. The rest of the time, the database is idle. Which approach MOST reduces the RDS costs while keeping the database available during business hours?", options: ["A) Use a Reserved Instance to save on hourly costs", "B) Stop the RDS instance outside of business hours using AWS Systems Manager automation or a Lambda scheduled function", "C) Migrate to Amazon DynamoDB to eliminate idle time costs", "D) Enable RDS Auto Scaling to scale down to minimum capacity when idle"], answer: 1, explain: "Stopping an RDS instance when not in use pauses the instance-hour charges. During ~128 business hours per month vs. 730 total hours, this reduces compute costs by over 80%. RDS can be stopped for up to 7 days before AWS automatically restarts it." },
-  { id: 16, cat: 'design-secure', q: "A company needs to allow their on-premises data center to securely access resources in an Amazon VPC. The connection must be private, not traverse the public internet, and support high bandwidth requirements. Which solution should be used?", options: ["A) AWS Site-to-Site VPN over the public internet", "B) AWS Direct Connect with a private Virtual Interface", "C) Amazon CloudFront with an origin in the VPC", "D) AWS PrivateLink to expose VPC services"], answer: 1, explain: "AWS Direct Connect provides a dedicated, private physical connection from on-premises to AWS. It does not traverse the public internet, offers consistent network performance, and supports high bandwidth (up to 100 Gbps)." },
-  { id: 17, cat: 'design-performant', q: "A company is building a real-time dashboard that displays metrics from thousands of IoT devices. The data arrives continuously, and the dashboard must show near real-time aggregations. Which AWS service should be used to ingest and process the streaming data?", options: ["A) Amazon SQS Standard Queue with Lambda polling", "B) Amazon Kinesis Data Streams with Amazon Kinesis Data Analytics", "C) Amazon S3 with batch processing via AWS Glue", "D) Amazon RDS with a write-optimized instance class"], answer: 1, explain: "Kinesis Data Streams ingests high-throughput real-time data from thousands of sources. Kinesis Data Analytics processes the stream using SQL to compute real-time aggregations for the dashboard. This is the purpose-built AWS solution for real-time streaming analytics." },
-  { id: 18, cat: 'design-resilient', q: "A company wants to implement a disaster recovery strategy for their AWS workload. The RTO requirement is less than 1 hour and RPO is less than 15 minutes. The company wants to minimize costs. Which DR strategy should they use?", options: ["A) Backup and Restore — take regular snapshots and restore in DR region", "B) Pilot Light — maintain a minimal version of the environment running in the DR region", "C) Warm Standby — maintain a scaled-down but fully functional environment in DR region", "D) Multi-Site Active-Active — run full production in both regions simultaneously"], answer: 2, explain: "Warm Standby keeps a scaled-down but fully functional replica running. Failover requires scaling up (not provisioning from scratch), enabling sub-1-hour RTO. Continuous data replication provides RPO < 15 minutes. More cost-effective than Multi-Site Active-Active." },
-  { id: 19, cat: 'design-secure', q: "A company wants to protect their web application running behind an Application Load Balancer from SQL injection attacks and DDoS attacks. Which combination of AWS services provides this protection?", options: ["A) Amazon CloudFront with AWS Shield Standard (included free)", "B) AWS WAF on the ALB with managed rule groups, and AWS Shield Advanced", "C) Amazon GuardDuty to detect threats and alert the security team", "D) VPC Security Groups and Network ACLs to block malicious IPs"], answer: 1, explain: "AWS WAF on the ALB filters HTTP/HTTPS traffic and blocks SQL injection using managed rule groups. AWS Shield Advanced provides enhanced DDoS protection with 24/7 DDoS response team and cost protection." },
-  { id: 20, cat: 'design-cost', q: "A company runs a multi-tier application with web, application, and database tiers. Usage patterns show 70% of the time the load is predictable and consistent, with occasional 30% spikes. Which EC2 purchasing strategy minimizes cost while handling all demand?", options: ["A) Use all On-Demand Instances for maximum flexibility", "B) Use Reserved Instances for the baseline 70% load, and On-Demand or Spot Instances for the spike 30%", "C) Use all Reserved Instances sized for peak load", "D) Use all Spot Instances with a Spot Fleet"], answer: 1, explain: "The optimal strategy: Reserved Instances (1-year) for the predictable 70% baseline (up to 72% savings), and On-Demand or Spot Instances for unpredictable 30% spikes. This blended approach minimizes cost while ensuring all demand is always met." },
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const ck = (a: string, b: string): ConnKey => [a, b].sort().join(':')
+
+// ── Question Bank ────────────────────────────────────────────────────────────
+const QUESTIONS: Question[] = [
+  {
+    id: 1,
+    scenario: 'A company needs a highly available web app that auto-scales across 2 Availability Zones and distributes traffic evenly.',
+    task: 'Draw connections to show how traffic flows from users through the load balancer to EC2 instances managed by Auto Scaling.',
+    hint: 'Users → ALB → EC2 (AZ-A) + EC2 (AZ-B). ASG manages both EC2 instances.',
+    nodes: [
+      { id: 'users', label: 'Users',              icon: '👥', color: '#475569', x: 340, y: 55  },
+      { id: 'alb',   label: 'App Load\nBalancer', icon: '⚖️', color: '#2563eb', x: 340, y: 185 },
+      { id: 'ec2a',  label: 'EC2\n(AZ-A)',        icon: '🖥️', color: '#0891b2', x: 160, y: 320 },
+      { id: 'ec2b',  label: 'EC2\n(AZ-B)',        icon: '🖥️', color: '#0891b2', x: 520, y: 320 },
+      { id: 'asg',   label: 'Auto Scaling\nGroup',icon: '📈', color: '#16a34a', x: 340, y: 410 },
+    ],
+    correct: [ck('users','alb'), ck('alb','ec2a'), ck('alb','ec2b'), ck('asg','ec2a'), ck('asg','ec2b')],
+  },
+  {
+    id: 2,
+    scenario: 'A startup wants a fully serverless REST API that reads/writes to a NoSQL database — zero servers to manage.',
+    task: 'Connect the services to show the request flow from client all the way to the database.',
+    hint: 'Client → API Gateway → Lambda → DynamoDB',
+    nodes: [
+      { id: 'client', label: 'Client',           icon: '💻', color: '#475569', x: 90,  y: 220 },
+      { id: 'apigw',  label: 'API\nGateway',     icon: '🔀', color: '#7c3aed', x: 270, y: 220 },
+      { id: 'lambda', label: 'Lambda\nFunction', icon: 'λ',  color: '#ea580c', x: 460, y: 220 },
+      { id: 'dynamo', label: 'DynamoDB',         icon: '🗄️', color: '#1A73E8', x: 630, y: 220 },
+    ],
+    correct: [ck('client','apigw'), ck('apigw','lambda'), ck('lambda','dynamo')],
+  },
+  {
+    id: 3,
+    scenario: 'A media company stores videos in S3 and needs to serve them globally with low latency using a Content Delivery Network.',
+    task: 'Connect the services to show how global users receive content through the CDN from the origin bucket.',
+    hint: 'Global Users → CloudFront → S3 Bucket',
+    nodes: [
+      { id: 'users', label: 'Global\nUsers',    icon: '🌍', color: '#475569', x: 110, y: 220 },
+      { id: 'cf',    label: 'CloudFront\n(CDN)',icon: '🌐', color: '#FF9900', x: 350, y: 220 },
+      { id: 's3',    label: 'S3\nBucket',       icon: '🪣', color: '#16a34a', x: 580, y: 220 },
+    ],
+    correct: [ck('users','cf'), ck('cf','s3')],
+  },
+  {
+    id: 4,
+    scenario: 'A 3-tier VPC app: web tier is public, app tier is private, database must be isolated from the internet.',
+    task: 'Connect internet traffic through the load balancer and app servers down to the isolated database.',
+    hint: 'Internet → ALB (public) → App EC2 (private) → RDS (isolated)',
+    nodes: [
+      { id: 'inet', label: 'Internet',            icon: '🌍', color: '#475569', x: 100, y: 180 },
+      { id: 'alb',  label: 'App Load\nBalancer',  icon: '⚖️', color: '#2563eb', x: 290, y: 180 },
+      { id: 'app',  label: 'App EC2\n(private)',  icon: '🖥️', color: '#0891b2', x: 490, y: 180 },
+      { id: 'rds',  label: 'RDS\n(isolated)',     icon: '💾', color: '#7c3aed', x: 490, y: 370 },
+    ],
+    correct: [ck('inet','alb'), ck('alb','app'), ck('app','rds')],
+  },
+  {
+    id: 5,
+    scenario: 'Order events must reach three independent services (Billing, Inventory, Shipping) simultaneously — fan-out pattern.',
+    task: 'Connect the order service so every event is delivered to all three SQS queues via a pub/sub topic.',
+    hint: 'Order Service → SNS Topic → SQS (Billing), SQS (Inventory), SQS (Shipping)',
+    nodes: [
+      { id: 'prod',  label: 'Order\nService',    icon: '📡', color: '#475569', x: 100, y: 220 },
+      { id: 'sns',   label: 'SNS\nTopic',        icon: '📢', color: '#FF9900', x: 300, y: 220 },
+      { id: 'sqsa',  label: 'SQS\n(Billing)',    icon: '📬', color: '#dc2626', x: 520, y: 90  },
+      { id: 'sqsb',  label: 'SQS\n(Inventory)', icon: '📬', color: '#dc2626', x: 520, y: 220 },
+      { id: 'sqsc',  label: 'SQS\n(Shipping)',  icon: '📬', color: '#dc2626', x: 520, y: 355 },
+    ],
+    correct: [ck('prod','sns'), ck('sns','sqsa'), ck('sns','sqsb'), ck('sns','sqsc')],
+  },
+  {
+    id: 6,
+    scenario: 'Lambda processes jobs from a queue. Failed messages must be captured in a Dead Letter Queue for manual retry.',
+    task: 'Connect the message flow from producer through the queue to Lambda, and the failure path to the DLQ.',
+    hint: 'Producer → SQS → Lambda (success). SQS → DLQ (on failure).',
+    nodes: [
+      { id: 'prod',   label: 'Message\nProducer',  icon: '📡', color: '#475569', x: 100, y: 220 },
+      { id: 'sqs',    label: 'SQS\nQueue',         icon: '📬', color: '#FF9900', x: 300, y: 220 },
+      { id: 'lambda', label: 'Lambda\n(consumer)', icon: 'λ',  color: '#ea580c', x: 510, y: 110 },
+      { id: 'dlq',    label: 'Dead Letter\nQueue', icon: '⚠️', color: '#dc2626', x: 510, y: 340 },
+    ],
+    correct: [ck('prod','sqs'), ck('sqs','lambda'), ck('sqs','dlq')],
+  },
+  {
+    id: 7,
+    scenario: 'A web app behind an ALB needs protection from SQL injection, XSS, and DDoS attacks using AWS managed services.',
+    task: 'Connect internet traffic through the security services before it reaches the web server.',
+    hint: 'Internet → WAF + Shield → ALB → EC2',
+    nodes: [
+      { id: 'inet', label: 'Internet',           icon: '🌍', color: '#475569', x: 90,  y: 220 },
+      { id: 'waf',  label: 'AWS WAF\n+ Shield',  icon: '🛡️', color: '#dc2626', x: 270, y: 220 },
+      { id: 'alb',  label: 'App Load\nBalancer', icon: '⚖️', color: '#2563eb', x: 460, y: 220 },
+      { id: 'ec2',  label: 'EC2\nWeb Server',    icon: '🖥️', color: '#0891b2', x: 630, y: 220 },
+    ],
+    correct: [ck('inet','waf'), ck('waf','alb'), ck('alb','ec2')],
+  },
+  {
+    id: 8,
+    scenario: 'Logs are hot for 30 days, warm for 30–90 days, then cold. The company wants minimum-cost tiered storage using S3 lifecycle.',
+    task: 'Connect the storage tiers in the correct lifecycle order from hot to archival.',
+    hint: 'App → S3 Standard → S3 Standard-IA → S3 Glacier',
+    nodes: [
+      { id: 'app',     label: 'App\nLogs',         icon: '📋', color: '#475569', x: 90,  y: 220 },
+      { id: 'std',     label: 'S3\nStandard',       icon: '🪣', color: '#16a34a', x: 270, y: 220 },
+      { id: 'ia',      label: 'S3\nStandard-IA',    icon: '🗃️', color: '#ea580c', x: 450, y: 220 },
+      { id: 'glacier', label: 'S3\nGlacier',        icon: '🏔️', color: '#64748b', x: 620, y: 220 },
+    ],
+    correct: [ck('app','std'), ck('std','ia'), ck('ia','glacier')],
+  },
 ]
 
-const CAT_LABELS: Record<string, string> = {
-  'design-resilient': 'Design Resilient Architectures',
-  'design-secure': 'Design Secure Architectures',
-  'design-performant': 'Design High-Performance Architectures',
-  'design-cost': 'Design Cost-Optimized Architectures',
-}
+// ── Canvas constants ──────────────────────────────────────────────────────────
+const NW = 120   // node width
+const NH = 58    // node height
+const SVG_W = 720
+const SVG_H = 450
 
-const CAT_COLORS: Record<string, string> = {
-  'design-resilient': '#2563eb',
-  'design-secure': '#dc2626',
-  'design-performant': '#7c3aed',
-  'design-cost': '#16a34a',
-}
-
-type ArchNode = { id: string; label: string; x: number; y: number; color: string }
-type ArchArrow = { from: string; to: string }
-
-const ARCH_DIAGRAMS: Record<number, { label: string; nodes: ArchNode[]; arrows: ArchArrow[] }> = {
-  1: {
-    label: 'ALB + ASG across Multi-AZ',
-    nodes: [
-      { id: 'users', label: 'Users',               x: 210, y: 50,  color: '#475569' },
-      { id: 'alb',   label: 'App Load\nBalancer',  x: 210, y: 170, color: '#2563eb' },
-      { id: 'ec2a',  label: 'EC2\n(AZ-a)',         x: 100, y: 300, color: '#2563eb' },
-      { id: 'ec2b',  label: 'EC2\n(AZ-b)',         x: 320, y: 300, color: '#2563eb' },
-      { id: 'asg',   label: 'Auto Scaling\nGroup', x: 210, y: 420, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'users', to: 'alb' },
-      { from: 'alb',   to: 'ec2a' },
-      { from: 'alb',   to: 'ec2b' },
-      { from: 'asg',   to: 'ec2a' },
-      { from: 'asg',   to: 'ec2b' },
-    ],
-  },
-  2: {
-    label: 'S3 + SSE-KMS Customer-Managed Keys',
-    nodes: [
-      { id: 'app',  label: 'Application',          x: 210, y: 55,  color: '#475569' },
-      { id: 's3',   label: 'S3 Bucket',            x: 210, y: 185, color: '#16a34a' },
-      { id: 'kms',  label: 'AWS KMS\nCMK (yours)', x: 210, y: 315, color: '#7c3aed' },
-    ],
-    arrows: [
-      { from: 'app', to: 's3' },
-      { from: 's3',  to: 'kms' },
-    ],
-  },
-  3: {
-    label: 'RDS Multi-AZ with Automated Backups',
-    nodes: [
-      { id: 'app',     label: 'Application',        x: 210, y: 55,  color: '#475569' },
-      { id: 'rds',     label: 'RDS Primary\n(AZ-a)', x: 110, y: 190, color: '#1A73E8' },
-      { id: 'standby', label: 'RDS Standby\n(AZ-b)', x: 320, y: 190, color: '#9ca3af' },
-      { id: 's3',      label: 'S3 Backups\n(PITR)', x: 210, y: 330, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'app', to: 'rds' },
-      { from: 'rds', to: 'standby' },
-      { from: 'rds', to: 's3' },
-    ],
-  },
-  4: {
-    label: 'ElastiCache Redis in front of RDS',
-    nodes: [
-      { id: 'app',   label: 'Application',     x: 210, y: 55,  color: '#475569' },
-      { id: 'cache', label: 'ElastiCache\nRedis (cache)', x: 100, y: 200, color: '#dc2626' },
-      { id: 'rds',   label: 'RDS MySQL\n(source of truth)', x: 320, y: 200, color: '#1A73E8' },
-    ],
-    arrows: [
-      { from: 'app',   to: 'cache' },
-      { from: 'app',   to: 'rds' },
-      { from: 'cache', to: 'rds' },
-    ],
-  },
-  5: {
-    label: 'EC2 Spot Instances for Batch Jobs',
-    nodes: [
-      { id: 'batch', label: 'Batch Job\n(nightly)',     x: 210, y: 55,  color: '#475569' },
-      { id: 'spot',  label: 'EC2 Spot\n−90% cost',     x: 210, y: 185, color: '#EA580C' },
-      { id: 'save',  label: 'Cost Savings\nvs On-Demand', x: 210, y: 315, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'batch', to: 'spot' },
-      { from: 'spot',  to: 'save' },
-    ],
-  },
-  6: {
-    label: 'Three-Tier VPC with Private DB Subnet',
-    nodes: [
-      { id: 'web', label: 'Web Tier\n(Public Subnet)',    x: 210, y: 55,  color: '#2563eb' },
-      { id: 'app', label: 'App Tier\n(Private Subnet)',   x: 210, y: 185, color: '#7c3aed' },
-      { id: 'db',  label: 'DB Tier\n(Private + SG rule)', x: 210, y: 315, color: '#dc2626' },
-    ],
-    arrows: [
-      { from: 'web', to: 'app' },
-      { from: 'app', to: 'db' },
-    ],
-  },
-  7: {
-    label: 'SQS FIFO Queue + Dead Letter Queue',
-    nodes: [
-      { id: 'iot',    label: 'IoT Sensors',       x: 210, y: 55,  color: '#475569' },
-      { id: 'fifo',   label: 'SQS FIFO\n(ordered)', x: 210, y: 190, color: '#EA580C' },
-      { id: 'lambda', label: 'Lambda\nConsumer',  x: 100, y: 330, color: '#FF9900' },
-      { id: 'dlq',    label: 'Dead Letter\nQueue', x: 320, y: 330, color: '#dc2626' },
-    ],
-    arrows: [
-      { from: 'iot',   to: 'fifo' },
-      { from: 'fifo',  to: 'lambda' },
-      { from: 'fifo',  to: 'dlq' },
-    ],
-  },
-  8: {
-    label: 'CloudFront CDN — Edge Caching',
-    nodes: [
-      { id: 'users', label: 'Global\nUsers',             x: 210, y: 55,  color: '#475569' },
-      { id: 'cf',    label: 'CloudFront\n400+ Edge PoPs', x: 210, y: 195, color: '#8b5cf6' },
-      { id: 's3',    label: 'S3 Bucket\n(Origin)',       x: 210, y: 340, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'users', to: 'cf' },
-      { from: 'cf',    to: 's3' },
-    ],
-  },
-  9: {
-    label: 'CloudTrail + S3 Object Lock (WORM)',
-    nodes: [
-      { id: 'accts', label: 'Multi-Account\nOrg',       x: 100, y: 55,  color: '#2563eb' },
-      { id: 'ct',    label: 'CloudTrail\n(API logs)',   x: 100, y: 195, color: '#7c3aed' },
-      { id: 's3',    label: 'S3 + Object Lock\n(WORM tamper-proof)', x: 100, y: 340, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'accts', to: 'ct' },
-      { from: 'ct',    to: 's3' },
-    ],
-  },
-  10: {
-    label: 'SNS Fan-Out to Multiple SQS Queues',
-    nodes: [
-      { id: 'pub',  label: 'Publisher\nService',  x: 210, y: 55,  color: '#475569' },
-      { id: 'sns',  label: 'SNS Topic',           x: 210, y: 185, color: '#FF9900' },
-      { id: 'sq1',  label: 'SQS Queue\nService A', x: 70,  y: 320, color: '#EA580C' },
-      { id: 'sq2',  label: 'SQS Queue\nService B', x: 210, y: 320, color: '#EA580C' },
-      { id: 'sq3',  label: 'SQS Queue\nService C', x: 350, y: 320, color: '#EA580C' },
-    ],
-    arrows: [
-      { from: 'pub', to: 'sns' },
-      { from: 'sns', to: 'sq1' },
-      { from: 'sns', to: 'sq2' },
-      { from: 'sns', to: 'sq3' },
-    ],
-  },
-  11: {
-    label: 'S3 Lifecycle Policy — Cost Tiering',
-    nodes: [
-      { id: 'std', label: 'S3 Standard\n0–30 days',  x: 210, y: 55,  color: '#1A73E8' },
-      { id: 'ia',  label: 'Standard-IA\n30–90 days', x: 210, y: 185, color: '#16a34a' },
-      { id: 'gl',  label: 'S3 Glacier\n90+ days',    x: 210, y: 315, color: '#7c3aed' },
-    ],
-    arrows: [
-      { from: 'std', to: 'ia' },
-      { from: 'ia',  to: 'gl' },
-    ],
-  },
-  12: {
-    label: 'S3 Transfer Acceleration via Edge',
-    nodes: [
-      { id: 'user', label: 'Remote User\n(far region)',     x: 90,  y: 185, color: '#475569' },
-      { id: 'edge', label: 'CloudFront\nEdge Location',    x: 260, y: 55,  color: '#7c3aed' },
-      { id: 'bb',   label: 'AWS Backbone\nNetwork',        x: 260, y: 185, color: '#FF9900' },
-      { id: 's3',   label: 'S3 Bucket\n(origin region)',   x: 260, y: 315, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'user', to: 'edge' },
-      { from: 'edge', to: 'bb' },
-      { from: 'bb',   to: 's3' },
-    ],
-  },
-  13: {
-    label: 'Lambda IAM Execution Role — Least Privilege',
-    nodes: [
-      { id: 'lambda', label: 'Lambda\nFunction',      x: 210, y: 55,  color: '#FF9900' },
-      { id: 'role',   label: 'IAM Role\n(exec role)', x: 210, y: 185, color: '#475569' },
-      { id: 'sm',     label: 'Secrets\nManager',      x: 90,  y: 320, color: '#dc2626' },
-      { id: 'ddb',    label: 'DynamoDB\nTable',       x: 330, y: 320, color: '#1A73E8' },
-    ],
-    arrows: [
-      { from: 'lambda', to: 'role' },
-      { from: 'role',   to: 'sm' },
-      { from: 'role',   to: 'ddb' },
-    ],
-  },
-  14: {
-    label: 'SQS Buffer + Auto Scaling — No Message Loss',
-    nodes: [
-      { id: 'req', label: 'Traffic\nSpikes',         x: 210, y: 55,  color: '#475569' },
-      { id: 'sqs', label: 'SQS Queue\n(durable buffer)', x: 210, y: 185, color: '#EA580C' },
-      { id: 'asg', label: 'ASG Workers\n(scales with depth)', x: 210, y: 315, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'req', to: 'sqs' },
-      { from: 'sqs', to: 'asg' },
-    ],
-  },
-  15: {
-    label: 'RDS Stop/Start Schedule — Cost Reduction',
-    nodes: [
-      { id: 'eb',     label: 'EventBridge\nSchedule',    x: 210, y: 55,  color: '#7c3aed' },
-      { id: 'lambda', label: 'Lambda\n(stop/start RDS)', x: 210, y: 185, color: '#FF9900' },
-      { id: 'rds',    label: 'RDS Instance\n(paused off-hours)', x: 210, y: 315, color: '#1A73E8' },
-    ],
-    arrows: [
-      { from: 'eb',     to: 'lambda' },
-      { from: 'lambda', to: 'rds' },
-    ],
-  },
-  16: {
-    label: 'AWS Direct Connect — Private Dedicated Link',
-    nodes: [
-      { id: 'dc',  label: 'On-Premises\nData Center', x: 80,  color: '#475569', y: 185 },
-      { id: 'dx',  label: 'Direct Connect\n(dedicated)', x: 250, color: '#dc2626', y: 185 },
-      { id: 'vpc', label: 'AWS VPC\nPrivate VIF',     x: 420, color: '#2563eb',  y: 185 },
-    ],
-    arrows: [
-      { from: 'dc',  to: 'dx' },
-      { from: 'dx',  to: 'vpc' },
-    ],
-  },
-  17: {
-    label: 'Kinesis Streams + Analytics — Real-Time',
-    nodes: [
-      { id: 'iot',  label: 'IoT Devices\n(thousands)', x: 210, y: 55,  color: '#475569' },
-      { id: 'kds',  label: 'Kinesis Data\nStreams',    x: 210, y: 185, color: '#EA580C' },
-      { id: 'kda',  label: 'Kinesis\nAnalytics (SQL)', x: 210, y: 315, color: '#7c3aed' },
-      { id: 'dash', label: 'Real-Time\nDashboard',    x: 380, y: 315, color: '#16a34a' },
-    ],
-    arrows: [
-      { from: 'iot',  to: 'kds' },
-      { from: 'kds',  to: 'kda' },
-      { from: 'kda',  to: 'dash' },
-    ],
-  },
-  18: {
-    label: 'Warm Standby DR — Sub-1hr RTO',
-    nodes: [
-      { id: 'prim', label: 'Primary Region\n(full load)',    x: 90,  y: 185, color: '#2563eb' },
-      { id: 'rep',  label: 'Continuous\nReplication',       x: 255, y: 55,  color: '#FF9900' },
-      { id: 'dr',   label: 'DR Region\n(scaled-down copy)', x: 420, y: 185, color: '#7c3aed' },
-    ],
-    arrows: [
-      { from: 'prim', to: 'rep' },
-      { from: 'rep',  to: 'dr' },
-    ],
-  },
-  19: {
-    label: 'WAF + Shield Advanced on ALB',
-    nodes: [
-      { id: 'atk',    label: 'DDoS\nAttack',         x: 90,  y: 55,  color: '#dc2626' },
-      { id: 'users',  label: 'Legit\nUsers',         x: 330, y: 55,  color: '#16a34a' },
-      { id: 'shield', label: 'Shield Adv\n+ WAF',    x: 210, y: 195, color: '#7c3aed' },
-      { id: 'alb',    label: 'App Load\nBalancer',   x: 210, y: 325, color: '#2563eb' },
-    ],
-    arrows: [
-      { from: 'atk',    to: 'shield' },
-      { from: 'users',  to: 'shield' },
-      { from: 'shield', to: 'alb' },
-    ],
-  },
-  20: {
-    label: 'Reserved + On-Demand Blended Strategy',
-    nodes: [
-      { id: 'ri',    label: 'Reserved (70%)\n−72% savings', x: 90,  y: 185, color: '#16a34a' },
-      { id: 'total', label: 'Total\nCapacity',              x: 255, y: 185, color: '#475569' },
-      { id: 'od',    label: 'On-Demand (30%)\nfor spikes',  x: 420, y: 185, color: '#2563eb' },
-    ],
-    arrows: [
-      { from: 'ri', to: 'total' },
-      { from: 'od', to: 'total' },
-    ],
-  },
-}
-
-function ArchDiagram({ questionId }: { questionId: number }) {
-  const diagram = ARCH_DIAGRAMS[questionId]
-  if (!diagram) return null
-
-  const NW = 130
-  const NH = (n: ArchNode) => n.label.split('\n').length >= 3 ? 66 : n.label.includes('\n') ? 52 : 38
-
-  const lighten = (hex: string) => {
-    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16)
-    return `rgb(${Math.min(255,r+55)},${Math.min(255,g+55)},${Math.min(255,b+55)})`
-  }
-
-  const boxPt = (n: ArchNode, tx: number, ty: number): [number,number] => {
-    const dx = tx-n.x, dy = ty-n.y
-    if (!dx && !dy) return [n.x, n.y]
-    const sx = (NW/2)/Math.abs(dx), sy = (NH(n)/2)/Math.abs(dy)
-    const s = Math.min(isFinite(sx)?sx:1e9, isFinite(sy)?sy:1e9)
-    return [n.x+dx*s, n.y+dy*s]
-  }
-
-  const PAD = 44
-  const xs = diagram.nodes.map(n=>n.x), ys = diagram.nodes.map(n=>n.y)
-  const cx0 = Math.min(...xs)-NW/2-PAD, cx1 = Math.max(...xs)+NW/2+PAD
-  const cy0 = Math.min(...ys)-38-PAD,   cy1 = Math.max(...ys)+38+PAD
-  const contentW = cx1-cx0, contentH = cy1-cy0
-  const vw = Math.max(400, contentW), vh = Math.max(300, contentH)
-  const vx = cx0 - (vw - contentW) / 2
-  const vy = cy0 - (vh - contentH) / 2
-
-  return (
-    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '16px', marginBottom: '20px' }}>
-      <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#7c3aed', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-        📐 Architecture Diagram
-        <span style={{ fontWeight: 500, color: '#94a3b8', textTransform: 'none', letterSpacing: 0, fontSize: '0.72rem' }}>— {diagram.label}</span>
-      </div>
-      <svg viewBox={`${vx} ${vy} ${vw} ${vh}`} style={{ width:'100%', height:'auto', maxHeight:'320px', display:'block' }}>
-        <defs>
-          <filter id="ans" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="3" stdDeviation="5" floodColor="#0f172a" floodOpacity="0.14"/>
-          </filter>
-          {diagram.nodes.map(n=>(
-            <linearGradient key={`ag-${n.id}`} id={`ag-${n.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={lighten(n.color)}/>
-              <stop offset="100%" stopColor={n.color}/>
-            </linearGradient>
-          ))}
-          {diagram.nodes.map(n=>(
-            <marker key={`am-${n.id}`} id={`am-${n.id}`} markerWidth="11" markerHeight="9" refX="11" refY="4.5" orient="auto">
-              <path d="M0,0 L0,9 L11,4.5 z" fill={n.color}/>
-            </marker>
-          ))}
-          <pattern id="adg" width="22" height="22" patternUnits="userSpaceOnUse">
-            <circle cx="11" cy="11" r="1" fill="#d8dfe8"/>
-          </pattern>
-        </defs>
-
-        <rect x={vx} y={vy} width={vw} height={vh} rx="12" fill="#f1f5f9"/>
-        <rect x={vx} y={vy} width={vw} height={vh} rx="12" fill="url(#adg)"/>
-
-        {/* Arrows */}
-        {diagram.arrows.map((arrow, i) => {
-          const fn = diagram.nodes.find(n=>n.id===arrow.from)!
-          const tn = diagram.nodes.find(n=>n.id===arrow.to)!
-          const [ax,ay] = boxPt(fn, tn.x, tn.y)
-          const [bx,by] = boxPt(tn, fn.x, fn.y)
-          return (
-            <line key={i} x1={ax} y1={ay} x2={bx} y2={by}
-              stroke={fn.color} strokeWidth="2.2" strokeLinecap="round"
-              markerEnd={`url(#am-${fn.id})`}
-            />
-          )
-        })}
-
-        {/* Nodes */}
-        {diagram.nodes.map(n => {
-          const lines = n.label.split('\n'), h = NH(n)
-          return (
-            <g key={n.id} filter="url(#ans)">
-              <rect x={n.x-NW/2+1} y={n.y-h/2+3} width={NW} height={h} rx="12" fill="rgba(0,0,0,0.09)"/>
-              <rect x={n.x-NW/2} y={n.y-h/2} width={NW} height={h} rx="12"
-                fill={`url(#ag-${n.id})`} stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
-              <rect x={n.x-NW/2+7} y={n.y-h/2+4} width={NW-14} height={h*0.38} rx="7"
-                fill="rgba(255,255,255,0.2)"/>
-              {lines.map((line,li)=>(
-                <text key={li} x={n.x} y={n.y+(li-(lines.length-1)/2)*16+5}
-                  textAnchor="middle" fontSize="11.5" fontWeight="700" fill="#fff"
-                  fontFamily="system-ui,-apple-system,sans-serif" style={{letterSpacing:'0.01em'}}>
-                  {line}
-                </text>
-              ))}
-            </g>
-          )
-        })}
-      </svg>
-    </div>
-  )
-}
-
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function VisualExam() {
-  const { user, tier } = useAuth()
+  const { isPremium } = useAuth()
   const navigate = useNavigate()
-  const isPremium = tier === 'monthly' || tier === 'yearly' || tier === 'lifetime'
-  const [filter, setFilter] = useState('all')
-  const [current, setCurrent] = useState(0)
-  const [selected, setSelected] = useState<number | null>(null)
-  const [answered, setAnswered] = useState(false)
-  const [answers, setAnswers] = useState<Record<number, { userAnswer: number; isCorrect: boolean }>>({})
-  const [done, setDone] = useState(false)
 
-  const filtered = filter === 'all' ? visualQuestions : visualQuestions.filter(q => q.cat === filter)
-  const q = filtered[current]
-  const score = Object.values(answers).filter(a => a.isCorrect).length
-  const totalAnswered = Object.keys(answers).length
+  // ── Game state ──
+  const [qIdx,      setQIdx]      = useState(0)
+  const [conns,     setConns]     = useState<Set<ConnKey>>(new Set())
+  const [selected,  setSelected]  = useState<string | null>(null)
+  const [svgMouse,  setSvgMouse]  = useState({ x: 0, y: 0 })
+  const [nodePos,   setNodePos]   = useState<Record<string, { x: number; y: number }>>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [results,   setResults]   = useState<{
+    correct: Set<ConnKey>; wrong: Set<ConnKey>; missing: Set<ConnKey>
+  } | null>(null)
+  const [scores, setScores] = useState<boolean[]>([])
+  const [done,   setDone]   = useState(false)
+  const [showHint, setShowHint] = useState(false)
 
-  function handleSelect(idx: number) {
-    if (answered) return
-    setSelected(idx)
+  // ── Drag state (refs = no re-render during drag) ──
+  const dragRef  = useRef<{ id: string; ox: number; oy: number; mx: number; my: number } | null>(null)
+  const movedRef = useRef(false)
+  const svgRef   = useRef<SVGSVGElement>(null)
+
+  const q = QUESTIONS[qIdx]
+
+  // Reset on question change
+  useEffect(() => {
+    setConns(new Set())
+    setSelected(null)
+    setSubmitted(false)
+    setResults(null)
+    setNodePos({})
+    setShowHint(false)
+    movedRef.current = false
+    dragRef.current  = null
+  }, [qIdx])
+
+  // ── Helpers ──
+  const getPos = (n: DNode) => nodePos[n.id] ?? { x: n.x, y: n.y }
+
+  const toSvg = (e: React.MouseEvent): { x: number; y: number } => {
+    const svg = svgRef.current
+    if (!svg) return { x: 0, y: 0 }
+    const r = svg.getBoundingClientRect()
+    return {
+      x: ((e.clientX - r.left) / r.width)  * SVG_W,
+      y: ((e.clientY - r.top)  / r.height) * SVG_H,
+    }
   }
 
-  function handleSubmit() {
-    if (selected === null || !q) return
-    const isCorrect = selected === q.answer
-    setAnswered(true)
-    setAnswers(prev => ({ ...prev, [q.id]: { userAnswer: selected, isCorrect } }))
+  // ── SVG event handlers ──
+  const onSvgMove = (e: React.MouseEvent) => {
+    const pt = toSvg(e)
+    setSvgMouse(pt)
+    if (dragRef.current) {
+      movedRef.current = true
+      const { id, ox, oy, mx, my } = dragRef.current
+      setNodePos(p => ({ ...p, [id]: { x: ox + pt.x - mx, y: oy + pt.y - my } }))
+    }
   }
 
-  function handleNext() {
-    if (current < filtered.length - 1) {
-      const next = filtered[current + 1]
-      const prev = answers[next.id]
-      setCurrent(current + 1)
-      if (prev) { setSelected(prev.userAnswer); setAnswered(true) }
-      else { setSelected(null); setAnswered(false) }
+  const onSvgUp = () => { dragRef.current = null }
+
+  const onSvgClick = () => { setSelected(null) }
+
+  // ── Node event handlers ──
+  const onNodeDown = (e: React.MouseEvent, n: DNode) => {
+    e.stopPropagation()
+    if (submitted) return
+    const pt  = toSvg(e)
+    const pos = getPos(n)
+    movedRef.current = false
+    dragRef.current  = { id: n.id, ox: pos.x, oy: pos.y, mx: pt.x, my: pt.y }
+  }
+
+  const onNodeUp = (e: React.MouseEvent, n: DNode) => {
+    e.stopPropagation()
+    dragRef.current = null
+    if (submitted)        return
+    if (movedRef.current) return   // was a drag — skip click logic
+
+    if (!selected) {
+      setSelected(n.id)
+    } else if (selected === n.id) {
+      setSelected(null)
     } else {
-      setDone(true)
+      const key = ck(selected, n.id)
+      setConns(prev => {
+        const next = new Set(prev)
+        if (next.has(key)) next.delete(key)
+        else               next.add(key)
+        return next
+      })
+      setSelected(null)
     }
   }
 
-  function handlePrev() {
-    if (current > 0) {
-      const prev2 = filtered[current - 1]
-      const prevAns = answers[prev2.id]
-      setCurrent(current - 1)
-      if (prevAns) { setSelected(prevAns.userAnswer); setAnswered(true) }
-      else { setSelected(null); setAnswered(false) }
-    }
+  const removeConn = (key: ConnKey, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (submitted) return
+    setConns(prev => { const n = new Set(prev); n.delete(key); return n })
   }
 
-  function handleRestart() {
-    setCurrent(0); setSelected(null); setAnswered(false); setAnswers({}); setDone(false)
+  // ── Submit ──
+  const submit = () => {
+    const cset    = new Set(q.correct)
+    const correct = new Set<ConnKey>()
+    const wrong   = new Set<ConnKey>()
+    const missing = new Set<ConnKey>()
+    conns.forEach(k => cset.has(k) ? correct.add(k) : wrong.add(k))
+    q.correct.forEach(k => { if (!conns.has(k)) missing.add(k) })
+    setResults({ correct, wrong, missing })
+    setSubmitted(true)
+    setScores(prev => [...prev, wrong.size === 0 && missing.size === 0])
   }
 
+  const nextQ = () => {
+    if (qIdx + 1 >= QUESTIONS.length) setDone(true)
+    else setQIdx(i => i + 1)
+  }
+
+  // ── Connection line color ──
+  const lineColor = (key: ConnKey) => {
+    if (!submitted || !results) return '#64748b'
+    if (results.correct.has(key)) return '#16a34a'
+    if (results.wrong.has(key))   return '#dc2626'
+    return '#64748b'
+  }
+
+  // ── Render an arrow between two node centers ──
+  const renderArrow = (
+    key: ConnKey,
+    opts: { color?: string; dashed?: boolean; onClick?: (e: React.MouseEvent) => void } = {}
+  ) => {
+    const ids = key.split(':')
+    const an  = q.nodes.find(n => n.id === ids[0])
+    const bn  = q.nodes.find(n => n.id === ids[1])
+    if (!an || !bn) return null
+    const ap = getPos(an), bp = getPos(bn)
+    const dx = bp.x - ap.x, dy = bp.y - ap.y
+    const len = Math.sqrt(dx * dx + dy * dy) || 1
+    const ux = dx / len, uy = dy / len
+    const sx = ap.x + ux * (NW / 2 + 5)
+    const sy = ap.y + uy * (NH / 2 + 5)
+    const ex = bp.x - ux * (NW / 2 + 18)
+    const ey = bp.y - uy * (NH / 2 + 18)
+    const color  = opts.color  ?? '#64748b'
+    const dashed = opts.dashed ?? false
+    const markId = `arr-${color.replace('#', '')}`
+
+    return (
+      <g key={key} onClick={opts.onClick} style={{ cursor: opts.onClick ? 'pointer' : 'default' }}>
+        <line
+          x1={sx} y1={sy} x2={ex} y2={ey}
+          stroke={color}
+          strokeWidth={dashed ? 2 : 2.5}
+          strokeDasharray={dashed ? '9,5' : undefined}
+          markerEnd={`url(#${markId})`}
+        />
+        {/* wider invisible hit area for easier clicking */}
+        {opts.onClick && (
+          <line x1={sx} y1={sy} x2={ex} y2={ey}
+            stroke="transparent" strokeWidth={14} style={{ cursor: 'pointer' }} />
+        )}
+      </g>
+    )
+  }
+
+  // ── Marker defs for arrowheads ──────────────────────────────────────────────
+  const MARKER_COLORS = ['#64748b', '#16a34a', '#dc2626', '#f59e0b', '#2563eb']
+  const markers = MARKER_COLORS.map(c => (
+    <marker
+      key={c}
+      id={`arr-${c.replace('#','')}`}
+      markerWidth="8" markerHeight="8"
+      refX="6" refY="3"
+      orient="auto"
+    >
+      <path d="M0,0 L0,6 L8,3 z" fill={c} />
+    </marker>
+  ))
+
+  // ── Premium gate ──────────────────────────────────────────────────────────────
   if (!isPremium) {
     return (
       <Layout>
-        <div style={{ background: '#f8fafc', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-          <div style={{ background: '#fff', borderRadius: '20px', padding: '48px', maxWidth: '480px', width: '100%', textAlign: 'center', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>🔐</div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>Visual Exam requires a subscription</h2>
-            <p style={{ color: '#64748b', marginBottom: '8px' }}>20 diagram-based SAA-C03 questions with architecture explanations.</p>
-            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '24px' }}>Available on Monthly ($7/mo), Yearly ($67/yr), and Lifetime ($147) plans.</p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              {!user && <button onClick={() => navigate('/signup')} style={{ padding: '10px 24px', borderRadius: '10px', background: '#f1f5f9', color: '#475569', border: 'none', fontWeight: 700, cursor: 'pointer' }}>Sign Up Free</button>}
-              <button onClick={() => navigate('/pricing')} style={{ padding: '12px 28px', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '0.95rem' }}>
-                View Plans →
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 16px' }}>
+          <div style={{ background: '#fff', borderRadius: '24px', padding: '48px 40px', maxWidth: '480px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.12)', border: '1px solid #e2e8f0' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: '0 0 12px' }}>Premium Feature</h2>
+            <p style={{ color: '#64748b', margin: '0 0 28px', lineHeight: '1.6' }}>
+              Visual Exam — drag-and-connect — is available on monthly, yearly, and lifetime plans.
+            </p>
+            <button
+              onClick={() => navigate('/pricing')}
+              style={{ background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', border: 'none', borderRadius: '14px', padding: '14px 32px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', width: '100%' }}
+            >
+              View Plans
+            </button>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Done / Results screen ─────────────────────────────────────────────────────
+  if (done) {
+    const total   = QUESTIONS.length
+    const correct = scores.filter(Boolean).length
+    const pct     = Math.round((correct / total) * 100)
+    const passed  = pct >= 70
+    return (
+      <Layout>
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 16px' }}>
+          <div style={{ background: '#fff', borderRadius: '24px', padding: '48px 40px', maxWidth: '520px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.12)', border: '1px solid #e2e8f0' }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: '12px' }}>{passed ? '🏆' : '📚'}</div>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#0f172a', margin: '0 0 8px' }}>
+              {passed ? 'Great job!' : 'Keep practicing!'}
+            </h2>
+            <p style={{ color: '#64748b', margin: '0 0 28px' }}>
+              You got <strong>{correct}/{total}</strong> diagrams fully correct
+            </p>
+            {/* Score circle */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '28px' }}>
+              <div style={{
+                width: '120px', height: '120px', borderRadius: '50%',
+                background: passed ? 'linear-gradient(135deg,#16a34a,#15803d)' : 'linear-gradient(135deg,#dc2626,#b91c1c)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+              }}>
+                <span style={{ color: '#fff', fontSize: '2rem', fontWeight: 900 }}>{pct}%</span>
+              </div>
+            </div>
+            {/* Per-question breakdown */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '32px' }}>
+              {scores.map((ok, i) => (
+                <div key={i} style={{
+                  width: '36px', height: '36px', borderRadius: '50%',
+                  background: ok ? '#dcfce7' : '#fee2e2',
+                  color: ok ? '#16a34a' : '#dc2626',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 700, fontSize: '0.85rem',
+                }}>
+                  {ok ? '✓' : '✗'}
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => { setDone(false); setQIdx(0); setScores([]) }}
+                style={{ flex: 1, background: '#f1f5f9', color: '#0f172a', border: 'none', borderRadius: '12px', padding: '13px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer' }}
+              >
+                Retry
+              </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                style={{ flex: 1, background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', border: 'none', borderRadius: '12px', padding: '13px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer' }}
+              >
+                Dashboard
               </button>
             </div>
           </div>
@@ -490,153 +402,314 @@ export default function VisualExam() {
     )
   }
 
-  if (done) {
-    const pct = Math.round((score / filtered.length) * 100)
-    return (
-      <Layout>
-        <div style={{ background: '#f8fafc', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-          <div style={{ background: '#fff', borderRadius: '20px', padding: '48px', maxWidth: '540px', width: '100%', textAlign: 'center', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>{pct >= 80 ? '🎉' : pct >= 60 ? '📚' : '💪'}</div>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>Visual Exam Complete!</h2>
-            <div style={{ fontSize: '3.5rem', fontWeight: 900, color: pct >= 80 ? '#16a34a' : pct >= 60 ? '#2563eb' : '#dc2626', margin: '16px 0' }}>
-              {score}/{filtered.length}
-            </div>
-            <p style={{ color: '#64748b', marginBottom: '32px' }}>
-              {pct >= 80 ? 'Excellent! You understand AWS architectures well.' : pct >= 60 ? 'Good effort. Review the architecture diagrams you missed.' : 'Keep practicing — architecture questions are key to the SAA exam.'}
-            </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button onClick={handleRestart} style={{ padding: '12px 24px', borderRadius: '10px', background: '#f1f5f9', color: '#475569', border: 'none', fontWeight: 700, cursor: 'pointer' }}>Try Again</button>
-              <button onClick={() => navigate('/cert/saa-c03')} style={{ padding: '12px 24px', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>Practice Quiz</button>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    )
-  }
-
-  if (!q) return null
+  // ── Main exam UI ──────────────────────────────────────────────────────────────
+  const isCorrectQ = submitted && results && results.wrong.size === 0 && results.missing.size === 0
 
   return (
     <Layout>
-      <div style={{ background: '#f8fafc', minHeight: '100vh', padding: '40px 20px' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '860px', margin: '0 auto', padding: '28px 16px 48px' }}>
 
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-            <div style={{ display: 'inline-block', background: '#faf5ff', color: '#7e22ce', padding: '4px 14px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700, marginBottom: '10px', letterSpacing: '0.05em' }}>
-              VISUAL EXAM · SAA-C03
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+              <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: '8px', padding: '4px 12px', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+                VISUAL EXAM
+              </span>
+              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                Question {qIdx + 1} of {QUESTIONS.length}
+              </span>
             </div>
-            <h1 style={{ fontSize: '1.7rem', fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>Architecture-Based Questions</h1>
-            <p style={{ color: '#64748b', margin: 0 }}>20 questions · Diagram explanations for correct answers</p>
+            <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0f172a' }}>
+              Connect the AWS Architecture
+            </h1>
           </div>
-
-          {/* Category filter */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
-            {['all', 'design-resilient', 'design-secure', 'design-performant', 'design-cost'].map(cat => (
-              <button
-                key={cat}
-                onClick={() => { setFilter(cat); setCurrent(0); setSelected(null); setAnswered(false) }}
-                style={{
-                  padding: '5px 14px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 600,
-                  border: '1px solid', cursor: 'pointer',
-                  background: filter === cat ? '#7e22ce' : '#fff',
-                  color: filter === cat ? '#fff' : '#64748b',
-                  borderColor: filter === cat ? '#7e22ce' : '#e2e8f0',
-                }}
-              >
-                {cat === 'all' ? 'All' : CAT_LABELS[cat]?.replace('Design ', '')}
-              </button>
+          {/* Progress dots */}
+          <div style={{ display: 'flex', gap: '6px' }}>
+            {QUESTIONS.map((_, i) => (
+              <div key={i} style={{
+                width: '10px', height: '10px', borderRadius: '50%',
+                background: i < scores.length
+                  ? (scores[i] ? '#16a34a' : '#dc2626')
+                  : i === qIdx ? '#2563eb' : '#e2e8f0',
+              }} />
             ))}
           </div>
+        </div>
 
-          {/* Progress */}
-          <div style={{ background: '#e2e8f0', borderRadius: '999px', height: '6px', marginBottom: '8px' }}>
-            <div style={{ background: '#7c3aed', height: '6px', borderRadius: '999px', width: `${((current + 1) / filtered.length) * 100}%`, transition: 'width 0.3s' }} />
+        {/* Scenario card */}
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px 24px', marginBottom: '16px' }}>
+          <p style={{ margin: '0 0 8px', color: '#0f172a', fontWeight: 600, lineHeight: '1.55' }}>
+            📋 {q.scenario}
+          </p>
+          <p style={{ margin: 0, color: '#2563eb', fontWeight: 500, fontSize: '0.9rem' }}>
+            🎯 {q.task}
+          </p>
+        </div>
+
+        {/* Instructions row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '16px', fontSize: '0.8rem', color: '#64748b' }}>
+            <span>🖱️ <strong>Drag</strong> to reposition</span>
+            <span>🔗 <strong>Click</strong> to select → connect</span>
+            <span>✂️ <strong>Click connection</strong> to remove</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: '#94a3b8', marginBottom: '24px' }}>
-            <span>Question {current + 1} of {filtered.length}</span>
-            <span>Score: {score}/{totalAnswered}</span>
+          <button
+            onClick={() => setShowHint(h => !h)}
+            style={{ background: 'none', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '5px 14px', fontSize: '0.8rem', color: '#64748b', cursor: 'pointer' }}
+          >
+            {showHint ? '🙈 Hide hint' : '💡 Hint'}
+          </button>
+        </div>
+
+        {showHint && (
+          <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '10px', padding: '10px 16px', marginBottom: '12px', fontSize: '0.85rem', color: '#92400e' }}>
+            💡 {q.hint}
           </div>
+        )}
 
-          {/* Question card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '28px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: '16px' }}>
-            <div style={{ display: 'inline-block', background: `${CAT_COLORS[q.cat]}15`, color: CAT_COLORS[q.cat], padding: '4px 12px', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 700, marginBottom: '16px' }}>
-              {CAT_LABELS[q.cat]}
-            </div>
+        {/* SVG Canvas */}
+        <div style={{
+          background: '#fff', border: `2px solid ${selected ? '#2563eb' : '#e2e8f0'}`,
+          borderRadius: '16px', overflow: 'hidden',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+          transition: 'border-color 0.2s',
+          userSelect: 'none',
+        }}>
+          <svg
+            ref={svgRef}
+            viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+            width="100%"
+            style={{ display: 'block', cursor: 'default' }}
+            onMouseMove={onSvgMove}
+            onMouseUp={onSvgUp}
+            onMouseLeave={onSvgUp}
+            onClick={onSvgClick}
+          >
+            <defs>
+              {markers}
+            </defs>
 
-            {/* Architecture diagram preview — always visible */}
-            {ARCH_DIAGRAMS[q.id] && !answered && (
-              <ArchDiagram questionId={q.id} />
+            {/* Grid background */}
+            <rect width={SVG_W} height={SVG_H} fill="#fafbfc" />
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f1f5f9" strokeWidth="1"/>
+              </pattern>
+            </defs>
+            <rect width={SVG_W} height={SVG_H} fill="url(#grid)" />
+
+            {/* ── Draw existing connections ── */}
+            {Array.from(conns).map(key => {
+              const color = lineColor(key)
+              return renderArrow(key, {
+                color,
+                onClick: (e) => removeConn(key, e),
+              })
+            })}
+
+            {/* ── Draw missing connections (after submit) ── */}
+            {submitted && results && Array.from(results.missing).map(key =>
+              renderArrow(key, { color: '#f59e0b', dashed: true })
             )}
 
-            <p style={{ fontSize: '1rem', fontWeight: 600, color: '#1e293b', lineHeight: '1.6', margin: '0 0 20px' }}>
-              {q.q}
-            </p>
+            {/* ── Live "rubber-band" line while connecting ── */}
+            {selected && (() => {
+              const sn = q.nodes.find(n => n.id === selected)
+              if (!sn) return null
+              const sp = getPos(sn)
+              const dx = svgMouse.x - sp.x, dy = svgMouse.y - sp.y
+              const len = Math.sqrt(dx*dx+dy*dy)||1
+              const ux = dx/len, uy = dy/len
+              const sx = sp.x + ux*(NW/2+5), sy = sp.y + uy*(NH/2+5)
+              return (
+                <line
+                  x1={sx} y1={sy} x2={svgMouse.x} y2={svgMouse.y}
+                  stroke="#2563eb" strokeWidth="2" strokeDasharray="8,5"
+                  markerEnd="url(#arr-2563eb)"
+                />
+              )
+            })()}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {q.options.map((opt, idx) => {
-                let bg = '#f8fafc', border = '#e2e8f0', color = '#1e293b'
-                if (answered) {
-                  if (idx === q.answer) { bg = '#f0fdf4'; border = '#86efac'; color = '#15803d' }
-                  else if (idx === selected && idx !== q.answer) { bg = '#fef2f2'; border = '#fca5a5'; color = '#b91c1c' }
-                } else if (selected === idx) { bg = '#faf5ff'; border = '#c4b5fd'; color = '#7e22ce' }
+            {/* ── Draw nodes ── */}
+            {q.nodes.map(n => {
+              const { x, y } = getPos(n)
+              const isSel    = selected === n.id
+              const lines    = n.label.split('\n')
+              const lineH    = 16
+              const totalTH  = lines.length * lineH
+              const startY   = y - totalTH / 2 + lineH / 2 - 4
 
-                return (
-                  <div key={idx} onClick={() => handleSelect(idx)} style={{
-                    display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 16px',
-                    borderRadius: '10px', background: bg, border: `1.5px solid ${border}`,
-                    cursor: answered ? 'default' : 'pointer', transition: 'all 0.15s', color
-                  }}>
-                    <span style={{
-                      width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0,
-                      background: answered && idx === q.answer ? '#16a34a' : answered && idx === selected ? '#dc2626' : selected === idx ? '#7c3aed' : '#e2e8f0',
-                      color: (answered || selected === idx) ? '#fff' : '#94a3b8',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.78rem'
-                    }}>
-                      {String.fromCharCode(65 + idx)}
-                    </span>
-                    <span style={{ lineHeight: '1.5', fontSize: '0.93rem', paddingTop: '3px' }}>{opt}</span>
-                    {answered && idx === q.answer && <span style={{ marginLeft: 'auto', color: '#16a34a', flexShrink: 0 }}>✓</span>}
-                    {answered && idx === selected && idx !== q.answer && <span style={{ marginLeft: 'auto', color: '#dc2626', flexShrink: 0 }}>✗</span>}
-                  </div>
-                )
-              })}
+              return (
+                <g
+                  key={n.id}
+                  onMouseDown={e => onNodeDown(e, n)}
+                  onMouseUp={e   => onNodeUp(e, n)}
+                  style={{ cursor: submitted ? 'default' : 'pointer' }}
+                >
+                  {/* Selection glow */}
+                  {isSel && (
+                    <rect
+                      x={x - NW/2 - 6} y={y - NH/2 - 6}
+                      width={NW + 12} height={NH + 12}
+                      rx="14" fill="none"
+                      stroke="#2563eb" strokeWidth="2.5"
+                      strokeDasharray="6,4"
+                      opacity="0.7"
+                    />
+                  )}
+
+                  {/* Node body */}
+                  <rect
+                    x={x - NW/2} y={y - NH/2}
+                    width={NW} height={NH}
+                    rx="10"
+                    fill={n.color}
+                    opacity={isSel ? 1 : 0.92}
+                    filter={isSel ? 'url(#glow)' : undefined}
+                  />
+
+                  {/* Subtle inner highlight */}
+                  <rect
+                    x={x - NW/2 + 1} y={y - NH/2 + 1}
+                    width={NW - 2} height={NH/2}
+                    rx="9"
+                    fill="rgba(255,255,255,0.12)"
+                  />
+
+                  {/* Icon */}
+                  <text
+                    x={x - NW/2 + 14} y={y + 5}
+                    fontSize="18" dominantBaseline="middle"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {n.icon}
+                  </text>
+
+                  {/* Label lines */}
+                  {lines.map((line, li) => (
+                    <text
+                      key={li}
+                      x={x + 6} y={startY + li * lineH}
+                      fontSize="11.5" fontWeight="700"
+                      fill="#fff" textAnchor="middle"
+                      dominantBaseline="middle"
+                      style={{ userSelect: 'none' }}
+                    >
+                      {line}
+                    </text>
+                  ))}
+
+                  {/* Result badge */}
+                  {submitted && results && (() => {
+                    const nodeConns = Array.from(conns).filter(k => k.includes(n.id))
+                    const nodeCorrect = nodeConns.every(k => results.correct.has(k))
+                    const hasMissing  = q.correct.some(k => k.includes(n.id) && results.missing.has(k))
+                    if (hasMissing) return (
+                      <circle cx={x + NW/2 - 8} cy={y - NH/2 + 8} r="7" fill="#f59e0b" />
+                    )
+                    if (nodeCorrect && !hasMissing) return (
+                      <circle cx={x + NW/2 - 8} cy={y - NH/2 + 8} r="7" fill="#16a34a" />
+                    )
+                    return (
+                      <circle cx={x + NW/2 - 8} cy={y - NH/2 + 8} r="7" fill="#dc2626" />
+                    )
+                  })()}
+                </g>
+              )
+            })}
+
+            {/* Glow filter */}
+            <defs>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+          </svg>
+        </div>
+
+        {/* Connection count + status */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+            {selected
+              ? <span style={{ color: '#2563eb', fontWeight: 600 }}>✔ Node selected — click another to connect</span>
+              : <span>{conns.size} connection{conns.size !== 1 ? 's' : ''} drawn</span>
+            }
+          </div>
+          {submitted && results && (
+            <div style={{ display: 'flex', gap: '12px', fontSize: '0.82rem', fontWeight: 600 }}>
+              <span style={{ color: '#16a34a' }}>✓ {results.correct.size} correct</span>
+              <span style={{ color: '#dc2626' }}>✗ {results.wrong.size} wrong</span>
+              <span style={{ color: '#f59e0b' }}>○ {results.missing.size} missing</span>
             </div>
+          )}
+        </div>
 
-            {answered && (
-              <div style={{ marginTop: '20px' }}>
-                {ARCH_DIAGRAMS[q.id] && <ArchDiagram questionId={q.id} />}
-                <div style={{
-                  padding: '16px', borderRadius: '10px',
-                  background: answers[q.id]?.isCorrect ? '#f0fdf4' : '#fef2f2',
-                  border: `1px solid ${answers[q.id]?.isCorrect ? '#86efac' : '#fca5a5'}`
-                }}>
-                  <div style={{ fontWeight: 700, color: answers[q.id]?.isCorrect ? '#15803d' : '#b91c1c', marginBottom: '6px' }}>
-                    {answers[q.id]?.isCorrect ? '✅ Correct!' : '❌ Incorrect'}
-                  </div>
-                  <p style={{ color: '#374151', margin: 0, fontSize: '0.9rem', lineHeight: '1.6' }}>{q.explain}</p>
-                </div>
+        {/* Feedback banner */}
+        {submitted && (
+          <div style={{
+            background: isCorrectQ ? '#f0fdf4' : '#fef2f2',
+            border: `1px solid ${isCorrectQ ? '#bbf7d0' : '#fecaca'}`,
+            borderRadius: '12px', padding: '14px 20px', marginBottom: '16px',
+            color: isCorrectQ ? '#166534' : '#991b1b',
+            fontWeight: 600, fontSize: '0.9rem',
+          }}>
+            {isCorrectQ
+              ? '🎉 Perfect! All connections are correct.'
+              : `❌ Not quite. ${results!.wrong.size > 0 ? 'Remove wrong connections (red). ' : ''}${results!.missing.size > 0 ? 'Orange dashed lines show missing connections.' : ''}`
+            }
+          </div>
+        )}
+
+        {/* Legend (after submit) */}
+        {submitted && (
+          <div style={{ display: 'flex', gap: '20px', marginBottom: '16px', flexWrap: 'wrap' }}>
+            {[['#16a34a','Correct'], ['#dc2626','Wrong — remove'], ['#f59e0b','Missing']].map(([c,l]) => (
+              <div key={l} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#475569' }}>
+                <div style={{ width: '28px', height: '3px', background: c, borderRadius: '2px' }} />
+                {l}
               </div>
-            )}
+            ))}
           </div>
+        )}
 
-          {/* Nav */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
-            <button onClick={handlePrev} disabled={current === 0} style={{ padding: '10px 20px', borderRadius: '10px', border: '1px solid #e2e8f0', background: '#fff', color: current === 0 ? '#cbd5e1' : '#475569', fontWeight: 600, cursor: current === 0 ? 'default' : 'pointer' }}>
-              ← Previous
-            </button>
-            {!answered ? (
-              <button onClick={handleSubmit} disabled={selected === null} style={{ padding: '10px 28px', borderRadius: '10px', border: 'none', background: selected === null ? '#e2e8f0' : '#7c3aed', color: selected === null ? '#94a3b8' : '#fff', fontWeight: 700, cursor: selected === null ? 'default' : 'pointer' }}>
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          {!submitted ? (
+            <>
+              <button
+                onClick={() => { setConns(new Set()); setSelected(null) }}
+                style={{ flex: 0, background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', padding: '13px 24px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer' }}
+              >
+                Clear
+              </button>
+              <button
+                onClick={submit}
+                disabled={conns.size === 0}
+                style={{
+                  flex: 1, background: conns.size === 0 ? '#e2e8f0' : 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+                  color: conns.size === 0 ? '#94a3b8' : '#fff', border: 'none', borderRadius: '12px',
+                  padding: '13px 24px', fontWeight: 700, fontSize: '1rem', cursor: conns.size === 0 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
                 Submit Answer
               </button>
-            ) : (
-              <button onClick={handleNext} style={{ padding: '10px 28px', borderRadius: '10px', border: 'none', background: '#7c3aed', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
-                {current < filtered.length - 1 ? 'Next →' : 'See Results'}
-              </button>
-            )}
-          </div>
-
+            </>
+          ) : (
+            <button
+              onClick={nextQ}
+              style={{ flex: 1, background: 'linear-gradient(135deg,#16a34a,#15803d)', color: '#fff', border: 'none', borderRadius: '12px', padding: '14px 24px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer' }}
+            >
+              {qIdx + 1 >= QUESTIONS.length ? '🏁 See Results' : 'Next Question →'}
+            </button>
+          )}
         </div>
+
       </div>
     </Layout>
   )
