@@ -9,4 +9,7 @@ Disallow: /payment-success
 Disallow: /visual-exam
 Disallow: /architecture-builder
 
+# Block Amplify default URL — canonical site is certiprepai.com only
+Host: certiprepai.com
+
 Sitemap: https://certiprepai.com/sitemap.xml

@@ -7,6 +7,17 @@ function ScrollToTop() {
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior }) }, [pathname])
   return null
 }
+
+// Updates <link rel="canonical"> on every route change so Google indexes
+// each page at its correct URL instead of treating them all as duplicates.
+function CanonicalUpdater() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const tag = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+    if (tag) tag.href = `https://certiprepai.com${pathname}`
+  }, [pathname])
+  return null
+}
 import Home from './pages/Home'
 import Certifications from './pages/Certifications'
 import CertDetail from './pages/CertDetail'
@@ -44,6 +55,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <ScrollToTop />
+        <CanonicalUpdater />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/certifications" element={<Certifications />} />
