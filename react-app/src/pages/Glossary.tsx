@@ -153,6 +153,8 @@ export default function Glossary() {
           <div style={{ position: 'relative', marginBottom: '20px' }}>
             <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '1rem' }}>🔍</span>
             <input
+              id="glossary-search"
+              name="search"
               type="text"
               placeholder="Search terms, services, definitions..."
               value={search}
