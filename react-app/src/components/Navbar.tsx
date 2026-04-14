@@ -86,6 +86,7 @@ export default function Navbar() {
     { to: '/keywords', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers — spot the right service' },
     { to: '/glossary', bg: '#eff6ff', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply' },
     { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams' },
+    { to: '/service-groups', bg: '#f0fdf4', icon: '🗂️', label: 'Service Groups', sub: 'Compare AWS services by category' },
   ]
 
   const DropdownItem = ({ item }: { item: typeof practiceItems[0] }) => (

@@ -35,6 +35,7 @@ import VisualExam from './pages/VisualExam'
 import ArchitectureBuilder from './pages/ArchitectureBuilder'
 import Diagrams from './pages/Diagrams'
 import Terms from './pages/Terms'
+import ServiceGroups from './pages/ServiceGroups'
 import Keywords from './pages/Keywords'
 
 const NotFound = () => (
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/architecture-builder" element={<ArchitectureBuilder />} />
           <Route path="/diagrams" element={<Diagrams />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/service-groups" element={<ServiceGroups />} />
           <Route path="/keywords" element={<Keywords />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
