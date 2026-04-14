@@ -1,6 +1,6 @@
 {
-  "version": "1.4",
-  "total": 555,
+  "version": "1.5",
+  "total": 579,
   "questions": [
     {
       "cat": "cost-optimized-arch",
@@ -7770,6 +7770,342 @@
       "answer": 0,
       "explain": "Utilizing Amazon S3 buckets for storing images can provide various benefits, including a centralized location for storing all images, making them easily accessible whenever needed. This can streamline the workflow and make it more efficient overall. By employing Amazon DynamoDB, the department can further enhance its GIS image database management. DynamoDB can provide fast and reliable performance, even at scale. The department can efficiently retrieve specific images based on their location by using the geographic code as the primary key and the corresponding image S3 URL as the associated va",
       "source": "dojo-exam7",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "A healthcare provider is expanding its operations by integrating various specialized medical applications into its AWS environment. Each application must operate within its own isolated VPC to maintain compliance with data security regulations. These applications need to access a central VPC that hosts shared services. Additionally, the applications should be able to communicate with each other for data synchronization and reporting purposes. The healthcare provider plans to integrate dozens mor",
+      "options": [
+        "Establish VPN tunnels linking each application VPC and the shared services VPC. Configure routing in the application VPC subnets to enable communication with the shared services VPC.",
+        "Set up a connection between the application VPCs and the shared service VPC by using AWS Direct Connect. Update and add routes from the application VPCs to the shared services VPC and vice versa.",
+        "Connect the application VPCs and shared services VPC using the Amazon VPC peering connections. Configure the peering connection to add routes between the VPCs.",
+        "Implement an AWS Transit Gateway and connect it with the application VPCs and the shared services VPC. Update the route tables and add routes in the application VPCs and the shared services VPC to route traffic through the transit gateway."
+      ],
+      "answer": 0,
+      "explain": "AWS Transit Gateway simplifies network architecture by serving as a central hub for connecting Amazon VPCs and on-premises networks. With its hub-and-spoke model, each VPC only needs to connect to the Transit Gateway to access other VPCs. This architecture reduces the complexity of managing multiple peering connections and routing tables. It supports IPv4 and IPv6 traffic and ensures secure, private connections without traversing the public internet. AWS Transit Gateway also enables traffic segmentation through multiple route tables, allowing for separate management of production and non-produ",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "An organization leverages Amazon VPC to host its multi-tier services. The organization aims to provide a web analytics service via RESTful APIs to a user base spanning millions. Access to these APIs requires user verification through an authentication service. The APIs will be exposed through secure HTTP endpoints.\nWhat is the most operationally efficient approach to satisfy these requirements?",
+      "options": [
+        "Create an Amazon Cognito identity pool for federated identity management and secure HTTP APIs using Amazon API Gateway with an IAM authorizer.",
+        "Configure IAM users for authentication and integrate with Amazon API Gateway HTTP APIs using an IAM authorizer.",
+        "Implement user authentication with an Amazon Cognito user pool and secure REST API access using Amazon API Gateway with a Cognito user pool authorizer.",
+        "Launch Amazon API Gateway REST APIs and integrate with AWS Lambda for user authentication using a Lambda authorizer."
+      ],
+      "answer": 0,
+      "explain": "Amazon Cognito provides user pools, which are user directories, to help handle user registration, authentication, and account recovery. Amazon API Gateway supports Cognito user pool authorizers in authenticating API calls. Using Amazon Cognito user pools with API Gateway for RESTful APIs allows seamless security and identity management integration, ensuring operational efficiency and scalability suitable for millions of users.\nAmazon Cognito user pool is a comprehensive user directory that enables both authentication and authorization mechanisms for web and mobile applications. It operates as",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A global enterprise leverages AWS to manage its operations. The organization\u2019s application stores sensitive information across multiple Amazon S3 buckets distributed across various AWS Regions. Every day, the organization handles thousands of objects in these S3 buckets. The organization needs a solution to determine all S3 buckets that do not have versioning enabled.\nWhich approach will satisfy this requirement?",
+      "options": [
+        "Set up an IAM Access Analyzer to identify all S3 buckets that do not have versioning enabled by using an external access analyzer to analyze bucket policies.",
+        "Implement an AWS CloudTrail event to automatically determine all S3 buckets without versioning enabled.",
+        "Create an Amazon S3 Multi-Region Access Point to aggregate and analyze the versioning status of S3 buckets across multiple regions.",
+        "Utilize Amazon S3 Storage Lens to detect all S3 buckets that do not have versioning enabled."
+      ],
+      "answer": 1,
+      "explain": "Amazon S3 Storage Lens offers a robust analytics solution that provides comprehensive visibility into object storage usage and activity across an organization. Through an interactive dashboard on the S3 Management Console, users can access metrics like storage usage, object counts, and versioning status, along with actionable recommendations for cost optimization and security improvement. Data can also be exported for deeper analysis using tools such as Amazon QuickSight, Athena, or Redshift.\n\nThis tool simplifies storage management by providing detailed insights into storage configurations, c",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A company manages an on-premises Server Message Block (SMB) file server, which is used to store large files. These files are typically accessed within the first 10 days after they are created. After this period, the files will no longer be accessed. However, the company requires that they remain accessible with a maximum retrieval time of 12 hours.\nWhich solution will meet these requirements?",
+      "options": [
+        "Set up an AWS DataSync task to transfer data that is older than 10 days from the SMB file server to AWS.",
+        "Set up an Amazon FSx File Gateway. Configure an Amazon S3 Lifecycle policy to transition the data to S3 Glacier Deep Archive after 10 days.",
+        "Configure user access to Amazon S3. Create an S3 Lifecycle policy to transition the data to S3 Glacier Flexible Retrieval after 10 days.",
+        "Set up an Amazon S3 File Gateway. Configure an S3 Lifecycle policy to transition the data to S3 Glacier Deep Archive after 10 days."
+      ],
+      "answer": 1,
+      "explain": "AWS Storage Gateway is a service that connects an on-premises software appliance with cloud-based storage to provide seamless and secure integration between your on-premises IT environment and the AWS storage infrastructure in the AWS Cloud.\nThere are four types of storage gateways, each one integrating a different kind of storage in AWS.\n\u2013 S3 File Gateway \u2013 FSx File Gateway \u2013 Tape Gateway \u2013 Volume Gateway\nOf particular note are S3 File Gateway and FSx File Gateway. Although both have the word `file` in their names, they are very different kinds of products. Aside from bridging the cloud and l",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "A company uses multiple Amazon Elastic Block Store (Amazon EBS) volumes of the Provisioned IOPS SSD (io2) Block Express type attached to Amazon EC2 instances in its production environment. Based on the AWS Cost and Usage Report, the company noticed a significant increase in storage costs. The report provides detailed usage data, including throughput and IOPS. To address this, the company wants to optimize EBS costs by analyzing these metrics and adjusting volumes without causing application down",
+      "options": [
+        "Monitor performance metrics such as IOPS and throughput for the EBS volumes using Amazon CloudWatch `GetMetricData`.",
+        "Apply an Amazon S3 lifecycle policy to archive infrequently accessed backup data to S3 Glacier automatically.",
+        "Set an Amazon CloudWatch Billing Alarm to receive notifications about increased EBS storage costs.",
+        "Adjust the size or performance settings of the EBS volumes using the EC2 `ModifyVolume`."
+      ],
+      "answer": 0,
+      "explain": "Amazon EBS provides scalable, high-performance storage for Amazon EC2 instances. Cost optimization strategies for EBS include monitoring performance metrics to ensure the volumes are appropriately sized and modifying volume settings to avoid paying for unnecessary capacity or performance.\nAmazon CloudWatch `GetMetricData` allows the company to monitor key performance metrics such as IOPS and throughput for EBS volumes. This helps identify underutilized or overprovisioned volumes, which can then be adjusted to reduce costs.\n\nAmazon EC2 `ModifyVolume` enables users to change the size, performanc",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "The CTO of an e-commerce company wants to implement a continuous integration (CI) pipeline using AWS CodePipeline. The CTO wants to design the pipeline so that it automatically triggers whenever developers push code to the company\u2019s private GitHub repository. The CTO also wants to ensure that the integration between AWS and GitHub is secure and auditable out of the box.\nWhat is the easiest way to trigger CodePipeline automatically upon a code commit while satisfying security and auditability req",
+      "options": [
+        "Use Amazon EventBridge to poll the GitHub repository periodically and trigger the pipeline. Use AWS CloudTrail logs for monitoring and auditing.",
+        "Configure AWS CodeConnections to integrate a private GitHub repository with CodePipeline. Use AWS CloudTrail logs for monitoring and auditing.",
+        "Set up Amazon API Gateway to expose a webhook endpoint that GitHub can call. Configure API Gateway to trigger CodePipeline via AWS Lambda. In the Lambda source code, invoke Amazon CloudWatch Logs APIs to perform logging.",
+        "Deploy a GitHub webhook listener application written in Python on AWS Elastic Beanstalk, and configure it to call CodePipeline. Ensure that the application writes logs to Amazon CloudWatch Logs."
+      ],
+      "answer": 0,
+      "explain": "AWS CodeConnections, formerly AWS CodeStar Connections, is designed to securely connect AWS services, such as CodePipeline, with third-party source control systems like GitHub, Bitbucket, and GitLab. It allows the automatic triggering of pipelines based on events such as code push and pull requests. All communications between AWS and the source control system are encrypted using Transport Layer Security (TLS 1.0 or later). All CodeConnections API calls are logged automatically via AWS CloudTrail, ensuring the integration is auditable.\n\nHence, the correct answer is: Configure AWS CodeConnection",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "A company runs an internal application on AWS which uses Amazon EC2 instances for compute and Amazon RDS for PostgreSQL for its data store. Considering the application only runs during working hours on weekdays, a solution is required to optimize costs with minimal operational overhead.\nWhich solution would satisfy these requirements?",
+      "options": [
+        "Create an Amazon CloudWatch alarm that triggers an AWS Lambda function when CPU utilization falls below an idle threshold. In the function, implement logic for stopping both the EC2 instance and the RDS database.",
+        "Deploy the AWS CloudFormation template of the `Instance Scheduler on AWS`. Set up the start and stop schedules of the EC2 instance and RDS DB instance.",
+        "Purchase reserved instance subscriptions for EC2 and RDS",
+        "Purchase a compute savings plan for EC2 and RDS."
+      ],
+      "answer": 1,
+      "explain": "The Instance Scheduler on AWS solution automates the starting and stopping of Amazon Elastic Compute Cloud (Amazon EC2) and Amazon Relational Database Service (Amazon RDS) instances.\nThis solution helps reduce operational costs by stopping resources that are not in use and starting resources when their capacity is needed. For example, a company can use an Instance Scheduler on AWS in a production environment to automatically stop instances outside of business hours every day. If you leave all of your instances running at full utilization, this solution can result in up to 70% cost savings for",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A company needs to limit the visibility and discoverability of workloads across AWS accounts with differing administrative requirements. Using AWS Organizations, a solutions architect and accounts stakeholders grouped accounts into organizational units (OU).\nA solution is required that will monitor changes to the OU hierarchy and allow stakeholders to subscribe to related alerts.\nWhich option meets these requirements with the LEAST administrative overhead?",
+      "options": [
+        "Use AWS Control Tower to provision the AWS accounts. Enable account drift notifications.",
+        "Use AWS Control Tower to provision the AWS accounts. Set up AWS Config aggregated rules.",
+        "Use AWS Service Catalog to create accounts in Organizations. Configure an AWS CloudTrail organization trail to consolidate changes across accounts.",
+        "Use AWS CloudFormation stacksets to create resources across Organizations. Initiate the drift detection operation on a stack to identify changes."
+      ],
+      "answer": 0,
+      "explain": "AWS Organizations is an account management service that enables you to consolidate multiple AWS accounts into an organization that you create and centrally manage. AWS Organizations includes account management and consolidated billing capabilities that enable you to better meet the budgetary, security, and compliance needs of your business.\n\nAWS Control Tower is a high-level service offering a straightforward way to set up and govern an AWS multi-account environment, following prescriptive best practices. AWS Control Tower orchestrates the capabilities of several other AWS services, including",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "An organization operates a high-traffic static website hosted on Amazon S3, which is distributed via Amazon CloudFront. The current CloudFront distribution has a default Time-to-Live (TTL) of 10 seconds, leading to no caching. The company aims to implement caching to enhance website performance while ensuring that outdated content is not served for more than a few minutes post-deployment.\nWhich caching strategies should a solutions architect apply to achieve these objectives?",
+      "options": [
+        "Deploy an AWS Lambda@Edge function to insert an Expires header into HTTP responses. Set this function to trigger on viewer response.",
+        "Set the CloudFront default TTL to 4 minutes and implement a Cache-Control private directive on objects stored within Amazon S3.",
+        "Apply a default TTL of 4 minutes on the S3 bucket.",
+        "Set up Amazon S3 lifecycle policies to automatically delete objects older than 7 days, ensuring that CloudFront edge caches are regularly purged of stale content."
+      ],
+      "answer": 1,
+      "explain": "Amazon CloudFront is a global content delivery network (CDN) service provided by AWS, designed to accelerate the delivery of static and dynamic web content to users worldwide with low latency and high transfer speeds. It works by caching content at edge locations distributed globally, reducing the distance between users and content, which in turn improves the overall performance and responsiveness of websites and applications. CloudFront integrates seamlessly with other AWS services like Amazon S3, enabling organizations to deliver content more efficiently while reducing the load on their orig",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "A company is looking to protect its mobile app\u2019s sensitive data, which is encrypted using client-side encryption with AWS KMS managed keys (CSE-KMS). To enhance security, the company wishes to implement a mechanism that not only prevents the accidental deletion of KMS keys but also alerts administrators via email if there\u2019s an attempt to delete a KMS key.\nWhich of the following solutions fulfills these requirements with minimal operational overhead?",
+      "options": [
+        "Set up an Amazon EventBridge rule that triggers attempts to delete a KMS key. Connect this rule to an AWS Config rule that reverses any deletion attempts. Then, configure an Amazon SNS topic to alert administrators whenever this event occurs.",
+        "Establish an AWS CloudTrail to monitor KMS key deletion attempts. Configure CloudTrail to send logs to Amazon CloudWatch Logs. Create a CloudWatch Logs metric filter to detect DeleteKey events and trigger an Amazon SNS notification to administrators.",
+        "Configure an Amazon EventBridge rule to detect `DeleteKey` operations on AWS KMS. Link this rule to an AWS Systems Manager Automation runbook designed to cancel a key in pending deletion state. Additionally, set the EventBridge rule to notify administrators through an Amazon SNS topic upon such an a",
+        "Implement an AWS Lambda function to block the deletion of KMS keys. Set up an Amazon CloudWatch alarm that triggers deletion attempts. Use Amazon EventBridge to call the Lambda function when a `DeleteKey` action is detected. Lastly, notify administrators via an Amazon Simple Notification Service (Am"
+      ],
+      "answer": 0,
+      "explain": "Amazon EventBridge is a serverless event bus service that facilitates easy connection between applications using data from your own apps, integrated Software-as-a-Service (SaaS) apps, and AWS services. EventBridge can route specific events like KMS key deletion attempts to targets such as AWS Lambda, AWS Systems Manager or even directly to an Amazon SNS topic for notifications.\n\nAWS Systems Manager Automation effectively responds to events detected by EventBridge. An Automation runbook can be configured to cancel the deletion of an AWS KMS key that is in a pending deletion state. This setup us",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "A company uses Amazon EC2 instances, Amazon RDS, and Amazon S3 to run its application. During a recent review of its infrastructure costs, the company noticed unusual spending patterns.\nThe company wants to monitor usage costs and send alerts to the appropriate departments when there is unusual spending from its workload.\nWhich option will meet these requirements?",
+      "options": [
+        "Enable Amazon CloudWatch to monitor costs and detect unusual spending.",
+        "In the AWS Billing and Cost Management console, create a cost monitor using AWS Cost Anomaly Detection.",
+        "Create a zero spend budget template in AWS Budgets.",
+        "Use AWS Cost Explorer and enable multi-year data at monthly granularity."
+      ],
+      "answer": 1,
+      "explain": "AWS Cost Anomaly Detection is an AWS Cost Management feature. This feature uses machine learning models to detect and alert on anomalous spend patterns in your deployed AWS services.\n\nUsing AWS Cost Anomaly Detection includes the following benefits:\n\u2013 receive alerts individually in aggregated reports either in an email message or an Amazon SNS topic. \u2013 evaluate spending patterns using machine learning methods to minimize false positive alerts. For example, you can evaluate weekly or monthly seasonality and natural growth. \u2013 investigate the root cause of the anomaly, such as the AWS account, se",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A consumer goods company runs its website, handling online orders from customers, and supporting microservices on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster.\nA solution is required to route requests to the hosted services based on URL paths.\nWhich option will meet this requirement with the LEAST amount of setup?",
+      "options": [
+        "Use an AWS Lambda function to proxy requests to EKS.",
+        "Provision a Network Load Balancer (NLB) using the AWS Load Balancer Controller.",
+        "Provision an Application Load Balancer (ALB) using the AWS Load Balancer Controller.",
+        "Provision a NGINX Ingress controller."
+      ],
+      "answer": 1,
+      "explain": "Amazon Elastic Kubernetes Service (Amazon EKS) is a managed service that eliminates the need to install, operate, and maintain your own Kubernetes control plane on Amazon Web Services (AWS).\nAn Amazon EKS add-on is software that provides supporting operational capabilities to Kubernetes applications but is not specific to the application. This includes software like observability agents or Kubernetes drivers that allow the cluster to interact with underlying AWS resources for networking, compute, and storage. For instance, the community-initiated AWS Load Balancer Controller simplifies the man",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "An organization wants to use Amazon Managed Grafana for data visualization tasks. The primary data source is an Amazon Relational Database Service (Amazon RDS) instance. The requirement is to ensure the visualization process is secure and the data is not exposed over the internet.\nWhich approach should the business take to meet these requirements?",
+      "options": [
+        "Establish a Managed Grafana workspace outside a VPC. Implement a public endpoint for RDS, and assign this endpoint as the data connection within the Grafana workspace.",
+        "Set up a Managed Grafana workspace with a public endpoint. Configure an AWS PrivateLink endpoint to facilitate a secure connection to RDS, and integrate RDS as the data connection in the Grafana workspace.",
+        "Configure an Amazon RDS Multi-AZ deployment with an Amazon S3 Inventory as the data connection for visualization in Managed Grafana.",
+        "Establish a managed Grafana workspace within an Amazon Virtual Private Cloud, establish a private endpoint for RDS, and subsequently connect this endpoint as the data connection within the Grafana workspace."
+      ],
+      "answer": 0,
+      "explain": "Amazon Managed Grafana is a fully managed service that provides powerful data visualization tools. To integrate with an Amazon RDS database securely, ensuring that no data is exposed to the public internet, certain configurations are necessary. Amazon Managed Grafana can operate either within a Virtual Private Cloud (VPC) or with public internet access. However, for secure, private connections, especially when handling sensitive data, deploying within a VPC is advisable.\n\nWhen setting up Amazon Managed Grafana, it\u2019s highly recommended that the workspace be deployed within a Virtual Private Clo",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "An animation company conducts storyboard experiments using a Linux-based rendering engine and an editing application running on Windows. The rendering engine saves its output on a Network File System (NFS) share, while the editing application uses a Server Message Block (SMB) file system.\nTo share files between these applications, the company synchronizes data across the file systems. This method doubles their storage needs and causes difficulty in data management. The company wants to migrate i",
+      "options": [
+        "Use Amazon Elastic Container Service (ECS) for both applications. Set up Amazon FSx for Lustre for storage.",
+        "Use AWS Lambda for both applications. Configure both applications to save data in an Amazon SQS queue.",
+        "Use Linux Amazon EC2 instances for the rendering engine and Windows EC2 instances for the editing application. Set up Amazon Elastic File System (EFS) and Amazon FSx for Windows File Server for storage.",
+        "Use Linux Amazon EC2 instances for the rendering engine and Windows EC2 instances for the editing application. Set up Amazon FSx for NetApp ONTAP for storage."
+      ],
+      "answer": 2,
+      "explain": "Amazon FSx is a family of file system solutions that makes it easy and cost effective to launch, run, and scale feature-rich, high-performance file systems in the cloud. It supports a wide range of workloads with its reliability, security, scalability, and broad set of capabilities.\nSample use cases:\n\u2013 migrating workloads to the cloud \u2013 machine learning, analytics, and HPC applications \u2013 simplifying availability requirements \u2013 media & entertainment workloads\nAmazon FSx lets you choose between four widely used file systems: Lustre, NetApp ONTAP, OpenZFS, and Windows File Server. This choice is",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "A multinational corporation is in the process of migrating its legacy applications from an on-premises Microsoft Active Directory to AWS. These applications are spread across multiple AWS accounts, which are managed collectively by AWS Organizations. The corporation is seeking a single sign-on (SSO) solution that allows the security team to use their current Active Directory credentials for authentication across all AWS accounts. Additionally, they need to maintain centralized user and group man",
+      "options": [
+        "Utilize AWS Directory Service to establish a two-way trust relationship with the corporation's self-managed Active Directory for mutual authentication and access control.",
+        "Set up an external identity provider (IdP) on an Amazon EC2 instance. Integrate this IdP with AWS IAM Identity Center as the identity source.",
+        "Implement AWS Directory Service's Managed Microsoft AD (Enterprise Edition). Set up the Active Directory as the principal identity provider for AWS IAM Identity Center.",
+        "Activate AWS IAM Identity Center and establish a two-way forest trust relationship. Link the corporation's Active Directory (AD) with the IAM Identity Center via AWS Managed Microsoft AD."
+      ],
+      "answer": 3,
+      "explain": "AWS IAM Identity Center is a service that simplifies the management of access to AWS accounts and applications. By centralizing user access control, the AWS IAM Identity Center enables users to sign in with a single set of credentials to access multiple AWS accounts and applications. It integrates with external identity providers, including Microsoft Active Directory, allowing organizations to leverage their existing user directories for authentication. This integration facilitates streamlined access management and enhances security by enforcing consistent access policies across all AWS resour",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "A startup wants to improve service availability and fault tolerance by distributing incoming traffic across multiple servers. The company uses Auto Scaling Group (ASG) of Amazon EC2 instances in the `us-east-1` region. They plan to deploy the same setup in the `us-west-2` region.\nThe company wants to automatically redirect traffic away from unhealthy instances, irrespective of their region.\nWhich of the following policies fulfills the company\u2019s needs?",
+      "options": [
+        "Use Amazon Route 53's geoproximity routing policy to distribute incoming traffic to the other region.",
+        "Configure Route 53 and opt for a multivalue answer routing policy.",
+        "Launch an Application Load Balancer within the us-east-1 region. Configure the target group to include the IP addresses of Amazon EC2 instances across the two regions.",
+        "Set up an Application Load Balancer in the us-east-1 region and configure it with a target group containing EC2 instances from both regions, identified by their instance IDs."
+      ],
+      "answer": 1,
+      "explain": "Amazon Route 53\u2019s multivalue answer routing policy offers a simple solution to improve your web services\u2019 availability and fault tolerance. This policy allows Route 53 to respond to DNS queries with multiple resource records for a single domain, such as IP addresses for web servers. This enables the distribution of incoming traffic across several resources, similar to a load balancer at the DNS level. The key distinction is that it can include up to eight healthy resources in response to each DNS query, spreading the load and potentially reducing the chance of any single point of failure.\n\nThe",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A company is refactoring an application\u2019s architecture to leverage an AWS Lambda function and Amazon API Gateway. The application receives 5 KB JSON blobs, processes it, and stores the result to an Amazon Aurora database. The application only needs to acknowledge when it has accepted a request, not when it has processed it.\nInitially, the application failed to meet acceptance criteria due to numerous throttling errors during data processing. To resolve this issue, the company had to raise the de",
+      "options": [
+        "Migrate the data store from Aurora to Amazon DynamoDB. Set up a DynamoDB Accelerator (DAX) cluster between the application and the DynamoDB database. Configure the read capacity units (RCUs) of the DynamoDB table to match the expected read throughput. Configure the application to route DynamoDB requ",
+        "Rewrite the Lambda function code into 2 functions \u2013 one function to receive the information and another function to persist the information into the database. Use Amazon Simple Queue Service (Amazon SQS) to signal available work to the second Lambda function.",
+        "Rewrite the Lambda function code into a Go application that runs on an Amazon EC2 instance. Use native Go drivers for database connection.",
+        "Rewrite the Lambda function code into 2 functions \u2013 one function to receive the information and another function to persist the information into the database. Use Amazon Simple Notification Service (Amazon SNS) to signal available work to the second Lambda function."
+      ],
+      "answer": 1,
+      "explain": "Amazon Simple Queue Service (Amazon SQS) offers a secure, durable, and available hosted queue that lets you integrate and decouple distributed software systems and components. Amazon SQS offers common constructs such as dead-letter queues and cost allocation tags.\nAmazon SQS provides a generic web services API that you can access using any programming language supported by AWS SDK. A single subscriber typically processes messages in the queue. This does not necessarily mean a single consumer consuming the whole queue serially. For example, there could be concurrent executions of an AWS Lambda",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "A company seeks to rearchitect its subsystem to an event-driven design using AWS Lambda. However, the company has some hesitations, being that their workloads are all container-based Java services. The company wants to minimize cold starts and outlier latencies when serving requests in the most cost-effective manner.\nWhich would meet the requirements?",
+      "options": [
+        "Enable Lambda SnapStart.",
+        "Enable Lambda provisioned concurrency.",
+        "Set up Lambda layers for dependencies.",
+        "Configure response streaming for Lambda functions."
+      ],
+      "answer": 0,
+      "explain": "AWS Lambda is a compute service that lets you run code without provisioning or managing servers.\nLambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling and logging. With Lambda, all you need to do is supply your code in one of the language runtimes that Lambda supports.\nWith Lambda SnapStart for Java, Lambda initializes functions as new versions are published. Lambda then takes a Firecracker microVM snapshot of the memory a",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A company operates a data lake on Amazon S3, integrating data in Apache Parquet format from various sources. To enhance the data for analysis, the company employs multiple transformation steps. These include filtering anomalies, standardizing date and time formats, and generating analytical aggregates. The transformed data is stored in S3 buckets for access by data analysts.\nThe company seeks a pre-built, non-coding solution for these data transformations. This solution must include data lineage",
+      "options": [
+        "Leverage AWS Glue Studio's visual interface for data transformation. Use Amazon Redshift ML to generate predictive aggregates from the transformed data. Distribute the transformation process across the organization by utilizing Glue jobs.",
+        "Query data using Amazon Athena to execute the data transformation using SQL queries. Facilitate the sharing of these Athena SQL queries among employees.",
+        "Set up Amazon EMR to manage data transformation. Document and share the transformation steps with employees through EMR Studio notebooks.",
+        "Utilize AWS Glue DataBrew for the data transformation tasks. Make the transformation steps available to employees through the use of DataBrew recipes."
+      ],
+      "answer": 1,
+      "explain": "AWS Glue DataBrew is essentially a no-code tool that streamlines the process of preparing data for analysis and machine learning. It\u2019s especially valuable for data professionals looking to clean, normalize, and transform their data more efficiently. One of the standout features of DataBrew is its ability to cut down data preparation time by up to 80% compared to traditional manual methods. This efficiency boost not only accelerates the data preparation process but also allows data analysts and scientists to focus more on extracting insights rather than getting stuck in the initial stages of da",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "A company operates a three-tier application with all its components hosted on AWS, except for the data layer. This data layer consists of a MySQL-compatible database located on-premises, connected to AWS through a Site-to-Site VPN. The database\u2019s memory consumption ranges from 2 to 16 GiB.\nOn the other hand, the application experiences unpredictable traffic patterns, including spikes and periods of zero activity, which translates to irregular load on the database. The company wants to replace th",
+      "options": [
+        "Set up an Amazon DynamoDB table with auto-scaling enabled. Configure the table with a minimum of 2 and a maximum of 16 capacity units.",
+        "Configure an Amazon Aurora Serverless v2 database with a minimum capacity of 1 and a maximum of 8 Aurora capacity units (ACUs).",
+        "Set up an Amazon Aurora database with a memory-optimized DB instance class type.",
+        "Set up an Amazon RDS for the MySQL database with 4 gigabytes of memory."
+      ],
+      "answer": 0,
+      "explain": "Amazon Aurora is a relational database service that combines the speed and availability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. Aurora is fully compatible with MySQL and PostgreSQL, allowing existing applications and tools to run without requiring modification.\n\nWith Aurora Serverless V2, you can mix and match provisioned capacity writer/reader instances with serverless writer/reader that match your workloads. Taking an example of a read-heavy but consistent workload with erratic writes, the cluster can be configured to include prov",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "An e-commerce company stores a large amount of sales data in Amazon S3. The company needs to run ad-hoc SQL queries on the data to quickly gain insights into different business metrics.\nWhich solution will meet these requirements with the LEAST operational overhead?",
+      "options": [
+        "Run an AWS Glue Crawler to populate tables in the AWS Glue Data Catalog, then query the data using Amazon Athena.",
+        "Set up tables in Amazon Redshift. Load data from S3. Use Redshift SQL to query the data.",
+        "Create an AWS Glue crawler to crawl the data. Set up an Amazon Managed Service for Apache Flink application to query the data using SQL.",
+        "Run a Spark job on Amazon EMR Serverless and use Amazon Aurora MySQL as an external Hive Metastore."
+      ],
+      "answer": 0,
+      "explain": "AWS Glue is a serverless data integration service that makes it easy for analytics users to discover, prepare, move, and integrate data from multiple sources. You can use it for analytics, machine learning, and application development. It also includes additional productivity and data ops tooling for authoring, running jobs, and implementing business workflows.\nAWS Glue enables you to visually create, run, and monitor extract, transform, and load (ETL) pipelines to load data into your data lakes. and to immediately search and query cataloged data using Amazon Athena, Amazon EMR, and Amazon Red",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "A company is developing a scheduled job that copies a backup of its virtual machines (VMs) to an Amazon S3 bucket. To avoid tampering, these backups must be protected against overwrites. They should also be retained for 20 days before being automatically deleted.\nWhich combination of actions will meet these requirements? (Select TWO.)",
+      "options": [
+        "Create an automated solution that tags objects to be covered by a 20-day retention policy.",
+        "Make a new S3 bucket and enable S3 Object Lock. Set a 20-day legal hold.",
+        "Make a new S3 bucket and enable S3 Object Lock. Set a 20-day retention period.",
+        "Set the objects to expire after 20 days using an S3 Lifecycle policy."
+      ],
+      "answer": 0,
+      "explain": "Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, data availability, security, and performance. With lifecycle rules, objects can be managed so that they are stored cost-effectively throughout their lifecycle. An S3 Lifecycle configuration is a set of rules that define actions that Amazon S3 applies to a group of objects.\nThere are two types of actions:\nTransition actions \u2014 define when objects transition to another storage class. They are usually leveraged to save costs when object storage shifts to less strict requirements, eg. le",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "A logistics company manages a fleet of delivery trucks equipped with GPS devices that periodically upload location data to an Amazon S3 bucket. Historically, the company used an Amazon EC2 Spot Fleet to process the GPS data in batches every night.\nThe processing typically takes 3 minutes to complete and requires at least 64 MB of memory. The company\u2019s solutions architect is tasked with modifying the application to process GPS data as it is uploaded to the S3 bucket.\nWhich modification will achie",
+      "options": [
+        "Configure S3 Event Notifications to populate an Amazon SQS queue with details of uploaded GPS data files. Assign an AWS Lambda function to process the data by retrieving the queue's messages.",
+        "Set S3 Event Notifications to transmit GPS data files to an Amazon Kinesis Data Stream. Create a Lambda Function to periodically pull and process the data from the stream.",
+        "Configure S3 Event Notifications to send GPS data files to an Amazon SNS topic. Establish an Amazon ECS service that processes data by subscribing to the topic.",
+        "Enable S3 Event Notifications to automatically forward the details of the GPS data file to an Amazon SNS topic. Set up an application in AWS Elastic Beanstalk wherein it processes the data files as they are uploaded after subscribing to the topic."
+      ],
+      "answer": 0,
+      "explain": "Amazon S3 Event Notifications are configured to automatically send notifications when specific events happen in an S3 bucket. These events can include creating, deleting, or modifying an object in a bucket. Notifications can be sent to AWS Lambda, Amazon SQS, or Amazon SNS, allowing immediate action based on the event. This feature is critical in event-drive processing scenarios as it allows immediate downstream processing when data becomes available.\n\nAWS Lambda is a serverless platform that takes care of all the computing resources required by your code, making it an ideal solution for scena",
+      "source": "dojo-exam8",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "A company has a web crawler that regularly stores artifacts in an Amazon S3 bucket. An initial copy of the artifacts has been uploaded to another S3 bucket and an EFS volume. The company needs to ensure that any changes in the source bucket are replicated in the target resources.\nWhich solution will meet these requirements with the LEAST operational overhead?",
+      "options": [
+        "Create an AWS DataSync `location` and `task` for both the destination S3 bucket and the EFS file system. Configure transfer mode to `transfer only data that has changed`.",
+        "Create an AWS Privatelink endpoint for Amazon S3. Configure an AWS Lambda function to copy files to the EFS file system and the destination S3 bucket. Set up an EventBridge rule that invokes the function when the `PutObject` action occurs in the source bucket.",
+        "In the same VPC, launch an Amazon EC2 instance and mount the EFS file system. Write a cron job that synchronizes changes between the source and destination S3 buckets and file systems.",
+        "Create an AWS DataSync `location` and `task` for both the destination S3 bucket and the EFS file system. Configure transfer mode to `transfer all data`."
+      ],
+      "answer": 0,
+      "explain": "AWS DataSync is an online data movement and discovery service that simplifies data migration and helps you quickly, easily, and securely transfer your file or object data to, from, and between AWS storage services.\nDataSync employs an AWS-designed transfer protocol\u2014decoupled from the storage protocol\u2014to accelerate data movement. The protocol performs optimizations on how, when, and what data is sent over the network. Network optimizations performed by DataSync include incremental transfers, in-line compression, and sparse file detection, as well as in-line data validation and encryption. A sin",
+      "source": "dojo-exam8",
       "result": "Incorrect"
     }
   ]
