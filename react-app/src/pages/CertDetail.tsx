@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
@@ -44,7 +44,8 @@ export default function CertDetail() {
   const [revealed, setRevealed] = useState(false)
   const [score, setScore] = useState(0)
   const [answered, setAnswered] = useState(0)
-  const [domainFilter, setDomainFilter] = useState('all')
+  const [searchParams] = useSearchParams()
+  const [domainFilter, setDomainFilter] = useState(searchParams.get('domain') || 'all')
   const [showResults, setShowResults] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
   const [_wrongQuestions, setWrongQuestions] = useState<Question[]>([])

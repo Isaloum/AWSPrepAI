@@ -502,7 +502,7 @@ export default function ServiceGroups() {
                           )}
                         </div>
                         <Link
-                          to="/cert/saa-c03"
+                          `/cert/saa-c03?domain=${group.id === "resilient" ? "resilient-arch" : group.id === "secure" ? "secure-arch" : group.id === "performance" ? "high-perf-arch" : "cost-optimized-arch"}`
                           style={{
                             display: 'inline-block',
                             marginTop: '1rem',
