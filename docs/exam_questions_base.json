@@ -1,6 +1,6 @@
 {
-  "version": "1.7",
-  "total": 709,
+  "version": "1.9",
+  "total": 774,
   "questions": [
     {
       "cat": "cost-optimized-arch",
@@ -9926,6 +9926,916 @@
       "answer": 0,
       "explain": "AWS WAF is a web application firewall that lets you monitor the HTTP and HTTPS requests that are forwarded to an Amazon API Gateway API, Amazon CloudFront or an Application Load Balancer. AWS WAF also lets you control access to your content. Based on conditions that you specify, such as the IP addresses that requests originate from or the values of query strings, API Gateway, CloudFront or an Application Load Balancer responds to requests either with the requested content or with an HTTP 403 status code (Forbidden). You also can configure CloudFront to return a custom error page when a request",
       "source": "dojo-exam10",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nAn organization uses a Microsoft SQL Server database to support its suite of applications. The organization plans to transition to an Amazon Aurora PostgreSQL database while minimizing application code modifications.\nWhich combination of actions will achieve these objectives? (Select TWO.)",
+      "options": [
+        "Use AWS AppConfig to manage configuration updates during the migration.",
+        "Use AWS Schema Conversion Tool (AWS SCT) to convert the database schema and AWS Database Migration Service (AWS DMS) to migrate the data.",
+        "Use Amazon Kinesis Data Streams for real-time data replication to Aurora PostgreSQL.",
+        "Turn on Babelfish on Aurora PostgreSQL to allow applications to continue using existing SQL queries"
+      ],
+      "answer": 3,
+      "explain": "AWS Schema Conversion Tool (AWS SCT) is a service that helps convert database schemas from one database engine to another. It supports conversion from various source databases, including Microsoft SQL Server, to target databases like Amazon Aurora PostgreSQL.\nAWS Database Migration Service (AWS DMS) is a service that helps migrate databases to AWS quickly and securely. It supports continuous data replication with minimal downtime.\nBabelfish for Aurora PostgreSQL is an extension designed for Amazon Aurora PostgreSQL. It allows the database to interpret commands from applications developed for M",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA startup launched a new FTP server using an On-Demand EC2 instance in a newly created VPC with default settings. The server should not be accessible publicly but only through the IP address `175.45.116.100` and nowhere else.\nWhich of the following is the most suitable way to implement this requirement?",
+      "options": [
+        "Create a new inbound rule in the security group of the EC2 instance with the following details: Protocol: TCP Port Range: 20 \u2013 21 Source: `175.45.116.100/32`",
+        "Create a new inbound rule in the security group of the EC2 instance with the following details: Protocol: UDP Port Range: 20 \u2013 21 Source: `175.45.116.100/32`",
+        "Create a new Network ACL inbound rule in the subnet of the EC2 instance with the following details: Protocol: TCP Port Range: 20 \u2013 21 Source: `175.45.116.100/0` Allow/Deny: ALLOW",
+        "Create a new Network ACL inbound rule in the subnet of the EC2 instance with the following details: Protocol: UDP Port Range: 20 \u2013 21 Source: `175.45.116.100/0` Allow/Deny: ALLOW"
+      ],
+      "answer": 0,
+      "explain": "The FTP protocol uses TCP via ports 20 and 21. This should be configured in your security groups or in your Network ACL inbound rules. As required by the scenario, you should only allow the individual IP of the client and not the entire network. Therefore, in the Source,  the proper CIDR notation should be used. The /32 denotes one IP address and the /0 refers to the entire network.\nIt is stated in the scenario that you launched the EC2 instances in a newly created VPC with default settings. Your VPC automatically comes with a modifiable default network ACL. By default, it allows all inbound a",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nAn organization plans to use an AWS Direct Connect connection to establish a dedicated connection between its on-premises network and AWS. The organization needs to launch a fully managed solution that will automate and accelerate the replication of data to and from various AWS storage services.\nWhich of the following solutions would you recommend?",
+      "options": [
+        "Use an AWS Storage Gateway tape gateway to store data on virtual tape cartridges and asynchronously copy your backups to AWS.",
+        "Use an AWS Storage Gateway file gateway to store and retrieve files directly using the SMB file system protocol.",
+        "Use an AWS DataSync agent to rapidly move the data over the Internet.",
+        "Use an AWS DataSync agent to rapidly move the data over a service endpoint."
+      ],
+      "answer": 3,
+      "explain": "AWS DataSync allows you to copy large datasets with millions of files, without having to build custom solutions with open source tools or license and manage expensive commercial network acceleration software. You can use DataSync to migrate active data to AWS, transfer data to the cloud for analysis and processing, archive data to free up on-premises storage capacity, or replicate data to AWS for business continuity.\nAWS DataSync simplifies, automates, and accelerates copying large amounts of data to and from AWS storage services over the internet or AWS Direct Connect. DataSync can copy data",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA Solutions Architect is working for a large global media company with multiple office locations all around the world. The Architect is instructed to build a system to distribute training videos to all employees.\nUsing Amazon CloudFront, what method would be used to serve content that is stored in Amazon S3 but not publicly accessible from S3 directly?",
+      "options": [
+        "Create an Identity and Access Management (IAM) user for CloudFront and grant access to the objects in your S3 bucket to that IAM user.",
+        "Create a web ACL in AWS WAF to block any public S3 access and attach it to the CloudFront distribution.",
+        "Create an S3 bucket policy that lists the CloudFront distribution ID as the principal and the target bucket as the Amazon Resource Name (ARN).",
+        "Create an Origin Access Control (OAC) for CloudFront and grant access to the objects in your S3 bucket to that OAC."
+      ],
+      "answer": 0,
+      "explain": "When you create or update a distribution in CloudFront, you can add an origin access Control (OAC) and automatically update the bucket policy to give the origin access control permission to access your bucket. Alternatively, you can choose to manually change the bucket policy or change ACLs, which control permissions on individual objects in your bucket.\n\nYou can update the Amazon S3 bucket policy using either the AWS Management Console or the Amazon S3 API:\n\u2013 Grant the CloudFront origin access control the applicable permissions on the bucket.\n\u2013 Deny access to anyone that you don\u2019t want to hav",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA Solutions Architect is designing a monitoring application which generates audit logs of all operational activities of the company\u2019s cloud infrastructure. Their IT Security and Compliance team mandates that the application retain the logs for 5 years before the data can be deleted.\nHow can the Architect meet the above requirement?",
+      "options": [
+        "Store the audit logs in a Glacier vault and use the Vault Lock feature.",
+        "Store the audit logs in an EBS volume and then take EBS snapshots every month.",
+        "Store the audit logs in an EFS volume and use Network File System version 4 (NFSv4) file-locking mechanism.",
+        "Store the audit logs in an Amazon S3 bucket and enable Multi-Factor Authentication Delete (MFA Delete) on the S3 bucket."
+      ],
+      "answer": 0,
+      "explain": "An Amazon S3 Glacier (Glacier) vault can have one resource-based vault access policy and one Vault Lock policy attached to it. A Vault Lock policy is a vault access policy that you can lock. Using a Vault Lock policy can help you enforce regulatory and compliance requirements. Amazon S3 Glacier provides a set of API operations for you to manage the Vault Lock policies.\n\nAs an example of a Vault Lock policy, suppose that you are required to retain archives for one year before you can delete them. To implement this requirement, you can create a Vault Lock policy that denies users permission to d",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company has an Application Load Balancer (ALB) that accepts HTTP and HTTPS traffic on ports 80 and 443, respectively. Recently, the company associated a new domain for its website, and they want to ensure that all HTTP traffic for this new domain is automatically redirected to HTTPS to improve security.\nWhich ALB configuration should be done to satisfy the requirement?",
+      "options": [
+        "Create a new ALB listener on port 443 and configure it to redirect HTTP traffic to HTTPS.",
+        "Configure the existing HTTP listener to redirect traffic to port 443.",
+        "Create a new HTTP listener on port 80 and add a redirect action to the HTTPS protocol on port 443.",
+        "Configure the existing on port 443 and add a redirect action to HTTP on port 80."
+      ],
+      "answer": 0,
+      "explain": "Application Load Balancer operates at the application layer (layer 7), routing traffic to targets such as EC2 instances, containers, IP addresses, and Lambda functions based on the requested content. It is ideal for advanced load balancing of HTTP and HTTPS traffic, providing enhanced request routing for modern application architectures like microservices and container-based applications. Additionally, it simplifies and improves application security by always utilizing the latest SSL/TLS ciphers and protocols.\n\nConfiguring the existing ALB listener on port 80 to redirect traffic to port 443 is",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA data analytics company, which uses machine learning to collect and analyze consumer data, is using Redshift cluster as their data warehouse. You are instructed to implement a disaster recovery plan for their systems to ensure business continuity even in the event of an AWS region outage.\nWhich of the following is the best approach to meet this requirement?",
+      "options": [
+        "Create a scheduled job that will automatically take the snapshot of your Redshift Cluster and store it to an S3 bucket. Restore the snapshot in case of an AWS region outage.",
+        "Enable Cross-Region Snapshots Copy in your Amazon Redshift Cluster.",
+        "Use Automated snapshots of your Redshift Cluster.",
+        "Do nothing because Amazon Redshift is a highly available, fully-managed data warehouse which can withstand an outage of an entire AWS region."
+      ],
+      "answer": 0,
+      "explain": "You can configure Amazon Redshift to copy snapshots for a cluster to another region. To configure cross-region snapshot copy, you need to enable this copy feature for each cluster and configure where to copy snapshots and how long to keep copied automated snapshots in the destination region. When a cross-region copy is enabled for a cluster, all new manual and automatic snapshots are copied to the specified region.\n The option that says: Create a scheduled job that will automatically take the snapshot of your Redshift Cluster and store it to an S3 bucket. Restore the snapshot in case of an AWS",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company must integrate the Lightweight Directory Access Protocol (LDAP) directory service from the on-premises data center to the AWS VPC using IAM. The identity store which is currently being used is not compatible with SAML.\nWhich of the following provides the most valid approach to implement the integration?",
+      "options": [
+        "Develop an on-premises custom identity broker application and use STS to issue short-lived AWS credentials.",
+        "Use AWS IAM Identity Center to manage access between AWS and your LDAP.",
+        "Use an IAM policy that references the LDAP identifiers and AWS credentials.",
+        "Use IAM roles to rotate the IAM credentials whenever LDAP credentials are updated."
+      ],
+      "answer": 0,
+      "explain": "If your identity store is not compatible with SAML 2.0 then you can build a custom identity broker application to perform a similar function. The broker application authenticates users, requests temporary credentials for users from AWS, and then provides them to the user to access AWS resources.\nThe application verifies that employees are signed into the existing corporate network\u2019s identity and authentication system, which might use LDAP, Active Directory, or another system. The identity broker application then obtains temporary security credentials for the employees.\nTo get temporary securit",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA Solutions Architect is designing a setup for a database that will run on Amazon RDS for MySQL. He needs to ensure that the database can automatically failover to an RDS instance to continue operating in the event of failure. The architecture should also be as highly available as possible.\nWhich among the following actions should the Solutions Architect do?",
+      "options": [
+        "Create five read replicas across different availability zones. In the event of an Availability Zone outage, promote any replica to become the primary instance.",
+        "Create a read replica in the same region where the DB instance resides. In addition, create a read replica in a different region to survive a region\u2019s failure. In the event of an Availability Zone outage, promote any replica to become the primary instance.",
+        "Create five cross-region read replicas in each region. In the event of an Availability Zone outage, promote any replica to become the primary instance.",
+        "Create a standby replica in another availability zone by enabling Multi-AZ deployment."
+      ],
+      "answer": 0,
+      "explain": "You can run an Amazon RDS DB instance in several AZs with Multi-AZ deployment. Amazon automatically provisions and maintains a secondary standby DB instance in a different AZ. Your primary DB instance is synchronously replicated across AZs to the secondary instance to provide data redundancy, failover support, eliminate I/O freezes, and minimize latency spikes during systems backup.\n\nAs described in the scenario, the architecture must meet two requirements:\n   1. The database should automatically fail over to an RDS instance in case of failures.\n   2. The architecture should be as highly avail",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nTo save costs, your manager instructed you to analyze and review the setup of your AWS cloud infrastructure. You should also provide an estimate of how much your company will pay for all of the AWS resources that they are using.\nIn this scenario, which of the following will incur costs? (Select TWO.)",
+      "options": [
+        "A stopped On-Demand EC2 Instance",
+        "A running EC2 Instance",
+        "Public Data Set",
+        "EBS Volumes attached to stopped EC2 Instances"
+      ],
+      "answer": 0,
+      "explain": "Billing commences when Amazon EC2 initiates the boot sequence of an AMI instance. Billing ends when the instance terminates, which could occur through a web services command, by running \u201cshutdown -h\u201d, or through instance failure. When you stop an instance, AWS shuts it down but doesn\u2019t charge hourly usage for a stopped instance or data transfer fees. However, AWS does charge for the storage of any Amazon EBS volumes.\nHence, a running EC2 Instance and EBS Volumes attached to stopped EC2 Instances are the right answers and conversely, a stopped On-Demand EC2 Instance is incorrect as there is no",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA multinational bank is storing its confidential files in an S3 bucket. The security team recently performed an audit, and the report shows that multiple files have been uploaded without 256-bit Advanced Encryption Standard (AES) server-side encryption. For added protection, the encryption key must be automatically rotated every year. The solutions architect must ensure that there would be no other unencrypted files uploaded in the S3 bucket in the fu",
+      "options": [
+        "Create a new customer-managed key from the AWS Key Management Service (AWS KMS). Configure the default encryption behavior of the bucket to use the customer-managed key. Manually rotate the KMS key and every year.",
+        "Create an S3 bucket policy for the S3 bucket that rejects any object uploads unless the request includes the `s3:x-amz-server-side-encryption\":\"aws:kms\"` header. Enable the S3 Object Lock in compliance mode for all objects to automatically rotate the built-in AES256 customer-managed key of the bucke",
+        "Create a Service Control Policy (SCP) for the S3 bucket that rejects any object uploads unless the request includes the `s3:x-amz-server-side-encryption\": \"AES256\"` header. Enable server-side encryption with Amazon S3-managed encryption keys (SSE-S3) and modify the built-in key rotation feature of t",
+        "Create an S3 bucket policy that denies permissions to upload an object unless the request includes the `s3:x-amz-server-side-encryption\": \"AES256\"` header. Enable server-side encryption with Amazon S3-managed encryption keys (SSE-S3) and rely on the built-in key rotation feature of the SSE-S3 encryp"
+      ],
+      "answer": 1,
+      "explain": "A bucket policy is a resource-based policy that you can use to grant access permissions to your bucket and the objects in it. Server-side encryption protects data at rest. Amazon S3 encrypts each object with a unique key. Amazon S3 server-side encryption uses one of the strongest block ciphers available to encrypt your data, 256-bit Advanced Encryption Standard (AES-256).\n\nIf you need server-side encryption for all of the objects that are stored in a bucket, use a bucket policy. You can create a bucket policy that denies permissions to upload an object unless the request includes the `x-amz-se",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has a team of developers that provisions its own resources on the AWS cloud. The developers use IAM user access keys to automate resource provisioning and application testing processes in AWS. To ensure proper security compliance, the security team wants to automate the process of deactivating and deleting any IAM user access key that is over 90 days old.\nWhich solution will meet these requirements with the LEAST operational effort?",
+      "options": [
+        "Create an Amazon EventBridge rule to filter IAM user access keys older than 90 days. Schedule an AWS Batch job that runs every 24 hours to delete all the specified access keys.",
+        "Use the AWS Config managed rule to check if the IAM user access keys are not rotated within 90 days. Create an Amazon EventBridge rule for the non-compliant keys, and define a target to invoke a custom AWS Lambda function to deactivate and delete the keys.",
+        "Create a custom AWS Config rule to check the max-age of IAM access keys. Use Amazon EventBridge Scheduler to invoke an AWS Batch job every 24 hours to delete all non-compliant access keys.",
+        "Create an Amazon EventBridge rule to filter IAM user access keys older than 90 days. Define a target to invoke an AWS Lambda function to deactivate and delete the old access keys."
+      ],
+      "answer": 0,
+      "explain": "AWS Config provides a detailed view of the configuration of AWS resources in your AWS account. This includes how the resources are related to one another and how they were configured in the past so that you can see how the configurations and relationships change over time.\nYou can use AWS Config rules to evaluate the configuration settings of your AWS resources. When AWS Config detects that a resource violates the conditions in one of your rules, AWS Config flags the resource as non-compliant and sends a notification. AWS Config continuously evaluates your resources as they are created, change",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has a High Performance Computing (HPC) cluster that is composed of EC2 Instances with Provisioned IOPS (io1) volume to process transaction-intensive, low-latency workloads. The Solutions Architect must maintain high IOPS while keeping the latency down by setting the optimal queue length for the volume. The size of each volume is 10 GiB.\nWhich of the following is the MOST suitable configuration that the Architect should set up?",
+      "options": [
+        "Set the IOPS to 500 then maintain a low queue length.",
+        "Set the IOPS to 400 then maintain a low queue length.",
+        "Set the IOPS to 800 then maintain a low queue length.",
+        "Set the IOPS to 600 then maintain a high queue length."
+      ],
+      "answer": 0,
+      "explain": "Provisioned IOPS SSD (`io1`) volumes are designed to meet the needs of I/O-intensive workloads, particularly database workloads, that are sensitive to storage performance and consistency. Unlike `gp2`, which uses a bucket and credit model to calculate performance, an `io1` volume allows you to specify a consistent IOPS rate when you create the volume, and Amazon EBS delivers within 10 percent of the provisioned IOPS performance 99.9 percent of the time over a given year.\nAn `io1` volume can range in size from 4 GiB to 16 TiB. You can provision from 100 IOPS up to 64,000 IOPS per volume on Nitr",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA technical lead of the Cloud Infrastructure team was consulted by a software developer regarding the required AWS resources of the web application that he is building. The developer knows that an Instance Store only provides ephemeral storage where the data is automatically deleted when the instance is terminated. To ensure that the data of the web application persists, the app should be launched in an EC2 instance that has a durable, block-",
+      "options": [
+        "Provisioned IOPS volumes offer storage with consistent and low-latency performance, and are designed for I/O intensive applications such as large relational or NoSQL databases.",
+        "General Purpose SSD (gp3) volumes with multi-attach enabled offer consistent and low-latency performance, and are designed for applications requiring multi-az resiliency.",
+        "Single root I/O virtualization (SR-IOV) volumes are suitable for a broad range of workloads, including small to medium-sized databases, development and test environments, and boot volumes.",
+        "Spot volumes provide the lowest cost per gigabyte of all EBS volume types and are ideal for workloads where data is accessed infrequently, and applications where the lowest storage cost is important."
+      ],
+      "answer": 0,
+      "explain": "Amazon EBS provides three volume types to best meet the needs of your workloads: General Purpose (SSD), Provisioned IOPS (SSD), and Magnetic.\n\nGeneral Purpose (SSD) is the new, SSD-backed, general purpose EBS volume type that is recommended as the default choice for customers. General Purpose (SSD) volumes are suitable for a broad range of workloads, including small to medium-sized databases, development and test environments, and boot volumes.\nProvisioned IOPS (SSD) volumes offer storage with consistent and low-latency performance and are designed for I/O intensive applications such as large",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company is running a web application on AWS. The application is made up of an Auto-Scaling group that sits behind an Application Load Balancer and an Amazon DynamoDB table where user data is stored. The solutions architect must design the application to remain available in the event of a regional failure. A solution to automatically monitor the status of your workloads across your AWS account, conduct architectural reviews and check for AWS best",
+      "options": [
+        "In a secondary region, create a global table of the DynamoDB table and replicate the auto-scaling group and application load balancer. Use Route 53 DNS failover to automatically route traffic to the resources in the secondary region. Set up the AWS Well-Architected Tool to easily get recommendations",
+        "Write a CloudFormation template that includes the auto-scaling group, application load balancer, and DynamoDB table. In the event of a failure, deploy the template in a secondary region. Use Route 53 DNS failover to automatically route traffic to the resources in the secondary region. Set up and con",
+        "In a secondary region, create a global secondary index of the DynamoDB table and replicate the auto-scaling group and application load balancer. Use Route 53 DNS failover to automatically route traffic to the resources in the secondary region. Set up the AWS Compute Optimizer to automatically get re",
+        "Write a CloudFormation template that includes the auto-scaling group, application load balancer, and DynamoDB table. In the event of a failure, deploy the template in a secondary region. Configure Amazon EventBridge (Amazon CloudWatch Events) to trigger a Lambda function that updates the application"
+      ],
+      "answer": 0,
+      "explain": "When you have more than one resource performing the same function\u2014for example, more than one HTTP serve\u2014you can configure Amazon Route 53 to check the health of your resources and respond to DNS queries using only the healthy resources. For example, suppose your website, example.com, is hosted on six servers, two each in three data centers around the world. You can configure Route 53 to check the health of those servers and to respond to DNS queries for example.com using only the servers that are currently healthy.\n\nIn this scenario, you can replicate the process layer (EC2 instances, Applicat",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has a web-based order processing system that is currently using a standard queue in Amazon SQS. The IT Manager noticed that there are a lot of cases where an order was processed twice. This issue has caused a lot of trouble in processing and made the customers very unhappy. The goal is to ensure that this issue will not recur.\nWhat solution should be implemented to prevent this from happening again in the future?",
+      "options": [
+        "Alter the visibility timeout of SQS.",
+        "Change the message size in SQS.",
+        "Alter the retention period in SQS.",
+        "Use an Amazon SQS FIFO Queue instead."
+      ],
+      "answer": 3,
+      "explain": "Amazon SQS FIFO (First-In-First-Out) Queues have all the capabilities of the standard queue with additional capabilities designed to enhance messaging between applications when the order of operations and events is critical or where duplicates can\u2019t be tolerated, for example:\n\u2013 Ensure that user-entered commands are executed in the right order. \u2013 Display the correct product price by sending price modifications in the right order. \u2013 Prevent a student from enrolling in a course before registering for an account.\n\nAmazon Simple Queue Service (SQS) provides two types of queues: Standard Queues and",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company plans to develop a custom messaging service that will be used to train an AI for an automatic response feature. The service is expected to receive thousands of messages per day, all of which will be processed by an Amazon EMR cluster. It is crucial that none of the messages are lost, no duplicates are produced, and that the messages are processed in EMR in the same order as arrival.\nWhich of the following options can satisfy the giv",
+      "options": [
+        "Create an Amazon Kinesis Data Stream to collect the messages.",
+        "Set up an Amazon SQS standard queue and configure a dead-letter queue (DLQ) to handle failed messages.",
+        "Create an Amazon Data Firehose to handle the messages.",
+        "Set up an Amazon SNS Topic to handle the messages."
+      ],
+      "answer": 0,
+      "explain": "The solution must ensure that messages are durable so that no data is lost and that records are processed in the same order as they arrive. Amazon Kinesis Data Streams satisfies these requirements through its streaming architecture. A Kinesis data stream is composed of shards, where each shard stores a sequence of ordered data records. Each record written to the stream is assigned a unique sequence number, which allows consumers to process records in the exact order in which they were received within a shard. In addition, records are durably stored and replicated across multiple Availability Z",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company has a fixed set of Amazon EC2 instances inside a VPC in the AWS cloud. The instances run a mission-critical application. In a recent incident, one of the EC2 instances suddenly powered down which affected the availability of the application. To avoid this incident in the future, the management wants to get notified of any upcoming AWS events that may affect these EC2 instances.\nWhich of the following options is the recommended action to m",
+      "options": [
+        "Set up an Amazon EventBridge (Amazon CloudWatch Events) rule to check for AWS Service Health Dashboard events that are related to Amazon EC2 instances. To send notifications, set an Amazon SNS topic as a target for the rule.",
+        "Create an Amazon EventBridge (Amazon CloudWatch Events) rule to check for AWS Personal Health Dashboard events that are related to Amazon EC2 instances. To send notifications, set an Amazon SNS topic as a target for the rule.",
+        "Set up an Amazon EventBridge (Amazon CloudWatch Events) rule to check for any status change for Amazon EC2 instances. Set the target to an AWS Lambda function that will send a notification and restart the affected Amazon EC2 instances.",
+        "Create an Amazon EventBridge (Amazon CloudWatch Events) rule that is scheduled to run every 24 hours. Set the target to an AWS Lambda function that will check AWS Service Health Dashboard and send notifications for any events that may affect Amazon EC2 instances."
+      ],
+      "answer": 0,
+      "explain": "AWS Health provides ongoing visibility into your resource performance and the availability of your AWS services and accounts. You can use AWS Health events to learn how service and resource changes might affect your applications running on AWS. AWS Health provides relevant and timely information to help you manage events in progress. AWS Health also helps you be aware of and to prepare for planned activities.\nYou can use Amazon EventBridge to detect and react to AWS Health events. Then, based on the rules that you create, EventBridge invokes one or more target actions when an event matches the",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has a global news website hosted in a fleet of EC2 Instances. Lately, the load on the website has increased which resulted in slower response time for the site visitors. This issue impacts the revenue of the company as some readers tend to leave the site if it does not load after 10 seconds. The goal is to address the issue in a cost-effective manner.\u201d\nWhich of the below services in AWS can be used to solve this problem? (Select TWO",
+      "options": [
+        "Deploy the website to all regions in different VPCs for faster processing.",
+        "Use Amazon ElastiCache for the website's in-memory data store or cache.",
+        "Use Amazon CloudFront with website as the custom origin.",
+        "For better read throughput, use AWS Storage Gateway to distribute the content across multiple regions."
+      ],
+      "answer": 1,
+      "explain": "The global news website has a problem with latency considering that there are a lot of readers of the site from all parts of the globe. In this scenario, you can use a content delivery network (CDN) which is a geographically distributed group of servers that work together to provide fast delivery of Internet content. And since this is a news website, most of its data are read-only, which can be cached to improve the read throughput and avoid repetitive requests from the server.\n\nIn AWS, Amazon CloudFront is the global content delivery network (CDN) service that you can use, and for web caching",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company has a set of Linux servers running on multiple On-Demand Amazon EC2 instances powered by the EC2 Nitro System. The Audit team wants to collect and process the application log files generated from these servers for the report.\nWhich of the following is the most suitable solution to meet this requirement?",
+      "options": [
+        "Amazon S3 Glacier for storing the application log files and Spot EC2 Instances for processing them.",
+        "Amazon S3 for storing the application log files and Amazon Elastic MapReduce for processing the log files.",
+        "A single On-Demand EC2 instance for both storing and processing the log files",
+        "Amazon S3 Glacier Deep Archive for storing the application log files and AWS ParallelCluster for processing the log files."
+      ],
+      "answer": 0,
+      "explain": "Amazon EMR is a managed cluster platform that simplifies running big data frameworks, such as Apache Hadoop and Apache Spark, on AWS to process and analyze vast amounts of data. By using these frameworks and related open-source projects such as Apache Hive and Apache Pig, you can process data for analytics purposes and business intelligence workloads. Additionally, you can use Amazon EMR to transform and move large amounts of data into and out of other AWS data stores and databases such as Amazon Simple Storage Service (Amazon S3) and Amazon DynamoDB.\n\nHence, the correct answer is: Amazon S3 f",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA large multinational investment bank has a web application that requires a minimum of 4 EC2 instances to run to ensure that it can cater to its users across the globe. You are instructed to ensure fault tolerance of this system.\nWhich of the following is the best option?",
+      "options": [
+        "Deploy an Auto Scaling group with 2 instances in each of 2 Availability Zones behind an Application Load Balancer.",
+        "Deploy an Auto Scaling group with 2 instances in each of 3 Availability Zones behind an Application Load Balancer.",
+        "Deploy an Auto Scaling group with 4 instances in one Availability Zone behind an Application Load Balancer.",
+        "Deploy an Auto Scaling group with 1 instance in each of 4 Availability Zones behind an Application Load Balancer."
+      ],
+      "answer": 0,
+      "explain": "Fault Tolerance is the ability of a system to remain in operation even if some of the components used to build the system fail. In AWS, this means that in the event of server fault or system failures, the number of running EC2 instances should not fall below the minimum number of instances required by the system for it to work properly. So if the application requires a minimum of 4 instances, there should be at least 4 instances running in case there is an outage in one of the Availability Zones or if there are server issues.\n\nOne of the differences between Fault Tolerance and High Availabilit",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA real-time data analytics application is using AWS Lambda to process data and store results in JSON format to an S3 bucket. To speed up the existing workflow, you have to use a service where you can run sophisticated Big Data analytics on your data without moving them into a separate analytics system.\nWhich of the following group of services can you use to meet this requirement?",
+      "options": [
+        "Amazon Neptune, DynamoDB DAX, Amazon Redshift Spectrum",
+        "Amazon Athena, Amazon Redshift Spectrum, AWS Glue",
+        "Amazon X-Ray, Amazon Neptune, DynamoDB",
+        "Amazon Glue, Amazon Redshift, Amazon S3"
+      ],
+      "answer": 0,
+      "explain": "Amazon Athena, Amazon Redshift Spectrum, and AWS Glue are highly relevant services for performing Big Data analytics directly on data stored in Amazon S3, without needing to move the data to a separate system.\nAmazon Athena allows users to query data directly in Amazon S3 using SQL, providing a serverless approach to perform analytics on S3-stored data in formats such as JSON.\n\nAmazon Redshift Spectrum extends the querying capabilities of Amazon Redshift to also access and analyze structured and semi-structured data in S3, supporting large-scale analytics.\n\nAWS Glue is a fully managed ETL (Ext",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company plans to migrate a NoSQL database to an EC2 instance. The database is configured to replicate the data automatically to keep multiple copies of data for redundancy. The Solutions Architect needs to launch an instance that has a high IOPS and sequential read/write access.\nWhich of the following options fulfills the requirement if I/O throughput is the highest priority?",
+      "options": [
+        "Use Compute optimized instance with instance store volume.",
+        "Use Storage optimized instances with instance store volume.",
+        "Use Memory optimized instances with EBS volume.",
+        "Use General purpose instances with EBS volume."
+      ],
+      "answer": 0,
+      "explain": "Amazon EC2 provides a wide selection of instance types optimized to fit different use cases. Instance types comprise varying combinations of CPU, memory, storage, and networking capacity and give you the flexibility to choose the appropriate mix of resources for your applications. Each instance type includes one or more instance sizes, allowing you to scale your resources to the requirements of your target workload.\n\nA storage optimized instance is designed for workloads that require high, sequential read and write access to very large data sets on local storage. They are optimized to deliver",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company is using an On-Demand EC2 instance to host a legacy web application that uses an Amazon Instance Store-Backed AMI. The web application should be decommissioned as soon as possible and hence, you need to terminate the EC2 instance.\nWhen the instance is terminated, what happens to the data on the root volume?",
+      "options": [
+        "Data is unavailable until the instance is restarted.",
+        "Data is automatically saved as an EBS volume.",
+        "Data is automatically deleted.",
+        "Data is automatically saved as an EBS snapshot."
+      ],
+      "answer": 0,
+      "explain": "AMIs are categorized as either backed by Amazon EBS or backed by instance store. The former means that the root device for an instance launched from the AMI is an Amazon EBS volume created from an Amazon EBS snapshot. The latter means that the root device for an instance launched from the AMI is an instance store volume created from a template stored in Amazon S3.\n\nThe data on instance store volumes persist only during the life of the instance which means that if the instance is terminated, the data will be automatically deleted.\nHence, the correct answer is: Data is automatically deleted.\n \nR",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA company has stored 200 TB of backup files in Amazon S3. The files are in a vendor-proprietary format. The Solutions Architect needs to use the vendor\u2019s proprietary file conversion software to retrieve the files from their Amazon S3 bucket, transform the files to an industry-standard format, and re-upload the files back to Amazon S3. The solution must minimize the data transfer costs.\nWhich of the following options can satisfy the given requi",
+      "options": [
+        "Export the data using AWS Snowball Edge device. Install the file conversion software on the device. Transform the data and re-upload it to Amazon S3.",
+        "Deploy the EC2 instance in the same Region as Amazon S3. Install the file conversion software on the instance. Perform data transformation and re-upload it to Amazon S3.",
+        "Deploy the EC2 instance in a different Region. Install the conversion software on the instance. Perform data transformation and re-upload it to Amazon S3.",
+        "Install the file conversion software in Amazon S3. Use S3 Batch Operations to perform data transformation."
+      ],
+      "answer": 0,
+      "explain": "Amazon S3 is object storage built to store and retrieve any amount of data from anywhere on the Internet. It\u2019s a simple storage service that offers industry-leading durability, availability, performance, security, and virtually unlimited scalability at very low costs. Amazon S3 is also designed to be highly flexible. Store any type and amount of data that you want; read the same piece of data a million times or only for emergency disaster recovery; build a simple FTP application or a sophisticated web application.\n\nYou pay for all bandwidth into and out of Amazon S3, except for the following:",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA tech company currently has an on-premises infrastructure. They are currently running low on storage and want to have the ability to extend their storage using the AWS cloud.\nWhich AWS service can help them achieve this requirement?",
+      "options": [
+        "Amazon EC2",
+        "AWS Storage Gateway",
+        "Amazon Elastic Block Storage",
+        "Amazon SQS"
+      ],
+      "answer": 0,
+      "explain": "AWS Storage Gateway connects an on-premises software appliance with cloud-based storage to provide seamless integration with data security features between your on-premises IT environment and the AWS storage infrastructure. You can use the service to store data in the AWS Cloud for scalable and cost-effective storage that helps maintain data security.\n\nHence, the correct answer is: AWS Storage Gateway.\nThe option that says: Amazon EC2 is incorrect since this is a compute service, not a storage service.\nThe option that says: Amazon Elastic Block Storage is incorrect since EBS is primarily used",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA food company bought 50 licenses of Windows Server to be used by developers when launching Amazon EC2 instances to deploy and test applications. The company recently adopted AWS Systems Manager Application Manager to group and monitor EC2-based workloads by team.\nThe developers are free to provision EC2 instances as long as a license is available. The licenses are tied to the total CPU count of each virtual machine. The company wants to ensure that d",
+      "options": [
+        "Define license configuration rules on AWS Certificate Manager to track and control license usage. Enable the option to \u201cEnforce certificate limit\u201d to prevent going over the number of allocated licenses. Add an Amazon SQS queue with ChangeVisibility Timeout configured to send notifications and alerts",
+        "Configure AWS Resource Access Manager (AWS RAM) to track and control the licenses used by AWS resources. Configure AWS RAM to provide available licenses for EC2 instances. Set up an Amazon SNS to send notifications and alerts once all licenses are used.",
+        "Upload the licenses on AWS Systems Manager Fleet Manager to be encrypted and distributed to EC2 instances. Attach an IAM role on the EC2 instances to request a license from the Fleet Manager. Set up an Amazon SNS to send notifications and alerts once all licenses are used.",
+        "Define licensing rules on AWS License Manager to track and control license usage. Enable the option to \u201cEnforce license limit\u201d to prevent going over the number of allocated licenses. Add an Amazon SNS topic to send notifications and alerts."
+      ],
+      "answer": 0,
+      "explain": "AWS License Manager is a service that makes it easier for you to manage your software licenses from software vendors (for example, Microsoft, SAP, Oracle, and IBM) centrally across AWS and your on-premises environments. This provides control and visibility into the usage of your licenses, enabling you to limit licensing overages and reduce the risk of non-compliance and misreporting.\nAs you build out your cloud infrastructure on AWS, you can save costs by using Bring Your Own License model (BYOL) opportunities. That is, you can re-purpose your existing license inventory for use with your cloud",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA few easily reproducible files must be stored in AWS without concerns about storage capacity. During the first month, all files will be accessed frequently, but after that period, access will become infrequent. Older files will only be accessed by developers, and no specific retrieval time requirement is defined. However, files under a specific <code>tdojo-finance</code> prefix in the Amazon S3 bucket will be used for post-processing that req",
+      "options": [
+        "Store the files in S3, then after a month, change the storage class of the bucket to S3 Intelligent-Tiering using a lifecycle policy.",
+        "Store the files in S3, then after a month, change the storage class of the bucket to S3 Standard-Infrequent Access (Standard-IA) using a lifecycle policy.",
+        "Store the files in S3, then after a month, change the storage class of the `tdojo-finance` prefix to S3 One Zone-Infrequent Access (One-Zone IA), while the remaining go to Glacier using a lifecycle policy.",
+        "Store the files in S3, then after a month, change the storage class of the `tdojo-finance` prefix to S3 Standard-Infrequent Access (Standard-IA) while the remaining go to Glacier using a lifecycle policy."
+      ],
+      "answer": 0,
+      "explain": "Initially, the files will be accessed frequently, and S3 is a durable and highly available storage solution for that. After a month has passed, the files won\u2019t be accessed frequently anymore, so it is a good idea to use lifecycle policies to move them to a storage class that has a lower cost for storing them.\n\nSince the files are easily reproducible and some of them need to be retrieved quickly based on a specific prefix filter (`tdojo-finance`), S3-One Zone IA would be a good choice for storing them. The other files that do not contain such a prefix would then be moved to Glacier for low-cost",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA popular augmented reality (AR) mobile game is heavily using a RESTful API which is hosted in AWS. The API uses Amazon API Gateway and a DynamoDB table with a preconfigured read and write capacity. Based on your systems monitoring, the DynamoDB table begins to throttle requests during high peak loads which causes the slow performance of the game.\nWhich of the following can you do to improve the performance of your app?",
+      "options": [
+        "Use DynamoDB Auto Scaling",
+        "Add the DynamoDB table to an Auto Scaling Group.",
+        "Integrate an Application Load Balancer with your DynamoDB table.",
+        "Create an SQS queue in front of the DynamoDB table."
+      ],
+      "answer": 0,
+      "explain": "DynamoDB auto scaling uses the AWS Application Auto Scaling service to dynamically adjust provisioned throughput capacity on your behalf, in response to actual traffic patterns. This enables a table or a global secondary index to increase its provisioned read and write capacity to handle sudden increases in traffic, without throttling. When the workload decreases, Application Auto Scaling decreases the throughput so that you don\u2019t pay for unused provisioned capacity.\nUsing DynamoDB Auto Scaling is the best answer. DynamoDB Auto Scaling uses the AWS Application Auto Scaling service to dynamical",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA web application requires a minimum of six Amazon Elastic Compute Cloud (EC2) instances running at all times. You are tasked to deploy the application to three availability zones in the EU Ireland region (eu-west-1a, eu-west-1b, and eu-west-1c). It is required that the system is fault-tolerant up to the loss of one Availability Zone.\nWhich of the following setup is the most cost-effective solution which also maintains the fault-tolerance of y",
+      "options": [
+        "3 instances in eu-west-1a, 3 instances in eu-west-1b, and 3 instances in eu-west-1c",
+        "2 instances in eu-west-1a, 2 instances in eu-west-1b, and 2 instances in eu-west-1c",
+        "6 instances in eu-west-1a, 6 instances in eu-west-1b, and 6 instances in eu-west-1c",
+        "6 instances in eu-west-1a, 6 instances in eu-west-1b, and no instances in eu-west-1c"
+      ],
+      "answer": 0,
+      "explain": "Basically, fault-tolerance is the ability of a system to remain in operation even in the event that some of its components fail without any service degradation. In AWS, it can also refer to the minimum number of running EC2 instances or resources which should be running at all times in order for the system to properly operate and serve its consumers. Take note that this is quite different from the concept of High Availability, which is just concerned with having at least one running instance or resource in case of failure.\nIn this scenario, 3 instances in eu-west-1a, 3 instances in eu-west-1b,",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nAn automotive company is working on an autonomous vehicle development and deployment project using AWS. The solution requires High Performance Computing (HPC) in order to collect, store and manage massive amounts of data as well as to support deep learning frameworks. The Linux EC2 instances that will be used should have a lower latency and higher throughput than the TCP transport traditionally used in cloud-based HPC systems. It should also",
+      "options": [
+        "Attach an Elastic Network Adapter (ENA) on each Amazon EC2 instance to accelerate High Performance Computing (HPC).",
+        "Attach an Elastic Fabric Adapter (EFA) on each Amazon EC2 instance to accelerate High Performance Computing (HPC).",
+        "Attach a Private Virtual Interface (VIF) on each Amazon EC2 instance to accelerate High Performance Computing (HPC).",
+        "Attach an Elastic Network Interface (ENI) on each Amazon EC2 instance to accelerate High Performance Computing (HPC)."
+      ],
+      "answer": 0,
+      "explain": "An Elastic Fabric Adapter (EFA) is a network device that you can attach to your Amazon EC2 instance to accelerate High Performance Computing (HPC) and machine learning applications. EFA enables you to achieve the application performance of an on-premises HPC cluster with the scalability, flexibility, and elasticity provided by the AWS Cloud.\nEFA provides lower and more consistent latency and higher throughput than the TCP transport traditionally used in cloud-based HPC systems. It enhances the performance of inter-instance communication which is critical for scaling HPC and machine learning ap",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA media company needs to configure an Amazon S3 bucket to serve static assets for the public-facing web application. Which methods ensure that all of the objects uploaded to the S3 bucket can be read publicly all over the Internet? (Select TWO.)",
+      "options": [
+        "Grant public read access to the object when uploading it using the S3 Console.",
+        "Configure the cross-origin resource sharing (CORS) of the S3 bucket to allow objects to be publicly accessible from all domains.",
+        "Do nothing. Amazon S3 objects are already public by default.",
+        "Create an IAM role to set the objects inside the S3 bucket to public read."
+      ],
+      "answer": 0,
+      "explain": "By default, all Amazon S3 resources such as buckets, objects, and related subresources are private, which means that only the AWS account holder (resource owner) that created it has access to the resource. The resource owner can optionally grant access permissions to others by writing an access policy. In S3, you also set the permissions of the object during upload to make it public.\nAmazon S3 offers access policy options broadly categorized as resource-based policies and user policies. Access policies you attach to your resources (buckets and objects) are referred to as resource-based policie",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company needs to implement a solution that will process real-time streaming data of its users across the globe. This will enable them to track and analyze globally-distributed user activity on their website and mobile applications, including clickstream analysis. The solution should process the data in close geographical proximity to their users and respond to user requests at low latencies.\nWhich of the following is the most suitable solut",
+      "options": [
+        "Integrate CloudFront with Lambda@Edge in order to process the data in close geographical proximity to users and respond to user requests at low latencies. Process real-time streaming data using Kinesis and durably store the results to an Amazon S3 bucket.",
+        "Integrate CloudFront with Lambda@Edge in order to process the data in close geographical proximity to users and respond to user requests at low latencies. Process real-time streaming data using Amazon Athena and durably store the results to an Amazon S3 bucket.",
+        "Use a CloudFront web distribution and Route 53 with a Geoproximity routing policy in order to process the data in close geographical proximity to users and respond to user requests at low latencies. Process real-time streaming data using Kinesis and durably store the results to an Amazon S3 bucket.",
+        "Use a CloudFront web distribution and Route 53 with a latency-based routing policy, in order to process the data in close geographical proximity to users and respond to user requests at low latencies. Process real-time streaming data using Kinesis and durably store the results to an Amazon S3 bucket"
+      ],
+      "answer": 0,
+      "explain": "Lambda@Edge is a feature of Amazon CloudFront that lets you run code closer to users of your application, which improves performance and reduces latency. With Lambda@Edge, you don\u2019t have to provision or manage infrastructure in multiple locations around the world. You pay only for the compute time you consume \u2013 there is no charge when your code is not running.\nWith Lambda@Edge, you can enrich your web applications by making them globally distributed and improving their performance \u2014 all with zero server administration. Lambda@Edge runs your code in response to events generated by the Amazon Cl",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nEvery week, an e-commerce company announces a sales promotion, causing its application hosted on an Auto Scaling group to experience intermittent downtime. Because of long initialization times, the application only becomes operational minutes before a new EC2 instance turns into `RUNNING` state. A solutions architect must devise a solution that launches capacity in advance based on a forecasted load in order to scale faster.\nWhich solution meets th",
+      "options": [
+        "Create a Scheduled Amazon EventBridge (Amazon CloudWatch Events) Rule that runs a scaling job on a Lambda function every midnight.",
+        "Use Amazon SageMaker Clarify to analyze and predict the workload pattern of the application. Create a scheduled scaling policy based on the prediction results.",
+        "Configure the Auto Scaling group to use predictive scaling.",
+        "Create a dynamic scaling policy based on the historical average CPU load of the application."
+      ],
+      "answer": 2,
+      "explain": "Predictive scaling uses machine learning to predict capacity requirements based on historical data from CloudWatch. The machine learning algorithm consumes the available historical data and calculates capacity that best fits the historical load pattern, and then continuously learns based on new data to make future forecasts more accurate.\nIn general, if you have regular patterns of traffic increases and applications that take a long time to initialize, you should consider using predictive scaling. Predictive scaling can help you scale faster by launching capacity in advance of forecasted load,",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company has a web application hosted in an On-Demand EC2 instance. You are creating a shell script that needs the instance\u2019s public and private IP addresses.\nWhat is the best way to get the instance\u2019s associated IP addresses which your shell script can use?",
+      "options": [
+        "By using a Curl or Get Command to get the latest metadata information from http://169.254.169.254/latest/meta-data/",
+        "By using a CloudWatch metric.",
+        "By using IAM.",
+        "By using a Curl or Get Command to get the latest user data information from http://169.254.169.254/latest/user-data/"
+      ],
+      "answer": 0,
+      "explain": "Instance metadata is data about your EC2 instance that you can use to configure or manage the running instance. Because your instance metadata is available from your running instance, you do not need to use the Amazon EC2 console or the AWS CLI. This can be helpful when you\u2019re writing scripts to run from your instance. For example, you can access the local IP address of your instance from instance metadata to manage a connection to an external application.\n\nTo view the private IPv4 address, public IPv4 address, and all other categories of instance metadata from within a running instance, use t",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company deployed an online enrollment system database on a prestigious university, which is hosted in RDS. The Solutions Architect is required to monitor the database metrics in Amazon CloudWatch to ensure the availability of the enrollment system.\nWhat are the enhanced monitoring metrics that Amazon CloudWatch gathers from Amazon RDS DB instances which provide more accurate information? (Select TWO.)",
+      "options": [
+        "RDS child processes",
+        "Database Connections",
+        "CPU Utilization",
+        "OS processes"
+      ],
+      "answer": 0,
+      "explain": "Amazon RDS provides metrics in real-time for the operating system (OS) that your DB instance runs on. You can view the metrics for your DB instance using the console or consume the Enhanced Monitoring JSON output from CloudWatch Logs in a monitoring system of your choice.\nCloudWatch gathers metrics about CPU utilization from the hypervisor for a DB instance, and Enhanced Monitoring gathers its metrics from an agent on the instance. As a result, you might find differences between the measurements because the hypervisor layer performs a small amount of work. The differences can be greater if you",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA web application is hosted in an Auto Scaling group of EC2 instances deployed across multiple Availability Zones behind an Application Load Balancer. You need to implement an SSL solution for your system to improve its security which is why you requested an SSL/TLS certificate from a third-party certificate authority (CA).\nWhere can you safely import the SSL/TLS certificate of your application? (Select TWO.)",
+      "options": [
+        "AWS Certificate Manager",
+        "IAM certificate store",
+        "An S3 bucket configured with server-side encryption with customer-provided encryption keys (SSE-C)",
+        "CloudFront"
+      ],
+      "answer": 0,
+      "explain": "If you got your certificate from a third-party CA, import the certificate into ACM or upload it to the IAM certificate store. Hence, AWS Certificate Manager and IAM certificate store are the correct answers.\n\nACM lets you import third-party certificates from the ACM console, as well as programmatically. If ACM is not available in your region, use AWS CLI to upload your third-party certificate to the IAM certificate store.\nA private S3 bucket with versioning enabled and an S3 bucket configured with server-side encryption with customer-provided encryption keys (SSE-C) are both incorrect as S3 is",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nAn Auto Scaling group (ASG) of Amazon EC2 Linux instances has an Amazon FSx for OpenZFS file system with basic monitoring enabled in Amazon CloudWatch. The Solutions Architect noticed that the legacy web application hosted in the ASG takes a long time to load. After checking the instances, the Architect noticed that the ASG is not launching more instances as it should be, even though the servers already have high memory usage.\nWhich of the fo",
+      "options": [
+        "Install the CloudWatch unified agent to the EC2 instances. Set up a custom parameter in AWS Systems Manager Parameter Store with the CloudWatch agent configuration to create an aggregated metric on memory usage percentage. Scale the Auto Scaling group based on the aggregated metric.",
+        "Set up Amazon Rekognition to automatically identify and recognize the cause of the high memory usage. Use the AWS Well-Architected Tool to automatically trigger the scale-out event in the ASG based on the overall memory usage.",
+        "Implement an AI solution that leverages Amazon Comprehend to track the near-real-time memory usage of each and every EC2 instance. Use Amazon SageMaker AI to automatically trigger the Auto Scaling event if there is high memory usage.",
+        "Enable detailed monitoring on the EC2 instances of the Auto Scaling group. Use Auto Scaling with custom metrics to scale out the Auto Scaling group based on the aggregated memory usage of EC2 instances."
+      ],
+      "answer": 0,
+      "explain": "Amazon CloudWatch agent enables you to collect both system metrics and log files from Amazon EC2 instances and on-premises servers. The agent supports both Windows Server and Linux and allows you to select the metrics to be collected, including sub-resource metrics such as per-CPU core.\n\nThe premise of the scenario is that the EC2 servers have high memory usage, but since this specific metric is not tracked by the Auto Scaling group by default, the scaling out activity is not being triggered. Remember that by default, CloudWatch doesn\u2019t monitor memory usage but only the CPU utilization, Networ",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company launched an EC2 instance in the newly created VPC. They noticed that the generated instance does not have an associated DNS hostname.\nWhich of the following options could be a valid reason for this issue?",
+      "options": [
+        "The newly created VPC has an invalid CIDR block.",
+        "The security group of the EC2 instance needs to be modified.",
+        "The DNS resolution and DNS hostname of the VPC configuration should be enabled.",
+        "Amazon Route 53 is not enabled."
+      ],
+      "answer": 2,
+      "explain": "When you launch an EC2 instance into a default VPC, AWS provides it with public and private DNS hostnames that correspond to the public IPv4 and private IPv4 addresses for the instance.\n\nHowever, when you launch an instance into a non-default VPC, AWS provides the instance with a private DNS hostname only. New instances will only be provided with a public DNS hostname depending on these two DNS attributes: the DNS resolution and DNS hostnames that you have specified for your VPC and if your instance has a public IPv4 address.\nIn this case, the new EC2 instance does not automatically get a DNS",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA company is looking to store its confidential financial files in AWS, which are accessed every week. The Architect was instructed to set up the storage system, which uses envelope encryption and automates key rotation. It should also provide an audit trail that shows who used the encryption key and by whom for security purposes.\nWhich combination of actions should the Architect implement to satisfy the requirement in the most cost-effective w",
+      "options": [
+        "Use Amazon S3 to store the data.",
+        "Configure Server-Side Encryption with AWS KMS Keys (SSE-KMS).",
+        "Configure Server-Side Encryption with Customer-Provided Keys (SSE-C).",
+        "Configure Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3)."
+      ],
+      "answer": 1,
+      "explain": "Server-side encryption is the encryption of data at its destination by the application or service that receives it. AWS Key Management Service (AWS KMS) is a service that combines secure, highly available hardware and software to provide a key management system scaled for the cloud. Amazon S3 uses AWS KMS keys to encrypt your Amazon S3 objects. SSE-KMS encrypts only the object data. Any object metadata is not encrypted. If you use KMS keys, you use AWS KMS via the AWS Management Console or AWS KMS APIs to centrally create encryption keys, define the policies that control how keys can be used,",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA startup plans to develop a multiplayer game that uses UDP as the protocol for communication between clients and game servers. The data of the users will be stored in a key-value store. As the Solutions Architect, you need to implement a solution that will distribute the traffic across a number of servers.\nWhich of the following could help you achieve this requirement?",
+      "options": [
+        "Distribute the traffic using Network Load Balancer and store the data in Amazon DynamoDB.",
+        "Distribute the traffic using Network Load Balancer and store the data in Amazon Aurora.",
+        "Distribute the traffic using Application Load Balancer and store the data in Amazon DynamoDB.",
+        "Distribute the traffic using Application Load Balancer and store the data in Amazon RDS."
+      ],
+      "answer": 0,
+      "explain": "A Network Load Balancer functions at the fourth layer of the Open Systems Interconnection (OSI) model. It can handle millions of requests per second. After the load balancer receives a connection request, it selects a target from the target group for the default rule. For UDP traffic, the load balancer selects a target using a flow hash algorithm based on the protocol, source IP address, source port, destination IP address, and destination port. A UDP flow has the same source and destination, so it is consistently routed to a single target throughout its lifetime. Different UDP flows have a di",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company recently launched an e-commerce application that is running in eu-east-2 region, which strictly requires six EC2 instances running at all times. In that region, there are 3 Availability Zones (AZ) that you can use \u2013 eu-east-2a, eu-east-2b, and eu-east-2c.\nWhich of the following deployments provide 100% fault tolerance if any single AZ in the region becomes unavailable? (Select TWO.)",
+      "options": [
+        "eu-east-2a with two EC2 instances, eu-east-2b with two EC2 instances, and eu-east-2c with two EC2 instances",
+        "eu-east-2a with two EC2 instances, eu-east-2b with four EC2 instances, and eu-east-2c with two EC2 instances",
+        "eu-east-2a with four EC2 instances, eu-east-2b with two EC2 instances, and eu-east-2c with two EC2 instances",
+        "eu-east-2a with six EC2 instances, eu-east-2b with six EC2 instances, and eu-east-2c with no EC2 instances"
+      ],
+      "answer": 0,
+      "explain": "Fault Tolerance is the ability of a system to remain in operation even if some of the components used to build the system fail. In AWS, this means that in the event of server fault or system failures, the number of running EC2 instances should not fall below the minimum number of instances required by the system for it to work properly. So if the application requires a minimum of 6 instances, there should be at least 6 instances running in case there is an outage in one of the Availability Zones or if there are server issues.\n\nIn this scenario, you have to simulate a situation where one Avail",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company launched a global news website that is deployed to AWS and is using MySQL RDS. The website has millions of viewers from all over the world, which means that the website has a read-heavy database workload. All database transactions must be ACID compliant to ensure data integrity.\nIn this scenario, which of the following is the best option to use to increase the read-throughput on the MySQL database?",
+      "options": [
+        "Enable Amazon RDS Standby Replicas",
+        "Use SQS to queue up the requests",
+        "Enable Multi-AZ deployments",
+        "Enable Amazon RDS Read Replicas"
+      ],
+      "answer": 0,
+      "explain": "Amazon RDS Read Replicas provide enhanced performance and durability for database (DB) instances. This feature makes it easy to elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads. You can create one or more replicas of a given source DB Instance and serve high-volume application read traffic from multiple copies of your data, thereby increasing aggregate read throughput. Read replicas can also be promoted when needed to become standalone DB instances. Read replicas are available in Amazon RDS for MySQL, MariaDB, Oracle, and PostgreSQ",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA leading IT consulting company has an application which processes a large stream of financial data by an Amazon ECS Cluster then stores the result to a DynamoDB table. You have to design a solution to detect new entries in the DynamoDB table then automatically trigger a Lambda function to run some tests to verify the processed data.\nWhat solution can be easily implemented to alert the Lambda function of new entries while requiring minimal co",
+      "options": [
+        "Use Systems Manager Automation to detect new entries in the DynamoDB table then automatically invoke the Lambda function for processing.",
+        "Invoke the Lambda functions using SNS each time that the ECS Cluster successfully processed financial data.",
+        "Use CloudWatch Alarms to trigger the Lambda function whenever a new entry is created in the DynamoDB table.",
+        "Enable DynamoDB Streams to capture table activity and automatically trigger the Lambda function."
+      ],
+      "answer": 0,
+      "explain": "Amazon DynamoDB is integrated with AWS Lambda so that you can create triggers\u2014pieces of code that automatically respond to events in DynamoDB Streams. With triggers, you can build applications that react to data modifications in DynamoDB tables.\nIf you enable DynamoDB Streams on a table, you can associate the stream ARN with a Lambda function that you write. Immediately after an item in the table is modified, a new record appears in the table\u2019s stream. AWS Lambda polls the stream and invokes your Lambda function synchronously when it detects new stream records.\n\nYou can create a Lambda functio",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company has several web applications with users all around the world. Each application is hosted in an Auto Scaling group of EC2 instances in multiple AZs behind an Application Load Balancer (ALB). All applications have their own fully qualified domain name. For added security, the applications must use a publicly trusted SSL certificate.\nWhich solution will meet this requirement with the LEAST operational overhead?",
+      "options": [
+        "Launch a self-hosted certificate authority (CA) using the Let\u2019s Encrypt tool in an Amazon EC2 instance. Utilize the built-in ISRG Root X1 trusted root CA certificate. Generate a new SSL/TLS certificate using the `certbot` CLI utility. Associate the new certificate on the HTTPS listener of the ALBs.",
+        "Use the AWS Certificate Manager (ACM) to generate a public SSL/TLS certificate. Associate the new SSL/TLS certificate on the HTTPS listener of the ALBs.",
+        "Use OpenSSL to generate a self-signed certificate. Import the SSL/TLS certificate to the AWS Certificate Manager (ACM) and associate it with the HTTPS listener of the ALBs",
+        "Issue an SSL/TLS certificate using the AWS Certificate Manager Private Certificate Authority. Associate the new certificate on the HTTPS listener of the ALBs."
+      ],
+      "answer": 0,
+      "explain": "There are two AWS services for issuing and deploying X.509 certificates. Choose the one that best fits your needs. Considerations include whether you need public- or private-facing certificates, customized certificates, certificates you want to deploy into other AWS services, or automated certificate management and renewal.\nACM Private CA\u2014This service is for enterprise customers building a public key infrastructure (PKI) inside the AWS cloud and is intended for private use within an organization. With ACM Private CA, you can create your own CA hierarchy and issue certificates with it for authe",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company is using the AWS Directory Service to integrate their on-premises Microsoft Active Directory (AD) domain with their Amazon EC2 instances via an AD connector. The below identity-based policy is attached to the IAM Identities that use the AWS Directory service:\n\n```\n{\n   \"Version\":\"2012-10-17\",\n   \"Statement\":[\n      {\n         \"Sid\":\"DirectoryTutorialsDojo1234\",\n         \"Effect\":\"Allow\",\n         \"Action\":[\n            \"ds:*\"\n         ],",
+      "options": [
+        "Allows all AWS Directory Service (`ds`) calls as long as the resource contains the directory ID: `987654321012`",
+        "Allows all AWS Directory Service (`ds`) calls as long as the resource contains the directory ID: `d-1234567890`",
+        "Allows all AWS Directory Service (`ds`) calls as long as the resource contains the directory name of: `DirectoryTutorialsDojo1234`",
+        "Allows all AWS Directory Service (`ds`) calls as long as the resource contains the directory ID: `DirectoryTutorialsDojo1234`"
+      ],
+      "answer": 0,
+      "explain": "AWS Directory Service provides multiple ways to use Amazon Cloud Directory and Microsoft Active Directory (AD) with other AWS services. Directories store information about users, groups, and devices, and administrators use them to manage access to information and resources. AWS Directory Service provides multiple directory choices for customers who want to use existing Microsoft AD or Lightweight Directory Access Protocol (LDAP)\u2013aware applications in the cloud. It also offers those same choices to developers who need a directory to manage users, groups, devices, and access.\n\nEvery AWS resource",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA technology company is building a new cryptocurrency trading platform that allows the buying and selling of Bitcoin, Ethereum, Ripple, Tether, and many others. A Cloud Engineer was hired to build the infrastructure required for this platform. During the first week, the engineer began creating CloudFormation YAML scripts to define all of the AWS resources needed for the application. The manager was shocked that the engineer hadn\u2019t set up the",
+      "options": [
+        "A storage location for the code of your application",
+        "Provides highly durable and scalable data storage",
+        "Enables modeling, provisioning, and version-controlling of your entire AWS infrastructure",
+        "Allows you to model your entire infrastructure in a text file"
+      ],
+      "answer": 2,
+      "explain": "AWS CloudFormation provides a common language for you to describe and provision all the infrastructure resources in your cloud environment. CloudFormation allows you to use a simple text file to model and provision, in an automated and secure manner, all the resources needed for your applications across all regions and accounts. This file serves as the single source of truth for your cloud environment. AWS CloudFormation is available at no additional charge, and you pay only for the AWS resources needed to run your applications.\n\nHence, the correct answers are:\n\u2013 Enables modeling, provisioning",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA newly hired Solutions Architect is checking all of the security groups and network access control list rules of the company\u2019s AWS resources. For security purposes, the MS SQL connection via port 1433 of the database tier should be secured. Below is the security group configuration of their Microsoft SQL Server database:\n\nThe application tier hosted in an Auto Scaling group of EC2 instances is the only identified resource that needs to connect to",
+      "options": [
+        "For the MS SQL rule, change the `Source` to the static AnyCast IP address attached to the application tier.",
+        "For the MS SQL rule, change the `Source` to the security group ID attached to the application tier.",
+        "For the MS SQL rule, change the `Source` to the Network ACL ID attached to the application tier.",
+        "For the MS SQL rule, change the `Source` to the EC2 instance IDs of the underlying instances of the Auto Scaling group."
+      ],
+      "answer": 0,
+      "explain": "A security group acts as a virtual firewall for your instance to control inbound and outbound traffic. When you launch an instance in a VPC, you can assign up to five security groups to the instance. Security groups act at the instance level, not the subnet level. Therefore, each instance in a subnet in your VPC can be assigned to a different set of security groups.\nIf you launch an instance using the Amazon EC2 API or a command line tool and you don\u2019t specify a security group, the instance is automatically assigned to the default security group for the VPC. If you launch an instance using the",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA financial firm is designing an application architecture for its online trading platform that must have high availability and fault tolerance. Their Solutions Architect configured the application to use an Amazon S3 bucket located in the us-east-1 region to store large amounts of intraday financial data. The stored financial data in the bucket must not be affected even if there is an outage in one of the Availability Zones or if there\u2019s a regional",
+      "options": [
+        "Create a Lifecycle Policy to regularly backup the S3 bucket to Amazon Glacier.",
+        "Enable Cross-Region Replication.",
+        "Copy the S3 bucket to an EBS-backed EC2 instance.",
+        "Create a new S3 bucket in another region and configure Cross-Account Access to the bucket located in us-east-1."
+      ],
+      "answer": 1,
+      "explain": "In this scenario, you need to enable Cross-Region Replication to ensure that your S3 bucket would not be affected even if there is an outage in one of the Availability Zones or a regional service failure in us-east-1. When you upload your data in S3, your objects are redundantly stored on multiple devices across multiple facilities within the region only, where you created the bucket. Thus, if there is an outage on the entire region, your S3 bucket will be unavailable if you do not enable Cross-Region Replication, which should make your data available to another region.\n\nNote that an Availabil",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA startup is planning to set up and govern a secure, compliant, multi-account AWS environment in preparation for its upcoming projects. The IT Manager requires the solution to have a dashboard for continuous detection of policy non-conformance and non-compliant resources across the enterprise, as well as to comply with the AWS multi-account strategy best practices.\nWhich of the following offers the easiest way to fulfill this task?",
+      "options": [
+        "Use AWS Service Catalog to launch new AWS member accounts. Configure AWS Service Catalog Launch Constraints to continuously track configuration changes and monitor non-compliant resources. Set up a Multi-Account Multi-Region Data Aggregator to monitor compliance data for rules and accounts in an agg",
+        "Establish connectivity to AWS through an AWS Direct Connect Partner to securely link on-premises environments to the new AWS accounts. Use AWS Organizations to manage and govern multiple accounts. Set up AWS Config to monitor non-compliant resources across the enterprise.",
+        "Launch new AWS member accounts using the AWS CloudFormation StackSets. Use AWS Config to continuously track the configuration changes and set rules to monitor non-compliant resources. Set up a Multi-Account Multi-Region Data Aggregator to monitor compliance data for rules and accounts in an aggregat",
+        "Use AWS Control Tower to launch a landing zone to automatically provision and configure new accounts through an Account Factory. Utilize the AWS Control Tower dashboard to monitor provisioned accounts across your enterprise. Set up preventive and detective guardrails for policy enforcement."
+      ],
+      "answer": 0,
+      "explain": "AWS Control Tower offers a straightforward way to set up and govern an AWS multi-account environment, following prescriptive best practices. AWS Control Tower orchestrates the capabilities of several other AWS services, including AWS Organizations, AWS Service Catalog, and AWS IAM Identity Center, to build a landing zone in less than an hour. It offers a dashboard to see provisioned accounts across your enterprise, guardrails enabled for policy enforcement, guardrails enabled for continuous detection of policy non-conformance, and non-compliant resources organized by accounts and OUs.\n\nA guard",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA new company policy requires IAM users to change their passwords\u2019 minimum length to 12 characters. After a random inspection, you found out that there are still employees who do not follow the policy.\nHow can you automatically check and evaluate whether the current password policy for an account complies with the company password policy?",
+      "options": [
+        "Create a CloudTrail trail. Filter the result by setting the attribute to \u201cEvent Name\u201d and lookup value to \u201cChangePassword\u201d. This easily gives you the list of users who have made changes to their passwords.",
+        "Configure AWS Config to trigger an evaluation that will check the compliance for a user\u2019s password periodically.",
+        "Create a rule in the Amazon CloudWatch event. Build an event pattern to match events on IAM. Set the event name to \u201cChangePassword\u201d in the event pattern. Configure SNS to send notifications to you whenever a user has made changes to his password.",
+        "Create a Scheduled Lambda Function that will run a custom script to check compliance against changes made to the passwords periodically."
+      ],
+      "answer": 1,
+      "explain": "AWS Config is a service that enables you to assess, audit, and evaluate the configurations of your AWS resources. Config continuously monitors and records your AWS resource configurations and allows you to automate the evaluation of recorded configurations against desired configurations. \n\nIn the scenario given, we can utilize AWS Config to check for compliance on the password policy by configuring the Config rule to check the  IAM_PASSWORD_POLICY on an account. Additionally, because Config integrates with AWS Organizations, we can improve the setup to aggregate compliance information across a",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company decided to change its third-party data analytics tool to a cheaper solution. They sent a full data export on a CSV file which contains all of their analytics information. You then save the CSV file to an S3 bucket for storage. Your manager asked you to do some validation on the provided data export.\nIn this scenario, what is the most cost-effective and easiest way to analyze export data using standard SQL?",
+      "options": [
+        "Use a migration tool to load the CSV export file from S3 to a database that is designed for online analytic processing (OLAP) such as AWS RedShift. Run some queries once the data has been loaded to complete your validation.",
+        "To be able to run SQL queries, use Amazon Athena to analyze the export data file in S3.",
+        "Create a migration tool to load the CSV export file from S3 to a DynamoDB instance. Once the data has been loaded, run queries using DynamoDB.",
+        "Use mysqldump client utility to load the CSV export file from S3 to a MySQL RDS instance. Run some SQL queries once the data has been loaded to complete your validation."
+      ],
+      "answer": 1,
+      "explain": "Amazon Athena is an interactive query service that makes it easy to analyze data directly in Amazon Simple Storage Service (Amazon S3) using standard SQL. With a few actions in the AWS Management Console, you can point Athena at your data stored in Amazon S3 and begin using standard SQL to run ad-hoc queries and get results in seconds.\n\nAthena is serverless, so there is no infrastructure to set up or manage, and you pay only for the queries you run. Athena scales automatically\u2014executing queries in parallel\u2014so results are fast, even with large datasets and complex queries.\nAthena helps you anal",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nThere is a new compliance rule in your company that audits every Windows and Linux EC2 instances each month to view any performance issues. They have more than a hundred EC2 instances running in production, and each must have a logging function that collects various system details regarding that instance. The SysOps team will periodically review these logs and analyze their contents using AWS Analytics tools, and the result will need to be re",
+      "options": [
+        "Install the AWS Systems Manager Agent (SSM Agent) in each instance which will automatically collect and push data to CloudWatch Logs. Analyze the log data with CloudWatch Logs Insights.",
+        "Install the unified CloudWatch Logs agent in each instance which will automatically collect and push data to CloudWatch Logs. Analyze the log data with CloudWatch Logs Insights.",
+        "Install AWS SDK in each instance and create a custom daemon script that would collect and push data to CloudWatch Logs periodically. Enable CloudWatch detailed monitoring and use CloudWatch Logs Insights to analyze the log data of all instances.",
+        "Install AWS Inspector Agent in each instance which will collect and push data to CloudWatch Logs periodically. Set up a CloudWatch dashboard to properly analyze the log data of all instances."
+      ],
+      "answer": 0,
+      "explain": "To collect logs from your Amazon EC2 instances and on-premises servers into CloudWatch Logs, AWS offers both a new unified CloudWatch agent, and an older CloudWatch Logs agent. It is recommended to use the unified CloudWatch agent which has the following advantages:\n \u2013 You can collect both logs and advanced metrics with the installation and configuration of just one agent.\n \u2013 The unified agent enables the collection of logs from servers running Windows Server.\n \u2013 If you are using the agent to collect CloudWatch metrics, the unified agent also enables the collection of additional system metrics",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA hospital has a mission-critical application that uses a RESTful API powered by Amazon API Gateway and AWS Lambda. The medical officers upload PDF reports to the system which are then stored as static media content in an Amazon S3 bucket.\nThe security team wants to improve its visibility when it comes to cyber-attacks and ensure HIPAA (Health Insurance Portability and Accountability Act) compliance. The company is searching for a solution that contin",
+      "options": [
+        "Use Amazon Transcribe to read and analyze the PDF reports using the `StartTranscriptionJob API` operation. Use Amazon CloudWatch Logs to detect protected health information (PHI) content by tracking access logs and security events.",
+        "Use Amazon Textract Medical with PII redaction turned on to extract and filter sensitive text from the PDF reports. Create a new Lambda function that calls the regular Amazon Comprehend API to identify the PHI from the extracted text.",
+        "Use Amazon Textract to extract the text from the PDF reports. Integrate Amazon Comprehend Medical with the existing Lambda function to identify the PHI from the extracted text.",
+        "Use Amazon Textract with the `StartDocumentTextDetection` API operation to extract text from PDF reports. Analyze the extracted data with a custom-built PHI detection algorithm within the Lambda function."
+      ],
+      "answer": 1,
+      "explain": "Amazon Comprehend Medical is a natural language processing service that makes it easy to use machine learning to extract relevant medical information from unstructured text. Using Amazon Comprehend Medical, you can quickly and accurately gather information, such as medical conditions, medication, dosage, strength, and frequency from a variety of sources, like doctors\u2019 notes, clinical trial reports, and patient health records.\n\nAmazon Comprehend Medical uses advanced machine learning models to accurately and quickly identify medical information such as medical conditions and medication and dete",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "secure-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA financial services organization is developing a cloud-native application on AWS to process and analyze customer transaction data. The application utilizes Amazon Aurora for the database, Amazon EFS for file storage, and Amazon EventBridge to trigger AWS Step Functions for workflow orchestration.\nThe organization has implemented AWS IAM Identity Center for user authentication. The data science, engineering, and compliance teams require secure access",
+      "options": [
+        "Use Amazon Cognito User Pools for authentication and use Cognito Identity Pools to provide temporary AWS credentials. Create fine-grained IAM roles for Aurora and EFS access in each team.",
+        "Create separate AWS accounts for each team using AWS Organizations. Set up cross-account IAM roles with least privilege and assign specific Aurora and EFS permissions based on team roles.",
+        "Set up AWS Control Tower to manage multi-account access. Use Service Control Policies (SCPs) to restrict access to Aurora and EFS at the organizational level. Create IAM roles in each account with specific permissions.",
+        "Enable the IAM Identity Center with an Identity Center directory and create permission sets for granular access for Amazon Aurora and Amazon EFS. Assign teams to groups linked to specific permission sets based on their roles."
+      ],
+      "answer": 0,
+      "explain": "AWS IAM Identity Center centralizes access management for various AWS accounts and applications. It provides single sign-on (SSO) access, enabling users to manage all their assigned accounts from a single location. Users can synchronize with an existing identity provider or create new users and groups directly within the service.\nIAM Identity Center utilizes permission sets\u2014collections of IAM policies\u2014to manage user access across AWS Organizations. It includes a user-friendly AWS Access Portal for easy access to applications and supports deployment for both organization and account instances.",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA company has a web application hosted in AWS cloud where the application logs are sent to Amazon CloudWatch. Lately, the web application has been encountering some errors which can be resolved simply by restarting the instance.\nWhat will you do to automatically restart the EC2 instances whenever the same application error occurs?",
+      "options": [
+        "First, look at the existing Flow logs for keywords related to the application error to create a custom metric. Then, create a CloudWatch alarm for that custom metric which invokes an action to restart the EC2 instance.",
+        "First, look at the existing CloudWatch logs for keywords related to the application error to create a custom metric. Then, create an alarm in Amazon SNS for that custom metric which invokes an action to restart the EC2 instance.",
+        "First, look at the existing CloudWatch logs for keywords related to the application error to create a custom metric. Then, create a CloudWatch alarm for that custom metric which invokes an action to restart the EC2 instance.",
+        "First, look at the existing Flow logs for keywords related to the application error to create a custom metric. Then, create a CloudWatch alarm for that custom metric which calls a Lambda function that invokes an action to restart the EC2 instance."
+      ],
+      "answer": 0,
+      "explain": "In this scenario, you can look at the existing CloudWatch logs for keywords related to the application error to create a custom metric. Then, create a CloudWatch alarm for that custom metric which invokes an action to restart the EC2 instance.\n\nYou can create alarms that automatically stop, terminate, reboot, or recover your EC2 instances using Amazon CloudWatch alarm actions. You can use the stop or terminate actions to help you save money when you no longer need an instance to be running. You can use the reboot and recover actions to automatically reboot those instances or recover them onto",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has hundreds of VPCs with multiple VPN connections to their data centers spanning 5 AWS Regions. As the number of its workloads grows, the company must be able to scale its networks across multiple accounts and VPCs to keep up. A Solutions Architect is tasked to interconnect all of the company\u2019s on-premises networks, VPNs, and VPCs into a single gateway, which includes support for inter-region peering across multiple AWS regions.\nWh",
+      "options": [
+        "Set up an AWS Direct Connect Gateway to achieve inter-region VPC access to all of the AWS resources and on-premises data centers. Set up a link aggregation group (LAG) to aggregate multiple connections at a single AWS Direct Connect endpoint in order to treat them as a single, managed connection. La",
+        "Set up an AWS Transit Gateway in each region to interconnect all networks within it. Then, route traffic between the transit gateways through a peering connection.",
+        "Set up an AWS VPN CloudHub for inter-region VPC access and a Direct Connect gateway for the VPN connections to the on-premises data centers. Create a virtual private gateway in each VPC, then create a private virtual interface for each AWS Direct Connect connection to the Direct Connect gateway.",
+        "Enable inter-region VPC peering that allows peering relationships to be established between multiple VPCs across different AWS regions. Set up a networking configuration that ensures that the traffic will always stay on the global AWS backbone and never traverse the public Internet."
+      ],
+      "answer": 1,
+      "explain": "AWS Transit Gateway is a service that enables customers to connect their Amazon Virtual Private Clouds (VPCs) and their on-premises networks to a single gateway. As you grow the number of workloads running on AWS, you need to be able to scale your networks across multiple accounts and Amazon VPCs to keep up with the growth.\nToday, you can connect pairs of Amazon VPCs using peering. However, managing point-to-point connectivity across many Amazon VPCs without the ability to centrally manage the connectivity policies can be operationally costly and cumbersome. For on-premises connectivity, you n",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "resilient-arch",
+      "q": "Category: CSAA \u2013 Design Resilient Architectures\nA solutions architect is tasked with designing a scalable infrastructure solution for a business that runs uses Amazon Elastic Kubernetes Service (Amazon EKS) to execute container applications. Since the company\u2019s workload varies throughout the day, they want to make sure that its underlying infrastructure automatically scales in and out in response to demand.\nWhich of the following would meet the requirements with the LEAST amount of operational o",
+      "options": [
+        "Set up CloudWatch alarms for CPU utilization or request count to monitor the relevant metrics of the container applications running on Amazon EKS.",
+        "Integrate an edge-optimized API endpoint in Amazon API Gateway with Amazon EKS to manage and expose APIs for the containerized applications running on EKS.",
+        "Use a combination of Kubernetes Metrics and Kubernetes Cluster Autoscaler to manage the number of nodes.",
+        "Use Amazon EC2 Auto Scaling Groups with custom scaling policies to manage the scaling of EKS worker nodes."
+      ],
+      "answer": 2,
+      "explain": "Autoscaling is a function that automatically scales your resources up or down to meet changing demands. This is a major Kubernetes function that would otherwise require extensive human resources to perform manually.\nAmazon EKS supports two autoscaling solutions:\nKarpenter is a flexible, high-performance Kubernetes cluster autoscaler that launches appropriately sized compute resources, like Amazon EC2 instances, in response to changing application load. It integrates with AWS to provision compute resources that precisely match workload requirements.\nCluster Autoscaler, on the other hand, automa",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company hosts all its applications on its data center on the US East Coast. Most of the workloads are legacy applications that are hosted on individual virtual machines running in Linux and Windows operating systems. The company plans to migrate all of its VM workloads to the AWS cloud. To minimize changes in the applications during the migration process, it has been decided that the company will use a \u201clift-and-shift\u201d strategy. The company",
+      "options": [
+        "Export the on-premises VMs and upload the images to an Amazon S3 bucket. Use VM Import/Export service to import the images and launch them as Amazon EC2 instances.",
+        "Install the AWS Replication Agent on each of the on-premises VMs to continuously replicate the servers to AWS. Use AWS Migration Service (AWS MGN) to launch test instances and perform cutover once testing is completed.",
+        "Use the AWS Application Discovery Service for lift-and-shift migrations. Deploy the AWS Application Discovery Agent to the on-premises data center to start the replication process. After the replication task is completed, launch Amazon EC2 instances based on the created AMIs.",
+        "Utilize AWS DataSync to migrate the application workloads to AWS. Deploy the AWS DataSync VM on the on-premises data center. Once replication is completed, launch Amazon EC2 instances based on the created AMIs."
+      ],
+      "answer": 0,
+      "explain": "AWS Application Migration Service (AWS MGN) is the primary migration service recommended for lift-and-shift migrations to AWS. AWS encourages customers who are currently using AWS Elastic Disaster Recovery to switch to AWS MGN for future migrations. AWS MGN enables organizations to move applications to AWS without having to make any changes to the applications, their architecture, or the migrated servers.\nAWS Application Migration Service minimizes time-intensive, error-prone manual processes by automatically converting your source servers from physical, virtual machines, and cloud infrastruct",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA company has an OLTP (Online Transactional Processing) application that is hosted in an Amazon ECS cluster using the Fargate launch type. It has an Amazon RDS database that stores data of its production website. The Data Analytics team needs to run queries against the database to track and audit all user transactions. These query operations against the production database must not impact application performance in any way.\nWhich of the follo",
+      "options": [
+        "Upgrade the instance type of the RDS database to a large instance.",
+        "Set up a new Amazon RDS Read Replica of the production database. Direct the Data Analytics team to query the production data from the replica.",
+        "Set up a Multi-AZ deployments configuration of your production database in RDS. Direct the Data Analytics team to query the production data from the standby instance.",
+        "Set up a new Amazon Redshift database cluster. Migrate the product database into Redshift and allow the Data Analytics team to fetch data from it."
+      ],
+      "answer": 1,
+      "explain": "Amazon RDS Read Replicas provide enhanced performance and durability for database (DB) instances. This feature makes it easy to elastically scale out beyond the capacity constraints of a single DB instance for read-heavy database workloads.\nYou can create one or more replicas of a given source DB Instance and serve high-volume application read traffic from multiple copies of your data, thereby increasing aggregate read throughput. Read replicas can also be promoted when needed to become standalone DB instances. Read replicas are available in Amazon RDS for MySQL, MariaDB, Oracle and PostgreSQL",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nA company has a regional API Gateway in the us-east-2 region that serves as a proxy to a backend service. Clients connect to the service using the invoke URL of the API stage. To improve usability, the company wants to associate a custom domain name (`api.tutorialsdojo.com`) with the API. Moreover, the domain name must support HTTPS to ensure secure connections. The company has an existing hosted zone for its domain on Amazon Route 53.\nWhich of the fo",
+      "options": [
+        "Import an existing public certificate for `api.tutorialsdojo.com` into AWS Certificate Manager (ACM) in the us-east-2. In Route 53, create a CNAME record for `api.tutorialsdojo.com` that points to the invoke URL of the API Gateway stage.",
+        "Request a public certificate in the us-east-2 region for `api.tutorialsdojo.com` using AWS Certificate Manager (ACM). Create a regional API Gateway domain name and associate it with `api.tutorialsdojo.com` and the ACM certificate. In Route 53, create an alias record for `api.tutorialsdojo.com` that ",
+        "Request a public certificate in the us-east-1 region for `api.tutorialsdojo.com` using AWS Certificate Manager (ACM). Create a regional API Gateway domain name and associate it with `api.tutorialsdojo.com` and the ACM certificate. In Route 53, create an alias record for `api.tutorialsdojo.com` that ",
+        "Use the AWS Certificate Manager Private Certificate Authority (ACM PCA) to generate a private certificate for `api.tutorialsdojo.com`. Override the invoke URL using stage variables."
+      ],
+      "answer": 0,
+      "explain": "In API Gateway, A Regional API is an API deployed to a specified Region and intended to serve clients, such as EC2 instances, in the same AWS Region. API requests are targeted directly to the Region-specific API Gateway API without going through any CloudFront distribution. For in-Region requests, a Regional endpoint bypasses the unnecessary round trip to a CloudFront distribution.\n\nWhen using a regional API, any custom domain name you choose is exclusive to the specific region where the API is deployed. If you deploy the same regional API in multiple regions, it can have the same custom domai",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "high-perf-arch",
+      "q": "Category: CSAA \u2013 Design High-Performing Architectures\nA Solutions Architect is designing the cloud architecture for the enterprise application suite of the company. Both the web and application tiers need to access the Internet to fetch data from public APIs. However, these servers should be inaccessible from the Internet.\nWhich of the following steps should the Architect implement to meet the above requirements?",
+      "options": [
+        "Deploy a NAT gateway in the public subnet and add a route to it from the private subnet where the web and application tiers are hosted.",
+        "Deploy the web and application tier instances to a private subnet and then allocate an Elastic IP address to each EC2 instance.",
+        "Deploy the web and application tier instances to a public subnet and then allocate an Elastic IP address to each EC2 instance.",
+        "Deploy a NAT gateway in the private subnet and add a route to it from the public subnet where the web and application tiers are hosted."
+      ],
+      "answer": 0,
+      "explain": "You can use a network address translation (NAT) gateway to enable instances in a private subnet to connect to the internet or other AWS services but prevent the internet from initiating a connection with those instances. You are charged for creating and using a NAT gateway in your account.\nNAT gateway hourly usage and data processing rates apply. Amazon EC2 charges for data transfer also apply. NAT gateways are not supported for IPv6 traffic\u2014use an egress-only internet gateway instead.\n\nTo create a NAT gateway, you must specify the public subnet in which the NAT gateway should reside. You must",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA media company is using Amazon EC2, ELB, and S3 for its video-sharing portal for filmmakers. They are using a standard S3 storage class to store all high-quality videos that are frequently accessed only during the first three months of posting.\nAs a Solutions Architect, what should you do if the company needs to automatically transfer or archive media data from an S3 bucket to Glacier?",
+      "options": [
+        "Use a custom shell script that transfers data from the S3 bucket to Glacier",
+        "Use Amazon SQS",
+        "Use Lifecycle Policies",
+        "Use Amazon SWF"
+      ],
+      "answer": 0,
+      "explain": "You can create a lifecycle policy in S3 to automatically transfer your data to Glacier.\nLifecycle configuration enables you to specify the lifecycle management of objects in a bucket. The configuration is a set of one or more rules, where each rule defines an action for Amazon S3 to apply to a group of objects.\n\nThese actions can be classified as follows:\nTransition actions \u2013 In which you define when objects transition to another storage class. For example, you may choose to transition objects to the STANDARD_IA (IA, for infrequent access) storage class 30 days after creation or archive object",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Cost-Optimized Architectures\nA company conducts performance testing on a large instance MySQL RDS DB instance twice a week. They use Performance Insights to analyze and fine-tune expensive queries. The company needs to reduce its operational expenses in running the tests without compromising the tests\u2019 integrity.\nWhich of the following is the most cost-effective solution?",
+      "options": [
+        "Perform a `mysqldump` to get a copy of the database on a local machine. Use MySQL Workbench to analyze the queries.",
+        "Downgrade the database to a smaller instance.",
+        "Stop the database once the test is done and restart it only when necessary.",
+        "Once the testing is completed, take a snapshot of the database and terminate it. Restore the database from the snapshot when necessary."
+      ],
+      "answer": 0,
+      "explain": "Amazon RDS creates a storage volume snapshot that backs up the entire DB instance, not just individual databases. It\u2019s important to keep in mind that when creating a DB snapshot on a Single-AZ DB instance, a brief I/O suspension may occur. The duration of the suspension can vary from a few seconds to a few minutes, depending on the size and class of your DB instance.\nIn the scenario, taking a snapshot allows you to capture the current state of the database, including all data and configurations. By terminating the database, you can avoid incurring costs during the idle period between tests. Y",
+      "source": "dojo-exam12",
+      "result": "Incorrect"
+    },
+    {
+      "cat": "cost-optimized-arch",
+      "q": "Category: CSAA \u2013 Design Secure Architectures\nAn online survey startup is collecting real estate data in the United States for several years. The startup already has a total of 5 TB of data stored in an Amazon S3 bucket located in the us-east-1 Region. All real estate data must be shared with a European AWS Managed Service Provider (MSP) Partner which also uses Amazon S3 for storage. Due to budget constraints, the startup must keep its data transfer costs in S3 as low as possible and disable anon",
+      "options": [
+        "Enable Cross-Region Replication(CRR) on the startup\u2019s S3 bucket to automatically copy the S3 content to the partner\u2019s S3 bucket in Europe.",
+        "Enable the Requester Pays feature on the Amazon S3 bucket to lower data transfer costs and disable anonymous access",
+        "Enable cross-account access of the startup\u2019s S3 bucket to allow the data downloads and exclusive access from the partner\u2019s AWS account",
+        "Enable S3 Object Lock in governance mode to lower data transfer costs and set a Legal Hold for each object to disable anonymous access"
+      ],
+      "answer": 1,
+      "explain": "In general, bucket owners pay for all Amazon S3 storage and data transfer costs that are associated with their bucket. However, you can configure a bucket to be a Requester Pays bucket. With Requester Pays buckets, the requester instead of the bucket owner pays the cost of the request and the data download from the bucket. The bucket owner always pays the cost of storing data.\nTypically, you configure buckets to be Requester Pays buckets when you want to share data but not incur charges associated with others accessing the data. For example, you might use Requester Pays buckets when making ava",
+      "source": "dojo-exam12",
       "result": "Incorrect"
     }
   ]
