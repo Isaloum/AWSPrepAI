@@ -9,6 +9,8 @@ interface Question {
   options: string[]
   answer: number
   explain: string
+  hint?: string
+  keywords?: string[]
 }
 
 const certMeta: Record<string, { name: string; code: string; icon: string }> = {
@@ -27,7 +29,7 @@ const certMeta: Record<string, { name: string; code: string; icon: string }> = {
 }
 
 const EXAM_QUESTIONS = 65
-const EXAM_MINUTES = 90
+const EXAM_MINUTES = 130
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -97,6 +99,19 @@ export default function MockExam() {
   const score = answers.reduce((acc: number, ans, i) => acc + (ans === questions[i]?.answer ? 1 : 0), 0)
   const pct = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0
   const passed = pct >= 72
+
+  // Domain breakdown for results
+  const domainLabels: Record<string, string> = {
+    'secure-arch': 'Design Secure Architectures',
+    'resilient-arch': 'Design Resilient Architectures',
+    'high-perf-arch': 'Design High-Performing Architectures',
+    'cost-optimized-arch': 'Design Cost-Optimized Architectures',
+  }
+  const domainStats = Object.keys(domainLabels).map(cat => {
+    const catQs = questions.map((q, i) => ({ q, i })).filter(({ q }) => q.cat === cat)
+    const catCorrect = catQs.filter(({ i }) => answers[i] === questions[i]?.answer).length
+    return { cat, label: domainLabels[cat], total: catQs.length, correct: catCorrect }
+  }).filter(d => d.total > 0)
 
   // Paywall
   if (!isPremium) {
@@ -189,6 +204,24 @@ export default function MockExam() {
             <div style={{ color: '#6b7280', marginTop: '0.25rem' }}>{score} / {questions.length} correct · Passing: 72%</div>
           </div>
 
+          {/* Domain Breakdown */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
+            {domainStats.map(d => {
+              const pctD = d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0
+              const color = pctD >= 72 ? '#16a34a' : pctD >= 50 ? '#d97706' : '#dc2626'
+              return (
+                <div key={d.cat} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '0.875rem 1rem' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.4rem' }}>{d.label}</div>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 900, color }}>{pctD}%</div>
+                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{d.correct}/{d.total} correct</div>
+                  <div style={{ background: '#e5e7eb', borderRadius: '999px', height: '4px', marginTop: '0.5rem' }}>
+                    <div style={{ background: color, borderRadius: '999px', height: '4px', width: `${pctD}%`, transition: 'width 0.5s' }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
           {/* Review */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {questions.map((q, i) => {
@@ -213,9 +246,19 @@ export default function MockExam() {
                   <div style={{ fontSize: '0.8rem', color: '#16a34a', marginBottom: '0.4rem' }}>
                     Correct: {q.options[q.answer]}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#6b7280', background: '#f9fafb', borderRadius: '0.5rem', padding: '0.5rem 0.75rem' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#6b7280', background: '#f9fafb', borderRadius: '0.5rem', padding: '0.5rem 0.75rem', marginBottom: q.keywords?.length ? '0.5rem' : 0 }}>
                     {q.explain}
                   </div>
+                  {q.keywords && q.keywords.length > 0 && (
+                    <div style={{ marginTop: '0.4rem' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#16a34a', marginBottom: '0.3rem', letterSpacing: '0.05em' }}>Keywords &amp; Terms</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
+                        {q.keywords.map((kw, ki) => (
+                          <span key={ki} style={{ fontSize: '0.7rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '1px 8px' }}>{kw}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             })}
