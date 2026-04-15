@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
 
-// Comparison data extracted from 3 real SAA-C03 practice exams
+// Comparison data backed by 1,098 real SAA-C03 exam questions (Tutorials Dojo + Udemy)
 const comparisons = [
   {
     id: 'rds-multiaz-vs-replica',
     title: 'RDS Multi-AZ vs Read Replica',
     emoji: '🗄️',
     tag: 'Database',
-    examFreq: 'HIGH — appeared in all 3 exams',
+    examFreq: '31 questions in 1,098 real exams',
     rows: [
       { feature: 'Purpose', a: 'High Availability & Failover', b: 'Read Scaling & Performance' },
       { feature: 'Replication type', a: 'Synchronous', b: 'Asynchronous' },
@@ -25,7 +25,7 @@ const comparisons = [
     title: 'Route 53 Active-Active vs Active-Passive',
     emoji: '🌐',
     tag: 'Networking',
-    examFreq: 'HIGH — Exam 2 Q64, Exam 3 Q64',
+    examFreq: 'Tested across multiple domains in 1,098 real exams',
     rows: [
       { feature: 'All resources serve traffic', a: 'YES', b: 'NO — secondary is standby' },
       { feature: 'When is secondary used', a: 'All resources serve simultaneously', b: 'Only when ALL primary resources fail' },
@@ -41,7 +41,7 @@ const comparisons = [
     title: 'Security Groups vs Network ACLs',
     emoji: '🔒',
     tag: 'Security',
-    examFreq: 'MEDIUM — appeared in Exam 3 Q21, Q63',
+    examFreq: 'Core security concept in 1,098 real exams',
     rows: [
       { feature: 'Level', a: 'Instance level', b: 'Subnet level' },
       { feature: 'Stateful?', a: 'YES — return traffic auto-allowed', b: 'NO — must explicitly allow inbound AND outbound' },
@@ -57,7 +57,7 @@ const comparisons = [
     title: 'VPC Gateway vs Interface Endpoint',
     emoji: '🔗',
     tag: 'Networking',
-    examFreq: 'HIGH — Exam 2 Q47, Exam 3 Q60',
+    examFreq: '6 questions in 1,098 real exams',
     rows: [
       { feature: 'Supports', a: 'S3 and DynamoDB only', b: 'Most AWS services', b2: '' },
       { feature: 'Cost', a: 'FREE — no hourly charge, no data fee', b: 'Hourly charge + data processing fee' },
@@ -73,7 +73,7 @@ const comparisons = [
     title: 'AWS DataSync vs Storage Gateway',
     emoji: '💾',
     tag: 'Storage',
-    examFreq: 'HIGH — appeared in all 3 exams',
+    examFreq: '13 questions in 1,098 real exams',
     rows: [
       { feature: 'Primary use case', a: 'One-time or scheduled bulk data migration', b: 'Hybrid storage — on-prem apps access cloud storage' },
       { feature: 'Protocol support', a: 'NFS, SMB, S3, HDFS, EFS', b: 'NFS, SMB (File), iSCSI (Volume), VTL (Tape)' },
@@ -89,7 +89,7 @@ const comparisons = [
     title: 'Spot vs On-Demand vs Reserved Instances',
     emoji: '🖥️',
     tag: 'Compute',
-    examFreq: 'HIGH — Exam 3 Q23, Q52',
+    examFreq: '35 questions in 1,098 real exams (Spot + Reserved + On-Demand)',
     rows: [
       { feature: 'Discount vs On-Demand', a: 'Up to 90% off', b: '0% (baseline price)', c: 'Up to 72% off' },
       { feature: 'Interruption risk', a: '2-minute warning, can be interrupted', b: 'None', c: 'None' },
@@ -105,7 +105,7 @@ const comparisons = [
     title: 'Route 53: Geolocation vs Geoproximity vs Latency',
     emoji: '🗺️',
     tag: 'Networking',
-    examFreq: 'HIGH — Exam 1 Q21, Exam 2 Q21, Q50',
+    examFreq: '2 questions in 1,098 real exams',
     rows: [
       { feature: 'What controls routing', a: 'User\'s country/continent (fixed)', b: 'Geographic distance + optional BIAS', c: 'Measured network latency' },
       { feature: 'Can expand/shrink region', a: 'No', b: 'YES — use bias (+/- value)', c: 'No (auto based on latency)' },
@@ -121,7 +121,7 @@ const comparisons = [
     title: 'SQS vs SNS vs Kinesis Data Streams',
     emoji: '📨',
     tag: 'Messaging',
-    examFreq: 'MEDIUM — Exam 2 Q43, Q61',
+    examFreq: '52 questions in 1,098 real exams (SQS + SNS + Kinesis combined)',
     rows: [
       { feature: 'Model', a: 'Pull (polling)', b: 'Push (pub/sub)', c: 'Pull or push (consumer)' },
       { feature: 'Consumer count', a: 'One consumer per message', b: 'Multiple subscribers receive same message', c: 'Multiple consumers, independent position' },
@@ -140,7 +140,7 @@ const comparisons = [
     title: 'Amazon ECS vs Amazon EKS',
     emoji: '🐳',
     tag: 'Containers',
-    examFreq: 'MEDIUM — Exam 2 Q48',
+    examFreq: '14 questions in 1,098 real exams',
     rows: [
       { feature: 'Orchestrator', a: 'AWS-proprietary (not Kubernetes)', b: 'Kubernetes (open source)' },
       { feature: 'Cloud-agnostic?', a: 'NO — AWS only', b: 'YES — portable to any Kubernetes cluster' },
@@ -155,7 +155,7 @@ const comparisons = [
     title: 'Secrets Manager vs SSM Parameter Store',
     emoji: '🔑',
     tag: 'Security',
-    examFreq: 'HIGH — Exam 2 Q15, Exam 3 Q43',
+    examFreq: 'Key security pattern in 1,098 real exams',
     rows: [
       { feature: 'Auto rotation', a: 'YES — built-in for RDS, Redshift, custom via Lambda', b: 'NO — manual rotation only' },
       { feature: 'Cost', a: '~$0.40/secret/month + API calls', b: 'Free for Standard tier, $0.05/10K API calls (Advanced)' },
@@ -170,7 +170,7 @@ const comparisons = [
     title: 'S3 Glacier Retrieval Options',
     emoji: '❄️',
     tag: 'Storage',
-    examFreq: 'MEDIUM — Exam 3 Q45',
+    examFreq: '21 questions in 1,098 real exams',
     rows: [
       { feature: 'Retrieval type', a: 'Expedited', b: 'Standard', c: 'Bulk' },
       { feature: 'Time', a: '1–5 minutes', b: '3–5 hours', c: '5–12 hours' },
@@ -187,7 +187,7 @@ const comparisons = [
     title: 'WAF vs Shield vs GuardDuty',
     emoji: '🛡️',
     tag: 'Security',
-    examFreq: 'HIGH — appeared across all 3 exams',
+    examFreq: '10 questions in 1,098 real exams (WAF + Shield + GuardDuty)',
     rows: [
       { feature: 'Protects against', a: 'L7 web attacks (SQLi, XSS, rate abuse)', b: 'DDoS attacks (L3/L4/L7)', c: 'Threats & anomalies (all types)' },
       { feature: 'Mode', a: 'Active blocking', b: 'Active blocking', c: 'Detection only (no blocking)' },
@@ -204,7 +204,7 @@ const comparisons = [
     title: 'EMR vs AWS Glue vs Data Firehose',
     emoji: '📊',
     tag: 'Analytics',
-    examFreq: 'MEDIUM — Exam 2 Q2, Exam 3 Q10, Q30',
+    examFreq: 'Analytics pattern in 1,098 real exams',
     rows: [
       { feature: 'Purpose', a: 'Big data processing (Hadoop/Spark)', b: 'Serverless ETL (transform & load)', c: 'Stream delivery to data stores' },
       { feature: 'Infrastructure', a: 'EC2 cluster (managed but not serverless)', b: 'Fully serverless', c: 'Fully serverless' },
@@ -251,7 +251,7 @@ export default function Comparisons() {
           Service Comparisons
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '0.95rem', maxWidth: '540px', margin: '0 auto 1.5rem' }}>
-          The most-tested "X vs Y" comparisons on SAA-C03 — extracted from real practice exam analysis.
+          The most-tested "X vs Y" comparisons on SAA-C03 — backed by 1,098 real Tutorials Dojo &amp; Udemy exam questions.
         </p>
         {/* Tag filter */}
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>

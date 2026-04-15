@@ -301,9 +301,12 @@ export default function Keywords() {
             <p style={{ color: '#6b7280', fontSize: '1rem', margin: '0 0 4px' }}>
               Spot these words in a question → know exactly which AWS service to pick.
             </p>
-            <p style={{ color: '#9ca3af', fontSize: '0.85rem', margin: 0 }}>
-              {keywords.length} exam scenarios · {CATEGORIES.length - 1} categories · SAA-C03 official guide aligned
+            <p style={{ color: '#9ca3af', fontSize: '0.85rem', margin: '0 0 12px' }}>
+              {keywords.length} exam scenarios · {CATEGORIES.length - 1} categories · SAA-C03 aligned
             </p>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#16a34a' }}>
+              ✅ Patterns extracted from 1,098 real Tutorials Dojo &amp; Udemy exam questions
+            </div>
           </div>
 
           {/* Search */}
