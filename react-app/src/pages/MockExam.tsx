@@ -64,11 +64,14 @@ export default function MockExam() {
   useEffect(() => {
     if (!certId || !certMeta[certId]) { navigate('/certifications'); return }
     if (!isPremium) return // show gate below
-    import(`../data/${certId}.json`).then((mod) => {
-      const qs = shuffle(mod.default as Question[]).slice(0, EXAM_QUESTIONS)
-      setQuestions(qs)
-      setAnswers(new Array(qs.length).fill(null))
-    }).catch(() => navigate('/certifications'))
+    // Fetch from public/data/ to avoid bundling large JSON files
+    fetch(`/data/${certId}.json`)
+      .then(r => r.json())
+      .then((data: Question[]) => {
+        const qs = shuffle(data).slice(0, EXAM_QUESTIONS)
+        setQuestions(qs)
+        setAnswers(new Array(qs.length).fill(null))
+      }).catch(() => navigate('/certifications'))
   }, [certId, navigate, isPremium])
 
   const submitExam = useCallback(() => {

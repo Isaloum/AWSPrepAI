@@ -70,11 +70,12 @@ export default function CertDetail() {
   // Load questions
   useEffect(() => {
     if (!certId || !certMeta[certId]) { navigate('/certifications'); return }
-    import(`../data/${certId}.json`).then((mod) => {
-      const qs: Question[] = mod.default
-      setQuestions(qs)
-      setFiltered(qs)
-    }).catch(() => navigate('/certifications'))
+    fetch(`/data/${certId}.json`)
+      .then(r => r.json())
+      .then((qs: Question[]) => {
+        setQuestions(qs)
+        setFiltered(qs)
+      }).catch(() => navigate('/certifications'))
   }, [certId, navigate])
 
   // Load free usage (free tier only)
