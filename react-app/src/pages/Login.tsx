@@ -31,17 +31,7 @@ export default function Login() {
       await refreshUser()
       navigate('/dashboard')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Sign in failed.'
-      // Cognito returns "User does not exist" when password reset is required — translate it
-      if (msg.includes('User does not exist') || msg.includes('PasswordResetRequired') || msg.includes('Password reset required')) {
-        setError('You need to reset your password first. Click "Forgot password?" below.')
-      } else if (msg.includes('Incorrect username or password')) {
-        setError('Incorrect email or password.')
-      } else if (msg.includes('User is not confirmed')) {
-        setError('Please confirm your email first. Check your inbox for the verification code.')
-      } else {
-        setError(msg)
-      }
+      setError(err instanceof Error ? err.message : 'Sign in failed.')
     }
     setLoading(false)
   }

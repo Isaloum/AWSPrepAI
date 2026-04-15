@@ -56,7 +56,7 @@ export async function confirmSignUp(email: string, code: string): Promise<void> 
 }
 
 // ─── Sign In ─────────────────────────────────────────────────────
-export async function signIn(email: string, password: string): Promise<AuthUser> {
+export async function signIn(email: string, password: string): Promise<AuthUser | 'MFA_REQUIRED'> {
   const normalizedEmail = email.trim().toLowerCase()
   return new Promise((resolve, reject) => {
     const user = new CognitoUser({ Username: normalizedEmail, Pool: userPool })
@@ -91,7 +91,6 @@ export async function getSession(): Promise<AuthUser | null> {
 export function signOut(): void {
   const user = userPool.getCurrentUser()
   user?.signOut()
-  // Force-clear all Cognito tokens from localStorage as a safety net
   Object.keys(localStorage)
     .filter(k => k.startsWith('CognitoIdentityServiceProvider'))
     .forEach(k => localStorage.removeItem(k))
