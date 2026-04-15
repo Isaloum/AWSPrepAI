@@ -8,8 +8,6 @@ import QRCode from 'qrcode'
 
 const CANCEL_API = "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
 
-const CANCEL_API = import.meta.env.VITE_CANCEL_API as string
-
 const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
   'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
   'aif-c01': { name: 'AI Practitioner', code: 'AIF-C01', icon: '🤖' },
