@@ -1,5 +1,5 @@
 # CertiPrepAI — Claude Context
-_Last updated: 2026-04-09_
+_Last updated: 2026-04-16_
 
 ## What this project is
 AWS certification prep SaaS. Two frontends, one backend on AWS.
@@ -50,6 +50,12 @@ The Lambda does NOT downgrade Cognito plan — that is handled by the Stripe web
 
 ### 7. Browser caching
 After deploys, always test in a **fresh incognito window**. Old bundles are aggressively cached.
+
+### 8. ⚠️ CDN routing for certiprepai.com
+`certiprepai.com` → Route 53 → **CloudFront `E149XOHRPMJ4D1`** (`d10nn383a5lev5.cloudfront.net`) → Amplify origin.
+- Amplify RELEASE deployments do NOT clear this CloudFront cache.
+- After any routing or caching fix, ALWAYS run: `aws cloudfront create-invalidation --distribution-id E149XOHRPMJ4D1 --paths "/*"`
+- Amplify's own CDN only serves `main.d2pm3jfcsesli7.amplifyapp.com` (not the custom domain).
 
 ---
 
@@ -120,26 +126,28 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 ## What's Still Pending
 
 ### 🔴 CRITICAL
-1. **Fix Checkout Lambda** `Runtime.UserCodeSyntaxError` — new paid signups are broken since April 2.
-   - Check: `aws lambda get-function --function-name awsprepai-checkout`
-   - Logs: `aws logs tail /aws/lambda/awsprepai-checkout --follow`
-
-2. **Cancel button still shows after cancellation** — `cancelScheduled` state added but UI not yet updated to hide button and show "Cancellation Scheduled ✓" badge.
-   - File: `react-app/src/pages/Dashboard.tsx` around line 185-194
-   - `cancelScheduled` state exists (line 54), `setCancelScheduled(true)` is called on success
-   - Need to wrap cancel button: `{cancelScheduled ? <badge> : <button>}`
+1. **Rotate the new AWS key `AKIAWNRITSU5EHIVIZ2I`** — exposed in Claude chat on 2026-04-16. Create a new key, update `~/.aws/credentials`, delete this one immediately.
+2. **Rotate Stripe secret key** — exposed in terminal screenshot during session. Go to Stripe dashboard → Developers → API keys → roll secret key → update Lambda env var `STRIPE_SECRET_KEY`.
 
 ### 🟡 IMPORTANT
 3. **Password strength indicator on Signup.tsx** — Cognito enforces uppercase/lowercase/numbers/symbols/min 8 chars but UI shows cryptic error.
-4. **Rotate leaked AWS credentials** `AKIAWNRITSU5DRQBL74S` — exposed in terminal screenshot.
-5. **Rotate Stripe secret key** — exposed in terminal screenshot during session.
-6. **Delete obsolete CloudFront distribution** `E3885PO59ILHI0` ("CertiPrepAI — API Lambda URLs") — old, unused, costs money.
 
 ### 🟢 NICE TO HAVE
-7. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
-8. CloudFront + WAF in front of API Gateway
-9. Optional MFA (TOTP) with Google Authenticator
-10. Progress tracking on Dashboard (score + questions per cert)
+4. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
+5. CloudFront + WAF in front of API Gateway
+6. Progress tracking on Dashboard (score + questions per cert)
+
+---
+
+## ✅ Fixed April 16, 2026
+
+| # | Item | Fix |
+|---|------|-----|
+| 1 | Checkout Lambda `Runtime.UserCodeSyntaxError` | Fixed April 9 via deploy-checkout-lambda.sh — confirmed working |
+| 2 | Cancel button badge | Implemented in Dashboard.tsx lines 195-204 — `cancelScheduled` toggles button/badge |
+| 3 | Sitemap `sitemap.xml` serving HTML to Google | Root cause: CloudFront `E149XOHRPMJ4D1` caching old HTML. Fixed by invalidating `/*` on that distribution |
+| 4 | Leaked AWS key `AKIAWNRITSU5DRQBL74S` | Deactivated + deleted |
+| 5 | Unused CloudFront `E3885PO59ILHI0` | Deleted |
 
 ---
 
