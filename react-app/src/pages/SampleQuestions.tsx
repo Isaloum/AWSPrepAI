@@ -384,7 +384,7 @@ export default function SampleQuestions() {
               {pct >= 80 ? 'Excellent! You are well-prepared.' : pct >= 60 ? 'Good effort. Review the missed questions.' : 'Keep studying — you will get there!'}
             </p>
             <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '32px' }}>
-              These are free sample questions. Sign up for access to 3,221 full questions across all 12 certs.
+              These are free sample questions. Sign up for access to 3,958 full questions across all 12 certs.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
@@ -547,7 +547,7 @@ export default function SampleQuestions() {
           <div style={{ marginTop: '32px', background: '#0f172a', borderRadius: '16px', padding: '24px', textAlign: 'center' }}>
             <p style={{ color: '#94a3b8', margin: '0 0 8px', fontSize: '0.85rem' }}>Want more? Get full access to</p>
             <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', margin: '0 0 16px' }}>
-              3,221 questions across all 12 AWS certifications
+              3,958 questions across all 12 AWS certifications
             </p>
             <button
               onClick={() => navigate('/signup')}

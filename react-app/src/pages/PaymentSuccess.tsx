@@ -92,12 +92,12 @@ export default function PaymentSuccess() {
           {tierLabels[tier] ?? '⭐ Premium Plan'}
         </div>
         <p style={{ color: '#6b7280', marginBottom: '2rem', lineHeight: 1.7 }}>
-          Your account has been upgraded. You now have full access to all 3,221 questions across 12 AWS certifications.
+          Your account has been upgraded. You now have full access to all 3,958 questions across 12 AWS certifications.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
           {[
-            { icon: '✅', label: '3,221 Questions', sub: 'All 12 certs' },
+            { icon: '✅', label: '3,958 Questions', sub: 'All 12 certs' },
             { icon: '⏱️', label: 'Mock Exams', sub: '65 questions, timed' },
             { icon: '🎯', label: 'Domain Focus', sub: 'Filter by topic' },
             { icon: '💡', label: 'Explanations', sub: 'Every answer' },

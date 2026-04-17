@@ -64,7 +64,7 @@ export default function Certifications() {
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem' }}>
             {[
-              { n: '3,221', label: 'Total Questions' },
+              { n: '3,958', label: 'Total Questions' },
               { n: '12', label: 'Certifications' },
               { n: '130 min', label: 'Mock Exam Timer' },
             ].map(s => (

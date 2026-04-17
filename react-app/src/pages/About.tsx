@@ -359,7 +359,7 @@ export default function About() {
   ]
 
   const features = [
-    { icon: '📝', title: '3,221 Questions', desc: '260 per cert across all 12 AWS certifications, updated regularly', color: '#eff6ff', border: '#bfdbfe' },
+    { icon: '📝', title: '3,958 Questions', desc: '260 per cert across all 12 AWS certifications, updated regularly', color: '#eff6ff', border: '#bfdbfe' },
     { icon: '⏱️', title: 'Mock Exams', desc: '65-question timed tests that mirror the real exam format exactly', color: '#f0fdf4', border: '#bbf7d0' },
     { icon: '💡', title: 'Instant Explanations', desc: 'Every answer explained — learn why options are right or wrong', color: '#faf5ff', border: '#e9d5ff' },
     { icon: '🎯', title: 'Domain Filtering', desc: 'Filter by exam domain to focus on your weakest areas first', color: '#fff7ed', border: '#fed7aa' },
@@ -383,7 +383,7 @@ export default function About() {
   ]
 
   const stats = [
-    { value: '3,221', label: 'Practice Questions' },
+    { value: '3,958', label: 'Practice Questions' },
     { value: '12', label: 'AWS Certifications' },
     { value: '72%', label: 'Pass Mark Required' },
     { value: '4', label: 'Exam Levels' },

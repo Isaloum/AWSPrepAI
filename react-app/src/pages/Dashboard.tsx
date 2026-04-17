@@ -280,8 +280,8 @@ export default function Dashboard() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
           {[
             { label: 'Certifications', value: '12', icon: '📋' },
-            { label: 'Total Questions', value: '3,221', icon: '📝' },
-            { label: 'Available to you', value: isFullAccess ? '3,221' : tier === 'monthly' ? '260' : '20', icon: '🔓' },
+            { label: 'Total Questions', value: '3,958', icon: '📝' },
+            { label: 'Available to you', value: isFullAccess ? '3,958' : tier === 'monthly' ? '260' : '20', icon: '🔓' },
           ].map(stat => (
             <div key={stat.label} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.875rem', padding: '1rem 1.25rem', textAlign: 'center' }}>
               <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{stat.icon}</div>

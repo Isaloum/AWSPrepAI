@@ -18,7 +18,7 @@ const certs = [
 ]
 
 const features = [
-  { icon: '📝', title: '3,221 Questions', desc: '260 per certification across all 12 AWS exams' },
+  { icon: '📝', title: '3,958 Questions', desc: '260 per certification across all 12 AWS exams' },
   { icon: '⏱️', title: 'Mock Exams', desc: '65 questions, 130-minute timer, score on submit' },
   { icon: '💡', title: 'Instant Explanations', desc: 'Every answer explained — learn why, not just what' },
   { icon: '🎯', title: 'Domain Filtering', desc: 'Focus on your weakest areas by exam domain' },
@@ -112,7 +112,7 @@ export default function Home() {
           {/* Left — text */}
           <div>
             <div style={{ display: 'inline-block', background: 'rgba(96,165,250,0.15)', color: '#93c5fd', fontSize: '0.8rem', fontWeight: 700, padding: '0.375rem 1rem', borderRadius: '999px', marginBottom: '1.5rem', border: '1px solid rgba(96,165,250,0.3)' }}>
-              🎓 12 AWS Certifications · 3,221 Questions
+              🎓 12 AWS Certifications · 3,958 Questions
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: '1.25rem' }}>
               Pass Your AWS Cert.<br />
@@ -155,7 +155,7 @@ export default function Home() {
         <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', padding: '1.5rem 1rem', gap: '0.5rem' }}>
           {[
             { n: '12', label: 'Certifications' },
-            { n: '3,221', label: 'Questions' },
+            { n: '3,958', label: 'Questions' },
             { n: '65', label: 'Questions / Mock Exam' },
             { n: '130', label: 'Min Timer' },
             { n: '72%', label: 'AWS Pass Mark' },
@@ -197,7 +197,7 @@ export default function Home() {
               { n: '1', title: 'Create a free account', desc: 'Sign up in seconds — no credit card required' },
               { n: '2', title: 'Pick your cert', desc: 'Choose from 12 active AWS certifications' },
               { n: '3', title: 'Practice free', desc: '20 questions per cert included with every account' },
-              { n: '4', title: 'Upgrade for full access', desc: 'Unlock all 3,221 questions + mock exams' },
+              { n: '4', title: 'Upgrade for full access', desc: 'Unlock all 3,958 questions + mock exams' },
             ].map(s => (
               <div key={s.n} style={{ textAlign: 'center' }}>
                 <div style={{ width: '52px', height: '52px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.25rem', margin: '0 auto 1rem', boxShadow: '0 4px 12px rgba(37,99,235,0.35)' }}>{s.n}</div>

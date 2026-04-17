@@ -7,7 +7,7 @@ const CHECKOUT_API = import.meta.env.VITE_CHECKOUT_API as string || 'https://34z
 const PAID_PLANS = new Set(['monthly', 'yearly', 'lifetime'])
 
 const perks = [
-  { icon: '📋', text: '3,221 scenario-based questions' },
+  { icon: '📋', text: '3,958 scenario-based questions' },
   { icon: '⏱️', text: 'Timed mock exams — 65q / 130 min' },
   { icon: '🗺️', text: 'Architecture diagrams & visual exam' },
   { icon: '🎯', text: 'Domain filtering — focus weak areas' },
@@ -226,7 +226,7 @@ export default function Signup() {
           {/* Social proof */}
           <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', gap: '2rem' }}>
-              {[['12', 'Certifications'], ['3,221', 'Questions'], ['72%', 'Pass Mark']].map(([val, label]) => (
+              {[['12', 'Certifications'], ['3,958', 'Questions'], ['72%', 'Pass Mark']].map(([val, label]) => (
                 <div key={label}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#60a5fa' }}>{val}</div>
                   <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>

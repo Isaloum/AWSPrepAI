@@ -96,7 +96,7 @@ export default function Login() {
           {/* Quick stats */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {[
-              { icon: '📋', text: '3,221 questions across 12 certifications' },
+              { icon: '📋', text: '3,958 questions across 12 certifications' },
               { icon: '⏱️', text: 'Timed mock exams — 65 questions, 130 min' },
               { icon: '📊', text: 'Track your scores domain by domain' },
               { icon: '🎯', text: 'Domain filtering — focus your weak areas' },
@@ -112,7 +112,7 @@ export default function Login() {
 
           <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', gap: '2rem' }}>
-              {[['12', 'Certifications'], ['3,221', 'Questions'], ['72%', 'Pass Mark']].map(([val, label]) => (
+              {[['12', 'Certifications'], ['3,958', 'Questions'], ['72%', 'Pass Mark']].map(([val, label]) => (
                 <div key={label}>
                   <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#60a5fa' }}>{val}</div>
                   <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>

@@ -47,7 +47,7 @@ export default function Paywall({ reason, onClose }: PaywallProps) {
         <p className="text-gray-500 mb-4">You've used your 20 free questions. Upgrade to keep practicing.</p>
 
         <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-700"><span className="text-green-500">✓</span> 260 questions per cert (3,221 total)</div>
+          <div className="flex items-center gap-2 text-sm text-gray-700"><span className="text-green-500">✓</span> 260 questions per cert (3,958 total)</div>
           <div className="flex items-center gap-2 text-sm text-gray-700"><span className="text-green-500">✓</span> Timed mock exam per cert (65q, 130 min)</div>
           <div className="flex items-center gap-2 text-sm text-gray-700"><span className="text-green-500">✓</span> All 12 AWS certifications</div>
           <div className="flex items-center gap-2 text-sm text-gray-700"><span className="text-green-500">✓</span> Domain filtering — focus on weak areas</div>

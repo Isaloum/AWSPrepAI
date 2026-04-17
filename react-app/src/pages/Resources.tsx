@@ -105,7 +105,7 @@ export default function Resources() {
             The best courses, practice tools, cheat sheets, and communities — all in one place so you don't have to hunt.
           </p>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#4ade80' }}>
-            ✅ 3,221 practice questions derived from AWS official documentation and exam objectives
+            ✅ 3,958 practice questions derived from AWS official documentation and exam objectives
           </div>
         </div>
       </div>

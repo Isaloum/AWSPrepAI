@@ -74,7 +74,7 @@ const plans = [
     features: [
       'Everything in Monthly',
       'All 12 AWS certifications',
-      '260 questions per cert (3,221 total)',
+      '260 questions per cert (3,958 total)',
       'Timed mock exams included',
       'Visual Exam + Architecture Builder',
       'Architecture Diagrams library',
@@ -377,7 +377,7 @@ export default function Pricing() {
               },
               {
                 q: 'Are questions scenario-based or just memorization?',
-                a: 'All 3,221 questions are scenario-based — the same style AWS uses on its real exams. Each answer includes a detailed explanation.',
+                a: 'All 3,958 questions are scenario-based — the same style AWS uses on its real exams. Each answer includes a detailed explanation.',
               },
               {
                 q: 'What is the timed mock exam?',
