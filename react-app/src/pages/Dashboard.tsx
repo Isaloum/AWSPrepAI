@@ -5,31 +5,15 @@ import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
 import { getMFAStatus, setupTOTP, verifyAndEnableTOTP, disableTOTP } from '../lib/cognito'
 import QRCode from 'qrcode'
-import SkillRadarChart, { type DomainScore } from '../components/SkillRadarChart'
+import SkillRadarChart from '../components/SkillRadarChart'
 
-// Fallback mock data — shown when user has zero attempts
-const MOCK_RADAR_DATA: DomainScore[] = [
-  { domain: 'Compute',    examWeight: 25, userScore: 65 },
-  { domain: 'Storage',    examWeight: 20, userScore: 80 },
-  { domain: 'Networking', examWeight: 20, userScore: 45 },
-  { domain: 'Security',   examWeight: 20, userScore: 70 },
-  { domain: 'Database',   examWeight: 10, userScore: 55 },
-  { domain: 'Monitoring', examWeight:  5, userScore: 40 },
-]
-
-/** Convert DynamoDB progress rows → radar chart data.
- *  Each attempted cert becomes one axis.
- *  examWeight = 100 (draws a perfect circle = "full marks possible")
- *  userScore  = correct_answers / questions_attempted × 100
- */
-function buildRadarData(rows: CertProgress[]): DomainScore[] | null {
-  const attempted = rows.filter(r => r.questions_attempted > 0)
-  if (attempted.length === 0) return null
-  return attempted.slice(0, 6).map(r => ({
-    domain: CERT_META[r.cert_id]?.code ?? r.cert_id.toUpperCase(),
-    examWeight: 100,
-    userScore: Math.round((r.correct_answers / r.questions_attempted) * 100),
-  }))
+/** Build progress map: cert_id → correct% (only certs with ≥1 attempt) */
+function buildProgressMap(rows: CertProgress[]): Record<string, number> {
+  return Object.fromEntries(
+    rows
+      .filter(r => r.questions_attempted > 0)
+      .map(r => [r.cert_id, Math.round((r.correct_answers / r.questions_attempted) * 100)])
+  )
 }
 
 const CANCEL_API = "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
@@ -308,17 +292,10 @@ export default function Dashboard() {
         </div>
 
         {/* Skill Radar Chart */}
-        {(() => {
-          const radarData = buildRadarData(progress)
-          return (
-            <SkillRadarChart
-              data={radarData ?? MOCK_RADAR_DATA}
-              isMock={radarData === null}
-              label1={radarData ? 'Max Possible (100%)' : 'Exam Weight'}
-              label2="Your Score"
-            />
-          )
-        })()}
+        <SkillRadarChart
+          certOptions={CERTS.map(c => ({ id: c.id, code: c.code, name: c.name }))}
+          progressMap={buildProgressMap(progress)}
+        />
 
         {/* Progress section */}
         {progress.length > 0 && (
