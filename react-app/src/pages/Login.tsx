@@ -260,12 +260,9 @@ export default function Login() {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <button
-            onClick={handleForgotPassword}
-            style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 500 }}
-          >
+          <Link to="/forgot-password" style={{ color: '#2563eb', fontSize: '0.85rem', fontWeight: 500, textDecoration: 'none' }}>
             Forgot password?
-          </button>
+          </Link>
         </div>
 
         <div style={{ borderTop: '1px solid #f3f4f6', marginTop: '1.75rem', paddingTop: '1.5rem', textAlign: 'center' }}>

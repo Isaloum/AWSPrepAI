@@ -8,16 +8,6 @@ function ScrollToTop() {
   return null
 }
 
-// Updates <link rel="canonical"> on every route change so Google indexes
-// each page at its correct URL instead of treating them all as duplicates.
-function CanonicalUpdater() {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    const tag = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
-    if (tag) tag.href = `https://certiprepai.com${pathname}`
-  }, [pathname])
-  return null
-}
 import Home from './pages/Home'
 import Certifications from './pages/Certifications'
 import CertDetail from './pages/CertDetail'
@@ -40,6 +30,8 @@ import StudyGuide from './pages/StudyGuide'
 import ServiceGroups from './pages/ServiceGroups'
 import Comparisons from './pages/Comparisons'
 import ServiceComparison from './pages/ServiceComparison'
+import ForgotPassword from './pages/ForgotPassword'
+import SEOMeta from './components/SEOMeta'
 
 const NotFound = () => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
@@ -59,7 +51,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <ScrollToTop />
-        <CanonicalUpdater />
+        <SEOMeta />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/certifications" element={<Certifications />} />
@@ -83,6 +75,7 @@ export default function App() {
           <Route path="/service-groups" element={<ServiceGroups />} />
           <Route path="/comparisons" element={<Comparisons />} />
           <Route path="/service-comparison" element={<ServiceComparison />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
