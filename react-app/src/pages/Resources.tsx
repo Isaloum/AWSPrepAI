@@ -189,6 +189,19 @@ export default function Resources() {
           ))}
         </div>
 
+        {/* ── Service Comparison CTA ── */}
+        <div style={{ marginTop: '2.5rem', background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '1px solid #86efac', borderRadius: '1.25rem', padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div>
+            <p style={{ fontSize: '1rem', fontWeight: 800, color: '#14532d', margin: '0 0 0.3rem' }}>🔍 AWS Service Comparison Guide</p>
+            <p style={{ fontSize: '0.85rem', color: '#166534', margin: 0, lineHeight: 1.6 }}>
+              20 side-by-side comparisons across 7 groups — S3 vs EFS, SQS vs SNS, NAT Gateway vs Instance, and more. Built for exam day.
+            </p>
+          </div>
+          <a href="/service-comparison" style={{ flexShrink: 0, padding: '0.625rem 1.25rem', background: '#16a34a', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            View Comparisons →
+          </a>
+        </div>
+
         {/* ── Pro tip ── */}
         <div style={{ marginTop: '3rem', background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', borderRadius: '1.25rem', padding: '1.75rem 2rem', display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
           <div style={{ fontSize: '1.75rem', flexShrink: 0 }}>💡</div>

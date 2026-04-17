@@ -39,6 +39,7 @@ import Keywords from './pages/Keywords'
 import StudyGuide from './pages/StudyGuide'
 import ServiceGroups from './pages/ServiceGroups'
 import Comparisons from './pages/Comparisons'
+import ServiceComparison from './pages/ServiceComparison'
 
 const NotFound = () => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/keywords" element={<Keywords />} />
           <Route path="/service-groups" element={<ServiceGroups />} />
           <Route path="/comparisons" element={<Comparisons />} />
+          <Route path="/service-comparison" element={<ServiceComparison />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
