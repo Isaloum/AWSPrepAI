@@ -130,8 +130,8 @@ export default function MockExam() {
             ⚡ View Plans — from $7/mo
           </Link>
           <div style={{ marginTop: '1rem' }}>
-            <Link to={`/cert/${certId}`} style={{ color: '#6b7280', fontSize: '0.875rem', textDecoration: 'underline' }}>
-              Continue free practice instead →
+            <Link to="/dashboard" style={{ color: '#6b7280', fontSize: '0.875rem', textDecoration: 'underline' }}>
+              Back to Dashboard →
             </Link>
           </div>
         </div>
