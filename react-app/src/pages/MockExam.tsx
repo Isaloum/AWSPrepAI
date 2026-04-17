@@ -83,14 +83,14 @@ export default function MockExam() {
       setQuestions(qs => {
         setAnswers(ans => {
           if (!user?.accessToken || !certId || qs.length === 0) return ans
-          const correctCount = ans.reduce((acc, a, i) => acc + (a === qs[i]?.answer ? 1 : 0), 0)
+          const correctCount = ans.reduce((acc, a, i) => acc + ((a ?? -1) === qs[i]?.answer ? 1 : 0), 0)
           // Build per-domain scores
           const domainScores: Record<string, { attempted: number; correct: number }> = {}
           qs.forEach((q, i) => {
             const domain = q.cat || 'other'
             if (!domainScores[domain]) domainScores[domain] = { attempted: 0, correct: 0 }
             domainScores[domain].attempted++
-            if (ans[i] === q.answer) domainScores[domain].correct++
+            if ((ans[i] ?? -1) === q.answer) domainScores[domain].correct++
           })
           saveExamResult(certId, qs.length, correctCount, domainScores, user.accessToken)
             .catch(err => console.error('Failed to save exam result:', err))
