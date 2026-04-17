@@ -125,29 +125,29 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 
 ## What's Still Pending
 
-### 🔴 CRITICAL
-1. **Rotate the new AWS key `AKIAWNRITSU5EHIVIZ2I`** — exposed in Claude chat on 2026-04-16. Create a new key, update `~/.aws/credentials`, delete this one immediately.
-2. **Rotate Stripe secret key** — exposed in terminal screenshot during session. Go to Stripe dashboard → Developers → API keys → roll secret key → update Lambda env var `STRIPE_SECRET_KEY`.
-
-### 🟡 IMPORTANT
-3. **Password strength indicator on Signup.tsx** — Cognito enforces uppercase/lowercase/numbers/symbols/min 8 chars but UI shows cryptic error.
-
 ### 🟢 NICE TO HAVE
-4. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
-5. CloudFront + WAF in front of API Gateway
-6. Progress tracking on Dashboard (score + questions per cert)
+1. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
+2. CloudFront + WAF in front of API Gateway
+3. Per-domain progress tracking (requires question-level domain tagging)
 
 ---
 
-## ✅ Fixed April 16, 2026
+## ✅ Fixed April 16–17, 2026
 
 | # | Item | Fix |
 |---|------|-----|
 | 1 | Checkout Lambda `Runtime.UserCodeSyntaxError` | Fixed April 9 via deploy-checkout-lambda.sh — confirmed working |
-| 2 | Cancel button badge | Implemented in Dashboard.tsx lines 195-204 — `cancelScheduled` toggles button/badge |
-| 3 | Sitemap `sitemap.xml` serving HTML to Google | Root cause: CloudFront `E149XOHRPMJ4D1` caching old HTML. Fixed by invalidating `/*` on that distribution |
+| 2 | Cancel button badge | Implemented in Dashboard.tsx — `cancelScheduled` toggles button/badge |
+| 3 | Sitemap `sitemap.xml` serving HTML to Google | CloudFront `E149XOHRPMJ4D1` cache invalidated |
 | 4 | Leaked AWS key `AKIAWNRITSU5DRQBL74S` | Deactivated + deleted |
 | 5 | Unused CloudFront `E3885PO59ILHI0` | Deleted |
+| 6 | Password strength indicator | Live bar + checklist on Signup.tsx |
+| 7 | Skill Radar Chart on Dashboard | Cert dropdown, real domain weights, live DynamoDB scores |
+| 8 | Progress cards on Dashboard | Empty state, 72% passing marker, color-coded score pill |
+| 9 | DB_API env var not injected | Hardcoded URL in db.ts (matches CANCEL_API pattern) |
+| 10 | Leaked AWS key `AKIAWNRITSU5EHIVIZ2I` + Stripe key | Rotated by user |
+| 11 | Tutorials Dojo/Udemy references | Removed from Comparisons, Glossary, Resources pages |
+| 12 | Question count 3,120 → 3,221 | Updated across all HTML + React files |
 
 ---
 
