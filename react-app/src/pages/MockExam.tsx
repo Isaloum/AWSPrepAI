@@ -83,7 +83,7 @@ export default function MockExam() {
       setQuestions(qs => {
         setAnswers(ans => {
           if (!user?.accessToken || !certId || qs.length === 0) return ans
-          const correctCount = ans.reduce((acc, a, i) => acc + ((a ?? -1) === qs[i]?.answer ? 1 : 0), 0)
+          const correctCount = ans.reduce<number>((acc, a, i) => acc + ((a ?? -1) === qs[i]?.answer ? 1 : 0), 0)
           // Build per-domain scores
           const domainScores: Record<string, { attempted: number; correct: number }> = {}
           qs.forEach((q, i) => {
