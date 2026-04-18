@@ -609,14 +609,13 @@ const REMAINING_SHEETS: CertCheatSheet[] = [
   },
 ]
 
-const CERT_STUBS: never[] = []
+const ALL_SHEETS: CertCheatSheet[] = [...SHEETS, ...REMAINING_SHEETS]
 
 export default function CheatSheets() {
   const [selectedId, setSelectedId] = useState('saa-c03')
   const [activeTab, setActiveTab] = useState<'domains' | 'services' | 'choose' | 'traps' | 'patterns'>('domains')
 
-  const sheet = SHEETS.find(s => s.id === selectedId)
-  const stub = CERT_STUBS.find(s => s.id === selectedId)
+  const sheet = ALL_SHEETS.find(s => s.id === selectedId)
 
   const tabs: { id: typeof activeTab; label: string }[] = [
     { id: 'domains', label: '📋 Domains' },
@@ -648,7 +647,7 @@ export default function CheatSheets() {
 
         {/* Cert selector */}
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-          {SHEETS.map(s => (
+          {ALL_SHEETS.map(s => (
             <button
               key={s.id}
               onClick={() => { setSelectedId(s.id); setActiveTab('domains') }}
@@ -663,34 +662,7 @@ export default function CheatSheets() {
               {s.icon} {s.code}
             </button>
           ))}
-          {CERT_STUBS.map(s => (
-            <button
-              key={s.id}
-              onClick={() => { setSelectedId(s.id); setActiveTab('domains') }}
-              style={{
-                padding: '0.45rem 1rem', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 700,
-                border: 'none', cursor: 'pointer',
-                background: selectedId === s.id ? s.color : '#f9fafb',
-                color: selectedId === s.id ? '#fff' : '#9ca3af',
-                boxShadow: '0 0 0 1px #e5e7eb',
-              }}
-            >
-              {s.icon} {s.code}
-            </button>
-          ))}
         </div>
-
-        {/* Sheet not built yet */}
-        {!sheet && stub && (
-          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.25rem', padding: '3rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{stub.icon}</div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>{stub.code} Cheat Sheet</h2>
-            <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Coming soon — being mined from {stub.code === 'SAP-C02' || stub.code === 'DOP-C02' ? '260 Pro-level' : '260'} practice questions.</p>
-            <Link to={`/cert/${stub.id}`} style={{ display: 'inline-block', padding: '0.625rem 1.25rem', background: stub.color, color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
-              Practice {stub.code} Questions →
-            </Link>
-          </div>
-        )}
 
         {/* Full sheet */}
         {sheet && (
