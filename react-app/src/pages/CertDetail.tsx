@@ -50,6 +50,24 @@ export default function CertDetail() {
   const [showPaywall, setShowPaywall] = useState(false)
   const [wrongQuestions, setWrongQuestions] = useState<Question[]>([])
 
+  // Bookmarks — persisted to localStorage per cert
+  const [bookmarks, setBookmarks] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem(`bookmarks-${certId}`)
+      return new Set(saved ? JSON.parse(saved) : [])
+    } catch { return new Set() }
+  })
+
+  const toggleBookmark = (questionText: string) => {
+    setBookmarks(prev => {
+      const next = new Set(prev)
+      if (next.has(questionText)) next.delete(questionText)
+      else next.add(questionText)
+      try { localStorage.setItem(`bookmarks-${certId}`, JSON.stringify([...next])) } catch {}
+      return next
+    })
+  }
+
   // Free tier usage (total across all certs)
   const [usedCount, setUsedCount] = useState(0)
   const [usageLoaded, setUsageLoaded] = useState(false)
@@ -111,9 +129,10 @@ export default function CertDetail() {
 
   useEffect(() => {
     if (domainFilter === 'all') setFiltered(questions)
+    else if (domainFilter === 'bookmarked') setFiltered(questions.filter(q => bookmarks.has(q.q)))
     else setFiltered(questions.filter(q => q.cat === domainFilter))
     setCurrent(0); setSelected(null); setRevealed(false)
-  }, [domainFilter, questions])
+  }, [domainFilter, questions, bookmarks])
 
   const canSwitchMonthly = () => {
     if (!monthlySelection) return true // no cert selected yet
@@ -394,6 +413,12 @@ export default function CertDetail() {
                 </button>
               )
             })}
+            {bookmarks.size > 0 && (
+              <button onClick={() => setDomainFilter('bookmarked')}
+                style={{ padding: '0.4rem 1rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 700, border: 'none', cursor: 'pointer', background: domainFilter === 'bookmarked' ? '#f59e0b' : '#fff', color: domainFilter === 'bookmarked' ? '#fff' : '#d97706', boxShadow: domainFilter === 'bookmarked' ? 'none' : '0 0 0 1px #fde68a' }}>
+                🔖 Bookmarked ({bookmarks.size})
+              </button>
+            )}
           </div>
 
           <div style={{ background: '#fff', borderRadius: '1.25rem', border: '1px solid #e5e7eb', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
@@ -401,7 +426,16 @@ export default function CertDetail() {
               <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#3b82f6', background: '#eff6ff', padding: '0.25rem 0.75rem', borderRadius: '9999px' }}>
                 {meta.domains[q.cat] || q.cat}
               </span>
-              <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600 }}>{current + 1} / {filtered.length}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <button
+                  onClick={() => toggleBookmark(q.q)}
+                  title={bookmarks.has(q.q) ? 'Remove bookmark' : 'Bookmark this question'}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1, opacity: bookmarks.has(q.q) ? 1 : 0.35, transition: 'opacity 0.15s' }}
+                >
+                  🔖
+                </button>
+                <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600 }}>{current + 1} / {filtered.length}</span>
+              </div>
             </div>
 
             <div style={{ padding: '1.75rem 1.75rem 1.25rem' }}>
