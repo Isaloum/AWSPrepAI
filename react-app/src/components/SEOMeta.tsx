@@ -134,6 +134,45 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
   },
 }
 
+// ── JSON-LD structured data ──────────────────────────────────────
+const CERT_LD: Record<string, { name: string; description: string; questions: number }> = {
+  '/cert/saa-c03': { name: 'AWS Solutions Architect Associate (SAA-C03)', description: '1,098 practice questions for the SAA-C03 exam covering resilient architecture, high performance, security, and cost optimization.', questions: 1098 },
+  '/cert/clf-c02': { name: 'AWS Cloud Practitioner (CLF-C02)', description: '260 practice questions for the CLF-C02 exam covering cloud concepts, security, technology, and billing.', questions: 260 },
+  '/cert/dva-c02': { name: 'AWS Developer Associate (DVA-C02)', description: '260 practice questions for the DVA-C02 exam covering development, deployment, security, and troubleshooting.', questions: 260 },
+  '/cert/soa-c02': { name: 'AWS SysOps Administrator Associate (SOA-C02)', description: '260 practice questions for the SOA-C02 exam.', questions: 260 },
+  '/cert/dea-c01': { name: 'AWS Data Engineer Associate (DEA-C01)', description: '260 practice questions for the DEA-C01 exam.', questions: 260 },
+  '/cert/mla-c01': { name: 'AWS Machine Learning Engineer Associate (MLA-C01)', description: '260 practice questions for the MLA-C01 exam.', questions: 260 },
+  '/cert/gai-c01': { name: 'AWS Generative AI Specialty (GAI-C01)', description: '260 practice questions for the GAI-C01 exam.', questions: 260 },
+  '/cert/sap-c02': { name: 'AWS Solutions Architect Professional (SAP-C02)', description: '260 practice questions for the SAP-C02 exam.', questions: 260 },
+  '/cert/dop-c02': { name: 'AWS DevOps Engineer Professional (DOP-C02)', description: '260 practice questions for the DOP-C02 exam.', questions: 260 },
+  '/cert/scs-c03': { name: 'AWS Security Specialty (SCS-C03)', description: '260 practice questions for the SCS-C03 exam.', questions: 260 },
+  '/cert/ans-c01': { name: 'AWS Advanced Networking Specialty (ANS-C01)', description: '260 practice questions for the ANS-C01 exam.', questions: 260 },
+  '/cert/aif-c01': { name: 'AWS AI Practitioner (AIF-C01)', description: '260 practice questions for the AIF-C01 exam.', questions: 260 },
+}
+
+const HOME_FAQ = [
+  { q: 'How many AWS certification practice questions does CertiPrepAI have?', a: 'CertiPrepAI has 3,958 practice questions covering all 12 active AWS certifications, including SAA-C03, CLF-C02, DVA-C02, and more.' },
+  { q: 'Is CertiPrepAI free to use?', a: 'Yes. You can practice 20 questions for free with no credit card required. Paid plans unlock all 3,958 questions and timed mock exams starting at $7/month.' },
+  { q: 'Does CertiPrepAI include mock exams?', a: 'Yes. Each certification includes a timed mock exam with 65 questions and a 130-minute timer, matching the real AWS exam format.' },
+  { q: 'Which AWS certifications are covered?', a: 'CertiPrepAI covers all 12 active AWS certifications: CLF-C02, AIF-C01, SAA-C03, DVA-C02, SOA-C02, DEA-C01, MLA-C01, GAI-C01, SAP-C02, DOP-C02, SCS-C03, and ANS-C01.' },
+  { q: 'How is CertiPrepAI different from other AWS practice platforms?', a: 'CertiPrepAI is built by an AWS-certified engineer. Every question includes a detailed explanation, domain filtering lets you focus on weak areas, and cheat sheets are mined directly from the question bank.' },
+]
+
+function injectJsonLd(id: string, data: object) {
+  let el = document.getElementById(id) as HTMLScriptElement | null
+  if (!el) {
+    el = document.createElement('script')
+    el.id = id
+    el.type = 'application/ld+json'
+    document.head.appendChild(el)
+  }
+  el.textContent = JSON.stringify(data)
+}
+
+function removeJsonLd(id: string) {
+  document.getElementById(id)?.remove()
+}
+
 function setMeta(name: string, content: string, attr = 'name') {
   let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null
   if (!el) {
@@ -179,6 +218,58 @@ export default function SEOMeta({ title, description, canonical }: SEOProps) {
       document.head.appendChild(canon)
     }
     canon.href = url
+
+    // JSON-LD: Website (always)
+    injectJsonLd('ld-website', {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'CertiPrepAI',
+      url: BASE,
+      description: 'AWS certification practice exams — 3,958 questions across 12 certifications.',
+    })
+
+    // JSON-LD: Home page FAQ
+    if (pathname === '/') {
+      injectJsonLd('ld-faq', {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: HOME_FAQ.map(f => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      })
+    } else {
+      removeJsonLd('ld-faq')
+    }
+
+    // JSON-LD: Cert pages — Course schema
+    const cert = CERT_LD[pathname]
+    if (cert) {
+      injectJsonLd('ld-course', {
+        '@context': 'https://schema.org',
+        '@type': 'Course',
+        name: cert.name,
+        description: cert.description,
+        provider: { '@type': 'Organization', name: 'CertiPrepAI', sameAs: BASE },
+        hasCourseInstance: {
+          '@type': 'CourseInstance',
+          courseMode: 'online',
+          instructor: { '@type': 'Person', name: 'CertiPrepAI' },
+        },
+        numberOfCredits: cert.questions,
+        url: `${BASE}${pathname}`,
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          description: '20 questions free. Full access from $7/mo.',
+        },
+      })
+    } else {
+      removeJsonLd('ld-course')
+    }
   }, [pathname, title, description, canonical])
 
   return null
