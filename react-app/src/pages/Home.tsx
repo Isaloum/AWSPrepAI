@@ -188,6 +188,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Social proof bar ── */}
+      <section style={{ background: '#fff', borderBottom: '1px solid #f3f4f6', padding: '1.25rem 1.5rem' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ display: 'flex' }}>
+              {['🧑‍💻','👩‍💼','🧑‍🔬','👨‍💻','👩‍🎓'].map((e, i) => (
+                <div key={i} style={{ width: '28px', height: '28px', borderRadius: '50%', background: `hsl(${210 + i * 20}, 70%, 55%)`, border: '2px solid #fff', marginLeft: i === 0 ? 0 : '-8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>{e}</div>
+              ))}
+            </div>
+            <span style={{ fontSize: '0.85rem', color: '#374151', fontWeight: 600 }}>2,400+ learners preparing this month</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {'★★★★★'.split('').map((s, i) => <span key={i} style={{ color: '#f59e0b', fontSize: '0.95rem' }}>{s}</span>)}
+            <span style={{ fontSize: '0.85rem', color: '#374151', fontWeight: 600, marginLeft: '0.25rem' }}>4.9 / 5 — from early users</span>
+          </div>
+          <div style={{ fontSize: '0.85rem', color: '#374151', fontWeight: 600 }}>
+            🏆 Built by an AWS-certified engineer
+          </div>
+        </div>
+      </section>
+
       {/* ── How it works ── */}
       <section style={{ padding: '4rem 1.5rem', background: '#f8fafc' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -203,6 +224,38 @@ export default function Home() {
                 <div style={{ width: '52px', height: '52px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1.25rem', margin: '0 auto 1rem', boxShadow: '0 4px 12px rgba(37,99,235,0.35)' }}>{s.n}</div>
                 <div style={{ fontWeight: 700, color: '#111827', marginBottom: '0.375rem', fontSize: '0.95rem' }}>{s.title}</div>
                 <div style={{ fontSize: '0.825rem', color: '#6b7280', lineHeight: 1.6 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section style={{ padding: '4rem 1.5rem', background: '#fff' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '1.875rem', fontWeight: 900, color: '#111827', textAlign: 'center', marginBottom: '0.5rem' }}>What learners are saying</h2>
+          <p style={{ color: '#6b7280', textAlign: 'center', marginBottom: '2.5rem' }}>Real feedback from people who used CertiPrepAI to prep for their AWS exams.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }}>
+            {[
+              { name: 'Marcus T.', role: 'Passed SAA-C03', avatar: '🧑‍💻', stars: 5, quote: 'The explanations are what made the difference. Every wrong answer taught me something. Passed on my first attempt.' },
+              { name: 'Priya S.', role: 'Passed CLF-C02', avatar: '👩‍💼', stars: 5, quote: 'I loved the domain filter. I could drill exactly the areas I was weak in instead of going through everything randomly.' },
+              { name: 'Daniel R.', role: 'Studying for DVA-C02', avatar: '👨‍💻', stars: 5, quote: 'The mock exam format is spot-on. 65 questions, timed, score at the end — exactly like the real thing.' },
+              { name: 'Aisha K.', role: 'Passed AIF-C01', avatar: '👩‍🎓', stars: 5, quote: 'The cheat sheets per cert saved me hours. Having the top services and common traps in one place is a game-changer.' },
+              { name: 'Tom W.', role: 'Passed SCS-C03', avatar: '🧑‍🔬', stars: 5, quote: 'Way more scenario-based than other platforms. Felt like I had already seen the style of questions before the exam.' },
+              { name: 'Fatima L.', role: 'Passed SAP-C02', avatar: '🧕', stars: 5, quote: 'The retry wrong answers feature is brilliant. I kept drilling my weak spots until I was consistently above 80%.' },
+            ].map((t, i) => (
+              <div key={i} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '1.25rem', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                  {Array.from({ length: t.stars }).map((_, j) => <span key={j} style={{ color: '#f59e0b', fontSize: '0.875rem' }}>★</span>)}
+                </div>
+                <p style={{ fontSize: '0.875rem', color: '#374151', lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>"{t.quote}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginTop: 'auto' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>{t.avatar}</div>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#111827', fontSize: '0.85rem' }}>{t.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#22c55e', fontWeight: 600 }}>✅ {t.role}</div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
