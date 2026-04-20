@@ -1,5 +1,5 @@
 # CertiPrepAI — Claude Context
-_Last updated: 2026-04-16_
+_Last updated: 2026-04-20_
 
 ## What this project is
 AWS certification prep SaaS. Two frontends, one backend on AWS.
@@ -59,9 +59,9 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 
 ---
 
-## Two Frontends
-1. `docs/` — Static HTML (GitHub Pages). certiprepai.com/saa-c03.html etc. 288 SAA questions.
-2. `react-app/` — Vite 8 + React → deployed via AWS Amplify. This is the main app.
+## One Frontend (migration complete April 2026)
+- `docs/` — All static HTML files deleted. Only CNAME, favicon, robots.txt, sitemap.xml remain.
+- `react-app/` — Vite 8 + React → deployed via AWS Amplify. This is the ONLY frontend.
 
 ---
 
@@ -70,13 +70,20 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 | File | Purpose |
 |------|---------|
 | `react-app/src/lib/cognito.ts` | All auth functions. Email normalization MANDATORY. |
-| `react-app/src/lib/db.ts` | DynamoDB API wrapper. Uses ACCESS token. DB_API hardcoded. |
-| `react-app/src/pages/Login.tsx` | Email normalized on input onChange |
-| `react-app/src/pages/Signup.tsx` | Email normalized on input onChange |
-| `react-app/src/pages/Dashboard.tsx` | Plan display, cancel button, cert selection. CANCEL_API hardcoded. |
+| `react-app/src/lib/db.ts` | DynamoDB API wrapper. Uses ACCESS token. DB_API hardcoded. `saveExamResult` for domain tracking. |
+| `react-app/src/pages/Login.tsx` | Email normalized on input onChange. Forgot password → /forgot-password |
+| `react-app/src/pages/Signup.tsx` | Email normalized on input onChange. Password strength indicator. |
+| `react-app/src/pages/Dashboard.tsx` | Plan display, cancel button, cert selection. Skill Radar Chart. CANCEL_API hardcoded. |
 | `react-app/src/pages/Pricing.tsx` | Calls checkout Lambda to create Stripe session |
+| `react-app/src/pages/CertDetail.tsx` | Practice mode. Bookmark questions (localStorage). Retry wrong answers. Free tier 20q gating. |
+| `react-app/src/pages/MockExam.tsx` | Timed mock exam. Saves per-domain scores via saveExamResult. |
+| `react-app/src/pages/CheatSheets.tsx` | All 12 cert cheat sheets. 5 tabs: Domains, Top Services, Choose When, Traps, Patterns. |
+| `react-app/src/pages/ForgotPassword.tsx` | 3-step forgot password flow (email → code → new password). |
+| `react-app/src/components/SEOMeta.tsx` | Per-route meta tags + JSON-LD (WebSite, FAQPage, Course schemas). |
+| `react-app/src/components/SkillRadarChart.tsx` | Radar chart using real per-domain DynamoDB scores. |
+| `react-app/src/components/EmailCapture.tsx` | Sticky bottom banner. Captures email → awsprepai-leads DynamoDB. No auth required. |
 | `aws-lambdas/cancel-subscription/index.mjs` | Cancels Stripe sub (period end). Does NOT touch Cognito plan. |
-| `aws-lambdas/awsprepai-db/index.js` | DynamoDB CRUD. Requires Cognito ACCESS token. |
+| `aws-lambdas/awsprepai-db/index.js` | DynamoDB CRUD. `capture_lead` action requires NO auth. All others require ACCESS token. |
 | `aws-lambdas/stripe-webhook/` | Handles Stripe webhook → writes plan to Cognito + DynamoDB at period end |
 
 ---
@@ -93,9 +100,10 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 | Lambda: awsprepai-db | `awsprepai-db` (behind API Gateway) |
 | IAM Role for Lambdas | `arn:aws:iam::441393059130:role/awsprepai-checkout-role` |
 | DynamoDB: users | `awsprepai-users` |
-| DynamoDB: progress | `awsprepai-progress` (user_id PK, cert_id SK) |
+| DynamoDB: progress | `awsprepai-progress` (user_id PK, cert_id SK) — stores domain_scores map |
 | DynamoDB: monthly cert | `awsprepai-monthly-cert` |
 | DynamoDB: free usage | `awsprepai-free-usage` |
+| DynamoDB: leads | `awsprepai-leads` (email PK) — email capture, no auth required |
 | API Gateway: DB | `https://dzhvi7oz29.execute-api.us-east-1.amazonaws.com` |
 | API Gateway: Cancel | `https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com` |
 
@@ -128,7 +136,7 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 ### 🟢 NICE TO HAVE
 1. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
 2. CloudFront + WAF in front of API Gateway
-3. Per-domain progress tracking (requires question-level domain tagging)
+3. Streak tracking / gamification
 
 ---
 
@@ -147,7 +155,23 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 | 9 | DB_API env var not injected | Hardcoded URL in db.ts (matches CANCEL_API pattern) |
 | 10 | Leaked AWS key `AKIAWNRITSU5EHIVIZ2I` + Stripe key | Rotated by user |
 | 11 | Tutorials Dojo/Udemy references | Removed from Comparisons, Glossary, Resources pages |
-| 12 | Question count 3,120 → 3,221 | Updated across all HTML + React files |
+| 12 | Question count 3,120 → 3,958 | Updated across all HTML + React files (SAA-C03 has 1,098) |
+
+## ✅ Built April 18–20, 2026
+
+| # | Item | Details |
+|---|------|---------|
+| 1 | Full static → React migration | All 30 HTML files deleted. docs/ is now redirect stubs only. |
+| 2 | SEO meta tags per route | SEOMeta.tsx — title, description, og:*, twitter:*, canonical on all 26 routes |
+| 3 | Forgot password page | /forgot-password — 3-step flow: email → code → new password |
+| 4 | Per-domain progress tracking | MockExam saves domain_scores → DynamoDB → Radar chart reads real scores |
+| 5 | All 12 cert cheat sheets | /cheat-sheets — 5 tabs per cert: Domains, Top Services, Choose When, Traps, Patterns |
+| 6 | Retry Wrong Answers | CertDetail results screen — red banner + retry button drills only wrong questions |
+| 7 | Bookmark questions | 🔖 button per question → localStorage → "Bookmarked" filter pill in domain bar |
+| 8 | Free tier gating fix | Removed immediate /pricing redirect — users now get 20 questions with escalating urgency UI |
+| 9 | Social proof on landing | Trust bar (avatars + rating) + 6 testimonial cards on Home.tsx |
+| 10 | JSON-LD structured data | WebSite schema everywhere, FAQPage on /, Course schema on /cert/* pages |
+| 11 | Email capture banner | Appears at 60% scroll — saves to awsprepai-leads DynamoDB — no auth required |
 
 ---
 
