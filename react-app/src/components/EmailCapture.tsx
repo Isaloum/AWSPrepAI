@@ -5,7 +5,7 @@
  */
 import { useState, useEffect } from 'react'
 
-const DB_API = 'https://dzhvi7oz29.execute-api.us-east-1.amazonaws.com'
+const DB_API = import.meta.env.VITE_DB_API || 'https://dzhvi7oz29.execute-api.us-east-1.amazonaws.com'
 const STORAGE_KEY = 'certiprepai_lead_captured'
 
 export default function EmailCapture() {

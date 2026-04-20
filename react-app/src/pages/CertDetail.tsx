@@ -4,6 +4,7 @@ import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
 import { getFreeUsage, updateFreeUsage, getMonthlyCert, setMonthlyCert, updateProgress } from '../lib/db'
+import { updateStreak } from '../lib/streak'
 
 interface Question {
   cat: string
@@ -156,6 +157,7 @@ export default function CertDetail() {
 
     setRevealed(true)
     setAnswered(a => a + 1)
+    updateStreak()
     if (selected === filtered[current].answer) setScore(s => s + 1)
     else setWrongQuestions(w => [...w, filtered[current]])
 

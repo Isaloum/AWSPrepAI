@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
+import { getStreak } from '../lib/streak'
 import { getMFAStatus, setupTOTP, verifyAndEnableTOTP, disableTOTP } from '../lib/cognito'
 import QRCode from 'qrcode'
 import SkillRadarChart from '../components/SkillRadarChart'
@@ -25,7 +26,7 @@ function buildDomainScoresMap(rows: CertProgress[]): Record<string, Record<strin
   )
 }
 
-const CANCEL_API = "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
+const CANCEL_API = import.meta.env.VITE_CANCEL_API || "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
 
 const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
   'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
@@ -67,6 +68,7 @@ const tierInfo: Record<string, { label: string; color: string; bg: string; desc:
 export default function Dashboard() {
   const { user, isFullAccess, tier, loading, signOut } = useAuth()
   const navigate = useNavigate()
+  const streak = getStreak()
   const [monthlyCert, setMonthlyCert] = useState<{ cert_id: string; selected_at: string } | null | undefined>(undefined)
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [cancelling, setCancelling] = useState(false)
@@ -185,7 +187,17 @@ export default function Dashboard() {
               {initials}
             </div>
             <div>
-              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', margin: 0 }}>Welcome back!</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', margin: 0 }}>Welcome back!</h1>
+                {streak.count > 0 && (
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: streak.count >= 7 ? '#fef3c7' : '#fff7ed', border: `1px solid ${streak.count >= 7 ? '#fde68a' : '#fed7aa'}`, borderRadius: '999px', padding: '0.2rem 0.75rem' }}>
+                    <span style={{ fontSize: '0.9rem' }}>🔥</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 800, color: streak.count >= 7 ? '#d97706' : '#ea580c' }}>
+                      {streak.count} day streak
+                    </span>
+                  </div>
+                )}
+              </div>
               <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: 0 }}>{email}</p>
             </div>
           </div>
