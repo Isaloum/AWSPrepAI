@@ -5,7 +5,6 @@
  */
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useAuth } from '../contexts/AuthContext'
 
 const DB_API = import.meta.env.VITE_DB_API_URL || import.meta.env.VITE_DB_API || 'https://dzhvi7oz29.execute-api.us-east-1.amazonaws.com'
 const STORAGE_KEY = 'certiprepai_lead_captured'
