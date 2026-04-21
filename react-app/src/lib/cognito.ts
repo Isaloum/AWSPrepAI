@@ -82,7 +82,15 @@ export async function getSession(): Promise<AuthUser | null> {
     user.getSession((err: Error | null, session: CognitoUserSession | null) => {
       if (err || !session?.isValid()) return resolve(null)
       const email = session.getIdToken().payload.email as string
-      resolve(sessionToUser(email, session))
+      // If custom:plan is missing from cached token, force a refresh to get updated attributes
+      const hasPlan = !!session.getIdToken().payload['custom:plan']
+      if (!hasPlan) {
+        user.refreshSession(session.getRefreshToken(), (_rErr: Error | null, newSession: CognitoUserSession | null) => {
+          resolve(sessionToUser(email, newSession?.isValid() ? newSession : session))
+        })
+      } else {
+        resolve(sessionToUser(email, session))
+      }
     })
   })
 }

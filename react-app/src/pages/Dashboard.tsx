@@ -574,8 +574,11 @@ export default function Dashboard() {
             ))}
             {coachLoading && (
               <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '1rem 1rem 1rem 0.25rem', padding: '0.6rem 0.9rem', color: '#93c5fd', fontSize: '0.85rem' }}>
-                  Thinking…
+                <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '1rem 1rem 1rem 0.25rem', padding: '0.6rem 0.9rem', color: '#93c5fd', fontSize: '0.85rem', display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <span style={{ animation: 'bounce 1.2s infinite', display: 'inline-block' }}>●</span>
+                  <span style={{ animation: 'bounce 1.2s 0.2s infinite', display: 'inline-block' }}>●</span>
+                  <span style={{ animation: 'bounce 1.2s 0.4s infinite', display: 'inline-block' }}>●</span>
+                  <style>{`@keyframes bounce { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }`}</style>
                 </div>
               </div>
             )}
