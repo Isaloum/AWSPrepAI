@@ -176,7 +176,11 @@ export default function Dashboard() {
         body: JSON.stringify({ message: userMsg.content, history }),
       })
       const data = await res.json()
-      setCoachMessages(prev => [...prev, { role: 'assistant', content: data.reply || 'Sorry, something went wrong.' }])
+      const reply = data.reply
+        || (res.status === 403 ? '🔒 AI Coach is exclusive to Lifetime plan users. Upgrade at certiprepai.com/pricing' : null)
+        || data.error
+        || 'Sorry, something went wrong.'
+      setCoachMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch {
       setCoachMessages(prev => [...prev, { role: 'assistant', content: 'Network error. Please try again.' }])
     }
@@ -543,8 +547,8 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* AI Coach — Lifetime users only */}
-      {tier === 'lifetime' && (
+      {/* AI Coach — visible to all logged-in users; Lambda enforces lifetime gate */}
+      {user && (
         <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', borderRadius: '1.25rem', padding: '1.75rem', marginBottom: '1.5rem', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
             <span style={{ fontSize: '1.5rem' }}>🤖</span>
