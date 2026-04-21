@@ -27,7 +27,7 @@ function buildDomainScoresMap(rows: CertProgress[]): Record<string, Record<strin
 }
 
 const CANCEL_API = import.meta.env.VITE_CANCEL_API || "https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com"
-const AI_COACH_API = import.meta.env.VITE_AI_COACH_API || "https://duueaityiglgr5qooofffsguma0swohr.lambda-url.us-east-1.on.aws"
+const AI_COACH_API = import.meta.env.VITE_AI_COACH_API || "https://hyb325gocg.execute-api.us-east-1.amazonaws.com"
 
 const CERT_META: Record<string, { name: string; code: string; icon: string }> = {
   'clf-c02': { name: 'Cloud Practitioner', code: 'CLF-C02', icon: '☁️' },
