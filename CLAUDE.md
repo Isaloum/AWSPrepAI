@@ -136,7 +136,9 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 ### 🟢 NICE TO HAVE
 1. Move hardcoded API URLs back to env vars (fix Amplify build injection first)
 2. CloudFront + WAF in front of API Gateway
-3. Streak tracking / gamification
+
+### ✅ NOT AN ISSUE
+- Stripe Link / phone verification: `payment_method_types: ['card']` already in checkout Lambda. Phone prompt = bank 3DS/SCA, not Stripe Link — cannot be disabled, correct behavior.
 
 ---
 
@@ -156,6 +158,26 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 | 10 | Leaked AWS key `AKIAWNRITSU5EHIVIZ2I` + Stripe key | Rotated by user |
 | 11 | Tutorials Dojo/Udemy references | Removed from Comparisons, Glossary, Resources pages |
 | 12 | Question count 3,120 → 3,958 | Updated across all HTML + React files (SAA-C03 has 1,098) |
+
+## ✅ Built April 21, 2026
+
+| # | Item | Details |
+|---|------|---------|
+| 1 | AI Coach Lambda | `awsprepai-ai-coach` — Node 20, claude-haiku-4-5-20251001, lifetime-only gating via Cognito |
+| 2 | AI Coach API Gateway | `https://hyb325gocg.execute-api.us-east-1.amazonaws.com` (HTTP API, POST /) |
+| 3 | AI Coach UI | Dark chat widget on Dashboard — only visible for `custom:plan = lifetime` |
+| 4 | Cognito ReadAttributes fix | Explicitly added custom:plan, custom:plan_expiry, custom:stripe_customer_id to app client |
+| 5 | Token refresh fix | `getSession()` now forces token refresh if custom:plan missing from cached token |
+| 6 | Stripe Link fix | Removed `customer_email` from checkout session — prevents Link detection |
+
+### AI Coach Notes
+- Lambda: `awsprepai-ai-coach` — uses `awsprepai-checkout-role`
+- API Gateway ID: `hyb325gocg` (hardcoded in Dashboard.tsx as `AI_COACH_API`)
+- Anthropic API key: stored as Lambda env var `ANTHROPIC_API_KEY` (rotate if exposed)
+- Lambda Function URLs blocked in this AWS account — use API Gateway instead
+- `custom:plan = lifetime` required in Cognito for access
+
+---
 
 ## ✅ Built April 18–20, 2026
 
