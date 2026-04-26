@@ -1,22 +1,21 @@
 [
   {
-    "cat": "monitoring",
-    "q": "A SysOps administrator needs to monitor EC2 instance CPU utilization and trigger an SNS notification when it exceeds 80% for 5 consecutive minutes. Which service should be configured?",
+    "cat": "monitoring-reporting",
+    "q": "A SysOps administrator must alert the operations team via email whenever an EC2 instance's CPU utilization exceeds 80% for five consecutive 1-minute periods. The alert must fire automatically without human intervention. Which configuration achieves this with the least operational overhead?",
     "options": [
-      "CloudWatch Alarms",
-      "AWS Config Rules",
-      "EventBridge",
-      "Systems Manager OpsCenter"
+      "Create a CloudWatch Alarm on the CPUUtilization metric with a threshold of 80%, a period of 60 seconds, and a datapoints-to-alarm of 5/5; configure the alarm action to publish to an SNS topic with the operations team email subscribed",
+      "Create an EventBridge rule that triggers a Lambda function every minute to call EC2 DescribeInstances and check CPU utilization, then publish to SNS if the value exceeds 80% for 5 consecutive Lambda invocations",
+      "Configure an AWS Config rule with a compliance check that evaluates CPU utilization against an 80% threshold and sends Config compliance change notifications via SNS",
+      "Use Systems Manager OpsCenter to create an OpsItem when CPU utilization is high, then configure an OpsCenter notification to send email to the operations team"
     ],
     "answer": 0,
-    "explain": "CloudWatch Alarms monitor metric thresholds and can trigger SNS notifications.",
+    "explain": "CloudWatch Alarms are the native mechanism for metric-threshold alerting. Setting CPUUtilization > 80 with Period=60 seconds and DatapointsToAlarm=5 out of 5 evaluations means the alarm only fires after 5 consecutive minutes above 80% \u2014 preventing alerts on brief spikes. The alarm action publishes directly to SNS, which emails subscribed team members without any custom code. EventBridge with Lambda adds unnecessary complexity and cost for this straightforward threshold scenario. AWS Config evaluates resource compliance against configuration rules, not performance metrics. Systems Manager OpsCenter is for operational work item management, not automated metric alerting.",
     "keywords": [
-      "AWS Config",
-      "CloudWatch",
-      "EC2",
-      "EventBridge",
+      "CloudWatch Alarms",
       "SNS",
-      "Systems Manager"
+      "EC2",
+      "CPU utilization",
+      "monitoring"
     ]
   },
   {
@@ -71,20 +70,22 @@
     ]
   },
   {
-    "cat": "monitoring",
-    "q": "A SysOps administrator needs to create a unified view of operational health across multiple AWS services. Which service aggregates this information?",
+    "cat": "monitoring-reporting",
+    "q": "A SysOps administrator wants a single dashboard that displays the health status of EC2 instances, RDS databases, ELB load balancers, and active CloudWatch Alarms in one place. Operations team members should be able to view this dashboard in the AWS console without needing to navigate to each service separately. Which service provides this consolidated operational view?",
     "options": [
-      "CloudWatch Dashboards",
-      "Systems Manager OpsCenter",
-      "AWS Health Dashboard",
-      "EventBridge"
+      "AWS Systems Manager OpsCenter, which aggregates OpsItems from multiple services into a unified operational view showing open issues, related resources, and incident history",
+      "Amazon CloudWatch Dashboards, which allow creating custom widgets displaying metrics, alarms, and logs from EC2, RDS, ELB, and other services on a single shareable console page",
+      "AWS Health Dashboard, which shows the health of AWS services globally but does not display account-specific EC2, RDS, or ELB health status",
+      "Amazon CloudWatch Service Lens, which provides end-to-end application health views for X-Ray traced microservices but does not aggregate infrastructure-level dashboards across arbitrary services"
     ],
-    "answer": 0,
-    "explain": "Systems Manager OpsCenter aggregates operational information from multiple AWS services.",
+    "answer": 1,
+    "explain": "Amazon CloudWatch Dashboards allow SysOps administrators to build custom operational views by adding widgets for metrics (EC2 CPU, RDS connections, ELB latency), alarm status, and log insights queries from any AWS service. Dashboards are shareable via console URL and can be made public for read-only team access. Systems Manager OpsCenter aggregates operational work items (OpsItems) from multiple sources for incident management, not a general-purpose metrics dashboard. AWS Health Dashboard shows the health of AWS services globally, not account-specific resource health. CloudWatch ServiceLens is specifically for X-Ray traced distributed applications, not arbitrary infrastructure monitoring.",
     "keywords": [
-      "CloudWatch",
-      "EventBridge",
-      "Systems Manager"
+      "CloudWatch Dashboards",
+      "operational visibility",
+      "EC2",
+      "RDS",
+      "monitoring"
     ]
   },
   {
@@ -119,19 +120,22 @@
     ]
   },
   {
-    "cat": "monitoring",
-    "q": "A SysOps administrator needs to set up alarm escalation to multiple teams. Which SNS feature enables this?",
+    "cat": "monitoring-reporting",
+    "q": "A SysOps administrator configures CloudWatch Alarms for a production application. When an alarm fires, the on-call engineer must receive an SMS, the database team must receive an email, and a PagerDuty webhook must be called. All three notifications must be sent simultaneously from a single SNS topic. Which SNS configuration achieves this?",
     "options": [
-      "Topic subscriptions",
-      "Message filtering",
-      "Dead-letter queues",
-      "FIFO topics"
+      "Create a single SNS FIFO topic and configure three subscriptions: one SMS endpoint for the on-call engineer, one email endpoint for the database team, and one HTTPS endpoint for the PagerDuty webhook \u2014 all subscribed to the same topic",
+      "Create a single standard SNS topic and configure three subscriptions on the topic: one for the SMS protocol to the on-call engineer's phone number, one for the email protocol to the database team's address, and one for the HTTPS protocol pointing to the PagerDuty webhook URL \u2014 SNS fans out the message to all subscriptions simultaneously",
+      "Create three separate SNS topics (one per notification type) and configure the CloudWatch Alarm to publish to all three topics in sequence when the alarm state changes",
+      "Use Amazon SES for the email notification, Amazon Pinpoint for the SMS notification, and Amazon EventBridge for the webhook call \u2014 SNS alone cannot handle multiple notification protocols simultaneously"
     ],
-    "answer": 0,
-    "explain": "Multiple SNS topic subscriptions enable routing of alarm notifications to different teams.",
+    "answer": 1,
+    "explain": "A standard Amazon SNS topic with multiple subscriptions is the correct pattern for fan-out notifications. When the CloudWatch Alarm publishes one message to the SNS topic, SNS simultaneously delivers it to all subscriptions regardless of protocol \u2014 email, SMS, HTTP/HTTPS, SQS, Lambda, or mobile push. One topic with three subscriptions is simpler and more cost-effective than three separate topics. SNS FIFO topics preserve ordering and deduplication but are designed for exactly-once processing with SQS FIFO subscribers, not for multi-protocol fan-out \u2014 FIFO topics do not support email or SMS subscriptions. Three separate topics require the CloudWatch Alarm to be configured with three separate action ARNs and create unnecessary management overhead.",
     "keywords": [
       "SNS",
-      "dead-letter queue"
+      "topic subscriptions",
+      "fan-out",
+      "CloudWatch Alarms",
+      "notifications"
     ]
   },
   {
@@ -154,38 +158,41 @@
     ]
   },
   {
-    "cat": "monitoring",
-    "q": "A SysOps administrator needs to track all IAM actions for compliance. Which service logs these activities?",
+    "cat": "security",
+    "q": "A SysOps administrator must ensure that all AWS API calls made by IAM users, roles, and services \u2014 including console logins, EC2 instance launches, and S3 bucket policy changes \u2014 are recorded for compliance auditing. Logs must be retained for 7 years and stored in a centralized, tamper-resistant location. Which service records these events and what configuration is required?",
     "options": [
-      "CloudWatch Logs",
-      "CloudTrail",
-      "AWS Config",
-      "EventBridge"
+      "Enable Amazon CloudWatch Logs on each EC2 instance using the CloudWatch agent, which captures application-level events; configure log retention to 7 years using a log group retention policy",
+      "Enable AWS CloudTrail with a multi-region trail that delivers logs to a dedicated S3 bucket with Object Lock in compliance mode configured for 7-year retention; enable CloudTrail log file integrity validation to detect tampering",
+      "Enable AWS Config to record all configuration changes; Config records resource state snapshots at each change, providing a compliance history for all AWS API calls made against tracked resource types",
+      "Enable Amazon GuardDuty, which monitors CloudTrail events, VPC Flow Logs, and DNS logs for suspicious activity; GuardDuty findings retain the associated API call details for compliance auditing purposes"
     ],
-    "answer": 0,
-    "explain": "CloudTrail logs all API calls including IAM actions for audit and compliance purposes.",
+    "answer": 1,
+    "explain": "AWS CloudTrail is the purpose-built service for recording AWS API calls from all sources: IAM users, roles, the AWS console, CLI, SDK, and AWS services acting on your behalf. A multi-region trail ensures that API calls in all regions (including global services like IAM) are captured. Delivering logs to S3 with Object Lock in compliance mode prevents deletion or modification before the 7-year retention period expires. Log file integrity validation (SHA-256 digest files) allows detecting any tampering with the log files. CloudWatch Logs records application-level events from EC2 workloads, not AWS API calls made to the control plane. AWS Config records resource configuration state, not the API calls themselves. GuardDuty analyzes events for threat detection, not for compliance audit logging.",
     "keywords": [
-      "AWS Config",
       "CloudTrail",
-      "CloudWatch",
-      "EventBridge",
-      "IAM",
-      "compliance"
+      "S3 Object Lock",
+      "compliance",
+      "audit logging",
+      "IAM"
     ]
   },
   {
-    "cat": "monitoring",
-    "q": "A SysOps administrator is optimizing AWS infrastructure. What should be considered?",
+    "cat": "reliability",
+    "q": "A SysOps administrator is reviewing an AWS architecture for a new production workload that must handle 10,000 concurrent users and cannot tolerate more than 4 hours of downtime per year (99.95% uptime). The initial design uses a single EC2 instance in one Availability Zone. Which architectural improvement most directly addresses the uptime requirement?",
     "options": [
-      "Cost efficiency",
-      "Performance",
-      "Security",
-      "All factors"
+      "Upgrade the single EC2 instance to a larger instance type (e.g., from t3.medium to m5.2xlarge) to reduce the probability of performance-related failures that cause downtime",
+      "Enable EC2 termination protection on the single instance to prevent accidental termination, which is the most common cause of unexpected downtime in production EC2 workloads",
+      "Deploy at least two EC2 instances across two Availability Zones behind an Application Load Balancer with health checks; configure Auto Scaling with a minimum capacity of 2 to replace unhealthy instances automatically \u2014 this eliminates the AZ-level single point of failure",
+      "Enable AWS Backup for the EC2 instance with daily snapshots so that in case of instance failure the previous day's snapshot can be restored within the 4-hour downtime budget"
     ],
-    "answer": 0,
-    "explain": "AWS solutions should balance cost, performance, and security requirements.",
+    "answer": 2,
+    "explain": "A 99.95% uptime SLA allows only ~4.4 hours of downtime per year. A single EC2 instance in one AZ is a single point of failure \u2014 any instance failure, scheduled maintenance requiring stop/restart, or AZ disruption causes downtime. Deploying two instances across two AZs behind an ALB eliminates the single point of failure: if one AZ or instance becomes unhealthy, the ALB routes all traffic to the healthy instance within seconds (well within any reasonable RTO). Auto Scaling ensures a replacement instance launches automatically when one is terminated. Upgrading instance size reduces performance-related failures but does not prevent hardware failure, OS crashes, or AZ-level disruptions. Termination protection prevents manual API deletions but not system failures. Daily backup restoration typically takes 30-60 minutes (replacing instance, restoring snapshot, DNS failover) and still violates the 4-hour budget for frequent failures.",
     "keywords": [
-      "monitoring"
+      "Multi-AZ",
+      "Auto Scaling",
+      "ALB",
+      "high availability",
+      "reliability"
     ]
   },
   {

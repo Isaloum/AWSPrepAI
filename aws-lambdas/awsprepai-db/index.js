@@ -154,6 +154,23 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true }) };
     }
 
+    // ── Bundle cert selection ──────────────────────────────────────
+    if (action === 'get_bundle_certs') {
+      const res = await dynamo.send(new GetCommand({ TableName: 'awsprepai-bundle-certs', Key: { user_id: userId } }));
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ data: res.Item || null }) };
+    }
+
+    if (action === 'set_bundle_certs') {
+      if (!Array.isArray(data.cert_ids) || data.cert_ids.length !== 3) {
+        return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Exactly 3 cert_ids required' }) };
+      }
+      await dynamo.send(new PutCommand({
+        TableName: 'awsprepai-bundle-certs',
+        Item: { user_id: userId, cert_ids: data.cert_ids, selected_at: new Date().toISOString() },
+      }));
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true }) };
+    }
+
     // Legacy: single-question update (keep for backward compat)
     if (action === 'update_progress') {
       const { cert_id, correct } = data;

@@ -3,7 +3,7 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer needs to process real-time clickstream data with sub-second latency. Which AWS service is best suited for this use case?",
     "options": [
-      "AWS Batch",
+      "AWS Batch for scheduled batch workloads without sub-second latency requirements",
       "AWS Glue Spark Jobs",
       "Amazon Kinesis Data Streams",
       "Amazon S3 event notifications"
@@ -29,7 +29,7 @@
       "10 DPU"
     ],
     "answer": 1,
-    "explain": "Glue supports G.1X (0.0625 DPU) and G.2X (1 DPU) worker types.",
+    "explain": "AWS Glue supports G.025X (0.0625 DPU minimum for Python shells), G.1X, and G.2X worker types. For standard Spark batch jobs, 0.5 DPU is the minimum spark job allocation. Choosing the correct DPU size prevents paying for idle compute while ensuring sufficient memory for the dataset size.",
     "keywords": [
       "AWS Batch",
       "AWS Glue",
@@ -41,13 +41,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer implements CDC from Oracle to S3. What is the primary challenge?",
     "options": [
-      "Storage",
-      "Cost",
-      "Network speed",
+      "Raw S3 storage cost, which is negligible compared to the operational overhead",
+      "Licensing cost for third-party CDC tools, which dominates the total cost of ownership",
+      "Network bandwidth between the Glue workers and the S3 source bucket",
       "Handling schema changes and late arrivals"
     ],
     "answer": 3,
-    "explain": "CDC must handle evolving schemas and out-of-order changes.",
+    "explain": "CDC from relational databases must handle schema evolution (column additions, type changes) and out-of-order change events that arrive due to network delays. AWS DMS handles these with LOB support and transformation rules. Failing to account for schema drift causes pipeline failures when the source schema changes without notice.",
     "keywords": [
       "ETL",
       "S3",
@@ -58,13 +58,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer processes multi-format data sources. What Glue capability helps abstract differences?",
     "options": [
-      "No capability",
-      "Crawlers only",
+      "AWS Glue does not support this transformation pattern natively",
+      "Use only Glue Crawlers for schema detection without registering tables in the Data Catalog",
       "DynamicFrames",
       "Catalogs only"
     ],
     "answer": 3,
-    "explain": "DynamicFrames handle schema-on-read for multiple formats.",
+    "explain": "Glue DynamicFrames use schema-on-read, inferring the schema at runtime from diverse file formats (JSON, CSV, Parquet, ORC, Avro) without requiring a pre-defined catalog schema. This is essential for processing data from heterogeneous sources where schema consistency cannot be guaranteed upstream.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -76,12 +76,12 @@
     "q": "A data engineer handles late-arriving data in streaming. What windowing approach is appropriate?",
     "options": [
       "Tumbling windows only",
-      "No handling",
-      "No windows",
+      "Process all events without any deduplication and accept duplicate records in results",
+      "Process all events as an unbounded stream without any time-based grouping or aggregation",
       "Windows with allowed lateness"
     ],
     "answer": 0,
-    "explain": "Configurable lateness thresholds handle out-of-order events safely.",
+    "explain": "Tumbling windows with configurable lateness thresholds allow streaming engines (Kinesis Data Analytics, Flink) to wait a defined period for late-arriving events before finalizing window computations. Watermarks track event-time progress, and the lateness threshold determines how far behind the watermark an event can arrive and still be included in the window.",
     "keywords": [
       "ETL",
       "data ingestion",
@@ -110,13 +110,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer implements deduplication in streaming. What state mechanism is needed?",
     "options": [
-      "Memory only",
+      "Maintain the deduplication state only in Lambda in-memory dictionaries within each function instance",
       "Distributed cache tracking record IDs",
-      "Single server",
-      "No state"
+      "Use a single EC2 instance as the Kinesis consumer to simplify operational management",
+      "Stateless processing without any record ID tracking across distributed workers"
     ],
     "answer": 1,
-    "explain": "Distributed state stores enable deduplication at scale.",
+    "explain": "Distributed state stores (DynamoDB with TTL, Apache Flink's managed state, or Redis) enable deduplication across multiple parallel streaming consumers by providing a shared, consistent view of seen record IDs. In-memory deduplication within a single consumer fails when the stream is partitioned across multiple workers that each see only a subset of records.",
     "keywords": [
       "ETL",
       "data ingestion",
@@ -128,13 +128,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer processes IoT data with high cardinality. What Kinesis feature helps?",
     "options": [
-      "Batch size",
+      "Batch size is the only optimization lever for Lambda processing of DynamoDB Streams events",
       "Retention period",
       "Enhanced fan-out",
-      "Resharding"
+      "Resharding Kinesis shards every hour based on traffic patterns provides sufficient scaling"
     ],
     "answer": 1,
-    "explain": "Enhanced fan-out handles high-cardinality consumer patterns.",
+    "explain": "Kinesis enhanced fan-out provides each registered consumer its own dedicated 2 MB/s read throughput per shard, enabling high-cardinality consumer patterns where many independent consumers process the same stream simultaneously without competing for the shared 2 MB/s per-shard standard limit. This is critical for IoT platforms where many downstream services consume the same telemetry stream.",
     "keywords": [
       "AWS Batch",
       "ETL",
@@ -149,12 +149,12 @@
     "q": "A data engineer needs to validate data during transformation. What Glue feature helps?",
     "options": [
       "Data Quality rules",
-      "No validation",
-      "Crawlers only",
-      "Manual checks"
+      "Skip all data quality checks to maximize pipeline throughput and minimize latency",
+      "Use only Glue Crawlers for schema detection without registering tables in the Data Catalog",
+      "Perform data quality checks manually by reviewing S3 file samples after each pipeline run"
     ],
     "answer": 0,
-    "explain": "Glue Data Quality provides rule-based validation.",
+    "explain": "AWS Glue Data Quality provides a rule-based framework for defining data quality constraints (completeness, uniqueness, referential integrity, value ranges) that execute as part of the Glue ETL job. Rules can fail the job, write results to S3, or emit CloudWatch metrics, enabling automated data validation without writing custom validation code.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -192,7 +192,7 @@
       "EC2 instances"
     ],
     "answer": 0,
-    "explain": "Step Functions orchestrates complex workflows with built-in error handling.",
+    "explain": "AWS Step Functions orchestrates complex multi-step ETL pipelines with built-in retry logic, error catching, parallel execution, and conditional branching. Unlike Lambda chaining (which loses state between steps), Step Functions persists execution state and provides full audit history of every step transition, making debugging failed pipelines significantly easier.",
     "keywords": [
       "CloudWatch",
       "EC2",
@@ -208,11 +208,11 @@
     "options": [
       "Real-time streaming",
       "Directed acyclic graph (DAG) scheduling with dependency management",
-      "No advantage",
-      "Cost savings"
+      "Columnar formats provide no query performance improvement over row-based storage in S3",
+      "Cost savings is the primary reason to implement row-level security in Lake Formation"
     ],
     "answer": 1,
-    "explain": "Airflow DAGs express complex dependencies and enable dynamic generation.",
+    "explain": "Apache Airflow DAGs (Directed Acyclic Graphs) express complex task dependencies, support conditional execution paths, and can be generated dynamically using Python code. MWAA (Managed Workflows for Apache Airflow) adds the operational benefits of a managed service \u2014 scaling, patching, and high availability \u2014 while preserving Airflow's full feature set for complex scheduling requirements.",
     "keywords": [
       "data operations",
       "monitoring",
@@ -229,7 +229,7 @@
       "EventBridge to trigger Lambda/Step Functions on S3 or source events"
     ],
     "answer": 3,
-    "explain": "EventBridge routes events to appropriate targets.",
+    "explain": "Amazon EventBridge provides a serverless event bus that routes events to targets (Lambda, Step Functions, SQS, SNS) based on rule patterns matching event content. For event-driven data architectures, EventBridge decouples producers from consumers, allowing multiple downstream pipelines to react to source events independently without tight coupling between services.",
     "keywords": [
       "EventBridge",
       "Lambda",
@@ -265,11 +265,11 @@
     "options": [
       "Polling every minute",
       "S3 event notifications to SQS/SNS or EventBridge",
-      "Manual trigger",
+      "Trigger all Glue jobs manually from the AWS console based on a fixed daily schedule",
       "Scheduled jobs always"
     ],
     "answer": 1,
-    "explain": "S3 event notifications enable immediate execution.",
+    "explain": "S3 event notifications (delivered to SQS, SNS, or Lambda, or via EventBridge) trigger pipeline execution within seconds of data landing in S3. This eliminates polling delays and wasted compute cycles inherent in scheduled pipeline approaches, enabling near-real-time processing for data that arrives at unpredictable intervals.",
     "keywords": [
       "EventBridge",
       "S3",
@@ -284,12 +284,12 @@
     "q": "A data engineer implements data quality checks in a pipeline. Where should checks be placed?",
     "options": [
       "At the end only",
-      "Never",
+      "Avoid all validation checks in production pipelines to maximize throughput",
       "At each transformation stage with alerting",
-      "Randomly"
+      "Insert validation checkpoints at random pipeline stages based on traffic load"
     ],
     "answer": 2,
-    "explain": "Stage-level checks prevent bad data propagation.",
+    "explain": "Implementing data quality checks at each transformation stage (not just at the end) catches errors closest to where they are introduced, reducing the cost of correction. A record with a null required field caught at ingestion requires simple rejection; the same error discovered after 6 downstream transformations requires expensive root-cause investigation and reprocessing.",
     "keywords": [
       "data operations",
       "data quality",
@@ -321,12 +321,12 @@
     "q": "A data engineer creates CloudWatch alarms for pipelines. What threshold is appropriate?",
     "options": [
       "SLA-based thresholds with owner notifications",
-      "No alarms",
+      "Avoid setting any CloudWatch alarms and rely on manual log inspection for issues",
       "Random thresholds",
       "High thresholds only"
     ],
     "answer": 0,
-    "explain": "SLA-based thresholds ensure timely alerts.",
+    "explain": "SLA-based CloudWatch alarm thresholds \u2014 defined based on the maximum acceptable data latency or error rate agreed in the service-level agreement \u2014 ensure that alerts fire when the pipeline is at risk of breaching commitments. Static thresholds (e.g., alert at 100 errors) are less effective because they do not account for normal traffic variance that would make 100 errors acceptable at high volume but critical at low volume.",
     "keywords": [
       "CloudWatch",
       "data operations",
@@ -340,10 +340,10 @@
       "Full reload daily",
       "Maintain last-processed timestamp or sequence number",
       "Manual tracking",
-      "No tracking"
+      "Execute full table scans on every pipeline run without maintaining any state"
     ],
     "answer": 1,
-    "explain": "Last-processed markers enable efficient incremental loads.",
+    "explain": "Maintaining a last-processed timestamp or sequence number (stored in DynamoDB, S3, or the source system's checkpoint table) enables incremental data loads that read only new or modified records since the previous run. Without this marker, pipelines must perform full scans of the source system on every execution \u2014 O(n) cost per run instead of O(delta).",
     "keywords": [
       "data operations",
       "monitoring"
@@ -376,10 +376,10 @@
       "SNS/SQS integration with Step Functions for alerts",
       "No notifications",
       "Manual checks only",
-      "Email polling"
+      "Poll an email inbox to receive notification of pipeline failures rather than SNS"
     ],
     "answer": 0,
-    "explain": "SNS notifications provide immediate alerting.",
+    "explain": "Integrating SNS or SQS into Step Functions error-handling states enables automated pipeline failure notifications to on-call engineers, PagerDuty, or ticketing systems without building custom alerting logic. Step Functions' Catch states can send the error details and execution ARN directly to an SNS topic, which fans out to multiple subscribers.",
     "keywords": [
       "SNS",
       "SQS",
@@ -413,12 +413,12 @@
     "q": "What is the best practice for handling slowly changing dimensions in pipelines?",
     "options": [
       "Implement SCD Type 2 with version and effective dates",
-      "Ignore changes",
+      "Ignore schema changes at the source and let them cause pipeline failures for detection",
       "Overwrite daily",
-      "Full refresh"
+      "Perform a complete data refresh on every pipeline run to avoid incremental tracking complexity"
     ],
     "answer": 0,
-    "explain": "SCD Type 2 preserves history.",
+    "explain": "SCD Type 2 (Slowly Changing Dimension Type 2) adds a new row for each change, preserving the complete history of dimension changes. Each row includes valid_from and valid_to effective dates and a current_flag, allowing queries to retrieve the dimension value as of any historical date. This is essential for analytical queries that need point-in-time accuracy (e.g., 'what was the customer's plan tier when they made this purchase?').",
     "keywords": [
       "data operations",
       "monitoring"
@@ -429,12 +429,12 @@
     "q": "A data engineer implements encryption for data lakes. What is the recommended approach?",
     "options": [
       "Application-level encryption",
-      "No encryption",
+      "Store all data lake objects in plaintext and rely on IAM access control exclusively",
       "Encryption at rest only",
       "S3 KMS encryption at rest + TLS for transit"
     ],
     "answer": 3,
-    "explain": "Dual-layer encryption provides comprehensive protection.",
+    "explain": "Dual-layer encryption \u2014 S3 KMS SSE-S3 or SSE-KMS for data at rest combined with TLS (HTTPS) for data in transit \u2014 provides comprehensive protection against two distinct threat vectors. Encryption at rest protects against unauthorized access to S3 objects (if bucket permissions are misconfigured or physical media is compromised). TLS in transit protects against man-in-the-middle interception during data transfer.",
     "keywords": [
       "IAM",
       "KMS",
@@ -449,12 +449,12 @@
     "q": "A data engineer implements column-level security in Lake Formation. What is a use case?",
     "options": [
       "Performance optimization",
-      "Cost reduction",
+      "Cost reduction is the sole motivation for using Glue DynamicFrames over DataFrames",
       "Protect entire datasets",
       "Hide PII columns from non-authorized users while showing other data"
     ],
     "answer": 3,
-    "explain": "Column-level security hides sensitive columns.",
+    "explain": "AWS Lake Formation column-level security allows data lake administrators to grant column-specific access within a table, hiding sensitive columns (SSN, salary, medical record IDs) from users who have access to other columns in the same table. Without column-level security, granting access to a table exposes all columns, forcing teams to create separate views or tables to enforce column-level access control.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -468,13 +468,13 @@
     "cat": "data-security-governance",
     "q": "How should a data engineer handle data governance in multi-team environments?",
     "options": [
-      "No governance",
-      "No controls",
+      "Allow all teams unrestricted access to all data lake assets without any policies",
+      "Skip governance controls to reduce pipeline complexity and improve development velocity",
       "Manual spreadsheets",
       "Lake Formation resource-based permissions with data lake administration"
     ],
     "answer": 3,
-    "explain": "Lake Formation resource permissions enable team ownership.",
+    "explain": "AWS Lake Formation resource-based permissions provide centralized, team-level access control for data lake assets (databases, tables, columns, rows). Administrators grant data lake permissions to IAM roles, which each team uses \u2014 simplifying access management compared to S3 bucket policies that require coordinating access at the object level across all team members.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -487,13 +487,13 @@
     "cat": "data-security-governance",
     "q": "A data engineer implements row-level security in Lake Formation. What is a scenario?",
     "options": [
-      "Hide columns",
-      "Encrypt data",
+      "Use database views in Redshift to hide columns rather than Lake Formation policies",
+      "Encrypting all data solves the row-level security requirement without database-level policies",
       "Sales reps see only their region's data rows",
-      "No use case"
+      "This pattern has no valid application in AWS data engineering architectures"
     ],
     "answer": 2,
-    "explain": "Row-level filters restrict data visibility.",
+    "explain": "Row-level security in Lake Formation uses data filter expressions that restrict which rows a given IAM role can query. For example, a regional sales representative's IAM role has a data filter restricting their Athena queries to rows where region = 'West', preventing them from seeing data for other regions even in tables they have full column access to.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -507,13 +507,13 @@
     "cat": "data-security-governance",
     "q": "A data engineer implements data masking for PII. What approach is recommended?",
     "options": [
-      "No masking",
+      "Store all sensitive fields in plaintext and restrict access via IAM policies alone",
       "Use Glue Data Quality or custom transforms to mask sensitive values",
-      "Delete PII",
+      "Delete all PII-containing records before processing rather than masking or transforming them",
       "Move to separate storage"
     ],
     "answer": 1,
-    "explain": "Masking preserves utility while hiding information.",
+    "explain": "Data masking in AWS Glue uses custom transformations or Data Quality rules to replace sensitive field values with masked representations (hash, asterisks, format-preserving encryption) before writing to the target. Masking at ingestion ensures that sensitive values are never stored in plaintext in the data lake, where downstream access controls may be less rigorous than at the source.",
     "keywords": [
       "AWS Glue",
       "IAM",
@@ -527,13 +527,13 @@
     "cat": "data-security-governance",
     "q": "How should a data engineer implement least privilege in data pipelines?",
     "options": [
-      "Public access",
+      "Enable public S3 bucket access for the data lake to simplify cross-team data sharing",
       "IAM roles with minimum required permissions; Lake Formation resource-level policies",
       "Grant admin access to all",
       "No access controls"
     ],
     "answer": 1,
-    "explain": "Least privilege limits blast radius.",
+    "explain": "Least privilege in data pipelines means granting each IAM role only the specific S3 prefix, Glue database, Redshift schema, or DynamoDB table it needs \u2014 not broad wildcard permissions. Combined with Lake Formation resource-level policies, least privilege limits the blast radius of a compromised role to only the data it was authorized to access, preventing lateral movement across the data lake.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -546,12 +546,12 @@
     "q": "A data engineer processes medical records. What Glue capability enables sensitivity handling?",
     "options": [
       "Encryption only",
-      "Sampling",
-      "Logging",
+      "Random data sampling to identify approximate PII patterns without full-dataset scans",
+      "Column encryption at rest using KMS without any detection or classification step",
       "Data Quality for PII detection"
     ],
     "answer": 3,
-    "explain": "Data Quality rules detect and handle PII patterns.",
+    "explain": "AWS Glue Data Quality rules can detect PII patterns using regular expressions (SSN format, email patterns, phone number formats) and apply transformations (masking, hashing, removal) when PII is detected. This provides an automated, auditable PII handling mechanism within the ETL pipeline, reducing the risk of PII propagating to downstream analytical stores where access controls are less strict.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -565,13 +565,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer needs real-time order processing. What architecture pattern is optimal?",
     "options": [
-      "Scheduled jobs",
+      "Use scheduled Glue jobs running every hour to approximate near-real-time processing",
       "Event-driven Kinesis to Lambda to DynamoDB",
-      "Batch nightly",
+      "Batch all real-time events and process them in a nightly Glue ETL job",
       "Manual processing"
     ],
     "answer": 3,
-    "explain": "Event-driven enables sub-second order processing.",
+    "explain": "Event-driven architecture using EventBridge \u2192 Lambda \u2192 DynamoDB enables sub-second order processing by eliminating polling delays. Each order event triggers an immediate Lambda invocation, which processes the order and updates DynamoDB atomically. Manual processing requires human intervention for each order and does not scale to high-volume e-commerce workloads.",
     "keywords": [
       "AWS Batch",
       "DynamoDB",
@@ -586,12 +586,12 @@
     "q": "A data engineer implements SLA monitoring. What metric defines data freshness SLA?",
     "options": [
       "Maximum acceptable time lag between source update and analytics readiness",
-      "Query count",
+      "Track the number of Athena queries executed as the primary cost control metric",
       "Error rate only",
-      "Storage size"
+      "Storage size consumed is the primary metric for evaluating Glue DPU utilization"
     ],
     "answer": 2,
-    "explain": "SLA defines the maximum tolerable delay for data availability.",
+    "explain": "Data freshness SLAs define the maximum acceptable delay between data creation at the source and its availability in the target analytical system. Tracking this metric (typically measured as event_time \u2192 landing_time lag) enables proactive alerting before the SLA is breached. Error rate alone does not capture freshness degradation \u2014 a pipeline can have zero errors while running hours behind schedule.",
     "keywords": [
       "data operations",
       "monitoring"
@@ -604,10 +604,10 @@
       "Use maximum DPU always",
       "Minimize DPU",
       "Rightsize DPU allocation based on execution profiles",
-      "Ignore cost"
+      "Provision maximum DPU for all Glue jobs and optimize cost as a post-launch activity"
     ],
     "answer": 1,
-    "explain": "DPU sizing directly impacts job duration and cost.",
+    "explain": "DPU sizing is the primary cost lever for AWS Glue jobs because each DPU (4 vCPU, 16 GB RAM) is billed per second. An over-provisioned job (16 DPU where 4 suffice) costs 4x more than necessary. Profiling job CPU and memory utilization via Glue job metrics identifies whether the job is compute-bound or I/O-bound, guiding DPU reduction.",
     "keywords": [
       "AWS Glue",
       "data operations",
@@ -620,11 +620,11 @@
     "options": [
       "Increase throughput",
       "Performance",
-      "No purpose",
+      "Serves no practical use case beyond what existing services already provide",
       "Prevent cascading failures by stopping requests to unhealthy systems"
     ],
     "answer": 1,
-    "explain": "Circuit breakers protect downstream systems from overload.",
+    "explain": "Circuit breakers in data pipelines prevent a failing downstream system from causing the entire pipeline to back up. When the failure rate to a downstream component exceeds a threshold, the circuit opens \u2014 the pipeline stops attempting delivery to that component and instead routes to a dead-letter queue or fallback sink. This prevents overwhelming a recovering service with retried requests.",
     "keywords": [
       "data operations",
       "monitoring"
@@ -634,13 +634,13 @@
     "cat": "data-security-governance",
     "q": "A data engineer implements column masking in Athena. What configuration is required?",
     "options": [
-      "No masking",
+      "Store all sensitive fields in plaintext and restrict access via IAM policies alone",
       "Application logic",
-      "Manual queries",
+      "Run manual Athena queries against column-level metadata to verify masking configuration",
       "Lake Formation column-level security with Athena integration"
     ],
     "answer": 1,
-    "explain": "Lake Formation controls which columns are visible in Athena queries.",
+    "explain": "AWS Lake Formation column-level security controls which Athena columns are visible to each IAM role. When an analyst queries a table through Athena, Lake Formation intercepts the query and rewrites it to exclude restricted columns. This works transparently without requiring Athena view creation, and it is enforced regardless of how the table is queried (Athena console, JDBC, API).",
     "keywords": [
       "Athena",
       "IAM",
@@ -654,13 +654,13 @@
     "cat": "data-security-governance",
     "q": "A data engineer implements Lake Formation table permissions. What is the benefit?",
     "options": [
-      "No benefit",
-      "Cost saving",
+      "Provides no measurable advantage over manual configuration management approaches",
+      "Cost reduction is the primary benefit of cross-account Lake Formation data sharing",
       "Performance",
       "Centralized table-level access control superseding S3 bucket policies"
     ],
     "answer": 2,
-    "explain": "Lake Formation permissions override S3 policies.",
+    "explain": "AWS Lake Formation table permissions supersede S3 bucket policies for services that integrate with Lake Formation (Athena, Redshift Spectrum, EMR with LF integration). This means access control is defined once at the table level and applies across all query engines, eliminating the need to synchronize S3 bucket policies, Redshift cluster policies, and Athena workgroup policies separately.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -676,10 +676,10 @@
       "String operations",
       "Glue DynamicFrame with flatten/explode operations",
       "Manual parsing",
-      "CSV conversion"
+      "Convert nested JSON to CSV first using a Lambda pre-processor before Glue ingestion"
     ],
     "answer": 2,
-    "explain": "DynamicFrames handle nested structures with built-in flattening.",
+    "explain": "AWS Glue DynamicFrames handle nested JSON structures using the Relationalize transform, which automatically flattens nested objects and explodes arrays into separate DataFrames. Manual JSON parsing in Python requires writing recursive logic for each unique nested schema \u2014 error-prone and unmaintainable when the source schema evolves.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -690,13 +690,13 @@
     "cat": "data-ingestion-transformation",
     "q": "What is the recommended approach for data validation in streaming pipelines?",
     "options": [
-      "Manual checks",
+      "Perform data quality checks manually by reviewing S3 file samples after each pipeline run",
       "Schema validation at ingestion with metrics tracking failures",
       "Post-processing only",
-      "No validation"
+      "Skip all data quality checks to maximize pipeline throughput and minimize latency"
     ],
     "answer": 2,
-    "explain": "Early validation prevents bad data propagation.",
+    "explain": "Validating data at ingestion \u2014 before it enters the streaming pipeline \u2014 catches malformed records, type mismatches, and schema violations closest to the source, where they are cheapest to remediate. Post-processing validation allows bad data to propagate through the pipeline and potentially contaminate downstream aggregations or trigger silent errors in consumer applications.",
     "keywords": [
       "ETL",
       "data ingestion",
@@ -713,7 +713,7 @@
       "Increase timeout to max"
     ],
     "answer": 1,
-    "explain": "Cold start optimization is critical for latency-sensitive pipelines.",
+    "explain": "Lambda cold starts (initialization of execution environment, loading dependencies) add 300ms-2s of latency on the first invocation of each new container instance. For latency-sensitive data pipelines, cold start optimization through provisioned concurrency (pre-warming containers), packaging minimization (reducing init time), and global-scope initialization (loading SDK clients outside the handler) is critical for meeting SLA requirements.",
     "keywords": [
       "ETL",
       "Lambda",
@@ -732,7 +732,7 @@
       "Parquet with Snappy compression"
     ],
     "answer": 0,
-    "explain": "Parquet provides both compression and columnar benefits.",
+    "explain": "Apache Parquet combines columnar storage (read only the columns needed for a query) with efficient compression codecs (Snappy, Gzip, Zstd) to deliver both reduced storage cost and faster Athena query performance. JSON stores complete row data, requiring full row scans even for single-column queries. Parquet also enables partition pruning and predicate pushdown, further reducing data scanned.",
     "keywords": [
       "Parquet",
       "S3",
@@ -746,10 +746,10 @@
       "No row-level security",
       "VPD (Virtual Private Database) or stored procedures with row filtering",
       "S3 only",
-      "No options"
+      "There are no valid AWS-native solutions for this data processing scenario"
     ],
     "answer": 2,
-    "explain": "Database-native features enforce row-level security at query time.",
+    "explain": "Row-level security in databases like RDS for PostgreSQL is implemented using native database features \u2014 Row-Level Security (RLS) policies in PostgreSQL, Virtual Private Database (VPD) in Oracle, or stored procedure wrappers in MySQL. These mechanisms enforce row access based on the database session context, ensuring consistent access control regardless of how the application queries the database.",
     "keywords": [
       "IAM",
       "RDS",
@@ -765,11 +765,11 @@
     "options": [
       "No deduplication",
       "Enhanced Fan-Out",
-      "Batch grouping",
+      "Group all streaming events into daily batches before writing to the target data store",
       "Deduplication ID in record key"
     ],
     "answer": 3,
-    "explain": "Kinesis tracks record deduplication IDs per stream.",
+    "explain": "Kinesis uses partition keys to route records from the same sensor to the same shard, enabling deduplication within that shard's consumer using a record ID map. A partition key combining sensor_id and time_bucket ensures all retransmissions of the same reading go to the same shard and consumer instance, where the deduplication map is maintained in memory with a TTL matching the retransmission window.",
     "keywords": [
       "AWS Batch",
       "ETL",
@@ -786,10 +786,10 @@
       "Adaptive scaling with enhanced fan-out",
       "No adaptation",
       "Manual resharding",
-      "Fixed shards"
+      "Keep the Kinesis shard count fixed and accept throughput exceptions during traffic peaks"
     ],
     "answer": 1,
-    "explain": "Adaptive scaling handles rate variability.",
+    "explain": "Amazon Kinesis Data Streams On-Demand mode automatically scales shard capacity in response to traffic changes without manual shard management or UpdateShardCount API calls. This eliminates the need to predict peak traffic and provision shards in advance \u2014 the stream handles variable-rate workloads like live event streaming or seasonal traffic spikes without engineering intervention.",
     "keywords": [
       "ETL",
       "Kinesis",
@@ -802,13 +802,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer masks sensitive fields during ingestion. What approach?",
     "options": [
-      "Manual",
+      "Manually inspect each record for schema compliance before writing to the target",
       "Glue Data Quality patterns at ingestion",
       "Post-processing",
       "No masking"
     ],
     "answer": 3,
-    "explain": "Data Quality rules mask at ingestion.",
+    "explain": "Applying data masking at ingestion using Glue transformation rules or Lambda preprocessing ensures that sensitive field values (credit card numbers, SSNs, medical record IDs) are never stored in plaintext in the data lake. Masking post-ingestion leaves a window where unmasked data is accessible in raw storage, which may violate regulatory requirements for data at rest.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -823,11 +823,11 @@
     "options": [
       "Custom classifiers with pattern definitions",
       "No classification",
-      "Manual review",
-      "Use defaults"
+      "Manually review each data record for PII before allowing it to enter the pipeline",
+      "Use default AWS service configurations for all pipeline components without optimization"
     ],
     "answer": 1,
-    "explain": "Custom classifiers handle complex formats.",
+    "explain": "When Glue Crawlers cannot classify files using built-in classifiers (XML, JSON, CSV, Parquet), custom classifiers \u2014 defined using regex patterns for row format, SerDe libraries, or Grok patterns for semi-structured logs \u2014 extend Glue's classification capability to proprietary formats. Without custom classifiers, unrecognized files are stored as UNKNOWN in the Data Catalog without schema inference.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -838,13 +838,13 @@
     "cat": "data-ingestion-transformation",
     "q": "A data engineer processes encrypted Kinesis messages. What is required?",
     "options": [
-      "No decryption",
+      "Store encrypted data in the pipeline without ever decrypting it for processing",
       "Manual key",
-      "No permission",
+      "The operation succeeds because cross-account access is automatically granted by AWS",
       "KMS key permissions in Lambda/Glue consumers"
     ],
     "answer": 1,
-    "explain": "Consumer needs KMS key permissions.",
+    "explain": "Consuming encrypted Kinesis records requires the consumer's IAM role to have kms:Decrypt permission for the KMS key used to encrypt the stream. Without this permission, the consumer receives ciphertext and cannot process the records. The KMS key policy must also explicitly allow the consumer role as a principal; IAM permissions alone are insufficient if the key policy denies access.",
     "keywords": [
       "AWS Glue",
       "ETL",
@@ -859,12 +859,12 @@
     "q": "A data engineer handles late-arriving events in time windows. What approach?",
     "options": [
       "No handling",
-      "Drop",
+      "Discard late-arriving events immediately and log a warning metric for monitoring",
       "Configure allowed lateness in Flink/Spark",
-      "Manual"
+      "Manually inspect each record for schema compliance before writing to the target"
     ],
     "answer": 0,
-    "explain": "Allowed lateness buffers late events.",
+    "explain": "Streaming frameworks (Kinesis Data Analytics, Apache Flink) support configurable allowed lateness windows that buffer events arriving after the watermark deadline for a specified duration before discarding them. This handles network delays and out-of-order events that arrive within the lateness tolerance while discarding genuinely late events that cannot be reliably placed in the correct window.",
     "keywords": [
       "ETL",
       "data ingestion"
@@ -877,10 +877,10 @@
       "Batch size calculation; payload limits",
       "No consideration",
       "Random sizes",
-      "Fixed sizes"
+      "Use fixed batch sizes regardless of record size and accept occasional payload limit errors"
     ],
     "answer": 2,
-    "explain": "Payload limits require batch size care.",
+    "explain": "Kinesis Data Streams enforces a 1 MB maximum record size (including partition key). When source messages exceed this limit, the producer must split large records into smaller chunks with sequence numbers, or use compression (gzip, Snappy) to reduce payload size. Producers should also be aware that very small records waste the per-record cost; batching small records using PutRecords reduces API call overhead.",
     "keywords": [
       "AWS Batch",
       "ETL",
@@ -898,7 +898,7 @@
       "Cross-region copies"
     ],
     "answer": 0,
-    "explain": "Global Tables provide active-active setup.",
+    "explain": "Amazon DynamoDB Global Tables provide active-active multi-region replication that allows reads and writes in all configured regions simultaneously. Global Tables use last-writer-wins conflict resolution for concurrent writes to the same item from different regions. Replication lag is typically 1-5 seconds, so applications requiring strong cross-region consistency must implement custom conflict resolution or use single-region writes.",
     "keywords": [
       "DynamoDB",
       "S3",
@@ -911,13 +911,13 @@
     "cat": "data-store-management",
     "q": "A data engineer stores sensitive Redshift data. What encryption is needed?",
     "options": [
-      "S3 only",
-      "No encryption",
+      "Store all intermediate state exclusively in S3 without using any in-memory processing",
+      "Store all data lake objects in plaintext and rely on IAM access control exclusively",
       "Application level",
       "HSM for key management; column-level security"
     ],
     "answer": 2,
-    "explain": "HSM + column-level encryption optimal.",
+    "explain": "Amazon Redshift supports HSM (Hardware Security Module) integration for managing encryption keys outside of AWS KMS, combined with column-level encryption using custom encryption functions or Redshift's native encryption features. For regulated industries requiring separation of key management from data storage, HSM provides the strongest protection for sensitive Redshift columns.",
     "keywords": [
       "Redshift",
       "S3",
@@ -930,13 +930,13 @@
     "cat": "data-store-management",
     "q": "A data engineer stores time-series data in S3. What partitioning is optimal?",
     "options": [
-      "Random",
+      "Assign partition keys randomly to distribute records evenly regardless of the data access pattern",
       "Single partition",
       "Year/Month/Day with time bucketing",
       "No partitioning"
     ],
     "answer": 1,
-    "explain": "Time hierarchy enables efficient range queries.",
+    "explain": "Partitioning S3 time-series data using a hierarchical key structure (year=YYYY/month=MM/day=DD/hour=HH) enables Athena partition pruning \u2014 queries filtering on specific time ranges skip partitions outside the filter, dramatically reducing data scanned. A single flat partition key (e.g., timestamp) creates too many small files and prevents effective pruning.",
     "keywords": [
       "S3",
       "data lake",
@@ -947,13 +947,13 @@
     "cat": "data-operations",
     "q": "A data engineer monitors Glue worker performance. What metric matters?",
     "options": [
-      "Disk I/O",
+      "Disk I/O throughput on the Glue worker EBS volumes as the sole performance metric",
       "Executor memory and GC time",
-      "Network bandwidth",
+      "Network bandwidth between Glue workers and the S3 data source",
       "Job count"
     ],
     "answer": 3,
-    "explain": "GC time indicates memory pressure.",
+    "explain": "AWS Glue Spark worker performance is most effectively monitored using GC (Garbage Collection) time and executor memory utilization metrics. High GC time indicates that the job is under memory pressure \u2014 the JVM is spending excessive time reclaiming memory instead of processing data. The fix is to increase worker size (G.2X) or reduce the per-task data volume through better partitioning.",
     "keywords": [
       "AWS Glue",
       "data operations",
@@ -964,13 +964,13 @@
     "cat": "data-security-governance",
     "q": "A data engineer implements column-level encryption in Redshift. What is needed?",
     "options": [
-      "No encryption",
+      "Store all data lake objects in plaintext and rely on IAM access control exclusively",
       "Application only",
       "HSM with column mask expressions",
       "Manual"
     ],
     "answer": 3,
-    "explain": "HSM + masks protect columns.",
+    "explain": "Amazon Redshift supports column-level encryption using AWS KMS managed keys or HSM integration. Encrypting specific columns (SSN, credit card numbers, salary) within a Redshift table ensures that even users with table access cannot read sensitive column values without the decryption key. Column masking views can further restrict access to plaintext values for users with read-only analytical roles.",
     "keywords": [
       "IAM",
       "Redshift",
@@ -985,12 +985,12 @@
     "q": "A data engineer implements lifecycle policies for compliance. What approach?",
     "options": [
       "Manual",
-      "Keep forever",
-      "No lifecycle",
+      "Retain all historical CloudWatch metrics indefinitely without any retention policy",
+      "Skip S3 lifecycle policies and manually archive objects using Lambda on a schedule",
       "Transition to Glacier; delete after retention period"
     ],
     "answer": 0,
-    "explain": "Lifecycle policies enforce retention.",
+    "explain": "S3 Lifecycle policies automate compliance retention requirements by transitioning objects to lower-cost storage classes after defined periods and deleting objects after the required retention period expires. Manual deletion processes are error-prone and auditors cannot verify compliance without the automated audit trail that lifecycle policies provide. Object Lock with compliance mode enforces immutable retention that cannot be overridden.",
     "keywords": [
       "IAM",
       "S3 Glacier",
@@ -1005,11 +1005,11 @@
     "options": [
       "Dynamic masking with column-level security filters",
       "Manual",
-      "No masking",
+      "Store all sensitive fields in plaintext and restrict access via IAM policies alone",
       "Application only"
     ],
     "answer": 1,
-    "explain": "Dynamic masking hides data at query time.",
+    "explain": "AWS Lake Formation dynamic data masking masks sensitive column values at query time based on the requesting IAM role. Analysts see masked values (e.g., XXX-XX-1234 for SSNs) while authorized roles see the actual values \u2014 all from the same Athena query against the same table. This eliminates the operational complexity of maintaining separate masked-data views for each access tier.",
     "keywords": [
       "IAM",
       "Lake Formation",
@@ -1024,12 +1024,12 @@
     "q": "A data engineer audits Athena workgroup usage. What metric tracks this?",
     "options": [
       "Manual",
-      "No tracking",
+      "Execute full table scans on every pipeline run without maintaining any state",
       "CloudTrail workgroup API calls; cost per workgroup",
-      "Query count"
+      "Track the number of Athena queries executed as the primary cost control metric"
     ],
     "answer": 0,
-    "explain": "CloudTrail and Cost Explorer track usage.",
+    "explain": "AWS CloudTrail logs every Athena API call (StartQueryExecution, GetQueryResults) with the IAM principal, query string, workgroup, and bytes scanned. AWS Cost Explorer tracks Athena workgroup spending by combining CloudTrail query logs with the bytes-scanned metric and the per-TB pricing. These two sources together provide a complete picture of who is querying what, when, and at what cost.",
     "keywords": [
       "API",
       "Athena",
@@ -1068,7 +1068,7 @@
       "I/O bound (S3 read/write); optimize partitioning, compression, or add prefixes"
     ],
     "answer": 3,
-    "explain": "Low DPU utilization with slow job indicates I/O bottleneck, not compute.",
+    "explain": "Low DPU CPU utilization (<20%) combined with slow job completion time is a classic I/O bottleneck signature in Glue. The workers are idle waiting for S3 reads/writes rather than processing data. Optimizing S3 throughput involves: enabling S3 prefix parallelism (multiple prefixes for concurrent reads), using Parquet with predicate pushdown to reduce bytes read, and tuning shuffle partition counts to match available DPU.",
     "cat": "data-ingestion-transformation",
     "keywords": [
       "AWS Glue",
@@ -1088,7 +1088,7 @@
       "Increase replication instance"
     ],
     "answer": 1,
-    "explain": "LOB chunking handles large objects; tuning chunk size optimizes throughput.",
+    "explain": "DMS LOB (Large Object Binary/CLOB/BLOB) handling requires special chunking configuration because LOBs exceed the standard DMS replication record buffer. Enabling LOB chunking with an appropriate chunk size (typically 32-64 KB) allows DMS to stream large objects in segments. Pre-processing at the source to remove or compress oversized LOBs prevents repeated migration failures when source data contains unexpectedly large values.",
     "cat": "data-ingestion-transformation",
     "keywords": [
       "AWS Glue",
@@ -1103,7 +1103,7 @@
     "options": [
       "Stop pipeline; manual review",
       "Force load anyway",
-      "Drop silently",
+      "Silently discard records that fail schema validation without logging or alerting",
       "Quarantine failures to DLQ table; log with context; alert data owner for investigation"
     ],
     "answer": 3,
@@ -1120,9 +1120,9 @@
   {
     "q": "A Kinesis Data Analytics application aggregates events with tumbling 1-hour windows. Events arrive with 30-second skew. Late arrivals beyond 1 hour are lost. What configuration preserves late data?",
     "options": [
-      "No solution",
+      "This problem cannot be solved with AWS managed services and requires custom hardware",
       "Increase window to 2 hours",
-      "Drop late data",
+      "Discard all late-arriving events rather than configuring allowed lateness in the stream",
       "Use ALLOWED LATENESS parameter (e.g., 2 hours) with sliding windows"
     ],
     "answer": 3,
@@ -1137,7 +1137,7 @@
   {
     "q": "A team processes data from 20 REST APIs with different rate limits and schemas. Weekly API changes require job updates. What architecture reduces maintenance?",
     "options": [
-      "Cron jobs",
+      "Scheduled cron jobs on EC2 instances polling each API sequentially every hour",
       "Manual Python scripts",
       "Lambda + EventBridge + Secrets Manager per API; SQS for batching and rate limiting",
       "Single hardcoded Glue job"
@@ -1158,8 +1158,8 @@
     "q": "A Glue job deduplicates streaming events via unique ID in 24-hour windows. Processing rate: 1M events/sec. What state management scales?",
     "options": [
       "In-memory HashMap",
-      "Local file",
-      "No dedup",
+      "Use a local file on the Lambda execution environment as the deduplication state store",
+      "Accept duplicate records in the output, trusting downstream consumers to deduplicate",
       "DynamoDB with TTL matching dedup window; distributed state across workers"
     ],
     "answer": 3,
@@ -1179,7 +1179,7 @@
     "options": [
       "Manual recovery",
       "Skips to next 1000",
-      "Fails",
+      "The pipeline terminates permanently and requires a full restart from the source checkpoint",
       "Reprocesses from last checkpoint; application must be idempotent to avoid duplicates"
     ],
     "answer": 3,
@@ -1197,9 +1197,9 @@
   {
     "q": "A DataBrew recipe transforms customer records: standardize phone, fill ZIPs via geo-enrichment, deduplicate. Pipeline runs daily on 100M records. What is optimal configuration?",
     "options": [
-      "Manual Glue",
+      "Manually trigger Glue ETL jobs using the AWS console without any automation",
       "Three separate jobs",
-      "No automation",
+      "Perform all data quality remediation steps manually using AWS console operations",
       "Single recipe with chained transformations (standardize -> enrich -> deduplicate)"
     ],
     "answer": 3,
@@ -1253,7 +1253,7 @@
   {
     "q": "A Kinesis Firehose batches data: size 128 MB, time 300 sec. Ingestion rate: 100 MB/min. What is expected flush behavior and cost impact?",
     "options": [
-      "No batching",
+      "Process each record individually in a separate Lambda invocation without any batching",
       "Flush at 128 MB instantly",
       "Accumulate indefinitely",
       "Flush every 300 sec with ~300 MB; lower per-record cost than small batches"
@@ -1271,7 +1271,7 @@
   {
     "q": "A team converts historical CSV files from Parquet to ORC for archival. ORC compresses better but ecosystem is smaller. What is the deciding factor?",
     "options": [
-      "Use both",
+      "Use both formats simultaneously and let query engines select the optimal format per query",
       "Always ORC for compression",
       "Use Parquet for compatibility; ORC if specialized tools (Presto, Hive) are primary users",
       "Storage cost only"
@@ -1289,8 +1289,8 @@
   {
     "q": "A Glue Crawler runs nightly on s3://data/year=YYYY/month=MM/day=DD/. New partitions arrive before crawler. After 10 days, how many partitions does crawler process?",
     "options": [
-      "All historical",
-      "Variable",
+      "Run the Glue Crawler over all historical partitions on every scheduled execution",
+      "Variable partition count depending on how many files S3 event notifications trigger",
       "1 (new partitions only)",
       "10 (all new partitions); incremental mode avoids re-scanning old"
     ],
@@ -1311,10 +1311,10 @@
       "Keep all Standard",
       "<7 days Standard; 7-90 days Standard-IA; >90 days Glacier/Deep Archive",
       "Single-region replication",
-      "All Glacier"
+      "Move all data lake objects to Glacier immediately after ingestion to minimize storage costs"
     ],
     "answer": 1,
-    "explain": "Tiering by access pattern reduces costs; Standard for hot; Glacier for cold.",
+    "explain": "Tiered S3 storage based on access frequency dramatically reduces data lake costs at petabyte scale. Data accessed within 7 days (hot queries) stays in Standard for lowest retrieval latency. Data accessed weekly to monthly transitions to Standard-IA (40% cheaper) after 7 days with acceptable millisecond retrieval. Data older than 90 days accessed less than once per year transitions to Glacier or Deep Archive (80-95% cheaper) with acceptable minutes-to-hours retrieval latency.",
     "cat": "storage-data-management",
     "keywords": [
       "S3",
@@ -1367,7 +1367,7 @@
     "q": "A DynamoDB table uses partition key (user_id), sort key (timestamp). High-cardinality IDs (1M+) with uneven distribution cause hot partitions. What optimization applies?",
     "options": [
       "Implement DAX caching layer for hot keys; consider application-level deduplication",
-      "Switch to RDS",
+      "Migrate from DynamoDB to RDS for all data lake metadata storage requirements",
       "Increase provisioned capacity globally",
       "Add more sort keys"
     ],
@@ -1442,10 +1442,10 @@
   {
     "q": "A DynamoDB table uses on-demand billing with peak WCU spikes. Partition key: user_id; sort key: timestamp. Read throttling: 50%. What is the likely cause?",
     "options": [
-      "Billing broken",
+      "The Athena cost controls are misconfigured and will not enforce spending limits",
       "Insufficient global throughput",
       "Hot partition from skewed distribution; DAX caching + query optimization",
-      "Sort key issue"
+      "Redesign all DynamoDB tables to use composite sort keys for every access pattern"
     ],
     "answer": 2,
     "explain": "Uneven key distribution causes hot partitions; DAX caching and query filtering help.",
@@ -1463,9 +1463,9 @@
     "q": "A Redshift cluster (10 nodes) has distribution key (customer_id, date). Query latency: 5 sec baseline; 30 sec with concurrency. Concurrency Scaling not enabled. What is primary factor?",
     "options": [
       "Query queuing from concurrency; enable Concurrency Scaling for burst capacity",
-      "CPU saturation",
-      "Network",
-      "Storage limit"
+      "CPU saturation on the leader node from query parsing and result set compilation",
+      "Network bandwidth saturation between Redshift nodes during data shuffling",
+      "Storage limit reached on compute nodes, causing spill-to-disk and high latency"
     ],
     "answer": 0,
     "explain": "Query queuing dominates with high concurrency; Concurrency Scaling handles spikes elastically.",
@@ -1481,7 +1481,7 @@
   {
     "q": "A COPY command loads 100 GB from S3 manifest (50 files). One file is corrupted. Load partially succeeds (95%). Is data in Redshift?",
     "options": [
-      "Requires FORCE",
+      "Deleting an occupied S3 bucket requires a force-delete flag that bypasses object protection",
       "No, COPY is atomic; entire transaction rolled back on any error",
       "Partial load OK",
       "Yes, 95% loaded"
@@ -1501,11 +1501,11 @@
     "options": [
       "Never consistent",
       "No, Global Tables provide eventual consistency; region-local reads are strongly consistent",
-      "Yes, broken",
+      "The replication is broken \u2014 cross-region data shares do not support column filters",
       "Always consistent"
     ],
     "answer": 1,
-    "explain": "Global Tables provide eventual consistency; region-local reads are consistent.",
+    "explain": "DynamoDB Global Tables provide eventual consistency for cross-region replication \u2014 writes in us-east-1 are asynchronously replicated to us-west-2, with typical lag of 1-5 seconds. Within the originating region, reads are strongly consistent if using ConsistentRead=true. Applications requiring cross-region strong consistency must implement application-level coordination, as Global Tables cannot provide synchronous cross-region writes without prohibitive latency.",
     "cat": "storage-data-management",
     "keywords": [
       "DynamoDB",
@@ -1517,10 +1517,10 @@
   {
     "q": "A S3 lifecycle rule transitions: Standard -> Standard-IA (30 days) -> Glacier (90 days) -> delete (2 years). Query on 6-month-old data costs more than 6-week-old. Why?",
     "options": [
-      "Query cost same",
-      "No reason",
+      "Query cost in Standard-IA and Glacier is identical to Standard since S3 handles retrieval",
+      "There is no cost difference between storage tiers since retrieval fees are waived for Glue",
       "Glacier retrieval cost (per GB) vs Standard access; query requires restore",
-      "Network"
+      "Network egress cost between AWS regions for cross-region Glacier retrieval operations"
     ],
     "answer": 2,
     "explain": "Glacier retrieval incurs per-GB costs; query requires restoration; Standard access is immediate.",
@@ -1554,9 +1554,9 @@
     "q": "An Aurora PostgreSQL read replica is promoted to primary. What happens to application connections?",
     "options": [
       "Application must update endpoint to new primary; existing connections drop",
-      "No change",
-      "Connections automatically transferred",
-      "Manual intervention"
+      "No application change is needed since Aurora automatically updates the cluster endpoint DNS",
+      "Existing connections automatically transfer to the promoted primary with zero interruption",
+      "Manual intervention by the DBA to update each application connection string individually"
     ],
     "answer": 0,
     "explain": "Promotion is not transparent to apps; endpoint must be updated; connections to old primary are lost.",
@@ -1571,10 +1571,10 @@
   {
     "q": "A data lake uses S3 Intelligent-Tiering. Recent data (30 days) is accessed frequently. Older data accessed rarely. What tiering happens automatically?",
     "options": [
-      "Manual tiering",
-      "All same tier",
+      "Manually move S3 objects to Glacier using the AWS console when storage costs exceed budget",
+      "Store all data lake objects in the same S3 storage class regardless of access patterns",
       "Recent -> Standard (frequent tier); older -> Archive (infrequent tier)",
-      "No tiering"
+      "Keep all data permanently in S3 Standard regardless of access frequency or age"
     ],
     "answer": 2,
     "explain": "Intelligent-Tiering automatically moves data between tiers based on access patterns.",
@@ -1590,11 +1590,11 @@
     "options": [
       "No error handling",
       "Increase retry limit",
-      "Remove retry",
+      "Disable retry logic in Step Functions to prevent duplicate processing of failed stages",
       "Catch Load failure; route to DLQ for manual investigation; prevent cascade"
     ],
     "answer": 3,
-    "explain": "Catch + DLQ enables independent error handling; prevents cascading failures.",
+    "explain": "A Catch block in the Step Functions Load state that routes failures to a dead-letter queue (SQS DLQ) enables independent error handling: the DLQ holds failed load payloads for manual investigation and replay, while the pipeline state machine terminates cleanly without cascading failure to upstream states. Without this pattern, a persistent load failure causes the entire pipeline to remain blocked until manual intervention.",
     "cat": "data-operations",
     "keywords": [
       "Step Functions",
@@ -1608,7 +1608,7 @@
     "options": [
       "Scheduler overloaded",
       "Heavy DAG definition causes parsing overhead; implement serialization cache or split DAG",
-      "Database slow",
+      "Database slowness is the only cause of Kinesis consumer lag during peak processing",
       "Upgrade Airflow version"
     ],
     "answer": 1,
@@ -1628,7 +1628,7 @@
       "EventBridge limits"
     ],
     "answer": 0,
-    "explain": "Cold starts add 500ms+ overhead; reserved concurrency prevents startup delays.",
+    "explain": "Lambda cold starts add 500ms to 2+ seconds of initialization latency for the first invocation on each new container instance. For an S3-triggered pipeline processing 100 KB files where business SLA requires < 200ms processing time, cold starts breach the SLA on every new container spin-up. Reserved concurrency pre-allocates containers and combined with container reuse (initializing SDK clients in global scope) keeps warm containers available for subsequent invocations.",
     "cat": "data-operations",
     "keywords": [
       "EventBridge",
@@ -1644,7 +1644,7 @@
     "options": [
       "Use CloudWatch anomaly detection to learn baselines; suppress during known maintenance",
       "Increase threshold to 2 hours",
-      "Remove alarm",
+      "Remove the CloudWatch alarm and replace it with manual daily log reviews",
       "Manual monitoring"
     ],
     "answer": 0,
@@ -1682,7 +1682,7 @@
     "options": [
       "No, SLA is met; alert only if lag > threshold (2 hours)",
       "No monitoring needed",
-      "Alert randomly",
+      "Set CloudWatch alarm thresholds at random intervals to detect unexpected traffic patterns",
       "Yes, always alert if lag exists"
     ],
     "answer": 0,
@@ -1715,13 +1715,13 @@
   {
     "q": "A Lambda function: receive order message, upsert DynamoDB with order_id as key. Duplicate message arrives. What guarantees exist?",
     "options": [
-      "At-most-once",
+      "Use at-most-once delivery semantics, accepting potential data loss for simpler implementation",
       "At-least-once",
-      "No guarantee",
+      "Accept at-most-once delivery and tolerate data loss for non-critical metrics",
       "Upsert with same key = idempotent; duplicate results in single update (exactly-once)"
     ],
     "answer": 3,
-    "explain": "Upsert with deduplication key = idempotent; duplicate has no additional effect.",
+    "explain": "DynamoDB upsert operations (PutItem with the same primary key) are inherently idempotent \u2014 submitting the same order_id multiple times results in the same final state (the latest version of the item). This means Lambda can safely process duplicate SQS messages without creating duplicate records, achieving exactly-once semantics at the data layer even with at-least-once message delivery from SQS.",
     "cat": "data-operations",
     "keywords": [
       "DynamoDB",
@@ -1752,13 +1752,13 @@
   {
     "q": "A Step Functions pipeline has sequential stages causing bottleneck. Extract (2 min), Transform (5 min), Enrich (3 min), Load (1 min). Can these be parallelized?",
     "options": [
-      "All parallel",
+      "Run all pipeline stages in parallel regardless of data dependencies between stages",
       "Sequential only",
       "Enrich can be parallel with Transform if they do not depend on each other",
       "No parallelization"
     ],
     "answer": 2,
-    "explain": "Map states in Step Functions enable parallel processing of independent tasks.",
+    "explain": "AWS Step Functions Map states execute multiple iterations in parallel when the iterations are independent. In an ETL pipeline with Extract \u2192 Enrich \u2192 Transform \u2192 Load stages, if Enrich and Transform do not have a data dependency (Enrich does not need Transform's output and vice versa), they can be placed in a Parallel state that runs both branches simultaneously, reducing total pipeline duration from the sum of all stage durations to the duration of the longest parallel branch.",
     "cat": "data-operations",
     "keywords": [
       "Step Functions",
@@ -1769,10 +1769,10 @@
   {
     "q": "An EventBridge rule triggers Glue job on S3 PUT. During high-volume uploads, Glue jobs queue. How should concurrency be managed?",
     "options": [
-      "No rate limit",
+      "Kinesis has no per-shard throughput limits and scales automatically to any ingest rate",
       "EventBridge rate limit + SQS batching; Glue parallel job execution",
       "Sequential processing only",
-      "Drop events"
+      "Drop events that arrive during peak traffic periods to prevent consumer lag"
     ],
     "answer": 1,
     "explain": "Rate limiting prevents overwhelming downstream; SQS batching enables efficient processing.",
@@ -1790,7 +1790,7 @@
     "q": "A pipeline monitoring shows: Duration 2h (was 1h), Error rate 0.1%, Freshness lag 3h (SLA 2h). What should be prioritized?",
     "options": [
       "Investigate duration increase (causing lag); then address lag",
-      "Reduce SLA",
+      "Lower the data freshness SLA to eliminate the need for real-time pipeline monitoring",
       "Ignore 0.1% errors",
       "Fix error rate first"
     ],
@@ -1807,7 +1807,7 @@
     "options": [
       "Increase retry count with exponential backoff; enable detailed logging",
       "Increase DAG timeout",
-      "Remove retries",
+      "Disable retry logic entirely to prevent any possibility of duplicate record processing",
       "Disable alerting"
     ],
     "answer": 1,
@@ -1822,7 +1822,7 @@
     "q": "A team processes both batch (nightly load) and streaming (real-time API calls). Should data be unified or separate?",
     "options": [
       "Manual consolidation",
-      "Always stream",
+      "All data processing workloads should use streaming regardless of latency requirements",
       "Unified data lake; route batch to S3/Redshift, stream to Kinesis, consolidate via ETL",
       "Always separate"
     ],
@@ -1841,10 +1841,10 @@
   {
     "q": "A Lake Formation table contains customer records. Column \"ssn\" has fine-grained access control: hidden from non-admin users. Analyst runs \"SELECT * FROM table\". What columns are returned?",
     "options": [
-      "Error",
+      "Return a generic error code and halt all downstream processing until manual intervention",
       "All columns except ssn (filtered by Lake Formation policy)",
-      "All columns",
-      "ssn masked"
+      "Grant access to all columns in the table and rely on application-level filtering",
+      "The SSN field is masked automatically by DynamoDB before replication to the replica region"
     ],
     "answer": 1,
     "explain": "Lake Formation column filters hide columns at query layer; filtered out before results.",
@@ -1862,10 +1862,10 @@
       "Both keys affected",
       "All datasets exposed",
       "Only Finance data exposed; Marketing data protected by Key-B",
-      "No exposure"
+      "The data lake has no access restrictions because all employees are trusted insiders"
     ],
     "answer": 2,
-    "explain": "Key segmentation limits damage; compromised key only exposes related data.",
+    "explain": "Separate KMS Customer Managed Keys (CMKs) per data classification (Finance key, Marketing key, HR key) limits the blast radius of a key compromise. If Finance's CMK is exposed, only Finance data can be decrypted; Marketing and HR data encrypted with different CMKs remain protected. Key segmentation also enables fine-grained access control over who can decrypt each dataset without requiring S3 bucket policy changes.",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -1878,13 +1878,13 @@
   {
     "q": "A Glue job reads 100 GB from source with 5% PII (SSN, email). Before load to Redshift, PII should be masked. Where is masking best implemented?",
     "options": [
-      "No masking",
+      "Store all sensitive fields in plaintext and restrict access via IAM policies alone",
       "Glue job transformation or Redshift view with masking function",
-      "Manual process",
-      "S3 encryption"
+      "Process all pipeline orchestration manually by running each Glue job step sequentially",
+      "Enable S3 default encryption on the bucket as the sole PII protection mechanism"
     ],
     "answer": 1,
-    "explain": "Masking in Glue or Redshift enforces consistently across pipelines.",
+    "explain": "Masking PII in the Glue ETL transformation step (before loading to Redshift) ensures sensitive values are never written to the analytical warehouse. Alternatively, Redshift Dynamic Data Masking (DDM) masks PII at query time based on the querying role \u2014 authorized analysts see plaintext values while other roles see masked versions. Both approaches prevent unauthorized access but differ in whether PII is stored unmasked in the database.",
     "cat": "data-security-governance",
     "keywords": [
       "AWS Glue",
@@ -1904,7 +1904,7 @@
       "Only for sensitive columns"
     ],
     "answer": 2,
-    "explain": "Dual-layer encryption prevents exposure during transmission and storage.",
+    "explain": "Dual-layer encryption \u2014 KMS SSE at rest combined with TLS in transit \u2014 provides defense-in-depth for a 100 TB customer PII data lake. Encryption at rest protects against unauthorized S3 access (misconfigured bucket policies, AWS account compromise). TLS in transit protects against interception during data transfer between AWS services or to external consumers. Both layers together satisfy GDPR's encryption requirement for personal data.",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -1919,12 +1919,12 @@
     "q": "A Kinesis stream contains payment data. Encryption at-rest uses KMS. Requirement: prevent exfiltration to unencrypted endpoints. What additional control is needed?",
     "options": [
       "TLS for transit + IAM policies restricting consumers + VPC endpoints",
-      "No control",
+      "Apply no access restrictions and rely on network segmentation for data protection",
       "Application encryption",
       "KMS alone sufficient"
     ],
     "answer": 0,
-    "explain": "Defense-in-depth: encryption + access control + network isolation.",
+    "explain": "Defense-in-depth for payment data in Kinesis combines: KMS encryption at rest (data unreadable if Kinesis storage is compromised), TLS in transit (data protected during transmission from producers to Kinesis), IAM policies restricting consumer access to authorized roles only (preventing unauthorized reads), and VPC endpoints (keeping traffic off the public internet). Each layer independently protects against a different threat vector.",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -1938,13 +1938,13 @@
   {
     "q": "A compliance audit requires: \"evidence of all access to PII data\". What logging is essential?",
     "options": [
-      "S3 only",
-      "No logging",
+      "Store all intermediate state exclusively in S3 without using any in-memory processing",
+      "Rely on application-level error messages without any centralized log aggregation",
       "CloudTrail (API access), S3 access logs, Athena query logs, Lake Formation access logs",
-      "Manual logs"
+      "Manually review CloudWatch logs daily to identify pipeline compliance violations"
     ],
     "answer": 2,
-    "explain": "Multi-layer logging provides comprehensive audit trail for compliance.",
+    "explain": "A comprehensive PII audit trail for compliance requires logging at multiple layers: CloudTrail records all AWS API calls that access S3 objects or query Athena; S3 server access logging captures individual object-level GET and PUT operations; Athena query logs record the full SQL of each query including the querying IAM principal; Lake Formation access logs track fine-grained table and column access events. Together these provide irrefutable evidence for auditors.",
     "cat": "data-security-governance",
     "keywords": [
       "API",
@@ -1958,8 +1958,8 @@
   {
     "q": "A compliance requirement: \"delete customer data 90 days after account closure\". How should deletion be automated?",
     "options": [
-      "No deletion",
-      "Manual script",
+      "Retain all data lake objects indefinitely without any lifecycle or expiry policies",
+      "Write a custom shell script to implement the data quality validation logic manually",
       "Infinite retention",
       "S3 lifecycle rules + DynamoDB TTL; tag for closure; automate deletion"
     ],
@@ -1978,9 +1978,9 @@
   {
     "q": "A database contains PII. IAM policies grant: \"s3:GetObject on arn:aws:s3:::my-bucket/*\". Is this least privilege?",
     "options": [
-      "Wildcard OK",
-      "No, deny all",
-      "Yes",
+      "Grant wildcard IAM permissions to all Glue job roles to simplify permission management",
+      "Cross-account Lake Formation shares automatically deny all column access by default",
+      "All streaming records are guaranteed to arrive exactly once with no duplicates by default",
       "No, should specify specific objects/prefixes; tag sensitive data separately"
     ],
     "answer": 3,
@@ -1998,12 +1998,12 @@
     "q": "A Lake Formation data share created from Account A (owner) to Account B (consumer). Account B user queries shared table. What permissions are checked?",
     "options": [
       "S3 bucket policy in Account A",
-      "No permissions",
+      "Lake Formation automatically grants all necessary permissions without explicit configuration",
       "Manual approval",
       "Lake Formation permission in Account A + IAM role in Account B"
     ],
     "answer": 3,
-    "explain": "Data shares require both Lake Formation grant and IAM role for access.",
+    "explain": "AWS Lake Formation cross-account data sharing requires configuration in both accounts. The resource owner (Account A) grants Lake Formation permissions to the consumer account (Account B) or a specific IAM role in Account B. The consumer account must also configure an IAM role with permission to assume the cross-account resource access and with the necessary Lake Formation read permissions. Both halves of the configuration are required \u2014 Lake Formation grant alone is insufficient.",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -2037,12 +2037,12 @@
     "q": "A company processes EU customer data (GDPR) and US data (no residency). EU data must not leave EU. How should infrastructure be designed?",
     "options": [
       "Separate data lakes per region; no cross-region replication for EU data",
-      "No separation",
+      "Use a single IAM role with full data lake access for all pipeline components",
       "Single global region",
       "Replicate EU to US"
     ],
     "answer": 0,
-    "explain": "Regional separation ensures data residency compliance with GDPR requirements.",
+    "explain": "GDPR requires that EU personal data not leave EU territory without adequate protection mechanisms (adequacy decision or SCCs). Maintaining separate data lakes \u2014 an EU lake in an EU region (Frankfurt, Ireland) and a US lake in a US region \u2014 with no cross-region replication for EU data ensures residency compliance. Attempting to process EU data in a US region violates GDPR data residency requirements regardless of encryption.",
     "cat": "data-security-governance",
     "keywords": [
       "GDPR",
@@ -2057,12 +2057,12 @@
     "q": "A team implements SOX compliance for Redshift warehouse. What controls are essential?",
     "options": [
       "Encryption, WLM for segregation, MFA for admin, audit logging, change tracking",
-      "Backups only",
-      "No controls",
+      "Enable daily S3 backups as the sole compliance mechanism for audit log retention",
+      "Skip governance controls to reduce pipeline complexity and improve development velocity",
       "Password policies"
     ],
     "answer": 0,
-    "explain": "Multi-layer controls: encryption, access control, auditing, change management.",
+    "explain": "SOX compliance for Redshift requires: encryption at rest (KMS) and in transit (TLS) for data integrity; workload management (WLM) queue isolation between finance teams and IT operations (segregation of duties); MFA for admin accounts to prevent unauthorized schema changes; comprehensive audit logging (CloudTrail, Redshift audit logs) for access and query tracking; and change management controls (no direct production schema changes without approval).",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -2076,7 +2076,7 @@
   {
     "q": "A financial firm requires immutable audit logs (WORM - write-once-read-many). What S3 feature applies?",
     "options": [
-      "Logging",
+      "Enable DEBUG-level logging on every Lambda invocation to capture full payload content",
       "Versioning only",
       "Standard encryption",
       "S3 Object Lock in GOVERNANCE or COMPLIANCE mode"
@@ -2102,7 +2102,7 @@
       "Lake Formation tags per classification; restrict access by tag; use row/column filters"
     ],
     "answer": 3,
-    "explain": "Tag-based policies scale with data classification; enables ABAC.",
+    "explain": "AWS Lake Formation attribute-based access control (ABAC) using LF-Tags assigns classification tags (e.g., sensitivity=confidential, sensitivity=restricted) to databases and tables. IAM roles are granted access based on tag values rather than explicit table lists, meaning new tables automatically inherit access control from their tags without requiring policy updates. This scales to hundreds of tables without manual permission management for each new dataset.",
     "cat": "data-security-governance",
     "keywords": [
       "IAM",
@@ -2115,9 +2115,9 @@
   {
     "q": "An Athena workgroup has max query cost of $50. Team member runs expensive query ($100). What governance workflow applies?",
     "options": [
-      "No limits",
-      "Query automatically succeeds",
-      "Deny permanently",
+      "No cost controls are enforced since workgroup limits only apply to data scanned, not cost",
+      "The query automatically succeeds with a warning logged to CloudTrail for review",
+      "The workgroup permanently denies all future queries from the user without possibility of override",
       "Query blocked; escalation required; approval enables override with cost acknowledgment"
     ],
     "answer": 3,
@@ -2134,13 +2134,13 @@
     "q": "A Kinesis stream receives 5,000 RPS. Sharding strategy for 10x growth?",
     "cat": "data-ingestion-transformation",
     "options": [
-      "100",
+      "Set a fixed batch size of 100 records per Lambda invocation regardless of record payload size",
       "Calculate (5K/1K=5)+buffer; resharding for growth",
-      "Single",
-      "Auto"
+      "Use a single Kinesis shard for all IoT telemetry to maintain strict ordering across all devices",
+      "Enable automatic schema inference on every read, re-scanning the full dataset each time"
     ],
     "answer": 1,
-    "explain": "Shard math: RPS/1000; buffer for spikes.",
+    "explain": "Kinesis shard capacity math: each shard supports 1,000 records/second write throughput and 1 MB/s write bandwidth. At 5,000 RPS, the minimum shard count is 5,000/1,000 = 5 shards. For 10x growth (50,000 RPS), the minimum becomes 50 shards. Adding a buffer (typically 20-30%) for traffic spikes means provisioning 60-65 shards. Kinesis supports resharding (splitting shards) to scale capacity without stream recreation.",
     "keywords": [
       "ETL",
       "Kinesis",
@@ -2152,13 +2152,13 @@
     "q": "Kinesis consumer lag during peak. Enhanced fan-out enabled. DynamoDB writes (100ms). Bottleneck?",
     "cat": "data-ingestion-transformation",
     "options": [
-      "Network",
-      "Kinesis",
-      "Fan-out",
+      "Network saturation between the Kinesis consumer and the DynamoDB VPC endpoint",
+      "The Kinesis shard count being insufficient to distribute records to all enhanced fan-out consumers",
+      "Enhanced fan-out subscription limits preventing additional consumers from registering on the shard",
       "Consumer app (DynamoDB); scale or optimize"
     ],
     "answer": 3,
-    "explain": "Enhanced fan-out handles Kinesis; downstream bottleneck.",
+    "explain": "Enhanced fan-out eliminates the Kinesis read-side bottleneck by giving each registered consumer a dedicated 2 MB/s per-shard read throughput. If enhanced fan-out is already enabled and consumer lag persists, the bottleneck has moved downstream \u2014 to the DynamoDB write throughput (100 writes/second against provisioned capacity) rather than the Kinesis read path. The fix is to scale DynamoDB write capacity or switch to DynamoDB On-Demand mode.",
     "keywords": [
       "DynamoDB",
       "ETL",
@@ -2171,13 +2171,13 @@
     "q": "Data lake 100 TB historical. Rare queries (<1/year). All Standard. Strategy?",
     "cat": "storage-data-management",
     "options": [
-      "Copy",
+      "Keep all data in S3 Standard and rely on intelligent-tiering to manage access frequency automatically",
       "Deep Archive ($0.004/GB); Expedited for rare",
-      "Standard",
-      "Delete"
+      "Move all data to S3 Standard-IA immediately to reduce storage cost by 40% for infrequently accessed files",
+      "Delete historical data older than 2 years since rare queries can be satisfied from recent data alone"
     ],
     "answer": 1,
-    "explain": "Deep Archive cheapest for archival.",
+    "explain": "S3 Glacier Deep Archive ($0.00099/GB/month) is the optimal storage class for data accessed less than once per year, providing 99.99% durability at a fraction of S3 Standard cost ($0.023/GB/month). Expedited retrieval (1-5 minutes) is available for occasional access needs at a per-retrieval fee. Moving 100 TB from Standard to Deep Archive saves approximately $2,200/month ($2,300 vs. $100) \u2014 over $26,000/year.",
     "keywords": [
       "S3",
       "data lake",
@@ -2189,12 +2189,12 @@
     "cat": "storage-data-management",
     "options": [
       "Queuing; allocate slots or Scaling",
-      "Storage",
-      "Net",
-      "CPU"
+      "Raw S3 storage cost, which is negligible compared to the operational overhead",
+      "Measure net new records ingested per hour as the sole pipeline performance indicator",
+      "Increase CPU allocation for all Glue workers regardless of the actual bottleneck type"
     ],
     "answer": 0,
-    "explain": "Queuing at concurrency; allocate resources.",
+    "explain": "Redshift query queuing occurs when concurrent queries exceed the allocated WLM (Workload Management) queue slots. At 10 concurrent queries sharing 5 queue slots, 5 queries must wait, causing 5-minute response times versus the 30-second baseline. Solutions: increase WLM queue slots (reduces concurrency protection), enable Concurrency Scaling (automatically adds cluster capacity during bursts), or implement query routing to separate queues by query type.",
     "keywords": [
       "Redshift",
       "S3",
@@ -2207,12 +2207,12 @@
     "cat": "storage-data-management",
     "options": [
       "Queuing; Concurrency Scaling",
-      "None",
-      "Fact",
-      "Dim"
+      "No transformation is required since source and target schemas are always identical",
+      "Use a fact table in Redshift with all dimension attributes denormalized into a single wide table",
+      "Reduce dimension table cardinality by merging all slowly-changing attributes into a single column"
     ],
     "answer": 0,
-    "explain": "Queuing dominates.",
+    "explain": "When the bottleneck in Redshift is query queuing rather than query execution time, distributing dimension tables as ALL distribution (full copies on every node) and collocating fact tables by KEY distribution resolves data movement overhead \u2014 but queuing overhead dominates when 10 concurrent queries compete for 5 WLM slots. Concurrency Scaling adds burst cluster capacity to handle peak concurrency without permanently increasing cluster size.",
     "keywords": [
       "Redshift",
       "S3",
@@ -2225,13 +2225,13 @@
     "q": "DynamoDB session TTL 24 hrs. Inactive 30 hrs, return. Result?",
     "cat": "storage-data-management",
     "options": [
-      "Keep",
+      "Retain all historical raw records indefinitely in S3 without applying any lifecycle policies",
       "Delete; re-auth",
-      "Extend",
-      "Restore"
+      "Extend the Kinesis stream shard count by 10x to absorb all late-arriving records",
+      "Restore the previous DynamoDB table snapshot to roll back all recent schema changes"
     ],
     "answer": 1,
-    "explain": "TTL fixed; deleted after expiry.",
+    "explain": "DynamoDB TTL marks items for deletion after the specified Unix timestamp in the TTL attribute. Items with a 24-hour TTL are deleted within 48 hours after expiry (DynamoDB processes TTL deletions asynchronously). A user whose session TTL expired 30 hours ago will find their session item deleted and must re-authenticate to create a new session record.",
     "keywords": [
       "DynamoDB",
       "S3",
@@ -2244,12 +2244,12 @@
     "cat": "storage-data-management",
     "options": [
       "1-5ms (async); sees primary only",
-      "Sum",
-      "200",
-      "300"
+      "Aggregate all numeric fields using SUM before writing to the target to reduce output record count",
+      "Configure a 200-millisecond polling interval on the Kinesis stream consumer",
+      "Set a 300-second timeout on all Glue ETL jobs to prevent long-running transforms"
     ],
     "answer": 0,
-    "explain": "Async; sees primary latency.",
+    "explain": "DynamoDB Global Tables use asynchronous replication with typical cross-region lag of 1-5ms to seconds depending on distance. A write confirmed in us-east-1 is replicated asynchronously to us-west-2 and eu-west-1. A read from us-west-2 immediately after the us-east-1 write may return the pre-write value if replication has not completed. The strongly consistent read option only applies within the local region.",
     "keywords": [
       "S3",
       "data lake",
@@ -2260,13 +2260,13 @@
     "q": "Step Functions: Validate->Process->Notify. Validate succeeds empty. Process unnecessary. Prevent?",
     "cat": "data-operations",
     "options": [
-      "None",
-      "Manual",
+      "No transformation is required since source and target schemas are always identical",
+      "Manually inspect each record for schema compliance before writing to the target",
       "Choice; skip if empty",
-      "Always"
+      "Buffer all streaming records for 24 hours before any processing to ensure completeness"
     ],
     "answer": 2,
-    "explain": "Choice enables conditional routing.",
+    "explain": "AWS Step Functions Choice states evaluate condition expressions (e.g., IsPresent, NumericGreaterThan, StringEquals) on the state input JSON to route execution to different state paths. A Choice state checking whether the validation output contains records can route to Process when records exist and skip directly to End (or a notification state) when the dataset is empty \u2014 avoiding unnecessary Processing Lambda invocations.",
     "keywords": [
       "Step Functions",
       "data operations",
@@ -2277,13 +2277,13 @@
     "q": "MWAA 100 tasks, 1% fail, 3 retries exponential. Cost impact?",
     "cat": "data-operations",
     "options": [
-      "None",
-      "Zero",
-      "Double",
+      "No transformation is required since source and target schemas are always identical",
+      "Set all DPU workers to minimum capacity and rely on auto-scaling to add resources dynamically",
+      "Double the number of Kinesis shards every time IncomingBytes exceeds 50% of current capacity",
       "3% extra; backoff needed"
     ],
     "answer": 3,
-    "explain": "Retry cost; backoff prevents herd.",
+    "explain": "With 100 Airflow tasks running and 1% failure rate (1 task/run), 3 retries with exponential backoff add approximately 3% extra task execution cost in compute time. More importantly, exponential backoff (1s, 2s, 4s delays) prevents retry storms \u2014 if all 100 tasks fail simultaneously (e.g., upstream database outage), exponential backoff ensures retries are staggered rather than simultaneously overwhelming the recovering system.",
     "keywords": [
       "data operations",
       "monitoring"
@@ -2294,12 +2294,12 @@
     "cat": "data-operations",
     "options": [
       "1000\u00d7128MB=128GB limit; hitting ceiling",
-      "100KB",
-      "Zero",
-      "None"
+      "Limit each Kinesis record to 100KB and drop any record exceeding this size silently",
+      "Set all DPU workers to minimum capacity and rely on auto-scaling to add resources dynamically",
+      "No transformation is required since source and target schemas are always identical"
     ],
     "answer": 0,
-    "explain": "Concurrent \u00d7 memory = account pressure.",
+    "explain": "Lambda concurrent memory consumption: 1,000 concurrent executions \u00d7 128 MB each = 128 GB of total memory across the account. AWS Lambda enforces per-account and per-region memory limits. If the account is running other Lambda workloads, 128 GB of concurrent memory consumption may approach or exceed the account-level Lambda memory quota, causing invocation throttling and 429 TooManyRequests errors.",
     "keywords": [
       "AWS Batch",
       "Lambda",
@@ -2311,13 +2311,13 @@
     "q": "Lake Formation DB shared cross-account. Column security in A. B queries. See masked?",
     "cat": "data-security-governance",
     "options": [
-      "IAM",
-      "Override",
+      "Lake Formation column filters in the source account are not propagated to cross-account resource shares",
+      "The destination account can override the source account column filters using its own Lake Formation policies",
       "No; filters apply via share",
-      "Yes"
+      "All streaming records are guaranteed to arrive exactly once with no duplicates by default"
     ],
     "answer": 2,
-    "explain": "Data shares inherit filters.",
+    "explain": "AWS Lake Formation data shares propagate the column-level security filters defined in the source account (Account A) to cross-account consumers (Account B). When Account B queries the shared table through Athena, Lake Formation in Account A enforces the column filters \u2014 Account B users cannot see columns that Account A's Lake Formation policy restricts, regardless of the IAM permissions in Account B.",
     "keywords": [
       "IAM",
       "Lake Formation",

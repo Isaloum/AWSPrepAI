@@ -5,9 +5,9 @@ import { useAuth } from '../contexts/AuthContext'
 
 // Same constants + payload as Signup.tsx — proven to work
 const CHECKOUT_API = import.meta.env.VITE_CHECKOUT_API as string || 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
-const PAID_PLANS = new Set(['monthly', 'yearly', 'lifetime'])
+const PAID_PLANS = new Set(['monthly', 'bundle', 'yearly', 'lifetime'])
 
-const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, yearly: 2, lifetime: 3 }
+const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, bundle: 1.5, yearly: 2, lifetime: 3 }
 
 const DOWNGRADE_LABEL: Record<string, string> = {
   Free:     'Switch to Free',
@@ -351,6 +351,52 @@ export default function Pricing() {
                         ? DOWNGRADE_LABEL[plan.name]
                         : plan.cta}
                 </button>
+
+                {/* 3-Cert Bundle add-on — shown inside the Monthly card */}
+                {plan.name === 'Monthly' && (
+                  <div style={{ marginTop: '1rem', borderTop: '1px dashed #e5e7eb', paddingTop: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.82rem', color: '#111827' }}>🎯 3-Cert Bundle</span>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111827' }}>$17<span style={{ fontWeight: 400, fontSize: '0.72rem', color: '#6b7280' }}>/mo</span></span>
+                    </div>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 0.6rem', lineHeight: 1.5 }}>
+                      Pick any 3 certs. Switch your selection every 30 days.
+                    </p>
+                    {tier === 'bundle' ? (
+                      <div style={{ textAlign: 'center', padding: '0.5rem', background: '#d1fae5', borderRadius: '0.6rem', fontSize: '0.78rem', fontWeight: 700, color: '#15803d', border: '1.5px solid #86efac' }}>
+                        ✓ Your Current Plan
+                      </div>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          if (user?.email) {
+                            setCheckingOut('bundle')
+                            try {
+                              const res = await fetch(CHECKOUT_API, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ plan: 'bundle', email: user.email }),
+                              })
+                              const data = await res.json()
+                              if (data.url) { window.location.href = data.url; return }
+                              alert('Checkout error. Please try again.')
+                            } catch { alert('Unable to start checkout.') }
+                            finally { setCheckingOut(null) }
+                          } else {
+                            navigate('/signup?plan=bundle')
+                          }
+                        }}
+                        style={{
+                          width: '100%', padding: '0.6rem', background: '#0f766e', color: '#fff',
+                          fontWeight: 700, fontSize: '0.8rem', border: 'none', borderRadius: '0.6rem',
+                          cursor: 'pointer', opacity: checkingOut === 'bundle' ? 0.7 : 1,
+                        }}
+                      >
+                        {checkingOut === 'bundle' ? '⏳ Opening checkout…' : 'Get 3-Cert Bundle →'}
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )
           })}

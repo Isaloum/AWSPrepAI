@@ -70,6 +70,22 @@ export async function saveExamResult(
   }, token)
 }
 
+// ── Bundle cert selection (bundle tier: 3 certs, 30-day change window) ───────
+
+export async function getBundleCerts(token: string) {
+  const { data } = await call('get_bundle_certs', null, token)
+  return data as { cert_ids: string[]; selected_at: string } | null
+}
+
+export async function setBundleCerts(certIds: string[], token: string) {
+  await call('set_bundle_certs', { cert_ids: certIds }, token)
+}
+
+export function canChangeBundleCerts(selectedAt: string): boolean {
+  const diffMs = Date.now() - new Date(selectedAt).getTime()
+  return diffMs >= 30 * 24 * 60 * 60 * 1000
+}
+
 /** Legacy single-question update — kept for backward compat */
 export async function updateProgress(certId: string, correct: boolean, token: string) {
   await call('update_progress', { cert_id: certId, correct }, token)

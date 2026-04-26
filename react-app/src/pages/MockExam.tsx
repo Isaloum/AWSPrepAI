@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
-import { saveExamResult, getMonthlyCert } from '../lib/db'
+import { saveExamResult, getMonthlyCert, getBundleCerts } from '../lib/db'
 
 interface Question {
   cat: string
@@ -73,6 +73,22 @@ export default function MockExam() {
     }).catch(() => {
       setMonthlyLoadFailed(true)
       setMonthlyLoaded(true)
+    })
+  }, [user, tier])
+
+  // Bundle cert gating
+  const [bundleSelection, setBundleSelection] = useState<{ cert_ids: string[] } | null>(null)
+  const [bundleLoaded, setBundleLoaded] = useState(false)
+  const [bundleLoadFailed, setBundleLoadFailed] = useState(false)
+
+  useEffect(() => {
+    if (!user || tier !== 'bundle') { setBundleLoaded(true); return }
+    getBundleCerts(user.accessToken).then((data) => {
+      setBundleSelection(data)
+      setBundleLoaded(true)
+    }).catch(() => {
+      setBundleLoadFailed(true)
+      setBundleLoaded(true)
     })
   }, [user, tier])
 
@@ -237,8 +253,77 @@ export default function MockExam() {
     }
   }
 
+  // Bundle cert gate
+  if (tier === 'bundle' && bundleLoaded) {
+    if (bundleLoadFailed) {
+      return (
+        <Layout>
+          <div style={{ maxWidth: '540px', margin: '4rem auto', padding: '0 1rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Could Not Verify Your Bundle</h1>
+            <p style={{ color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              We couldn't verify your selected certifications. Please try again.
+            </p>
+            <button onClick={() => window.location.reload()}
+              style={{ padding: '0.875rem 2rem', background: '#0f766e', color: '#fff', borderRadius: '0.875rem', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '1rem' }}>
+              Retry
+            </button>
+          </div>
+        </Layout>
+      )
+    }
+    if (!bundleSelection) {
+      return (
+        <Layout>
+          <div style={{ maxWidth: '540px', margin: '4rem auto', padding: '0 1rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Pick Your 3 Certs First</h1>
+            <p style={{ color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              Go to your dashboard to choose the 3 certifications you want to unlock.
+            </p>
+            <Link to="/dashboard"
+              style={{ display: 'inline-block', padding: '0.875rem 2rem', background: '#0f766e', color: '#fff', borderRadius: '0.875rem', fontWeight: 800, textDecoration: 'none', fontSize: '1rem' }}>
+              Choose My 3 Certs →
+            </Link>
+          </div>
+        </Layout>
+      )
+    }
+    if (!bundleSelection.cert_ids.includes(certId || '')) {
+      return (
+        <Layout>
+          <div style={{ maxWidth: '540px', margin: '4rem auto', padding: '0 1rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Not in Your Bundle</h1>
+            <p style={{ color: '#6b7280', marginBottom: '1rem', lineHeight: 1.6 }}>
+              Your 3-Cert Bundle covers:
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              {bundleSelection.cert_ids.map(id => {
+                const m = certMeta[id] || { name: id, code: '', icon: '📝' }
+                return (
+                  <Link key={id} to={`/mock-exam/${id}`} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: '#f0fdfa', border: '1px solid #5eead4', borderRadius: '0.75rem', textDecoration: 'none' }}>
+                    <span style={{ fontSize: '1.5rem' }}>{m.icon}</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontWeight: 700, color: '#0f766e', fontSize: '0.9rem' }}>{m.name}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#0d9488' }}>{m.code}</div>
+                    </div>
+                    <span style={{ marginLeft: 'auto', color: '#0f766e' }}>→</span>
+                  </Link>
+                )
+              })}
+            </div>
+            <Link to="/dashboard" style={{ display: 'block', fontSize: '0.85rem', color: '#0f766e', fontWeight: 600, textDecoration: 'none' }}>
+              Manage your bundle →
+            </Link>
+          </div>
+        </Layout>
+      )
+    }
+  }
+
   // Loading
-  if (questions.length === 0 || (tier === 'monthly' && !monthlyLoaded)) {
+  if (questions.length === 0 || (tier === 'monthly' && !monthlyLoaded) || (tier === 'bundle' && !bundleLoaded)) {
     return (
       <Layout>
         <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

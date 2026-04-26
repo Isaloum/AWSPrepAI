@@ -258,7 +258,7 @@
     "cat": "threat-detection",
     "q": "Macie is finding sensitive data stored in S3 buckets across your account. How should you remediate at scale?",
     "options": [
-      "Disable Macie",
+      "Disable Amazon Macie to prevent it from generating findings that require investigation",
       "Manually review each bucket",
       "Use Macie's built-in remediation to automatically encrypt all findings",
       "Create an EventBridge rule that triggers Lambda to apply bucket encryption, enable Object Lock, and apply bucket policies to block unencrypted uploads"
@@ -484,7 +484,7 @@
     "cat": "threat-detection",
     "q": "Inspector detects Severity=MEDIUM CVE in production Lambda running once per day. Should you patch immediately?",
     "options": [
-      "Wait a week",
+      "Defer investigation until the weekly security review meeting scheduled for next Friday",
       "No, MEDIUM is not critical",
       "MEDIUM vulnerabilities don't matter",
       "Yes; deploy patch to new version before next execution"
@@ -596,7 +596,7 @@
       "No; initial GuardDuty findings are often backlog (past 6-7 days reconstructed). Many are benign baseline activities. Triage by severity and recency"
     ],
     "answer": 3,
-    "explain": "GuardDuty backlogs initial findings. Expect volume spike. Triage is necessary.",
+    "explain": "GuardDuty processes historical CloudTrail, VPC Flow Logs, and DNS logs from the time it is enabled, which causes a backlog of findings to surface rapidly in the first 24-72 hours. This initial volume spike is expected and does not indicate an active ongoing attack \u2014 it reflects historical suspicious patterns detected retroactively. Security teams should triage by severity (HIGH first), distinguish recurring alerts from one-time historical events, and suppress known-good findings to establish a baseline.",
     "keywords": [
       "GuardDuty"
     ]
@@ -638,7 +638,7 @@
     "q": "Detective investigation of a suspected EC2 compromise reveals 0 suspicious API calls in CloudTrail but high network traffic to unknown IPs in Flow Logs. What's happening?",
     "options": [
       "Likely C2 communication or data exfiltration via non-AWS APIs; inspect network traffic, isolate instance, conduct forensics",
-      "No incident",
+      "Log the alert as a false positive without any investigation or escalation procedure",
       "GuardDuty is wrong",
       "Only CloudTrail matters"
     ],
@@ -674,7 +674,7 @@
     "q": "Macie is finding sensitive data in S3. Many findings are false positives (regular numbers detected as credit cards). How do you tune Macie?",
     "options": [
       "Create custom data identifier to exclude false positive patterns, tune sensitivity settings, create custom suppression rules",
-      "Disable Macie",
+      "Disable Amazon Macie to prevent it from generating findings that require investigation",
       "Macie can't be tuned",
       "Ignore all findings"
     ],
@@ -689,7 +689,7 @@
     "cat": "threat-detection",
     "q": "Inspector found critical CVE in production database instance (not part of ASG; singleton). How do you minimize downtime?",
     "options": [
-      "Accept the CVE",
+      "Accept the CVE as an acceptable risk given the internal nature of the affected service",
       "Patch immediately (downtime)",
       "Create read replica, patch replica first, test, failover to replica, patch original, failover back",
       "Delete and recreate"
@@ -1022,7 +1022,7 @@
       "Keep all in Standard indefinitely"
     ],
     "answer": 2,
-    "explain": "Lifecycle policies optimize costs while S3 Object Lock ensures compliance.",
+    "explain": "S3 Lifecycle policies automate cost-optimized storage transitions: CloudTrail logs move from Standard to Glacier after 30 days (reducing storage cost by ~75%) while remaining accessible for compliance queries using Glacier Instant Retrieval. S3 Object Lock in compliance mode enforces immutable retention \u2014 logs cannot be deleted or modified before the retention period expires, satisfying SEC Rule 17a-4 and similar regulations requiring tamper-proof audit log retention.",
     "keywords": [
       "CloudTrail",
       "IAM",
@@ -1102,7 +1102,7 @@
       "Assume IP is CDN"
     ],
     "answer": 1,
-    "explain": "S3 logs and CloudTrail provide complementary details on object access.",
+    "explain": "S3 server access logs record object-level GET, PUT, and DELETE operations with the requester IP, user agent, and S3 key accessed. AWS CloudTrail data events provide the complementary picture: the IAM principal (ARN) that made the request, the authentication method, and cross-account access details. Using both together identifies both what objects were accessed (S3 logs) and by which authenticated identity (CloudTrail), enabling complete forensic reconstruction of the access event.",
     "keywords": [
       "CloudTrail",
       "IAM",
@@ -1157,7 +1157,7 @@
       "Accept high costs"
     ],
     "answer": 0,
-    "explain": "CloudTrail filtering maintains audit trail while controlling costs.",
+    "explain": "Filtering CloudTrail data events by resource ARN or using event selectors to exclude high-volume low-value events (like Lambda invocations from internal automation) maintains a meaningful audit trail while preventing log storage costs from becoming prohibitive. Athena partition projection on the CloudTrail S3 bucket enables cost-efficient querying of the filtered logs without processing unnecessary log data.",
     "keywords": [
       "CloudTrail",
       "CloudWatch",
@@ -1177,7 +1177,7 @@
       "All accounts auto-share data"
     ],
     "answer": 2,
-    "explain": "Config aggregation requires explicit authorization and IAM permissions.",
+    "explain": "AWS Config aggregators collect configuration data from member accounts via explicit authorization \u2014 the member account must grant the aggregator account permission using an authorization resource or through AWS Organizations service-linked roles. If CloudTrail shows that Config is running but no data appears in the aggregator, the most likely cause is missing authorization or an IAM permission boundary preventing Config from delivering data to the central account.",
     "keywords": [
       "API",
       "AWS Config",
@@ -1234,7 +1234,7 @@
       "Make bucket public"
     ],
     "answer": 0,
-    "explain": "S3 bucket policies must explicitly restrict access to authorized principals.",
+    "explain": "A central S3 logging bucket receiving CloudTrail logs from 100 accounts requires a bucket policy that explicitly allows PutObject from each member account's CloudTrail service principal (delivery.logs.amazonaws.com) or from an AWS Organizations condition. Without an explicit allow for each source account, CloudTrail cannot deliver logs \u2014 S3 bucket policies default to deny unless explicitly permitted, so the bucket owner's permissions do not automatically extend to cross-account CloudTrail delivery.",
     "keywords": [
       "CloudTrail",
       "IAM",
@@ -1266,11 +1266,11 @@
     "options": [
       "Contact AWS DRT, enable WAF rate-limiting, verify cost protection enabled",
       "Disable CloudFront (breaks app)",
-      "Do nothing",
+      "Accept the current security posture and document the finding as a known acceptable risk",
       "Manually block individual IPs"
     ],
     "answer": 0,
-    "explain": "Shield Advanced DRT + WAF rate-limiting provide expert-assisted mitigation.",
+    "explain": "Shield Advanced includes access to the AWS DDoS Response Team (DRT), which can directly engage during active attacks to write custom WAF rules and adjust Shield mitigations in real time. For a large-scale DDoS attack spanning 10,000+ source IPs (making IP-based blocking impractical), the DRT combines WAF rate-based rules (limiting requests per IP per minute), geographic blocking, and Challenge/CAPTCHA actions to distinguish legitimate traffic from attack traffic at the CloudFront edge.",
     "keywords": [
       "CloudFront",
       "IAM",
@@ -1289,7 +1289,7 @@
       "IP-based rules only"
     ],
     "answer": 1,
-    "explain": "Stateful rules enable application-layer inspection for domain-based threats.",
+    "explain": "AWS Network Firewall stateful rules (Suricata-compatible) inspect packet payloads at the application layer, enabling detection of domain-based data exfiltration (e.g., DNS tunneling, HTTP requests to known-malicious domains). Stateless rules process only packet headers (source IP, destination port) without inspecting application-layer content. Stateful inspection across all three VPCs via a centralized inspection VPC provides comprehensive east-west and north-south traffic analysis.",
     "keywords": [
       "IAM",
       "security"
@@ -1302,10 +1302,10 @@
       "Maybe, depends on IP",
       "Yes, SG overrides NACL",
       "No, NACL evaluated first, stateless DENY blocks traffic at network layer",
-      "Only IPv6"
+      "Restrict all VPC traffic to IPv6-only to prevent the security group rule from applying to IPv4 SSH"
     ],
     "answer": 2,
-    "explain": "Network ACLs evaluated before security groups. NACL DENY is final.",
+    "explain": "Network ACLs are evaluated before security groups in AWS traffic processing. A NACL DENY rule is processed first and is final \u2014 if a NACL explicitly denies port 22 inbound, the traffic never reaches the security group evaluation stage. This means a security group allowing SSH from 0.0.0.0/0 is irrelevant when a NACL DENY rule blocks the same traffic. NACLs are stateless (each direction must be explicitly configured), unlike security groups which are stateful.",
     "keywords": [
       "IAM",
       "security"
@@ -1412,7 +1412,7 @@
     "options": [
       "Stateful rules detecting DNS pattern anomalies (long responses, high frequency)",
       "Domain blocking only",
-      "Block all DNS",
+      "Block all outbound DNS resolution from the VPC to prevent data exfiltration via DNS tunneling",
       "DNS tunneling undetectable"
     ],
     "answer": 0,
@@ -1449,7 +1449,7 @@
       "Succeeds due to SG allow"
     ],
     "answer": 1,
-    "explain": "Network ACLs evaluated before security groups. NACL DENY takes precedence.",
+    "explain": "Network ACLs are evaluated before security groups and use a numbered rule order (lowest number processed first). An explicit DENY in a NACL takes precedence over any ALLOW in a security group because the NACL is processed first. For the specific IP attempting SSH, the NACL's explicit DENY rule terminates evaluation and blocks the connection before it reaches the instance \u2014 the security group's allow rule is never evaluated for that traffic.",
     "keywords": [
       "IAM",
       "security"
@@ -1465,7 +1465,7 @@
       "Origin Shield, restrict SG to CloudFront IPs, Network Firewall block direct origin IPs"
     ],
     "answer": 3,
-    "explain": "CloudFront can be bypassed. Origin hardening requires multi-layer controls.",
+    "explain": "When CloudFront is placed in front of an NLB for WAF protection, the NLB's public IP or DNS name remains directly accessible to attackers who bypass CloudFront. Hardening the origin requires: configuring the NLB to only accept traffic from CloudFront's managed prefix list (IP ranges), using AWS WAF origin verification headers (CloudFront adds a custom header with a secret value that the origin validates), and optionally using AWS PrivateLink to make the NLB origin non-public.",
     "keywords": [
       "CloudFront",
       "IAM",
@@ -1485,7 +1485,7 @@
       "Depends on rule group type"
     ],
     "answer": 1,
-    "explain": "WAF evaluates rules in priority order. First match determines action.",
+    "explain": "AWS WAF evaluates WebACL rules in ascending priority order (lowest number first). The first rule that matches a request determines the action taken \u2014 subsequent rules are not evaluated for that request. If Rule 1 (priority 1) ALLOWs traffic matching a pattern and Rule 2 (priority 2) DENYs the same traffic, requests matching both rules will be ALLOWed because Rule 1 is evaluated first and terminates evaluation. To enforce the DENY, assign it a lower priority number (e.g., priority 1 for DENY, priority 2 for ALLOW).",
     "keywords": [
       "IAM",
       "security"
@@ -1501,7 +1501,7 @@
       "Disable entire rule group"
     ],
     "answer": 0,
-    "explain": "Suricata rules can be selectively disabled to reduce false positives.",
+    "explain": "AWS Network Firewall Suricata-compatible rules can be selectively disabled by suppressing specific rule SIDs without deleting or modifying the rule group. This allows security teams to reduce false positives on legitimate traffic patterns while preserving the broader ruleset. Alternatively, creating a rule that explicitly ALLOWs the legitimate traffic pattern before the Suricata detection rule processes it prevents the false positive from triggering.",
     "keywords": [
       "IAM",
       "security"
@@ -1607,7 +1607,7 @@
       "Developer assumes and can terminate"
     ],
     "answer": 0,
-    "explain": "Trust policy conditions are prerequisites. MFA enforced before role assumption.",
+    "explain": "IAM role trust policy conditions (such as aws:MultiFactorAuthPresent: 'true') are evaluated during the AssumeRole API call \u2014 before the role's permission policy is checked. If the trust policy requires MFA and the developer's session does not have MFA authentication, AssumeRole returns an Access Denied error regardless of what the role's permission policy allows. This ensures that high-privilege roles (those with EC2:TerminateInstances) can only be assumed by authenticated, MFA-verified identities.",
     "keywords": [
       "EC2"
     ]
@@ -1632,7 +1632,7 @@
     "cat": "iam",
     "q": "Permission boundary denies S3 access. Developer creates role with AdministratorAccess. Can role access S3?",
     "options": [
-      "Yes, with MFA",
+      "Yes, the developer can assume the role even without MFA if they use the AWS console login flow",
       "Yes, AdministratorAccess overrides boundaries",
       "No, boundary is maximum permission set; cannot exceed",
       "Depends on resource-based policies"
@@ -1713,7 +1713,7 @@
     "options": [
       "SCPs always restrict SLRs",
       "SLRs don't exist (false)",
-      "Unsolvable bug",
+      "This is a known AWS Suricata bug that cannot be fixed and requires accepting the false positives",
       "SCP doesn't restrict SLR permissions (granted via service trust); adjust SCP for non-SLR EC2 or exempt SLR"
     ],
     "answer": 3,
@@ -1745,7 +1745,7 @@
       "CreateUser with MFA",
       "Only CreateAccessKey (session policy is intersection with user perms)",
       "Both CreateAccessKey and CreateUser",
-      "Neither action"
+      "Take no action since the security group and NACL controls are independent and do not interact"
     ],
     "answer": 1,
     "explain": "Session policies intersect with user permissions. Session policy can only restrict.",
@@ -1825,7 +1825,7 @@
       "Give root account exceptions (anti-pattern)"
     ],
     "answer": 0,
-    "explain": "SCPs apply per OU. Development OUs can have different policies than production.",
+    "explain": "AWS Organizations SCPs are attached at the OU level and apply to all accounts within that OU. By attaching the CloudTrail protect SCP to the Production OU but not the Development OU, production accounts cannot disable or delete CloudTrail while development account administrators retain the flexibility to manage CloudTrail configuration during testing and experimentation \u2014 without modifying the SCP or removing accounts from the organization.",
     "keywords": [
       "CloudTrail",
       "IAM",
@@ -1957,7 +1957,7 @@
       "Give everyone root account access (insecure)"
     ],
     "answer": 1,
-    "explain": "KMS grants provide fine-grained temporary access with optional constraints.",
+    "explain": "AWS KMS grants are temporary, delegated permissions that allow a resource (like an Operations IAM role) to use a KMS key for specific operations (Encrypt, Decrypt, GenerateDataKey) without modifying the key's permanent resource policy. Grants can include constraints (limiting usage to specific encryption contexts) and can be retired programmatically when access is no longer needed. This is ideal for cross-team scenarios where the Security team manages key policy but Operations needs time-limited access.",
     "keywords": [
       "KMS",
       "encryption"
@@ -2548,7 +2548,7 @@
       "Make bucket public"
     ],
     "answer": 0,
-    "explain": "S3 bucket policies must explicitly restrict access to authorized principals.",
+    "explain": "A centralized logging S3 bucket receiving CloudTrail from 100 member accounts needs a bucket policy with an explicit Allow statement for CloudTrail's service principal (delivery.logs.amazonaws.com) with a StringEquals condition on aws:SourceAccount or aws:SourceOrgID. Without this explicit cross-account grant, CloudTrail deliveries from member accounts are blocked by the bucket's default-deny behavior, even though the bucket owner has full access.",
     "keywords": [
       "CloudTrail",
       "S3",
@@ -2665,7 +2665,7 @@
       "Always a false positive",
       "Either legitimate load spike (check business context), or Lambda function compromised (query CloudTrail for what data was accessed, throttle function, review code)",
       "Lambda functions can't be compromised",
-      "Ignore spikes"
+      "Dismiss spike findings as expected noise from normal CloudFront traffic fluctuations"
     ],
     "answer": 1,
     "explain": "Unusual behavior needs context. Legitimate spikes or compromise. CloudTrail reveals data accessed.",

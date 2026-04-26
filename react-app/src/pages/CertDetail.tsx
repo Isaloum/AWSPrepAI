@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import Paywall from '../components/Paywall'
 import { useAuth } from '../contexts/AuthContext'
-import { getFreeUsage, updateFreeUsage, getMonthlyCert, setMonthlyCert, updateProgress } from '../lib/db'
+import { getFreeUsage, updateFreeUsage, getMonthlyCert, setMonthlyCert, updateProgress, getBundleCerts } from '../lib/db'
 import { updateStreak } from '../lib/streak'
 
 interface Question {
@@ -78,6 +78,11 @@ export default function CertDetail() {
   const [monthlyLoaded, setMonthlyLoaded] = useState(false)
   const [monthlyLoadFailed, setMonthlyLoadFailed] = useState(false)
   const [switching, setSwitching] = useState(false)
+
+  // Bundle cert gating
+  const [bundleSelection, setBundleSelection] = useState<{ cert_ids: string[] } | null>(null)
+  const [bundleLoaded, setBundleLoaded] = useState(false)
+  const [bundleLoadFailed, setBundleLoadFailed] = useState(false)
   const [showHint, setShowHint] = useState(false)
 
   const meta = certMeta[certId || ''] || { name: 'Unknown', code: '', icon: '❓', domains: {} }
@@ -121,6 +126,18 @@ export default function CertDetail() {
       // DB unavailable — block access, do NOT allow bypass
       setMonthlyLoadFailed(true)
       setMonthlyLoaded(true)
+    })
+  }, [user, tier])
+
+  // Load bundle cert selection (bundle tier only)
+  useEffect(() => {
+    if (!user || tier !== 'bundle') { setBundleLoaded(true); return }
+    getBundleCerts(user.accessToken).then((data) => {
+      setBundleSelection(data)
+      setBundleLoaded(true)
+    }).catch(() => {
+      setBundleLoadFailed(true)
+      setBundleLoaded(true)
     })
   }, [user, tier])
 
@@ -204,6 +221,7 @@ export default function CertDetail() {
     || (!loading && !user)
     || (tier === 'free' && !usageLoaded)
     || (tier === 'monthly' && !monthlyLoaded)
+    || (tier === 'bundle' && !bundleLoaded)
 
   if (isLoading) {
     return (
@@ -278,6 +296,81 @@ export default function CertDetail() {
             <Link to="/pricing"
               style={{ display: 'block', fontSize: '0.82rem', color: '#2563eb', fontWeight: 600, textDecoration: 'none' }}>
               Upgrade to Yearly for all 12 certs →
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Bundle: DB load failed — block access ──
+  if (tier === 'bundle' && bundleLoadFailed) {
+    return (
+      <Layout>
+        <div style={{ maxWidth: '480px', margin: '4rem auto', padding: '0 1rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Could Not Verify Your Bundle</h1>
+          <p style={{ color: '#6b7280', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+            We couldn't verify your selected certifications. Please try again.
+          </p>
+          <button onClick={() => window.location.reload()}
+            style={{ width: '100%', padding: '0.875rem', background: '#0f766e', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>
+            Retry
+          </button>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Bundle: no certs selected yet — send to dashboard to pick ──
+  if (tier === 'bundle' && bundleLoaded && !bundleSelection) {
+    return (
+      <Layout>
+        <div style={{ maxWidth: '520px', margin: '4rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.5rem', padding: '3rem 2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Pick Your 3 Certs First</h1>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.75rem' }}>
+              Your 3-Cert Bundle is active! Go to your dashboard to choose the 3 certifications you want to unlock.
+            </p>
+            <Link to="/dashboard"
+              style={{ display: 'block', padding: '0.875rem', background: '#0f766e', color: '#fff', borderRadius: '0.875rem', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}>
+              Choose My 3 Certs →
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // ── Bundle: cert not in selected 3 — locked ──
+  if (tier === 'bundle' && bundleSelection && !bundleSelection.cert_ids.includes(certId || '')) {
+    return (
+      <Layout>
+        <div style={{ maxWidth: '520px', margin: '4rem auto', padding: '0 1.5rem', textAlign: 'center' }}>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1.5rem', padding: '3rem 2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+            <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#111827', marginBottom: '0.5rem' }}>Not in Your Bundle</h1>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.5rem' }}>
+              Your 3-Cert Bundle covers:
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              {bundleSelection.cert_ids.map(id => {
+                const m = certMeta[id] || { name: id, code: '', icon: '📋' }
+                return (
+                  <Link key={id} to={`/cert/${id}`} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: '#f0fdfa', border: '1px solid #5eead4', borderRadius: '0.75rem', textDecoration: 'none' }}>
+                    <span style={{ fontSize: '1.5rem' }}>{m.icon}</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontWeight: 700, color: '#0f766e', fontSize: '0.9rem' }}>{m.name}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#0d9488' }}>{m.code}</div>
+                    </div>
+                    <span style={{ marginLeft: 'auto', color: '#0f766e' }}>→</span>
+                  </Link>
+                )
+              })}
+            </div>
+            <Link to="/dashboard" style={{ display: 'block', fontSize: '0.82rem', color: '#0f766e', fontWeight: 600, textDecoration: 'none' }}>
+              Manage your bundle selection →
             </Link>
           </div>
         </div>

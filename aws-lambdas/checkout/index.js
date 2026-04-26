@@ -6,12 +6,14 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const PRICE_IDS = {
   monthly:  process.env.STRIPE_PRICE_MONTHLY  || 'price_1TB1YCE9neqrFM5LDbyzVSnv',
+  bundle:   process.env.STRIPE_PRICE_BUNDLE   || 'price_BUNDLE_REPLACE_ME', // set STRIPE_PRICE_BUNDLE Lambda env var
   yearly:   process.env.STRIPE_PRICE_YEARLY   || 'price_1TED8EE9neqrFM5LCIL9P0Yp',
   lifetime: process.env.STRIPE_PRICE_LIFETIME || 'price_1TED9ME9neqrFM5LeKAAEWTO',
 };
 
 const PLAN_MODES = {
   monthly:  'subscription',
+  bundle:   'subscription',
   yearly:   'subscription',
   lifetime: 'payment',
 };
@@ -64,7 +66,10 @@ exports.handler = async (event) => {
       line_items: [{ price: PRICE_IDS[plan], quantity: 1 }],
       mode,
       metadata: { product: 'awsprepai_premium', tier: plan },
-      success_url: `${appUrl}/certifications?upgrade=success`,
+      // Bundle users go to dashboard to pick their 3 certs immediately after payment
+      success_url: plan === 'bundle'
+        ? `${appUrl}/dashboard?upgrade=bundle`
+        : `${appUrl}/certifications?upgrade=success`,
       cancel_url: `${appUrl}/pricing?cancelled=1`,
     };
 

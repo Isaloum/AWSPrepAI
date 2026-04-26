@@ -305,7 +305,7 @@ export default function Keywords() {
               {keywords.length} exam scenarios · {CATEGORIES.length - 1} categories · SAA-C03 aligned
             </p>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#16a34a' }}>
-              ✅ Patterns extracted from 1,098 real Tutorials Dojo &amp; Udemy exam questions
+              ✅ Patterns extracted from 1,098 real SAA-C03 practice questions
             </div>
           </div>
 

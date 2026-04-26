@@ -114,12 +114,8 @@ export default function StudyGuide() {
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#16a34a' }}>
-              ✅ 1,098 real Tutorials Dojo &amp; Udemy SAA-C03 questions analyzed
+              ✅ 1,098 scenario-based SAA-C03 questions with detailed explanations
             </div>
-            <a href="https://portal.tutorialsdojo.com/courses/aws-certified-solutions-architect-associate-exam-video-course/" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#1d4ed8', textDecoration: 'none' }}>
-              📚 Study Deeper → Tutorials Dojo Course ↗
-            </a>
           </div>
         </div>
 

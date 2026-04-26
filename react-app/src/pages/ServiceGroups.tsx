@@ -378,7 +378,7 @@ export default function ServiceGroups() {
           Not what each service is — but <strong style={{ color: '#fff' }}>when to use it</strong> and <strong style={{ color: '#fff' }}>how it differs</strong> from the others. Built for SAA-C03.
         </p>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '999px', padding: '4px 14px', fontSize: '0.78rem', fontWeight: 700, color: '#4ade80', marginBottom: '1rem' }}>
-          ✅ Service selection patterns from 1,098 real Tutorials Dojo &amp; Udemy exam questions
+          ✅ Service selection patterns from 1,098 real SAA-C03 practice questions
         </div>
 
         {/* Domain filter tabs */}

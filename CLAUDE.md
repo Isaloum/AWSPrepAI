@@ -179,6 +179,42 @@ After deploys, always test in a **fresh incognito window**. Old bundles are aggr
 
 ---
 
+## ✅ Built April 26, 2026 — 3-Cert Bundle
+
+| # | Item | Details |
+|---|------|---------|
+| 1 | DynamoDB table | `awsprepai-bundle-certs` (user_id PK) — stores cert_ids (list of 3), selected_at |
+| 2 | awsprepai-db Lambda | Added `get_bundle_certs` and `set_bundle_certs` actions |
+| 3 | checkout Lambda | Added `bundle` plan → `STRIPE_PRICE_BUNDLE` env var + subscription mode + success redirects to `/dashboard?upgrade=bundle` |
+| 4 | AuthContext.tsx | Added `bundle` to tier type union |
+| 5 | db.ts | Added `getBundleCerts()`, `setBundleCerts()`, `canChangeBundleCerts()` |
+| 6 | Pricing.tsx | Bundle add-on section inside Monthly card (teal button, $17/mo) |
+| 7 | Dashboard.tsx | Bundle cert picker UI: pick 3 from 12 → confirm → 30-day change window |
+| 8 | CertDetail.tsx | Bundle gating: DB fail blocks, no certs → /dashboard, cert not in 3 → locked screen |
+| 9 | MockExam.tsx | Bundle gating: same pattern as CertDetail |
+
+### ⚠️ Bundle Setup — One-Time Manual Steps
+1. **DynamoDB table** (run from your terminal):
+   ```bash
+   aws dynamodb create-table --table-name awsprepai-bundle-certs \
+     --attribute-definitions AttributeName=user_id,AttributeType=S \
+     --key-schema AttributeName=user_id,KeyType=HASH \
+     --billing-mode PAY_PER_REQUEST --region us-east-1
+   ```
+2. **Stripe price ID**: Stripe → Products → 3-Cert Bundle → click the $17/mo price → copy `price_xxx`
+3. **Set Lambda env var**: `STRIPE_PRICE_BUNDLE=price_xxx` on `awsprepai-checkout`
+4. **Deploy Lambdas**: see deploy commands below
+
+### Bundle Plan — How It Works
+- `tier === 'bundle'` → user picks 3 certs stored in `awsprepai-bundle-certs` DynamoDB
+- Certs selected AFTER payment, from Dashboard (redirected to `/dashboard?upgrade=bundle`)
+- Change window: 30 days from `selected_at` (`canChangeBundleCerts()` in db.ts)
+- Gated in: `CertDetail.tsx` AND `MockExam.tsx`
+- DB failure = access BLOCKED with retry screen (never bypassed)
+- `isFullAccess = yearly || lifetime` — bundle does NOT grant full access
+
+---
+
 ## ✅ Built April 25, 2026
 
 | # | Item | Details |

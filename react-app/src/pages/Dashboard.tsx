@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
-import { getMonthlyCert, getAllProgress, type CertProgress } from '../lib/db'
+import { getMonthlyCert, getAllProgress, getBundleCerts, setBundleCerts, canChangeBundleCerts, type CertProgress } from '../lib/db'
 import { getStreak } from '../lib/streak'
 import { getMFAStatus, setupTOTP, verifyAndEnableTOTP, disableTOTP } from '../lib/cognito'
 import QRCode from 'qrcode'
@@ -60,10 +60,11 @@ const CERTS = [
 ]
 
 const tierInfo: Record<string, { label: string; color: string; bg: string; desc: string }> = {
-  free:     { label: '🆓 Free Plan',     color: '#374151', bg: '#f3f4f6', desc: '20 questions per certification' },
-  monthly:  { label: '📦 Monthly Plan',  color: '#1d4ed8', bg: '#eff6ff', desc: '1 certification at a time · 1 switch per month' },
-  yearly:   { label: '📅 Yearly Plan',   color: '#7c3aed', bg: '#f5f3ff', desc: 'Full access, best annual value' },
-  lifetime: { label: '🔥 Lifetime Plan', color: '#1d4ed8', bg: '#eff6ff', desc: 'Pay once, access forever' },
+  free:     { label: '🆓 Free Plan',        color: '#374151', bg: '#f3f4f6', desc: '20 questions per certification' },
+  monthly:  { label: '📦 Monthly Plan',     color: '#1d4ed8', bg: '#eff6ff', desc: '1 certification at a time · 1 switch per month' },
+  bundle:   { label: '🎯 3-Cert Bundle',    color: '#0f766e', bg: '#f0fdfa', desc: '3 certifications at a time · change every 30 days' },
+  yearly:   { label: '📅 Yearly Plan',      color: '#7c3aed', bg: '#f5f3ff', desc: 'Full access, best annual value' },
+  lifetime: { label: '🔥 Lifetime Plan',    color: '#1d4ed8', bg: '#eff6ff', desc: 'Pay once, access forever' },
 }
 
 export default function Dashboard() {
@@ -71,6 +72,10 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const streak = getStreak()
   const [monthlyCert, setMonthlyCert] = useState<{ cert_id: string; selected_at: string } | null | undefined>(undefined)
+  const [bundleCerts, setBundleCertsState] = useState<{ cert_ids: string[]; selected_at: string } | null | undefined>(undefined)
+  const [bundleSelecting, setBundleSelecting] = useState<string[]>([])
+  const [bundleSaving, setBundleSaving] = useState(false)
+  const [bundleError, setBundleError] = useState('')
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState('')
@@ -103,6 +108,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user || tier !== 'monthly') { setMonthlyCert(null); return }
     getMonthlyCert(user.accessToken).then((data) => setMonthlyCert(data ?? null)).catch(() => setMonthlyCert(null))
+  }, [user, tier])
+
+  useEffect(() => {
+    if (!user || tier !== 'bundle') { setBundleCertsState(null); return }
+    getBundleCerts(user.accessToken).then((data) => setBundleCertsState(data ?? null)).catch(() => setBundleCertsState(null))
   }, [user, tier])
 
   useEffect(() => {
@@ -260,6 +270,18 @@ export default function Dashboard() {
               )}
             </div>
           )}
+          {tier === 'bundle' && (
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#0f766e', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
+                ↑ Upgrade to Yearly
+              </Link>
+              {CANCEL_API && (
+                cancelScheduled
+                  ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
+                  : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
+              )}
+            </div>
+          )}
           {tier === 'yearly' && CANCEL_API && (
             cancelScheduled
               ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
@@ -271,6 +293,141 @@ export default function Dashboard() {
             </div>
           )}
         </div>
+
+        {/* Bundle: cert selection / management */}
+        {tier === 'bundle' && (() => {
+          const handleToggleCert = (id: string) => {
+            setBundleSelecting(prev =>
+              prev.includes(id) ? prev.filter(c => c !== id) : prev.length < 3 ? [...prev, id] : prev
+            )
+          }
+          const handleSaveBundle = async () => {
+            if (bundleSelecting.length !== 3 || !user) return
+            setBundleSaving(true); setBundleError('')
+            try {
+              await setBundleCerts(bundleSelecting, user.accessToken)
+              setBundleCertsState({ cert_ids: bundleSelecting, selected_at: new Date().toISOString() })
+              setBundleSelecting([])
+            } catch { setBundleError('Failed to save. Please try again.') }
+            setBundleSaving(false)
+          }
+
+          // Loading
+          if (bundleCerts === undefined) return (
+            <div style={{ background: '#f0fdfa', border: '1px solid #5eead4', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: '#e5e7eb', borderRadius: '0.5rem', height: '1rem', width: '55%', marginBottom: '0.5rem' }} />
+              <div style={{ background: '#e5e7eb', borderRadius: '0.5rem', height: '0.75rem', width: '75%' }} />
+            </div>
+          )
+
+          // No certs selected yet — show picker
+          if (!bundleCerts || bundleSelecting.length > 0 || (bundleCerts && canChangeBundleCerts(bundleCerts.selected_at) && bundleSelecting.length === 0 && !bundleCerts)) {
+            const isChanging = bundleCerts && canChangeBundleCerts(bundleCerts.selected_at)
+            return (
+              <div style={{ background: '#f0fdfa', border: '1px solid #5eead4', borderRadius: '1rem', padding: '1.5rem', marginBottom: '1.5rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f766e', fontSize: '1rem', marginBottom: '0.25rem' }}>
+                  🎯 {isChanging ? 'Change Your 3 Certifications' : 'Choose Your 3 Certifications'}
+                </div>
+                <div style={{ color: '#0d9488', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                  {isChanging ? 'Your 30-day window is open. Pick your new 3 certs.' : 'Pick any 3 certifications to unlock. You can change them every 30 days.'}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.6rem', marginBottom: '1rem' }}>
+                  {CERTS.map(cert => {
+                    const checked = bundleSelecting.includes(cert.id)
+                    const disabled = !checked && bundleSelecting.length >= 3
+                    return (
+                      <div
+                        key={cert.id}
+                        onClick={() => !disabled && handleToggleCert(cert.id)}
+                        style={{
+                          padding: '0.75rem', borderRadius: '0.75rem', cursor: disabled ? 'not-allowed' : 'pointer',
+                          border: checked ? '2px solid #0f766e' : '2px solid #e5e7eb',
+                          background: checked ? '#ccfbf1' : disabled ? '#f9fafb' : '#fff',
+                          opacity: disabled ? 0.5 : 1,
+                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        <span style={{ fontSize: '1.2rem' }}>{cert.icon}</span>
+                        <div>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#111827' }}>{cert.name}</div>
+                          <div style={{ fontSize: '0.68rem', color: '#6b7280' }}>{cert.code}</div>
+                        </div>
+                        {checked && <span style={{ marginLeft: 'auto', color: '#0f766e', fontWeight: 800 }}>✓</span>}
+                      </div>
+                    )
+                  })}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.82rem', color: '#0f766e', fontWeight: 600 }}>
+                    {bundleSelecting.length}/3 selected
+                  </span>
+                  <button
+                    onClick={handleSaveBundle}
+                    disabled={bundleSelecting.length !== 3 || bundleSaving}
+                    style={{
+                      padding: '0.65rem 1.5rem', background: bundleSelecting.length === 3 ? '#0f766e' : '#e5e7eb',
+                      color: bundleSelecting.length === 3 ? '#fff' : '#9ca3af',
+                      border: 'none', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem',
+                      cursor: bundleSelecting.length === 3 ? 'pointer' : 'not-allowed',
+                    }}
+                  >
+                    {bundleSaving ? '⏳ Saving…' : 'Confirm My 3 Certs →'}
+                  </button>
+                  {isChanging && (
+                    <button onClick={() => setBundleSelecting([])} style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: '0.82rem', cursor: 'pointer', textDecoration: 'underline' }}>
+                      Cancel
+                    </button>
+                  )}
+                </div>
+                {bundleError && <div style={{ color: '#dc2626', fontSize: '0.82rem', marginTop: '0.5rem' }}>{bundleError}</div>}
+              </div>
+            )
+          }
+
+          // Certs selected — show them with change window info
+          const selectedAt = new Date(bundleCerts.selected_at)
+          const nextChange = new Date(selectedAt.getTime() + 30 * 24 * 60 * 60 * 1000)
+          const canChange = canChangeBundleCerts(bundleCerts.selected_at)
+          const daysLeft = Math.ceil((nextChange.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+          return (
+            <div style={{ background: '#f0fdfa', border: '1px solid #5eead4', borderRadius: '1rem', padding: '1.25rem 1.5rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f766e', fontSize: '0.95rem' }}>🎯 Your 3 Certifications</div>
+                {canChange ? (
+                  <button
+                    onClick={() => setBundleSelecting(bundleCerts.cert_ids)}
+                    style={{ padding: '0.4rem 0.9rem', background: '#0f766e', color: '#fff', border: 'none', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer' }}
+                  >
+                    🔄 Change Certs
+                  </button>
+                ) : (
+                  <div style={{ fontSize: '0.78rem', color: '#0369a1', fontWeight: 600 }}>
+                    🔒 Change available in <strong>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong>
+                  </div>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                {bundleCerts.cert_ids.map(id => {
+                  const meta = CERT_META[id]
+                  return (
+                    <Link key={id} to={`/cert/${id}`} style={{
+                      display: 'flex', alignItems: 'center', gap: '0.5rem',
+                      padding: '0.6rem 1rem', background: '#ccfbf1', border: '1px solid #5eead4',
+                      borderRadius: '0.75rem', textDecoration: 'none',
+                    }}>
+                      <span style={{ fontSize: '1.2rem' }}>{meta?.icon ?? '📋'}</span>
+                      <div>
+                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#0f766e' }}>{meta?.name ?? id}</div>
+                        <div style={{ fontSize: '0.68rem', color: '#0d9488' }}>{meta?.code}</div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Monthly: current cert card */}
         {tier === 'monthly' && (() => {

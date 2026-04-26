@@ -647,7 +647,7 @@
     "options": [
       "Step Functions",
       "API Gateway",
-      "SNS topics",
+      "Use multiple SNS topics to route different event types to separate Lambda functions",
       "EventBridge only"
     ],
     "answer": 3,
@@ -778,7 +778,7 @@
       "RDS performance insights",
       "VPC Flow Logs",
       "Lambda CloudWatch Logs for error messages",
-      "EC2 console"
+      "EC2 instance console logs since Lambda errors appear in instance logs"
     ],
     "answer": 1,
     "explain": "CloudWatch Logs for the Lambda function contain detailed error messages and stack traces for debugging.",
@@ -794,10 +794,10 @@
     "cat": "development",
     "q": "You need to invoke a Lambda function from a scheduled event every 5 minutes. Which service should you use?",
     "options": [
-      "SQS queue",
+      "Use an SQS queue to buffer requests for processing rather than scheduled invocations",
       "API Gateway",
       "CloudWatch Events (EventBridge)",
-      "SNS topic"
+      "Create an SNS topic subscription to receive Lambda invocation schedule notifications"
     ],
     "answer": 2,
     "explain": "CloudWatch Events (now EventBridge) can schedule Lambda invocations at specified intervals using cron expressions.",
@@ -937,9 +937,9 @@
     "cat": "development",
     "q": "You are building a real-time data processing application. Which service should you use?",
     "options": [
-      "SNS",
+      "Amazon SNS for broadcasting notifications to multiple subscribers",
       "SQS",
-      "S3",
+      "Amazon S3 for object storage with event-driven triggers",
       "Kinesis Data Streams"
     ],
     "answer": 1,
@@ -1059,7 +1059,7 @@
     "q": "Your CloudWatch alarm keeps triggering false positives. What metric should you adjust?",
     "options": [
       "CloudWatch Logs retention",
-      "Lambda memory",
+      "Lambda function memory allocation, which controls billing but not alarm sensitivity",
       "VPC network ACLs",
       "Alarm threshold and evaluation periods"
     ],
@@ -1682,18 +1682,20 @@
   },
   {
     "cat": "deployment",
-    "q": "Your Elastic Beanstalk application needs different configurations per environment. How should you handle this?",
+    "q": "A developer maintains an Elastic Beanstalk application that must use different database endpoints, log levels, and feature flags per environment (dev, staging, production). The values cannot be committed to source control. Which Elastic Beanstalk mechanism is the AWS-recommended approach for managing environment-specific configuration without code changes?",
     "options": [
-      "Create separate EB environments with environment-specific .ebextensions",
-      "Hardcode values in the application",
-      "Use environment variables set in EB configuration",
-      "A and C"
+      "Store all configuration values in a shared AWS Systems Manager Parameter Store path and have the application load them at startup based on an APP_ENV variable",
+      "Use Elastic Beanstalk environment properties (environment variables) configured per environment in the EB console or .ebextensions, keeping sensitive values out of source control",
+      "Maintain separate branches in CodeCommit for each environment and hardcode the configuration in each branch's application.properties file",
+      "Package separate application bundles per environment using CodeBuild, embedding environment-specific values at build time"
     ],
-    "answer": 2,
-    "explain": "Combine environment-specific .ebextensions with environment variables for flexible configuration.",
+    "answer": 1,
+    "explain": "Elastic Beanstalk environment properties are the native mechanism for environment-specific configuration. They are set per EB environment (dev vs. staging vs. production) via the console, CLI, or .ebextensions, and are injected as OS environment variables at runtime \u2014 keeping sensitive values out of source code. Systems Manager Parameter Store is also valid but adds a dependency; EB environment properties are simpler and built-in. Hardcoding values in branches creates branching complexity. Embedding values at build time prevents the same artifact from being promoted across environments.",
     "keywords": [
-      "CI/CD",
       "Elastic Beanstalk",
+      "environment properties",
+      ".ebextensions",
+      "configuration management",
       "deployment"
     ]
   },
@@ -2447,19 +2449,21 @@
   },
   {
     "cat": "troubleshooting",
-    "q": "RDS connection pooling causes Lambda to exhaust connections. What should you do?",
+    "q": "A serverless application uses AWS Lambda functions that query an Amazon RDS MySQL database. Under high traffic, Lambda's concurrency spikes to 500 simultaneous executions, exhausting the RDS max_connections limit (151) and causing 'Too many connections' errors. The engineering team needs a durable solution that scales without modifying the application or increasing RDS instance size. Which service resolves this?",
     "options": [
-      "Use RDS Proxy between Lambda and database",
-      "Increase RDS max_connections",
-      "A or B",
-      "Reduce Lambda concurrency"
+      "Enable RDS Multi-AZ to distribute read connections across the standby replica, doubling the effective connection limit",
+      "Place Amazon RDS Proxy between Lambda and RDS; it pools and multiplexes database connections so hundreds of Lambda functions share a small pool of actual RDS connections",
+      "Increase the Lambda reserved concurrency limit to 50 so fewer simultaneous executions connect to the database at the same time",
+      "Switch from RDS MySQL to Amazon DynamoDB, which does not have a connection limit and scales automatically"
     ],
-    "answer": 2,
-    "explain": "RDS Proxy manages connection pools efficiently, allowing more Lambda concurrencies with fewer DB connections.",
+    "answer": 1,
+    "explain": "Amazon RDS Proxy is purpose-built for serverless workloads. It maintains a warm pool of long-lived database connections and multiplexes thousands of Lambda invocations onto that pool. This eliminates 'Too many connections' errors without changing application code or resizing RDS. Multi-AZ standby does not serve read traffic \u2014 it is a failover replica only. Reducing Lambda concurrency limits throughput and hurts user experience. Switching to DynamoDB requires significant application rewrite and is not appropriate for existing relational workloads.",
     "keywords": [
+      "RDS Proxy",
       "Lambda",
       "RDS",
-      "concurrency"
+      "connection pooling",
+      "serverless"
     ]
   },
   {
@@ -2582,22 +2586,22 @@
     ]
   },
   {
-    "cat": "troubleshooting",
-    "q": "Lambda environment variables contain sensitive data. How should you protect them?",
+    "cat": "security",
+    "q": "A Lambda function uses environment variables to store a third-party API key and a database password. A security audit flags these as insufficiently protected \u2014 the values are visible in plaintext in the Lambda console and can be read by anyone with Lambda:GetFunctionConfiguration access. Which approach provides the strongest protection for these secrets at rest and limits exposure?",
     "options": [
-      "Encrypt them at rest using KMS",
-      "A and C",
-      "Don't log environment variables",
-      "Store in Secrets Manager instead"
+      "Encrypt the environment variables at rest using the Lambda default service key, which automatically encrypts all environment variables without additional configuration",
+      "Store the API key and database password in AWS Secrets Manager; retrieve them at function startup using the AWS SDK; cache the values in-memory for the function lifetime to minimize API calls",
+      "Base64-encode the secrets before storing them as environment variables to obfuscate the values from casual inspection in the console",
+      "Use AWS Systems Manager Parameter Store Standard parameters to store the secrets, which are free and automatically encrypted at rest with no additional configuration"
     ],
     "answer": 1,
-    "explain": "Use Secrets Manager for sensitive data and ensure sensitive variables aren't logged.",
+    "explain": "AWS Secrets Manager provides the strongest protection: secrets are encrypted with KMS, access is controlled by IAM policies independently of Lambda IAM, automatic rotation is supported, and the values are never stored in the Lambda function configuration where they could be exposed via Lambda:GetFunctionConfiguration. Caching the value in-memory during the function lifetime reduces Secrets Manager API calls. Lambda's default service encryption still exposes plaintext values to anyone with Lambda:GetFunctionConfiguration. Base64 is not encryption and provides no security. SSM Parameter Store Standard is valid but lacks automatic rotation; Secrets Manager is the AWS-recommended choice for credentials.",
     "keywords": [
-      "KMS",
-      "Lambda",
-      "REST",
       "Secrets Manager",
-      "encryption"
+      "Lambda",
+      "environment variables",
+      "secrets management",
+      "KMS"
     ]
   },
   {
@@ -2634,21 +2638,22 @@
     ]
   },
   {
-    "cat": "troubleshooting",
-    "q": "API Gateway logs show high error rate from a specific client IP. How should you respond?",
+    "cat": "security",
+    "q": "Amazon API Gateway logs reveal that a single client IP address is sending 10,000 requests per minute to a public REST API, causing throttling for legitimate users. The traffic pattern matches a credential-stuffing attack. The team needs to block this IP immediately while maintaining access for all other users. Which combination of actions achieves this most directly?",
     "options": [
-      "Throttle the IP using API Gateway throttling",
-      "Investigate if it's legitimate traffic or an attack",
-      "A or B",
-      "Block the IP using WAF"
+      "Enable API Gateway usage plans and assign the offending IP a usage plan with a rate limit of 0 requests per minute",
+      "Associate AWS WAF with the API Gateway stage and create a WAF IP set rule that blocks the specific client IP address",
+      "Increase the API Gateway account-level throttling limit so legitimate requests are not affected by the high-volume IP",
+      "Deploy a Lambda authorizer that queries a DynamoDB blocklist table on every request and returns a 403 Deny policy for the offending IP"
     ],
-    "answer": 2,
-    "explain": "First investigate whether the traffic is legitimate before taking protective actions.",
+    "answer": 1,
+    "explain": "AWS WAF integrates directly with API Gateway and allows creating IP set-based rules that block specific IP addresses at the edge before requests reach the API. This is the fastest, most targeted solution \u2014 the block takes effect within seconds of updating the WAF IP set. API Gateway usage plans operate per API key, not per IP address. Increasing the throttling limit makes the problem worse for legitimate users. A Lambda authorizer adds latency to every request and is operationally complex for simple IP blocking.",
     "keywords": [
-      "API",
-      "API Gateway",
       "WAF",
-      "throttling"
+      "API Gateway",
+      "IP blocking",
+      "rate limiting",
+      "security"
     ]
   },
   {
@@ -2746,7 +2751,7 @@
     "options": [
       "Use Lambda authorizers",
       "Use Cognito instead",
-      "Use WAF",
+      "Configure AWS WAF IP allowlist rules to restrict API access to known client IPs",
       "Enable mutual authentication with client certificates"
     ],
     "answer": 3,
@@ -2887,20 +2892,21 @@
   },
   {
     "cat": "deployment",
-    "q": "You need to run database migrations before deploying new code. When should this happen?",
+    "q": "A development team deploys a microservice that applies Flyway database migrations as part of every release. The current pipeline runs migrations and application deployment in a single CodeDeploy step, causing failures when a migration succeeds but the application deploy fails \u2014 leaving the database in a newer schema state than the running application. Which pipeline design prevents this inconsistency?",
     "options": [
-      "After deployment completes",
-      "In a separate pipeline stage",
-      "Before deployment using Lambda or container",
-      "B or C"
+      "Run migrations after the application deployment completes, so the application always starts with the old schema and migrates immediately after startup",
+      "Run migrations and deployment in a single atomic CodeDeploy lifecycle hook so both operations succeed or fail together",
+      "Add a dedicated pipeline stage before the deploy stage that runs migrations using a Lambda function or ECS task; only advance to the deploy stage if migrations exit successfully",
+      "Remove explicit migration steps and rely on Flyway's built-in application startup migration, triggering it on the first healthy request after deployment"
     ],
-    "answer": 1,
-    "explain": "Run migrations before deployment using Lambda functions or containers in a dedicated stage.",
+    "answer": 2,
+    "explain": "A dedicated pre-deploy migration stage ensures the database schema is upgraded before any application code runs. If the migration fails, the pipeline stops and the old application version continues running against the old schema \u2014 a consistent state. If migrations succeed and the deploy fails, the schema is ahead of the application, but forward-compatible migrations (additive-only changes) prevent breakage, making this the safest pattern. Running migrations after deployment means the new application starts against the old schema, causing startup failures. A single atomic step is not possible because CodeDeploy and Flyway are separate systems. Startup-time migrations delay first request and make failures harder to diagnose.",
     "keywords": [
-      "CI/CD",
-      "Lambda",
-      "containers",
-      "deployment"
+      "CodePipeline",
+      "database migrations",
+      "Flyway",
+      "deployment",
+      "CI/CD"
     ]
   },
   {
@@ -3013,7 +3019,7 @@
     "q": "You need to call AWS APIs from a JavaScript web application. Using IAM user credentials in JavaScript is insecure. What should you use?",
     "options": [
       "Store credentials in localStorage",
-      "API keys",
+      "Hardcode IAM user API access keys in the JavaScript bundle and rotate them quarterly",
       "Cognito Identity pools to obtain temporary STS credentials",
       "Root account credentials"
     ],
@@ -3048,39 +3054,40 @@
   },
   {
     "cat": "deployment",
-    "q": "You need to deploy multiple environments from one CodePipeline. What should you use?",
+    "q": "A team manages a single CodePipeline that must deploy the same application artifact to three environments: dev, staging, and production. Each environment lives in a separate AWS account. The pipeline must require manual approval before promoting to production. Which CodePipeline design correctly supports multi-account deployments?",
     "options": [
-      "Separate CodeDeploy applications",
-      "Multiple pipelines",
-      "A and B",
-      "Manual approval stages between environments"
+      "Create three separate CodePipelines, one per account, and trigger each sequentially using EventBridge events when the previous pipeline succeeds",
+      "Use a single CodePipeline in the tooling account with CodeDeploy deployment actions for each environment; configure cross-account IAM roles that the pipeline assumes to deploy into each target account; add a Manual Approval action before the production stage",
+      "Deploy to each environment by uploading artifacts to account-specific S3 buckets and triggering account-local CodeDeploy agents via S3 event notifications",
+      "Use AWS Organizations Service Control Policies to grant the source account's CodePipeline service role access to all member accounts without needing per-account IAM roles"
     ],
-    "answer": 0,
-    "explain": "Use manual approvals to control promotion through environments; can use separate applications.",
+    "answer": 1,
+    "explain": "AWS CodePipeline supports cross-account deployments natively. The pipeline lives in a central tooling account; each deploy action assumes a cross-account IAM role in the target account that has the permissions needed for CodeDeploy, ECS, Lambda, or CloudFormation. A Manual Approval action gates the production deploy. This single-pipeline design gives end-to-end visibility, enforces promotion order, and maintains a single source of truth for the pipeline definition. Three separate pipelines lose cross-environment visibility and make coordinated rollbacks harder. S3-triggered deployments bypass CodePipeline's approval gates. SCPs restrict permissions but do not grant them \u2014 cross-account roles are still required.",
     "keywords": [
-      "CI/CD",
-      "CodeDeploy",
       "CodePipeline",
-      "deployment"
+      "cross-account",
+      "CodeDeploy",
+      "manual approval",
+      "multi-account deployment"
     ]
   },
   {
     "cat": "security",
-    "q": "You implemented an API endpoint that allows querying user data by ID. Currently anyone can query any user ID. What authorization should you add?",
+    "q": "A REST API built with API Gateway and Lambda allows authenticated users to retrieve their own profile data via GET /users/{userId}. Currently any authenticated user can pass any userId and retrieve another user's profile. The development team must enforce resource ownership \u2014 users may only access their own profile. Which Lambda authorizer implementation enforces this correctly?",
     "options": [
-      "Implement attribute-based access control (ABAC) checking user permissions in Lambda",
-      "A and B",
-      "Check if requesting user owns the resource",
-      "No authorization needed if API is behind API Gateway"
+      "Validate that the JWT token is not expired in the Lambda authorizer and return an Allow policy \u2014 rely on the database query to filter results by the authenticated user's ID",
+      "Use API Gateway resource policies to restrict access by IP address range, preventing unauthorized users from reaching the endpoint",
+      "In the Lambda function handler, compare the userId path parameter against the sub claim extracted from the verified Cognito JWT in the Authorization header; return a 403 response if they do not match",
+      "Enable API Gateway IAM authorization and require each client to sign requests with their own IAM credentials, mapping IAM principal to userId in a DynamoDB lookup table"
     ],
     "answer": 2,
-    "explain": "Implement authorization checks in Lambda to ensure users can only access their own resources (or what they have permission for), preventing horizontal privilege escalation.",
+    "explain": "Resource ownership checks must happen inside the Lambda function handler after the JWT is verified. The handler extracts the authenticated user's sub (subject) claim from the verified JWT and compares it to the userId path parameter. If they differ, the function returns HTTP 403 without executing the data query. A Lambda authorizer that only validates token expiry does not prevent horizontal privilege escalation \u2014 it grants access to any valid token regardless of which user ID is requested. IP-based resource policies do not identify individual users. IAM authorization works for machine-to-machine calls but is impractical for end-user web/mobile apps.",
     "keywords": [
-      "API",
       "API Gateway",
-      "IAM",
       "Lambda",
-      "security"
+      "authorization",
+      "JWT",
+      "attribute-based access control"
     ]
   },
   {
@@ -3120,19 +3127,21 @@
   },
   {
     "cat": "deployment",
-    "q": "You are setting up a CI/CD pipeline with CodePipeline. The pipeline must deploy to both development and production accounts. What is required?",
+    "q": "A platform team manages infrastructure for a SaaS product using AWS CodePipeline. The pipeline must deploy CloudFormation stacks to a development account and, after manual approval, to a production account \u2014 both accounts are separate from the tooling account where CodePipeline runs. The team wants one pipeline definition with no manual artifact promotion steps. Which setup is correct?",
     "options": [
-      "Manual approval stages with cross-account role",
-      "Separate pipeline for each account",
-      "Single pipeline with cross-account permissions",
-      "A or C"
+      "Create two separate CodePipelines \u2014 one in the dev account and one in the prod account \u2014 triggered sequentially via EventBridge cross-account events after each successful deployment",
+      "Use a single CodePipeline in the tooling account with CloudFormation deploy actions; configure each action to assume a cross-account CloudFormation deployment role in the respective target account; add a Manual Approval action between the dev and prod deploy stages",
+      "Configure AWS Organizations delegated administrator for CodePipeline so the single pipeline can deploy to all member accounts without per-account IAM role setup",
+      "Use CodeDeploy deployment groups with separate on-premises instance tags for dev and prod servers, avoiding the need for cross-account permissions"
     ],
-    "answer": 3,
-    "explain": "Use cross-account IAM roles in CodeDeploy/CloudFormation to deploy from one pipeline to multiple accounts, with manual approvals for production.",
+    "answer": 1,
+    "explain": "A single CodePipeline in the tooling account can deploy to multiple AWS accounts using cross-account IAM roles. Each CloudFormation deploy action specifies a RoleArn \u2014 the role in the target account that CloudFormation assumes to create/update resources. The pipeline also needs an artifact encryption key shared between accounts (cross-account KMS key or S3 bucket policy). A Manual Approval action between stages enforces the dev-before-prod gate. Two separate pipelines lose unified visibility and require external coordination. AWS Organizations does not provide a CodePipeline delegated admin feature. CodeDeploy on-premises does not apply to CloudFormation-managed AWS infrastructure.",
     "keywords": [
-      "CI/CD",
       "CodePipeline",
-      "deployment"
+      "cross-account",
+      "CloudFormation",
+      "IAM roles",
+      "multi-account"
     ]
   },
   {
@@ -3289,20 +3298,21 @@
   },
   {
     "cat": "deployment",
-    "q": "Your Lambda function is deployed using SAM. You need to add a Lambda layer for shared code. How should you configure this in the SAM template?",
+    "q": "A team builds several Lambda functions that share a common set of Python utility libraries totaling 45 MB. Each function's deployment package is 60 MB \u2014 well above the 50 MB direct upload limit \u2014 because the shared libraries are bundled with every function. The team uses AWS SAM. How should they restructure the SAM template to stay under the size limit and avoid duplicating the shared libraries?",
     "options": [
-      "Package layers separately",
-      "A or B",
-      "Use Layers property in Function resource",
-      "Create separate Lambda::Layer resource"
+      "Enable Lambda SnapStart on each function to cache the initialization phase, which reduces the effective deployment package size below the limit",
+      "Split each Lambda function into two smaller functions and chain them with Step Functions to distribute the library load across multiple packages",
+      "Define a separate AWS::Serverless::LayerVersion resource in the SAM template containing the shared Python libraries; upload the layer to S3 and reference it in each function's Layers property \u2014 the layer is not counted toward the function's 50 MB direct upload limit",
+      "Use Docker container images instead of zip packages for each Lambda function and push them to Amazon ECR, which supports images up to 10 GB"
     ],
-    "answer": 1,
-    "explain": "SAM supports both inline layer definitions and separate LayerVersion resources. Use either approach depending on your template organization.",
+    "answer": 2,
+    "explain": "Lambda Layers are designed exactly for this scenario. In SAM, you define an AWS::Serverless::LayerVersion resource that packages the shared libraries, upload it to S3 (or let SAM manage the upload), and reference the layer ARN in each function's Layers property. The layer content is not included in the function's deployment package size, so each function package drops from 60 MB to ~15 MB \u2014 well under the 50 MB limit. Multiple functions share one copy of the layer. SnapStart reduces cold start time but does not change package size. Splitting functions adds coordination complexity. Container images work but require switching from zip to container workflow, which is a larger architectural change than adding a layer.",
     "keywords": [
-      "CI/CD",
-      "Lambda",
       "Lambda Layer",
-      "deployment"
+      "SAM",
+      "deployment package",
+      "shared libraries",
+      "AWS::Serverless::LayerVersion"
     ]
   },
   {
@@ -3322,41 +3332,40 @@
   },
   {
     "cat": "deployment",
-    "q": "You are deploying infrastructure with AWS CDK. You need to reference outputs from another stack (database endpoint). How should you do this?",
+    "q": "A platform team uses AWS CDK to manage infrastructure across two stacks: a DatabaseStack that provisions an Aurora cluster and an ApplicationStack that runs an ECS service needing the Aurora cluster endpoint. The ApplicationStack is deployed after DatabaseStack and must reference the cluster endpoint without hardcoding it. Which CDK pattern correctly passes outputs between stacks in the same CDK app?",
     "options": [
-      "Hardcode the endpoint",
-      "Use SSM Parameter Store",
-      "B or C",
-      "Use stack imports/exports or pass as constructor parameters"
+      "Store the cluster endpoint in AWS Systems Manager Parameter Store from the DatabaseStack using a custom CloudFormation resource; read it from SSM in the ApplicationStack using ParameterStoreValue.valueFromLookup()",
+      "Export the endpoint from DatabaseStack using CfnOutput with exportName; import it in ApplicationStack using Fn.importValue(), creating a hard CloudFormation stack dependency",
+      "Pass the Aurora cluster construct (or its endpoint property) as a constructor parameter from the DatabaseStack instance to the ApplicationStack instance in the CDK app entry point, enabling type-safe cross-stack references resolved at synth time",
+      "Use a Lambda-backed custom resource in ApplicationStack that calls the RDS DescribeClusters API at deploy time to look up the cluster endpoint dynamically"
     ],
     "answer": 2,
-    "explain": "CDK stacks can use imports/exports for cross-stack references, or use Secrets Manager/Parameter Store for decoupled configuration.",
+    "explain": "The CDK-native pattern for cross-stack references within the same app is to pass constructs or their properties as constructor parameters. The CDK app instantiates DatabaseStack first, then passes dbStack.cluster.clusterEndpoint.hostname to the ApplicationStack constructor. CDK automatically creates a CloudFormation Export in DatabaseStack and an Import in ApplicationStack, wiring the dependency correctly. This is type-safe and refactor-friendly. SSM ParameterStoreValue.valueFromLookup() runs at synth time and may not reflect the latest deployed value. Fn.importValue() with CfnOutput works but is the lower-level approach that CDK's cross-stack construct reference model already handles automatically. A custom resource Lambda adds operational complexity unnecessarily.",
     "keywords": [
       "CDK",
-      "CI/CD",
-      "Parameter Store",
-      "Systems Manager",
-      "deployment"
+      "cross-stack references",
+      "CloudFormation",
+      "Aurora",
+      "stack outputs"
     ]
   },
   {
-    "cat": "deployment",
-    "q": "Your CodeDeploy deployment fails with \"permission denied\" writing to an S3 bucket. The AppSpec file references the bucket. What should you check?",
+    "cat": "troubleshooting",
+    "q": "A CodeDeploy deployment to EC2 instances fails with 'permission denied' when the AppSpec lifecycle hook script attempts to write an artifact to an S3 bucket. The EC2 instances use an IAM instance profile. The S3 bucket has a bucket policy. The CodeDeploy service role has S3 read access. Which investigation step identifies the root cause?",
     "options": [
-      "IAM instance profile attached to EC2 instance",
-      "S3 bucket policy",
-      "EC2 instance security group",
-      "B and C"
+      "Check whether the CodeDeploy deployment group is configured with the correct revision location (S3 bucket and key) for the application bundle",
+      "Verify the IAM instance profile attached to the EC2 instances includes s3:PutObject permission for the destination bucket \u2014 CodeDeploy lifecycle scripts run as the instance's IAM role, not the CodeDeploy service role",
+      "Confirm the CodeDeploy agent version on the EC2 instances is up to date, as older agent versions have known S3 write permission bugs",
+      "Check if the S3 bucket has versioning enabled, as CodeDeploy requires versioning to be disabled before writing deployment artifacts"
     ],
-    "answer": 3,
-    "explain": "EC2 instances need an IAM instance profile with S3 permissions. Also verify S3 bucket policy does not restrict access.",
+    "answer": 1,
+    "explain": "CodeDeploy lifecycle hook scripts execute on the EC2 instance under the instance's IAM role (the instance profile), not under the CodeDeploy service role. The service role is used by the CodeDeploy control plane to read deployment bundles and report status \u2014 it is not involved in what the hook scripts can do. Therefore, if a hook script writes to S3, the EC2 instance profile must have s3:PutObject permission for that bucket. A missing s3:PutObject permission on the instance profile is the most common cause of this exact error. The revision location configuration affects bundle download, not hook script write operations. Agent version bugs are rare and should be checked after IAM is verified. S3 versioning state does not affect PutObject permissions.",
     "keywords": [
-      "CI/CD",
       "CodeDeploy",
-      "EC2",
-      "IAM",
+      "IAM instance profile",
       "S3",
-      "deployment"
+      "lifecycle hooks",
+      "troubleshooting"
     ]
   },
   {
@@ -3417,7 +3426,7 @@
     "q": "Your CodePipeline has CodeBuild testing stage that generates a test report. You need to visualize test results. What should CodeBuild configure?",
     "options": [
       "Report groups with test report output",
-      "Email reports",
+      "Configure a Lambda function to email test results to developers after each build",
       "CloudWatch Logs only",
       "Upload report to S3"
     ],
@@ -3483,21 +3492,21 @@
   },
   {
     "cat": "deployment",
-    "q": "Your application uses SAM with LocalStack for local development. How should developers test Lambda and DynamoDB locally?",
+    "q": "A development team wants to test their SAM application locally before deploying to AWS. The app has a Lambda function triggered by API Gateway that writes to a DynamoDB table. Developers need to run the full flow \u2014 HTTP request \u2192 Lambda \u2192 DynamoDB \u2014 on their laptops without incurring AWS charges for every test run. Which local testing approach works with AWS SAM?",
     "options": [
-      "Use sam local start-api and sam local start-dynamodb",
-      "A or C",
-      "Only test in AWS",
-      "Use Docker Compose with AWS services"
+      "Deploy a development stack to AWS using sam deploy --guided and use AWS-provided free tier resources for testing, which incur no charges under normal usage levels",
+      "Use sam local start-api to run a local API Gateway emulator that invokes Lambda functions locally; run a local DynamoDB instance using the DynamoDB Local Docker image; configure the Lambda function to point to localhost DynamoDB via an environment variable",
+      "Use AWS Cloud9 as the development environment so that Lambda and DynamoDB requests never leave the AWS network and latency is eliminated",
+      "Mock all AWS service calls in unit tests using the moto Python library and run sam local invoke for integration tests, bypassing the need for any local service emulation"
     ],
     "answer": 1,
-    "explain": "SAM CLI provides local testing environments for Lambda and other services. LocalStack or Docker Compose enables local AWS service emulation.",
+    "explain": "AWS SAM CLI provides sam local start-api, which starts a local HTTP server that emulates API Gateway and invokes Lambda functions in a Docker container on the developer's laptop. DynamoDB Local (available as a Docker image) emulates the DynamoDB API locally. By setting an environment variable (AWS_ENDPOINT_URL or a custom endpoint) the Lambda code points to localhost DynamoDB instead of the AWS endpoint, enabling a full local test loop without AWS charges. Deploying to AWS for testing incurs costs and adds deployment latency. Cloud9 runs in AWS and still makes real AWS API calls. moto is excellent for unit tests but does not emulate the API Gateway \u2192 Lambda invocation chain.",
     "keywords": [
-      "API",
-      "CI/CD",
-      "DynamoDB",
-      "Lambda",
-      "deployment"
+      "SAM",
+      "sam local",
+      "DynamoDB Local",
+      "local development",
+      "Lambda"
     ]
   },
   {
@@ -3518,38 +3527,40 @@
   },
   {
     "cat": "deployment",
-    "q": "Your CodePipeline deployment to production failed mid-way through. You need to rollback to the previous version. What should you do?",
+    "q": "A CodeDeploy blue/green deployment to an ECS service fails during the replacement task set's health check phase. The new version of the container cannot start because of a missing environment variable. The original task set (blue) is still running and serving traffic. The team needs to immediately abort the deployment and restore full traffic to the stable blue version. What is the fastest way to achieve this?",
     "options": [
-      "Use CodeDeploy rollback with previous appspec",
-      "A or C",
-      "Re-run the failed action in CodePipeline",
-      "Manually rollback infrastructure"
+      "Delete the ECS service and recreate it from the previous task definition revision using the AWS CLI",
+      "In the AWS CodeDeploy console, choose the active deployment and select 'Stop and roll back deployment'; CodeDeploy will shift all traffic back to the original task set and terminate the replacement task set",
+      "Manually update the Application Load Balancer target group to remove the replacement task set's targets and add the original task set's targets back",
+      "Push a hotfix commit to the source repository to trigger a new CodePipeline execution that deploys a corrected container image"
     ],
     "answer": 1,
-    "explain": "Re-running the previous successful pipeline execution or using CodeDeploy automatic rollback can restore the previous version depending on the failure.",
+    "explain": "For ECS blue/green deployments managed by CodeDeploy, the 'Stop and roll back deployment' action in the CodeDeploy console (or via the StopDeployment API with autoRollbackEnabled) is the fastest recovery path. CodeDeploy immediately shifts all production traffic back to the original blue task set via the ALB listener rule and terminates the unhealthy replacement (green) task set. The entire rollback takes seconds. Deleting and recreating the ECS service causes downtime. Manually editing ALB target groups bypasses CodeDeploy's state machine and can cause inconsistent deployment records. Pushing a hotfix triggers a new pipeline run that takes several minutes to build, push, and deploy \u2014 too slow for an active incident.",
     "keywords": [
-      "CI/CD",
       "CodeDeploy",
-      "CodePipeline",
+      "ECS",
+      "blue/green deployment",
+      "rollback",
       "deployment"
     ]
   },
   {
     "cat": "deployment",
-    "q": "Your Lambda deployment package is 250MB. SAM packaging fails because it exceeds the direct upload limit. How should you handle this?",
+    "q": "A developer uses AWS SAM to build and deploy a Lambda function. The function's deployment package \u2014 including application code and all dependencies \u2014 is 250 MB, exceeding the 50 MB direct upload limit and the 250 MB unzipped size limit for standard zip packages. The function requires all dependencies at runtime. Which packaging strategy resolves this without rewriting the application?",
     "options": [
-      "Use Lambda layers for dependencies",
-      "Upload to S3 first, then reference in SAM template",
-      "Split into multiple functions",
-      "B or C"
+      "Enable Lambda Provisioned Concurrency to pre-warm the function, which compresses dependencies into a shared cache and reduces effective package size",
+      "Split the dependencies into two Lambda functions and use a shared in-memory cache layer to pass data between them, effectively halving the package size per function",
+      "Package the Lambda function as a container image, push it to Amazon ECR, and configure the SAM template to use PackageType: Image \u2014 container images support up to 10 GB and bypass the zip deployment package limits",
+      "Upload the deployment zip to S3 using the AWS CLI and reference the S3 URI in the SAM template's CodeUri, which bypasses the 50 MB direct upload limit without changing the 250 MB unzipped limit"
     ],
-    "answer": 3,
-    "explain": "SAM can reference packages in S3. Alternatively, separate dependencies into layers that are uploaded to S3.",
+    "answer": 2,
+    "explain": "Lambda container images support deployment packages up to 10 GB and have no zip-based size restrictions. The SAM template sets PackageType: Image, points to a Dockerfile, and SAM builds and pushes the image to ECR during sam deploy. This is the correct solution when the total package size exceeds 250 MB unzipped. Provisioned Concurrency reduces cold starts but has no effect on package size. Splitting into two functions requires application refactoring and does not actually reduce total dependency size. Uploading to S3 removes the direct-upload constraint but the 250 MB unzipped limit still applies \u2014 250 MB unzipped would still fail.",
     "keywords": [
-      "CI/CD",
       "Lambda",
-      "S3",
-      "deployment"
+      "container image",
+      "ECR",
+      "SAM",
+      "deployment package size"
     ]
   },
   {
@@ -3722,21 +3733,21 @@
   },
   {
     "cat": "troubleshooting",
-    "q": "Your DynamoDB table has high read throttling errors despite adequate provisioned capacity. CloudWatch shows capacity is unused. What could cause this?",
+    "q": "A DynamoDB table provisioned with 1,000 RCUs shows frequent ProvisionedThroughputExceededException errors for read operations even though CloudWatch's ConsumedReadCapacityUnits metric averages only 300 RCUs \u2014 well below provisioned capacity. The errors occur in bursts affecting the same items. What is the most likely root cause?",
     "options": [
-      "A or B",
-      "Partition hot spots from uneven key distribution",
-      "DynamoDB streams consuming capacity",
-      "GSI is under-provisioned"
+      "The DynamoDB table's auto-scaling policy has a cooldown period that prevents capacity from adjusting quickly enough during bursts",
+      "Hot partition keys \u2014 a small subset of partition keys receives a disproportionate share of reads, exhausting that partition's per-shard throughput limit (3,000 RCU per partition) even though aggregate table-level capacity appears sufficient",
+      "The application is sending read requests without specifying a ConsistentRead option, causing DynamoDB to charge double RCUs for eventually-consistent reads",
+      "DynamoDB Streams is consuming read capacity units from the same provisioned capacity pool, leaving fewer RCUs available for application reads"
     ],
-    "answer": 0,
-    "explain": "Hot partitions from skewed key distribution cause throttling on specific partitions even if aggregate capacity is available. GSIs have separate capacity provisioning.",
+    "answer": 1,
+    "explain": "DynamoDB distributes provisioned throughput across partitions. Each partition can serve up to 3,000 RCUs per second. If requests are concentrated on a small number of hot partition keys, those partitions exhaust their per-partition limit even when total table-level consumed capacity is low. This is the classic hot partition problem, visible as throttling affecting the same items in bursts while aggregate metrics look healthy. The fix involves key design changes (write sharding, adding random suffixes) or switching to DynamoDB On-Demand mode. Auto-scaling cooldowns affect capacity adjustment lag but don't explain localized throttling below table capacity. Eventually-consistent reads cost half a RCU, not double. DynamoDB Streams reads from separate internal capacity, not the provisioned RCU pool.",
     "keywords": [
-      "CloudWatch",
       "DynamoDB",
-      "partitioning",
-      "provisioning",
-      "throttling"
+      "hot partition",
+      "ProvisionedThroughputExceededException",
+      "partition key",
+      "troubleshooting"
     ]
   },
   {
@@ -3948,18 +3959,21 @@
   },
   {
     "cat": "troubleshooting",
-    "q": "Your Step Functions state machine execution fails with \"States.Permissions\" error. The state machine cannot invoke a Lambda function. What should you check?",
+    "q": "A Step Functions state machine fails with a 'States.TaskFailed' error and the cause message contains 'States.Permissions'. The state machine's Task state is configured to invoke a Lambda function using the Lambda:invoke action. The Lambda function exists and works when invoked directly. What is the most likely cause and fix?",
     "options": [
-      "Lambda function exists",
-      "A and B",
-      "Step Functions execution role has Lambda invoke permissions",
-      "Lambda resource policy allows Step Functions"
+      "The Lambda function's reserved concurrency is set to 0, preventing Step Functions from invoking it even though direct invocations from the console succeed",
+      "The Step Functions state machine execution role lacks the lambda:InvokeFunction permission for the target Lambda function's ARN \u2014 add the permission to the execution role's IAM policy",
+      "The Lambda function's resource-based policy does not list states.amazonaws.com as an allowed principal, which is required even when the execution role has invoke permissions",
+      "The state machine is in a different AWS region than the Lambda function, and cross-region Lambda invocations require an explicit opt-in in the Step Functions console"
     ],
     "answer": 1,
-    "explain": "Step Functions needs both IAM role permissions to invoke Lambda AND Lambda needs resource-based policy allowing Step Functions to invoke it.",
+    "explain": "A 'States.Permissions' error means the Step Functions execution role does not have permission to perform the requested API action. For Lambda invocations, the execution role needs the lambda:InvokeFunction action on the specific Lambda function ARN (or a wildcard). This is the most common cause of this error. The Lambda resource policy is not required when the calling IAM role already has the necessary IAM permissions \u2014 resource policies are evaluated only when the principal is from a different account. Zero reserved concurrency would cause a throttle error, not a permissions error. Step Functions supports cross-region Lambda invocations without a special opt-in.",
     "keywords": [
+      "Step Functions",
       "Lambda",
-      "Step Functions"
+      "IAM",
+      "execution role",
+      "States.Permissions"
     ]
   },
   {
@@ -4056,34 +4070,40 @@
   },
   {
     "cat": "troubleshooting",
-    "q": "Your ECS task fails to start with no meaningful error logs. Where should you look first?",
+    "q": "An Amazon ECS task on Fargate fails to start and shows a 'STOPPED' status immediately after launch with no application logs visible in CloudWatch Logs. The task definition specifies a container with 512 MB memory. The ECS console shows 'Essential container in task exited' as the stopped reason. Where should the engineer look to diagnose the root cause?",
     "options": [
-      "CloudWatch Logs for the task",
-      "Container logs in the container runtime",
-      "B and C",
-      "ECS task stopped reason"
+      "Check the ECS service's auto-scaling activity log in the AWS console to see if a scale-in event terminated the task before it could start",
+      "Increase the task's memory to 2048 MB and redeploy \u2014 Fargate tasks with insufficient memory often fail silently without writing logs before the OOM killer terminates the process",
+      "Check the ECS task's stopped reason detail in the ECS console (Tasks tab \u2192 select the stopped task \u2192 Stopped reason) and review the container exit code; then check CloudWatch Logs for the log group associated with the task definition to find any output written before the crash",
+      "Inspect the ECS cluster's capacity provider utilization to verify that Fargate spot capacity was available at the time of the launch attempt"
     ],
     "answer": 2,
-    "explain": "ECS stopped reason shows why the task stopped (container exit code, resource issues). Container logs show application errors. Check both.",
+    "explain": "When an ECS Fargate task stops immediately, the first diagnostic steps are: (1) check the stopped task's detail page in the ECS console \u2014 the 'Stopped reason' and per-container 'Exit code' fields reveal whether it was an OOM kill (exit code 137), a crash (non-zero exit code), or a missing image. (2) Check CloudWatch Logs for the task's log group \u2014 even a crashing container often writes error output before dying. These two sources together identify whether the issue is a misconfigured entry point, missing file, bad environment variable, or OOM. Auto-scaling scale-in events would show in service events, not as a stopped task with 'Essential container exited'. Arbitrarily increasing memory treats symptoms before understanding the cause. Capacity provider utilization affects whether the task was placed, not why it crashed after starting.",
     "keywords": [
-      "CloudWatch",
       "ECS",
-      "containers"
+      "Fargate",
+      "troubleshooting",
+      "container exit code",
+      "CloudWatch Logs"
     ]
   },
   {
     "cat": "troubleshooting",
-    "q": "CodeDeploy deployment completes with \"Successful\" but your application is still running the old version. What should you investigate?",
+    "q": "A CodeDeploy deployment to EC2 instances reports 'Succeeded' in the CodeDeploy console, but after checking the running application, the team confirms it is still serving responses from the old version. No rollback was triggered. What should the team investigate to understand why the new version is not running?",
     "options": [
-      "CodeDeploy agent is running",
-      "ApplicationStart lifecycle hook in AppSpec is actually restarting the application",
-      "B and C",
-      "Application caching is serving old version"
+      "Verify that the CodeDeploy agent on the EC2 instances was restarted before the deployment, as a stale agent process can report success while running old lifecycle hooks",
+      "Check whether the ApplicationStart lifecycle hook in the AppSpec file correctly stops the old process and starts the new application binary; if the hook exits 0 without actually restarting the service, CodeDeploy considers the deployment successful even if the old process is still running",
+      "Inspect CloudTrail logs for the deployment to confirm the CodeDeploy service role had permission to write the new artifact to the EC2 instance's deployment directory",
+      "Check the Application Load Balancer's access logs to confirm that traffic was correctly rerouted to the new target group after the deployment"
     ],
-    "answer": 2,
-    "explain": "Verify ApplicationStart script in AppSpec actually stops old and starts new version. Also check if application caching or browser caching is serving old code.",
+    "answer": 1,
+    "explain": "CodeDeploy considers a deployment successful when all lifecycle hook scripts exit with code 0 \u2014 it does not verify that the application is actually running the new code. If the ApplicationStart hook is a script that exits 0 without stopping the old process (e.g., the service restart command silently fails or the wrong service name is used), CodeDeploy reports success while the old version continues running. The investigation should tail the deployment logs on the instance (/opt/codedeploy-agent/deployment-root/deployment-logs/) and manually test the ApplicationStart script. A stale CodeDeploy agent would likely cause hook timeouts, not silent success. CloudTrail permissions issues would fail the deployment, not silently deploy the wrong version. ALB routing should be checked after confirming the application itself is wrong.",
     "keywords": [
-      "CodeDeploy"
+      "CodeDeploy",
+      "AppSpec",
+      "lifecycle hooks",
+      "ApplicationStart",
+      "troubleshooting"
     ]
   },
   {

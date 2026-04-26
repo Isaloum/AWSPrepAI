@@ -9,7 +9,7 @@ interface AuthContextType {
   loading: boolean
   isPremium: boolean
   isFullAccess: boolean
-  tier: 'free' | 'monthly' | 'yearly' | 'lifetime'
+  tier: 'free' | 'monthly' | 'bundle' | 'yearly' | 'lifetime'
   signOut: () => Promise<void>
   refreshUser: () => Promise<void>
 }
