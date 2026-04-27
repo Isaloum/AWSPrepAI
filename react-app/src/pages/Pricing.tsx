@@ -5,7 +5,9 @@ import { useAuth } from '../contexts/AuthContext'
 
 // Same constants + payload as Signup.tsx — proven to work
 const CHECKOUT_API = import.meta.env.VITE_CHECKOUT_API as string || 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
-const PAID_PLANS = new Set(['monthly', 'bundle', 'yearly', 'lifetime'])
+const UPGRADE_API  = 'https://d8bmltyjpe.execute-api.us-east-1.amazonaws.com'
+const PAID_PLANS   = new Set(['monthly', 'bundle', 'yearly', 'lifetime'])
+const SUB_TIERS    = new Set(['monthly', 'bundle', 'yearly']) // tiers with active Stripe subscriptions
 
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, bundle: 1.5, yearly: 2, lifetime: 3 }
 
@@ -117,7 +119,69 @@ export default function Pricing() {
   const yearlyRef = useRef<HTMLDivElement>(null)
   const [pulseYearly, setPulseYearly] = useState(false)
 
+  // Upgrade modal state
+  const [upgradeModal, setUpgradeModal] = useState<{
+    targetPlan: string
+    loading: boolean
+    amountDue: number | null
+    amountDueFormatted: string | null
+    nextBillingDate: string | null
+    error: string | null
+    confirming: boolean
+  } | null>(null)
+
   const userRank = TIER_RANK[tier ?? 'free'] ?? 0
+
+  // ── Upgrade flow (proration) ──────────────────────────────────────────────
+  const handleUpgradeClick = async (targetPlan: string) => {
+    if (!user?.accessToken) return
+    setUpgradeModal({ targetPlan, loading: true, amountDue: null, amountDueFormatted: null, nextBillingDate: null, error: null, confirming: false })
+
+    if (targetPlan === 'lifetime') {
+      // Lifetime is a checkout redirect — no preview needed
+      setUpgradeModal(m => m ? { ...m, loading: false, amountDue: null, amountDueFormatted: null, nextBillingDate: null } : null)
+      return
+    }
+
+    try {
+      const res  = await fetch(UPGRADE_API, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.accessToken}` },
+        body: JSON.stringify({ action: 'preview', targetPlan }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Preview failed')
+      setUpgradeModal(m => m ? { ...m, loading: false, amountDue: data.amountDue, amountDueFormatted: data.amountDueFormatted, nextBillingDate: data.nextBillingDate } : null)
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Could not load preview'
+      setUpgradeModal(m => m ? { ...m, loading: false, error: msg } : null)
+    }
+  }
+
+  const handleUpgradeConfirm = async () => {
+    if (!upgradeModal || !user?.accessToken) return
+    const { targetPlan } = upgradeModal
+    setUpgradeModal(m => m ? { ...m, confirming: true } : null)
+
+    try {
+      const res  = await fetch(UPGRADE_API, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.accessToken}` },
+        body: JSON.stringify({ action: 'upgrade', targetPlan }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Upgrade failed')
+
+      // Lifetime returns a checkout URL
+      if (data.type === 'checkout' && data.url) { window.location.href = data.url; return }
+
+      // Success — reload to pick up new Cognito token
+      window.location.href = '/dashboard?upgrade=success'
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Upgrade failed'
+      setUpgradeModal(m => m ? { ...m, confirming: false, error: msg } : null)
+    }
+  }
 
   const handlePlanClick = async (plan: typeof plans[0]) => {
     const key = plan.name.toLowerCase()
@@ -182,9 +246,10 @@ export default function Pricing() {
             const isYearly = plan.name === 'Yearly'
             const isPulsing = isYearly && pulseYearly
             const planRank = TIER_RANK[plan.name.toLowerCase()] ?? 0
-            const isCurrent  = tier && planRank === userRank
-            const isNextUp   = tier && planRank === userRank + 1
+            const isCurrent   = tier && planRank === userRank
+            const isNextUp    = tier && planRank === userRank + 1
             const isDowngrade = tier && planRank < userRank
+            const isUpgrade   = tier && SUB_TIERS.has(tier) && planRank > userRank && plan.name !== 'Free'
             return (
               <div
                 key={plan.name}
@@ -322,7 +387,11 @@ export default function Pricing() {
 
                 {/* CTA Button */}
                 <button
-                  onClick={() => { if (!isCurrent) handlePlanClick(plan) }}
+                  onClick={() => {
+                    if (isCurrent) return
+                    if (isUpgrade) { handleUpgradeClick(plan.name.toLowerCase()); return }
+                    handlePlanClick(plan)
+                  }}
                   onMouseEnter={() => setHoveredBtn(plan.name)}
                   onMouseLeave={() => setHoveredBtn(null)}
                   style={{
@@ -332,7 +401,9 @@ export default function Pricing() {
                       ? '#d1fae5'
                       : isDowngrade
                         ? '#f3f4f6'
-                        : plan.ctaBg,
+                        : isUpgrade
+                          ? plan.ctaBg
+                          : plan.ctaBg,
                     color: isCurrent ? '#15803d' : isDowngrade ? '#6b7280' : '#fff',
                     fontWeight: 700,
                     fontSize: '0.85rem',
@@ -349,7 +420,9 @@ export default function Pricing() {
                       ? '⏳ Opening checkout…'
                       : isDowngrade
                         ? DOWNGRADE_LABEL[plan.name]
-                        : plan.cta}
+                        : isUpgrade
+                          ? `↑ Upgrade to ${plan.name}`
+                          : plan.cta}
                 </button>
 
                 {/* 3-Cert Bundle add-on — shown inside the Monthly card */}
@@ -462,6 +535,89 @@ export default function Pricing() {
         </div>
 
       </div>
+      {/* Upgrade Confirmation Modal */}
+      {upgradeModal && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 9999,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '1rem', padding: '2rem', maxWidth: '420px', width: '100%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+          }}>
+            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.15rem', fontWeight: 900, color: '#111827' }}>
+              Upgrade to {upgradeModal.targetPlan.charAt(0).toUpperCase() + upgradeModal.targetPlan.slice(1)}
+            </h3>
+
+            {upgradeModal.loading && (
+              <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: '1rem 0' }}>⏳ Calculating prorated amount…</p>
+            )}
+
+            {!upgradeModal.loading && upgradeModal.error && (
+              <p style={{ color: '#dc2626', fontSize: '0.875rem', margin: '1rem 0' }}>⚠️ {upgradeModal.error}</p>
+            )}
+
+            {!upgradeModal.loading && !upgradeModal.error && upgradeModal.amountDueFormatted !== null && (
+              <div style={{ margin: '1rem 0' }}>
+                <div style={{
+                  background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '0.75rem',
+                  padding: '1rem', marginBottom: '0.75rem',
+                }}>
+                  <div style={{ fontSize: '0.82rem', color: '#1d4ed8', fontWeight: 600, marginBottom: '0.25rem' }}>
+                    Charged today (prorated)
+                  </div>
+                  <div style={{ fontSize: '2rem', fontWeight: 900, color: '#111827' }}>
+                    {upgradeModal.amountDue === 0 ? '$0.00 🎉' : upgradeModal.amountDueFormatted}
+                  </div>
+                  {upgradeModal.amountDue === 0 && (
+                    <div style={{ fontSize: '0.78rem', color: '#15803d', marginTop: '0.25rem' }}>
+                      Your existing credit covers the full upgrade!
+                    </div>
+                  )}
+                </div>
+                {upgradeModal.nextBillingDate && (
+                  <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>
+                    Next billing date: {upgradeModal.nextBillingDate}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Lifetime — no preview, just redirect to checkout */}
+            {!upgradeModal.loading && !upgradeModal.error && upgradeModal.amountDueFormatted === null && upgradeModal.targetPlan === 'lifetime' && (
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '1rem 0' }}>
+                You'll be taken to Stripe checkout for a one-time payment. Your current subscription will be cancelled after payment.
+              </p>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+              <button
+                onClick={() => setUpgradeModal(null)}
+                disabled={upgradeModal.confirming}
+                style={{
+                  flex: 1, padding: '0.7rem', background: '#f3f4f6', color: '#374151',
+                  fontWeight: 700, fontSize: '0.85rem', border: '1.5px solid #e5e7eb',
+                  borderRadius: '0.75rem', cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpgradeConfirm}
+                disabled={upgradeModal.loading || upgradeModal.confirming}
+                style={{
+                  flex: 2, padding: '0.7rem', background: '#2563eb', color: '#fff',
+                  fontWeight: 700, fontSize: '0.85rem', border: 'none',
+                  borderRadius: '0.75rem', cursor: upgradeModal.loading || upgradeModal.confirming ? 'not-allowed' : 'pointer',
+                  opacity: upgradeModal.loading || upgradeModal.confirming ? 0.7 : 1,
+                }}
+              >
+                {upgradeModal.confirming ? '⏳ Upgrading…' : 'Confirm Upgrade →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   )
 }
