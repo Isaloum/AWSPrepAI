@@ -25,7 +25,7 @@ const upgradePlans = [
   { key: 'monthly',  name: 'Monthly',  price: '$7/mo',   priceId: 'monthly',  desc: '1 cert · switch anytime' },
   { key: 'bundle',   name: '3-Cert Bundle', price: '$17/mo', priceId: 'bundle', desc: '3 certs of your choice' },
   { key: 'yearly',   name: 'Yearly',   price: '$49/yr',  priceId: 'yearly',   desc: 'All 12 certs + AI Coach' },
-  { key: 'lifetime', name: 'Lifetime', price: '$97',     priceId: 'lifetime', desc: 'Pay once, forever access' },
+  { key: 'lifetime', name: 'Lifetime', price: '$147',    priceId: 'lifetime', desc: 'Pay once, forever access' },
 ]
 
 export default function Billing() {
@@ -201,7 +201,7 @@ export default function Billing() {
         {tier !== 'free' && tier !== 'lifetime' && (
           <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.25rem' }}>
             <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
-              To cancel your subscription, go to <a href="/dashboard" style={{ color: '#2563eb', textDecoration: 'underline' }}>My Dashboard</a> and click "Cancel Subscription" at the bottom of the plan section.
+              To cancel your subscription, please contact us at <a href="mailto:support@certiprepai.com" style={{ color: '#2563eb', textDecoration: 'underline' }}>support@certiprepai.com</a>.
             </p>
           </div>
         )}
