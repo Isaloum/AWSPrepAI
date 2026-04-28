@@ -6,6 +6,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
+import MarkdownRenderer from '../components/MarkdownRenderer'
 import { useAuth } from '../contexts/AuthContext'
 
 const AI_COACH_API = 'https://hyb325gocg.execute-api.us-east-1.amazonaws.com'
@@ -126,9 +127,12 @@ export default function AiCoach() {
                     maxWidth: '80%', padding: '0.7rem 1rem',
                     borderRadius: m.role === 'user' ? '1.1rem 1.1rem 0.25rem 1.1rem' : '1.1rem 1.1rem 1.1rem 0.25rem',
                     background: m.role === 'user' ? '#2563eb' : 'rgba(255,255,255,0.1)',
-                    color: '#fff', fontSize: '0.875rem', lineHeight: 1.65, whiteSpace: 'pre-wrap',
+                    color: '#fff', fontSize: '0.875rem', lineHeight: 1.65,
                   }}>
-                    {m.content}
+                    {m.role === 'user'
+                      ? <span style={{ whiteSpace: 'pre-wrap' }}>{m.content}</span>
+                      : <MarkdownRenderer content={m.content} />
+                    }
                   </div>
                 </div>
               ))}
