@@ -1,5 +1,5 @@
 # CertiPrepAI — Claude Context
-_Last updated: 2026-04-28_
+_Last updated: 2026-04-28 (evening session)_
 
 ## What this project is
 AWS certification prep SaaS. React frontend on AWS Amplify, serverless backend on Lambda + DynamoDB + Cognito.
@@ -92,7 +92,7 @@ python3 -c "f=open('file.tsx').read(); f=f.replace('old','new'); open('file.tsx'
 | `react-app/src/components/Navbar.tsx` | Nav. Pricing hidden for paid users. Billing shown for paid users. AI Coach shown for lifetime only. |
 | `react-app/src/pages/Login.tsx` | Email normalized on input onChange. |
 | `react-app/src/pages/Signup.tsx` | Email normalized. Password strength indicator. |
-| `react-app/src/pages/Dashboard.tsx` | Plan display, cancel button, cert selection, Skill Radar Chart. AI Coach widget for lifetime only. |
+| `react-app/src/pages/Dashboard.tsx` | Plan display, cert selection, Skill Radar Chart. AI Coach widget for lifetime only. Cancel button REMOVED. |
 | `react-app/src/pages/Pricing.tsx` | Checkout + upgrade flows. Upgrade buttons with prorated preview modal. |
 | `react-app/src/pages/Billing.tsx` | ✅ NEW — /billing page. Current plan + upgrade options for paying users. |
 | `react-app/src/pages/AiCoach.tsx` | ✅ NEW — /ai-coach full page. Lifetime only (redirects others to /dashboard). |
@@ -102,7 +102,9 @@ python3 -c "f=open('file.tsx').read(); f=f.replace('old','new'); open('file.tsx'
 | `react-app/src/pages/ForgotPassword.tsx` | 3-step forgot password flow. |
 | `react-app/src/components/SEOMeta.tsx` | Per-route meta tags + JSON-LD schemas. |
 | `react-app/src/components/SkillRadarChart.tsx` | Radar chart using real per-domain DynamoDB scores. |
-| `react-app/src/components/EmailCapture.tsx` | Centered modal popup at 60% scroll. Saves to awsprepai-leads. No auth required. |
+| `react-app/src/components/EmailCapture.tsx` | Centered modal popup at 60% scroll. Saves to awsprepai-leads. No auth required. Hidden for logged-in users. |
+| `react-app/src/components/MarkdownRenderer.tsx` | Lightweight markdown renderer for AI Coach. No deps. Handles headers, bold, italic, code blocks, lists. |
+| `react-app/src/components/Footer.tsx` | Auth-aware footer. Hides Sample Questions + shows Manage Subscription for paid users. |
 | `aws-lambdas/ai-coach/index.js` | AI Coach Lambda. Lifetime-only gating (`custom:plan === 'lifetime'`). |
 | `aws-lambdas/cancel-subscription/index.mjs` | Cancels Stripe sub (period end). Does NOT touch Cognito plan. |
 | `aws-lambdas/upgrade-subscription/index.mjs` | Handles preview + execute for plan upgrades with Stripe proration. |
@@ -225,14 +227,19 @@ aws cognito-idp admin-update-user-attributes \
 |---|------|---------|
 | 1 | /billing page | `react-app/src/pages/Billing.tsx` — current plan card + upgrade options with prorated modal |
 | 2 | /ai-coach page | `react-app/src/pages/AiCoach.tsx` — full-page chat, lifetime-only, redirects others to /dashboard |
-| 3 | Navbar tier logic | Pricing tab hidden for all paid users. Billing link in dropdown for paid users. |
-| 4 | Dashboard AI Coach | Yearly users: promo card removed. Lifetime users: widget unchanged. |
-| 5 | AI Coach Lambda | Updated to lifetime-only gating (`custom:plan === 'lifetime'`) |
-| 6 | EmailCapture redesign | Sticky bottom banner → centered modal popup (appears at 60% scroll) |
-| 7 | No Refund Policy | Added as section 5 in Terms.tsx with 3-day free trial mention |
-| 8 | Upgrade flow | awsprepai-upgrade-subscription Lambda + API Gateway. Prorated preview before charging. |
-| 9 | Stripe business details | Statement descriptor → CertiPrepAI. Support email → support@certiprepai.com |
-| 10 | WorkMail | certiprepai.com org. support@, noreply@, hello@ mailboxes. DNS in Route 53. |
+| 3 | Navbar tier logic | Pricing tab hidden for paid. Sample Questions hidden for paid. Billing shown for paid. |
+| 4 | Dashboard AI Coach | Cancel button removed. Lifetime: AI Coach widget. Yearly: upgrade prompt removed. |
+| 5 | AI Coach Lambda | Lifetime-only gating (`custom:plan === 'lifetime'`) |
+| 6 | AI Coach markdown | MarkdownRenderer.tsx — renders headers, bold, code blocks, lists in AI responses |
+| 7 | CloudFront 404 fix | Custom error responses: 404+403 → /index.html (200). Fixes SPA hard refresh. |
+| 8 | Pricing fixes | Yearly: $67/yr. Lifetime: $147. AI Coach removed from yearly description. |
+| 9 | Auth-aware UI | Home, About, Footer, SampleQuestions, ServiceGroups all show different CTAs for paid vs free users |
+| 10 | Billing cancel note | Changed from "go to dashboard" → "email support@certiprepai.com" |
+| 11 | Broken links fixed | ServiceGroups `/practice` → `/certifications` |
+| 12 | EmailCapture redesign | Sticky bottom banner → centered modal popup (appears at 60% scroll) |
+| 13 | No Refund Policy | Added as section 5 in Terms.tsx |
+| 14 | Upgrade flow | awsprepai-upgrade-subscription Lambda + API Gateway. Prorated preview before charging. |
+| 15 | WorkMail | certiprepai.com org. support@, noreply@, hello@ mailboxes. DNS in Route 53. |
 
 ---
 
@@ -240,13 +247,21 @@ aws cognito-idp admin-update-user-attributes \
 
 | Priority | Item |
 |----------|------|
-| 🔴 High | Rotate Anthropic API key (was exposed in terminal output) |
-| 🔴 High | Render markdown in AI Coach responses (currently shows raw `##` and `**bold**`) |
+| 🔴 High | Rotate Anthropic API key (was exposed in terminal output) — go to console.anthropic.com |
+| 🔴 High | Verify Stripe lifetime product is priced at $147 (not old $97) |
 | 🟡 Medium | Welcome email + drip sequence for new signups |
 | 🟡 Medium | Analytics (Mixpanel or PostHog) |
 | 🟡 Medium | Downgrade flow (yearly → monthly not yet built) |
 | 🟢 Low | Move hardcoded API URLs back to env vars (fix Amplify build injection first) |
 | 🟢 Low | CloudFront + WAF in front of API Gateway |
+
+## ⚠️ Deploy Checklist (run after every push)
+```bash
+git push origin main
+# wait ~90s for Amplify build
+aws cloudfront create-invalidation --distribution-id E149XOHRPMJ4D1 --paths "/*"
+# test in fresh incognito window
+```
 
 ---
 
