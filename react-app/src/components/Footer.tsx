@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Footer() {
+  const { isPremium } = useAuth()
   return (
     <footer style={{ background: '#0f172a', color: '#94a3b8', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 1.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '2rem' }}>
@@ -26,7 +28,7 @@ export default function Footer() {
             {[
               { to: '/certifications', label: 'All Certifications' },
               { to: '/certifications?mode=mock', label: 'Mock Exams' },
-              { to: '/sample-questions', label: 'Sample Questions' },
+              ...(!isPremium ? [{ to: '/sample-questions', label: 'Sample Questions' }] : []),
             ].map(l => (
               <Link key={l.label} to={l.to} style={{ color: '#64748b', fontSize: '0.85rem', textDecoration: 'none' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
@@ -57,23 +59,32 @@ export default function Footer() {
         <div>
           <h4 style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.85rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Plans</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
-            {[
-              { to: '/signup?plan=monthly', name: 'Monthly', price: '$7/mo' },
-              { to: '/signup?plan=yearly', name: 'Yearly', price: '$67/yr' },
-              { to: '/signup?plan=lifetime', name: 'Lifetime', price: '$147' },
-            ].map(l => (
-              <Link key={l.name} to={l.to} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#64748b' }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#93c5fd' }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#64748b' }}
-              >
-                <span style={{ fontSize: '0.85rem', width: '68px' }}>{l.name}</span>
-                <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{l.price}</span>
-              </Link>
-            ))}
-            <Link to="/pricing" style={{ marginTop: '0.35rem', fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#3b82f6')}
-            >Compare all plans →</Link>
+            {isPremium ? (
+              <Link to="/billing" style={{ fontSize: '0.85rem', color: '#64748b', textDecoration: 'none', fontWeight: 600 }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}
+              >Manage Subscription →</Link>
+            ) : (
+              <>
+                {[
+                  { to: '/signup?plan=monthly', name: 'Monthly', price: '$7/mo' },
+                  { to: '/signup?plan=yearly', name: 'Yearly', price: '$67/yr' },
+                  { to: '/signup?plan=lifetime', name: 'Lifetime', price: '$147' },
+                ].map(l => (
+                  <Link key={l.name} to={l.to} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#64748b' }}
+                    onMouseEnter={e => { e.currentTarget.style.color = '#93c5fd' }}
+                    onMouseLeave={e => { e.currentTarget.style.color = '#64748b' }}
+                  >
+                    <span style={{ fontSize: '0.85rem', width: '68px' }}>{l.name}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{l.price}</span>
+                  </Link>
+                ))}
+                <Link to="/pricing" style={{ marginTop: '0.35rem', fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#93c5fd')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '#3b82f6')}
+                >Compare all plans →</Link>
+              </>
+            )}
           </div>
         </div>
 
