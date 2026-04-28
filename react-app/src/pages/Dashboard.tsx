@@ -263,11 +263,6 @@ export default function Dashboard() {
               <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
                 ↑ Upgrade to Yearly
               </Link>
-              {CANCEL_API && (
-                cancelScheduled
-                  ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
-                  : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
-              )}
             </div>
           )}
           {tier === 'bundle' && (
@@ -275,17 +270,7 @@ export default function Dashboard() {
               <Link to="/pricing?highlight=yearly" style={{ padding: '0.6rem 1.25rem', background: '#0f766e', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none' }}>
                 ↑ Upgrade to Yearly
               </Link>
-              {CANCEL_API && (
-                cancelScheduled
-                  ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
-                  : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
-              )}
             </div>
-          )}
-          {tier === 'yearly' && CANCEL_API && (
-            cancelScheduled
-              ? <span style={{ padding: '0.6rem 1.25rem', background: '#f0fdf4', color: '#15803d', border: '1px solid #86efac', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem' }}>✓ Cancellation Scheduled</span>
-              : <button onClick={() => { setCancelError(''); setShowCancelModal(true) }} style={{ padding: '0.6rem 1.25rem', background: '#fff', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>Cancel Plan</button>
           )}
           {isFullAccess && (
             <div style={{ padding: '0.5rem 1rem', background: '#ffffff80', borderRadius: '0.75rem', fontSize: '0.875rem', fontWeight: 600, color: info.color }}>
