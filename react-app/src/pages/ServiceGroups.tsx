@@ -505,7 +505,7 @@ export default function ServiceGroups() {
                           )}
                         </div>
                         <Link
-                          to={`/practice?topic=${encodeURIComponent(service.name)}`}
+                          to={`/certifications`}
                           style={{
                             display: 'inline-block',
                             marginTop: '1rem',
@@ -541,7 +541,7 @@ export default function ServiceGroups() {
           <div style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem' }}>Ready to test your knowledge?</div>
           <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.25rem' }}>Practice real SAA-C03 scenario questions across all service domains</p>
           <Link
-            to="/practice"
+            to="/certifications"
             style={{
               display: 'inline-block',
               padding: '0.75rem 2rem',
