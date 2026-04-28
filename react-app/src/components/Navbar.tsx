@@ -170,8 +170,6 @@ export default function Navbar() {
                 { to: '/resources', label: 'Resources' },
                 // Pricing: only for free users and logged-out visitors
                 ...(!isPremium ? [{ to: '/pricing', label: 'Pricing' }] : []),
-                // AI Coach full page: only for yearly plan
-                ...(tier === 'yearly' ? [{ to: '/ai-coach', label: '🤖 AI Coach' }] : []),
               ].map(link => (
                 <Link key={link.to} to={link.to}
                   style={{ ...navItem(isActive(link.to)) }}
@@ -342,7 +340,6 @@ export default function Navbar() {
               { to: '/certifications', label: 'Certifications' },
               { to: '/about', label: 'About' },
               ...(!isPremium ? [{ to: '/pricing', label: 'Pricing' }] : []),
-              ...(tier === 'yearly' ? [{ to: '/ai-coach', label: '🤖 AI Coach' }] : []),
               ...(isPremium ? [{ to: '/billing', label: '💳 Billing' }] : []),
             ].map(link => (
               <Link key={link.to} to={link.to}

@@ -31,7 +31,7 @@ export default function AiCoach() {
 
   useEffect(() => {
     if (!loading && !user) navigate('/login')
-    if (!loading && user && tier !== 'yearly' && tier !== 'lifetime') navigate('/dashboard')
+    if (!loading && user && tier !== 'lifetime') navigate('/dashboard')
   }, [loading, user, tier])
 
   useEffect(() => {

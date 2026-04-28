@@ -704,25 +704,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* AI Coach — widget for lifetime only; yearly users get a full-page link */}
-      {user && tier === 'yearly' && (
-        <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', borderRadius: '1.25rem', padding: '1.75rem', marginBottom: '1.5rem', boxShadow: '0 4px 24px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <div style={{ fontSize: '2.5rem', flexShrink: 0 }}>🤖</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ color: '#fff', fontWeight: 800, fontSize: '1rem', marginBottom: '0.25rem' }}>AI Coach</div>
-            <div style={{ color: '#93c5fd', fontSize: '0.82rem', lineHeight: 1.5 }}>
-              Ask anything AWS — concepts, exam tips, service comparisons, why an answer is wrong.
-            </div>
-          </div>
-          <Link
-            to="/ai-coach"
-            style={{ padding: '0.65rem 1.25rem', background: '#2563eb', color: '#fff', fontWeight: 700, borderRadius: '0.75rem', textDecoration: 'none', fontSize: '0.875rem', whiteSpace: 'nowrap', flexShrink: 0 }}
-          >
-            Open AI Coach →
-          </Link>
-        </div>
-      )}
-
+      {/* AI Coach — widget for lifetime only */}
       {user && tier === 'lifetime' && (
         <div style={{ background: 'linear-gradient(135deg, #0f172a, #1e3a8a)', borderRadius: '1.25rem', padding: '1.75rem', marginBottom: '1.5rem', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
