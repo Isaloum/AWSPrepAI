@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import EmailCapture from '../components/EmailCapture'
+import { useAuth } from '../contexts/AuthContext'
 
 const certs = [
   { icon: '☁️', code: 'CLF-C02', name: 'Cloud Practitioner', level: 'Foundational', id: 'clf-c02' },
@@ -102,6 +103,8 @@ const SampleQuestion = () => (
 
 export default function Home() {
   const navigate = useNavigate()
+  const { tier } = useAuth()
+  const isPaid = tier && tier !== 'free'
   const [hoveredPlan, setHoveredPlan] = useState<string | null>(null)
 
   return (
@@ -123,21 +126,42 @@ export default function Home() {
               Scenario-based questions with instant explanations and timed mock exams — for every active AWS certification.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
-              <button
-                onClick={() => navigate('/sample-questions')}
-                style={{ padding: '0.875rem 1.75rem', background: '#2563eb', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(37,99,235,0.4)' }}
-              >
-                🚀 Start Practicing Free
-              </button>
-              <button
-                onClick={() => navigate('/pricing')}
-                style={{ padding: '0.875rem 1.75rem', background: 'rgba(255,255,255,0.08)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', fontSize: '1rem' }}
-              >
-                View Plans — from $7/mo
-              </button>
+              {isPaid ? (
+                <>
+                  <button
+                    onClick={() => navigate('/certifications')}
+                    style={{ padding: '0.875rem 1.75rem', background: '#2563eb', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(37,99,235,0.4)' }}
+                  >
+                    🚀 Start Practicing
+                  </button>
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    style={{ padding: '0.875rem 1.75rem', background: 'rgba(255,255,255,0.08)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', fontSize: '1rem' }}
+                  >
+                    Go to Dashboard
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/sample-questions')}
+                    style={{ padding: '0.875rem 1.75rem', background: '#2563eb', color: '#fff', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(37,99,235,0.4)' }}
+                  >
+                    🚀 Start Practicing Free
+                  </button>
+                  <button
+                    onClick={() => navigate('/pricing')}
+                    style={{ padding: '0.875rem 1.75rem', background: 'rgba(255,255,255,0.08)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', fontSize: '1rem' }}
+                  >
+                    View Plans — from $7/mo
+                  </button>
+                </>
+              )}
             </div>
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              <span style={{ color: '#4ade80', fontSize: '0.85rem', fontWeight: 600 }}>✅ 20 questions free</span>
+              {isPaid
+                ? <span style={{ color: '#4ade80', fontSize: '0.85rem', fontWeight: 600 }}>✅ Full access unlocked</span>
+                : <span style={{ color: '#4ade80', fontSize: '0.85rem', fontWeight: 600 }}>✅ 20 questions free</span>}
               <span style={{ color: '#64748b', fontSize: '0.85rem' }}>No credit card needed</span>
               <span style={{ color: '#64748b', fontSize: '0.85rem' }}>Cancel anytime</span>
             </div>
@@ -430,16 +454,33 @@ export default function Home() {
 
       {/* ── Final CTA ── */}
       <section style={{ padding: '5rem 1.5rem', background: 'linear-gradient(135deg, #1e40af, #1e3a8a)', color: '#fff', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.75rem' }}>Ready to start?</h2>
-        <p style={{ color: '#bfdbfe', marginBottom: '2rem', fontSize: '1.1rem' }}>Free account — 20 questions per cert, no credit card required.</p>
-        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/sample-questions')} style={{ padding: '0.875rem 2rem', background: '#fff', color: '#1d4ed8', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
-            Start Practicing Free →
-          </button>
-          <button onClick={() => navigate('/signup')} style={{ padding: '0.875rem 2rem', background: 'rgba(255,255,255,0.12)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem' }}>
-            Create Free Account
-          </button>
-        </div>
+        {isPaid ? (
+          <>
+            <h2 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.75rem' }}>Welcome back! 👋</h2>
+            <p style={{ color: '#bfdbfe', marginBottom: '2rem', fontSize: '1.1rem' }}>Your full access is active. Keep practising.</p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button onClick={() => navigate('/certifications')} style={{ padding: '0.875rem 2rem', background: '#fff', color: '#1d4ed8', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
+                Start Practicing →
+              </button>
+              <button onClick={() => navigate('/dashboard')} style={{ padding: '0.875rem 2rem', background: 'rgba(255,255,255,0.12)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem' }}>
+                My Dashboard
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.75rem' }}>Ready to start?</h2>
+            <p style={{ color: '#bfdbfe', marginBottom: '2rem', fontSize: '1.1rem' }}>Free account — 20 questions per cert, no credit card required.</p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button onClick={() => navigate('/sample-questions')} style={{ padding: '0.875rem 2rem', background: '#fff', color: '#1d4ed8', fontWeight: 800, borderRadius: '0.875rem', border: 'none', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
+                Start Practicing Free →
+              </button>
+              <button onClick={() => navigate('/signup')} style={{ padding: '0.875rem 2rem', background: 'rgba(255,255,255,0.12)', color: '#fff', fontWeight: 700, borderRadius: '0.875rem', border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem' }}>
+                Create Free Account
+              </button>
+            </div>
+          </>
+        )}
       </section>
       <EmailCapture />
     </Layout>
