@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 interface Question {
   id: number
@@ -305,6 +306,8 @@ const DOMAIN_COLORS: Record<string, string> = {
 
 export default function SampleQuestions() {
   const navigate = useNavigate()
+  const { tier } = useAuth()
+  const isPaid = tier && tier !== 'free'
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [answered, setAnswered] = useState(false)
@@ -383,9 +386,11 @@ export default function SampleQuestions() {
             <p style={{ color: '#64748b', marginBottom: '8px' }}>
               {pct >= 80 ? 'Excellent! You are well-prepared.' : pct >= 60 ? 'Good effort. Review the missed questions.' : 'Keep studying — you will get there!'}
             </p>
-            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '32px' }}>
-              These are free sample questions. Sign up for access to 3,958 full questions across all 12 certs.
-            </p>
+            {!isPaid && (
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '32px' }}>
+                These are free sample questions. Sign up for access to 3,958 full questions across all 12 certs.
+              </p>
+            )}
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
                 onClick={handleRestart}
@@ -544,18 +549,31 @@ export default function SampleQuestions() {
           </div>
 
           {/* CTA */}
-          <div style={{ marginTop: '32px', background: '#0f172a', borderRadius: '16px', padding: '24px', textAlign: 'center' }}>
-            <p style={{ color: '#94a3b8', margin: '0 0 8px', fontSize: '0.85rem' }}>Want more? Get full access to</p>
-            <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', margin: '0 0 16px' }}>
-              3,958 questions across all 12 AWS certifications
-            </p>
-            <button
-              onClick={() => navigate('/signup')}
-              style={{ padding: '10px 24px', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-              Sign Up Free
-            </button>
-          </div>
+          {isPaid ? (
+            <div style={{ marginTop: '32px', background: '#0f172a', borderRadius: '16px', padding: '24px', textAlign: 'center' }}>
+              <p style={{ color: '#4ade80', fontWeight: 700, fontSize: '1rem', margin: '0 0 8px' }}>✅ You have full access</p>
+              <p style={{ color: '#94a3b8', margin: '0 0 16px', fontSize: '0.85rem' }}>3,958 questions across all 12 AWS certifications</p>
+              <button
+                onClick={() => navigate('/certifications')}
+                style={{ padding: '10px 24px', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+              >
+                Start Full Practice →
+              </button>
+            </div>
+          ) : (
+            <div style={{ marginTop: '32px', background: '#0f172a', borderRadius: '16px', padding: '24px', textAlign: 'center' }}>
+              <p style={{ color: '#94a3b8', margin: '0 0 8px', fontSize: '0.85rem' }}>Want more? Get full access to</p>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', margin: '0 0 16px' }}>
+                3,958 questions across all 12 AWS certifications
+              </p>
+              <button
+                onClick={() => navigate('/signup')}
+                style={{ padding: '10px 24px', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+              >
+                Sign Up Free
+              </button>
+            </div>
+          )}
 
         </div>
       </div>
