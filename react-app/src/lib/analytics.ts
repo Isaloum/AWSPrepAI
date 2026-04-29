@@ -4,7 +4,6 @@
  */
 import { Amplify } from 'aws-amplify'
 import { record, configureAutoTrack } from 'aws-amplify/analytics'
-import { AmazonPersonalizeProvider } from '@aws-amplify/analytics/personalize'
 
 // ── Configure Amplify + Pinpoint ────────────────────────────────────────────
 Amplify.configure({

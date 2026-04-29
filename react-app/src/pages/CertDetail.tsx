@@ -64,7 +64,10 @@ export default function CertDetail() {
     setBookmarks(prev => {
       const next = new Set(prev)
       if (next.has(questionText)) next.delete(questionText)
-      else next.add(questionText)
+      else {
+        next.add(questionText)
+        trackBookmark(certId || '')
+      }
       try { localStorage.setItem(`bookmarks-${certId}`, JSON.stringify([...next])) } catch {}
       return next
     })
