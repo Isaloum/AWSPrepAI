@@ -1,5 +1,5 @@
 # CertiPrepAI — Claude Context
-_Last updated: 2026-04-28 (evening session)_
+_Last updated: 2026-04-28 (night session)_
 
 ## What this project is
 AWS certification prep SaaS. React frontend on AWS Amplify, serverless backend on Lambda + DynamoDB + Cognito.
@@ -240,6 +240,7 @@ aws cognito-idp admin-update-user-attributes \
 | 13 | No Refund Policy | Added as section 5 in Terms.tsx |
 | 14 | Upgrade flow | awsprepai-upgrade-subscription Lambda + API Gateway. Prorated preview before charging. |
 | 15 | WorkMail | certiprepai.com org. support@, noreply@, hello@ mailboxes. DNS in Route 53. |
+| 16 | Paid-user UI cleanup | Home: pricing teaser hidden for paid. Pricing: bottom CTA → "Go to Certifications". SampleQuestions: redirect paid to /certifications. Comparisons: bottom CTA → "Go to Your Certifications" for paid. |
 
 ---
 

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 // Comparison data derived from AWS official documentation, exam guide objectives, and AWS whitepapers
 const comparisons = [
@@ -231,6 +233,9 @@ const tagColors: Record<string, string> = {
 }
 
 export default function Comparisons() {
+  const navigate = useNavigate()
+  const { tier } = useAuth()
+  const isPaid = tier && tier !== 'free'
   const [activeTag, setActiveTag] = useState('All')
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
@@ -407,25 +412,33 @@ export default function Comparisons() {
         {/* Bottom CTA */}
         <div style={{ textAlign: 'center', marginTop: '2.5rem', padding: '2rem', background: '#1e293b', borderRadius: '0.75rem', border: '1px solid #1e3a5f' }}>
           <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🎯</div>
-          <h3 style={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.5rem' }}>Ready to test your knowledge?</h3>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
-            These comparisons appear in ~40% of SAA-C03 practice questions.
-          </p>
-          <a
-            href="/cert/saa-c03"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 2rem',
-              background: '#2563eb',
-              color: '#fff',
-              borderRadius: '0.75rem',
-              fontWeight: 700,
-              textDecoration: 'none',
-              fontSize: '0.95rem',
-            }}
-          >
-            Practice SAA-C03 →
-          </a>
+          {isPaid ? (
+            <>
+              <h3 style={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.5rem' }}>Ready to put this to the test?</h3>
+              <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
+                These comparison concepts appear across all 12 AWS certification exams.
+              </p>
+              <button
+                onClick={() => navigate('/certifications')}
+                style={{ display: 'inline-block', padding: '0.75rem 2rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}
+              >
+                Go to Your Certifications →
+              </button>
+            </>
+          ) : (
+            <>
+              <h3 style={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.5rem' }}>Ready to test your knowledge?</h3>
+              <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
+                These comparisons appear in ~40% of SAA-C03 practice questions.
+              </p>
+              <a
+                href="/cert/saa-c03"
+                style={{ display: 'inline-block', padding: '0.75rem 2rem', background: '#2563eb', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
+              >
+                Practice SAA-C03 →
+              </a>
+            </>
+          )}
         </div>
       </div>
     </Layout>
