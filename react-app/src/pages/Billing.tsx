@@ -87,8 +87,9 @@ export default function Billing() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Preview failed')
       setUpgradeModal({ plan, state: 'preview', amount: data.amountDue != null ? `$${(data.amountDue / 100).toFixed(2)}` : undefined })
-    } catch (err: any) {
-      setUpgradeModal({ plan, state: 'preview', error: err.message || 'Preview failed.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Preview failed.'
+      setUpgradeModal({ plan, state: 'preview', error: msg })
     }
   }
 
@@ -106,8 +107,9 @@ export default function Billing() {
       if (data.url) { window.location.href = data.url; return }
       setUpgradeModal(prev => prev ? { ...prev, state: 'done' } : null)
       setTimeout(() => { window.location.reload() }, 2000)
-    } catch (err: any) {
-      setUpgradeModal(prev => prev ? { ...prev, state: 'preview', error: err.message || 'Upgrade failed.' } : null)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Upgrade failed.'
+      setUpgradeModal(prev => prev ? { ...prev, state: 'preview', error: msg } : null)
     }
   }
 

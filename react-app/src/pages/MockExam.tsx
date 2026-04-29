@@ -125,7 +125,7 @@ export default function MockExam() {
             if ((ans[i] ?? -1) === q.answer) domainScores[domain].correct++
           })
           saveExamResult(certId, qs.length, correctCount, domainScores, user.accessToken)
-            .catch(err => console.error('Failed to save exam result:', err))
+            .catch(() => { /* silently ignore — result save failure doesn't affect UX */ })
           return ans
         })
         return qs

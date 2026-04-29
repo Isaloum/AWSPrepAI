@@ -132,6 +132,10 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
     title: 'Dashboard | CertiPrepAI',
     description: 'Track your AWS certification exam progress, skill radar, and practice history.',
   },
+  '/payment-success': {
+    title: 'Payment Successful | CertiPrepAI',
+    description: 'Your CertiPrepAI plan is now active. Start practicing for your AWS certification today.',
+  },
 }
 
 // ── JSON-LD structured data ──────────────────────────────────────

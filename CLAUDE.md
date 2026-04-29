@@ -111,6 +111,7 @@ python3 -c "f=open('file.tsx').read(); f=f.replace('old','new'); open('file.tsx'
 | `aws-lambdas/awsprepai-db/index.js` | DynamoDB CRUD. `capture_lead` requires NO auth. All others require ACCESS token. |
 | `aws-lambdas/stripe-webhook/index.js` | Handles Stripe webhook → writes plan to Cognito + DynamoDB at period end. |
 | `aws-lambdas/checkout/index.js` | Creates Stripe checkout session. |
+| `aws-lambdas/email-drip/index.mjs` | 3-email drip sequence (welcome, day3, day7). Triggered by awsprepai-db after capture_lead. Uses SES + EventBridge Scheduler. FROM: hello@certiprepai.com. |
 
 ---
 
@@ -127,7 +128,7 @@ python3 -c "f=open('file.tsx').read(); f=f.replace('old','new'); open('file.tsx'
 | Lambda: awsprepai-ai-coach | AI Coach via Claude Haiku. **Lifetime-only.** |
 | Lambda: awsprepai-upgrade-subscription | Upgrade with Stripe proration |
 | IAM Role for Lambdas | `arn:aws:iam::441393059130:role/awsprepai-checkout-role` |
-| DynamoDB: awsprepai-users | User records |
+| DynamoDB: awsprepai-users | ⚠️ Does NOT exist — user data stored in Cognito attributes only |
 | DynamoDB: awsprepai-progress | (user_id PK, cert_id SK) — stores domain_scores map |
 | DynamoDB: awsprepai-monthly-cert | Monthly cert selection per user |
 | DynamoDB: awsprepai-free-usage | Free tier question count |
@@ -248,13 +249,11 @@ aws cognito-idp admin-update-user-attributes \
 
 | Priority | Item |
 |----------|------|
-| 🔴 High | Rotate Anthropic API key (was exposed in terminal output) — go to console.anthropic.com |
-| 🔴 High | Verify Stripe lifetime product is priced at $147 (not old $97) |
-| 🟡 Medium | Welcome email + drip sequence for new signups |
-| 🟡 Medium | Analytics (Mixpanel or PostHog) |
+| 🔴 High | Manually verify Stripe prices in dashboard: $7/mo, $17/mo, $67/yr, $147 lifetime (restricted key can't read prices via API) |
+| 🟡 Medium | Analytics (Mixpanel or PostHog) — zero visibility into user behavior right now |
 | 🟡 Medium | Downgrade flow (yearly → monthly not yet built) |
 | 🟢 Low | Move hardcoded API URLs back to env vars (fix Amplify build injection first) |
-| 🟢 Low | CloudFront + WAF in front of API Gateway |
+| 🟢 Low | WAF in front of API Gateway (rate limiting, DDoS protection) |
 
 ## ⚠️ Deploy Checklist (run after every push)
 ```bash
