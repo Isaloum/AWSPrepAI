@@ -57,7 +57,7 @@ const plans = [
     features: [
       '1 AWS certification at a time',
       'Switch cert once every 30 days',
-      '260 questions for your chosen cert',
+      '260 questions (1,050 if you pick SAA-C03)',
       'Timed mock exam (65q, 130 min)',
       'Domain filtering — focus weak areas',
     ],
@@ -77,7 +77,7 @@ const plans = [
     features: [
       'Everything in Monthly',
       'All 12 AWS certifications',
-      '260 questions per cert (3,958 total)',
+      'SAA-C03: 1,050 questions (our flagship)',
       'Timed mock exams included',
       'Visual Exam + Architecture Builder',
       'Architecture Diagrams library',

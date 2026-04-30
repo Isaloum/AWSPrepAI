@@ -20,7 +20,7 @@ const certs = [
 ]
 
 const features = [
-  { icon: '📝', title: '3,958 Questions', desc: '260 per certification across all 12 AWS exams' },
+  { icon: '📝', title: '1,050 SAA-C03 Questions', desc: 'Our flagship cert — the deepest question bank. 260 questions for all other certs.' },
   { icon: '⏱️', title: 'Mock Exams', desc: '65 questions, 130-minute timer, score on submit' },
   { icon: '💡', title: 'Instant Explanations', desc: 'Every answer explained — learn why, not just what' },
   { icon: '🎯', title: 'Domain Filtering', desc: 'Focus on your weakest areas by exam domain' },
@@ -116,14 +116,14 @@ export default function Home() {
           {/* Left — text */}
           <div>
             <div style={{ display: 'inline-block', background: 'rgba(96,165,250,0.15)', color: '#93c5fd', fontSize: '0.8rem', fontWeight: 700, padding: '0.375rem 1rem', borderRadius: '999px', marginBottom: '1.5rem', border: '1px solid rgba(96,165,250,0.3)' }}>
-              🎓 12 AWS Certifications · 3,958 Questions
+              🏗️ SAA-C03 Flagship · 1,050 Questions
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: '1.25rem' }}>
               Pass Your AWS Cert.<br />
               <span style={{ color: '#60a5fa' }}>Practice Smarter.</span>
             </h1>
             <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: 1.75, marginBottom: '2rem', maxWidth: '460px' }}>
-              Scenario-based questions with instant explanations and timed mock exams — for every active AWS certification.
+              Built by someone actively studying for SAA-C03 — 1,050 deep scenario questions with real explanations. 11 other certs included with 260 questions each.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
               {isPaid ? (

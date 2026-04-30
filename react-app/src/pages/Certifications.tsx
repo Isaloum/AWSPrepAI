@@ -60,7 +60,7 @@ export default function Certifications() {
           <p style={{ color: '#6b7280', fontSize: '1rem', maxWidth: '520px', margin: '0 auto 1.5rem' }}>
             {isMockMode
               ? 'Timed simulation · 65 questions · 130 min · scored at the end'
-              : 'Scenario-based questions for every active AWS certification. 260 questions per cert.'}
+              : 'SAA-C03 is our flagship — 1,050 questions built from real exam experience. All other certs include 260 questions each.'}
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2.5rem' }}>
             {[
@@ -118,13 +118,15 @@ export default function Certifications() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
           {filtered.map(cert => {
             const ls = levelStyle[cert.level]
+            const isFlagship = cert.id === 'saa-c03'
+            const questionCount = isFlagship ? '1,050' : '260'
             return (
               <div
                 key={cert.id}
                 onClick={() => navigate(isMockMode ? `/mock-exam/${cert.id}` : `/cert/${cert.id}`)}
                 style={{
                   background: '#fff',
-                  border: '1px solid #e5e7eb',
+                  border: isFlagship ? '2px solid #2563eb' : '1px solid #e5e7eb',
                   borderRadius: '16px',
                   padding: '20px',
                   cursor: 'pointer',
@@ -132,6 +134,7 @@ export default function Certifications() {
                   flexDirection: 'column',
                   gap: '12px',
                   transition: 'border-color 0.15s, box-shadow 0.15s, transform 0.15s',
+                  position: 'relative',
                 }}
                 onMouseEnter={e => {
                   const el = e.currentTarget as HTMLDivElement
@@ -146,8 +149,15 @@ export default function Certifications() {
                   el.style.transform = 'translateY(0)'
                 }}
               >
+                {/* Flagship banner */}
+                {isFlagship && (
+                  <div style={{ position: 'absolute', top: '-1px', left: '50%', transform: 'translateX(-50%)', background: '#2563eb', color: '#fff', fontSize: '0.68rem', fontWeight: 800, padding: '3px 14px', borderRadius: '0 0 10px 10px', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}>
+                    ⭐ FLAGSHIP — 1,050 QUESTIONS
+                  </div>
+                )}
+
                 {/* Card top row */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginTop: isFlagship ? '12px' : '0' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {/* Icon circle */}
                     <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: ls.bg, border: `1px solid ${ls.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0 }}>
@@ -169,10 +179,16 @@ export default function Certifications() {
                   <span style={{ fontWeight: 600, color: '#374151' }}>Best for: </span>{cert.forRole}
                 </p>
 
-                {/* Salary */}
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '4px 10px', width: 'fit-content' }}>
-                  <span style={{ fontSize: '13px' }}>💰</span>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#15803d' }}>{cert.salary}</span>
+                {/* Salary + question count */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '4px 10px' }}>
+                    <span style={{ fontSize: '13px' }}>💰</span>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#15803d' }}>{cert.salary}</span>
+                  </div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: isFlagship ? '#eff6ff' : '#f9fafb', border: isFlagship ? '1px solid #bfdbfe' : '1px solid #e5e7eb', borderRadius: '8px', padding: '4px 10px' }}>
+                    <span style={{ fontSize: '13px' }}>📝</span>
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: isFlagship ? '#1d4ed8' : '#6b7280' }}>{questionCount} questions</span>
+                  </div>
                 </div>
 
                 {/* Domain tags */}
