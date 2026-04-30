@@ -593,9 +593,8 @@ function DiagramSVG({ nodes, edges }: { nodes: DiagramNode[]; edges: DiagramEdge
 }
 
 export default function Diagrams() {
-  const { user, tier } = useAuth()
+  const { user, isPremium } = useAuth()
   const navigate = useNavigate()
-  const isPremium = tier === 'monthly' || tier === 'yearly' || tier === 'lifetime'
 
   const [category, setCategory] = useState('all')
   const [selected, setSelected] = useState<string | null>(null)

@@ -53,6 +53,7 @@ export default function Navbar() {
 
   const tierBadge: Record<string, string> = {
     monthly: '📦 Monthly',
+    bundle: '🎯 Bundle',
     yearly: '📅 Yearly',
     lifetime: '🔥 Lifetime',
     free: '🆓 Free',

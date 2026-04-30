@@ -26,7 +26,7 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
   },
   '/cert/saa-c03': {
     title: 'AWS Solutions Architect Associate (SAA-C03) Practice Exam | CertiPrepAI',
-    description: '1,098 SAA-C03 practice questions covering resilient architecture, high performance, security, and cost optimization. Pass the AWS SAA-C03 exam.',
+    description: '1,050 SAA-C03 practice questions covering resilient architecture, high performance, security, and cost optimization. Pass the AWS SAA-C03 exam.',
   },
   '/cert/clf-c02': {
     title: 'AWS Cloud Practitioner (CLF-C02) Practice Exam | CertiPrepAI',
@@ -140,7 +140,7 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
 
 // ── JSON-LD structured data ──────────────────────────────────────
 const CERT_LD: Record<string, { name: string; description: string; questions: number }> = {
-  '/cert/saa-c03': { name: 'AWS Solutions Architect Associate (SAA-C03)', description: '1,098 practice questions for the SAA-C03 exam covering resilient architecture, high performance, security, and cost optimization.', questions: 1098 },
+  '/cert/saa-c03': { name: 'AWS Solutions Architect Associate (SAA-C03)', description: '1,050 practice questions for the SAA-C03 exam covering resilient architecture, high performance, security, and cost optimization.', questions: 1050 },
   '/cert/clf-c02': { name: 'AWS Cloud Practitioner (CLF-C02)', description: '260 practice questions for the CLF-C02 exam covering cloud concepts, security, technology, and billing.', questions: 260 },
   '/cert/dva-c02': { name: 'AWS Developer Associate (DVA-C02)', description: '260 practice questions for the DVA-C02 exam covering development, deployment, security, and troubleshooting.', questions: 260 },
   '/cert/soa-c02': { name: 'AWS SysOps Administrator Associate (SOA-C02)', description: '260 practice questions for the SOA-C02 exam.', questions: 260 },

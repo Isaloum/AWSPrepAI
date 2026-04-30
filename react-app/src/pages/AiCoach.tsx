@@ -1,6 +1,6 @@
 /**
  * AiCoach.tsx
- * Full-page AI Coach — exclusive to Yearly plan users.
+ * Full-page AI Coach — exclusive to Lifetime plan users.
  * Uses the same awsprepai-ai-coach Lambda as the Dashboard widget.
  */
 import { useState, useRef, useEffect } from 'react'
@@ -87,7 +87,7 @@ export default function AiCoach() {
           </div>
           <div style={{ marginLeft: 'auto' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', background: '#f5f3ff', padding: '5px 12px', borderRadius: '999px' }}>
-              {tier === 'lifetime' ? '🔥 Lifetime' : '📅 Yearly'}
+              🔥 Lifetime
             </span>
           </div>
         </div>
