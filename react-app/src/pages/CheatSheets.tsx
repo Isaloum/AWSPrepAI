@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { getMonthlyCert, getBundleCerts } from '../lib/db'
@@ -614,7 +614,8 @@ const REMAINING_SHEETS: CertCheatSheet[] = [
 const ALL_SHEETS: CertCheatSheet[] = [...SHEETS, ...REMAINING_SHEETS]
 
 export default function CheatSheets() {
-  const { user, tier } = useAuth()
+  const { user, tier, isPremium } = useAuth()
+  const navigate = useNavigate()
   const [selectedId, setSelectedId] = useState('saa-c03')
   const [activeTab, setActiveTab] = useState<'domains' | 'services' | 'choose' | 'traps' | 'patterns'>('domains')
 
@@ -630,6 +631,23 @@ export default function CheatSheets() {
         .catch(() => {})
     }
   }, [user, tier])
+
+  if (!isPremium) {
+    return (
+      <Layout>
+        <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>🔒</div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Study Tools are for members only</h2>
+          <p style={{ color: '#6b7280', maxWidth: '420px', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+            Upgrade to any paid plan to unlock CheatSheets, Study Guide, Keywords, Glossary, and more.
+          </p>
+          <button onClick={() => navigate('/pricing')} style={{ padding: '12px 28px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', fontSize: '1rem' }}>
+            See Plans →
+          </button>
+        </div>
+      </Layout>
+    )
+  }
 
   const sheet = ALL_SHEETS.find(s => s.id === selectedId)
 

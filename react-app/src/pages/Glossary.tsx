@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
+import { useAuth } from '../contexts/AuthContext'
 
 interface Term {
   term: string
@@ -120,9 +122,28 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string
 }
 
 export default function Glossary() {
+  const { isPremium } = useAuth()
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
+
+  if (!isPremium) {
+    return (
+      <Layout>
+        <div style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>🔒</div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>Study Tools are for members only</h2>
+          <p style={{ color: '#6b7280', maxWidth: '420px', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+            Upgrade to any paid plan to unlock the Glossary, Keywords, CheatSheets, Study Guide, and more.
+          </p>
+          <button onClick={() => navigate('/pricing')} style={{ padding: '12px 28px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', fontSize: '1rem' }}>
+            See Plans →
+          </button>
+        </div>
+      </Layout>
+    )
+  }
 
   const filtered = terms.filter(t => {
     const matchCat = category === 'all' || t.category === category
