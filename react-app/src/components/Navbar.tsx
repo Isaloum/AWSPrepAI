@@ -77,22 +77,22 @@ export default function Navbar() {
   })
 
   const practiceItems = [
-    { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,910 questions · 12 certs' },
-    { to: '/certifications?mode=mock', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 130 min' },
-    { to: '/architecture-builder', bg: '#f5f3ff', icon: '🏗️', label: 'Architecture Builder', sub: 'Drag & drop AWS services · SAA-C03' },
-    { to: '/visual-exam', bg: '#fff0f0', icon: '🎯', label: 'Visual Exam', sub: 'Diagram-based questions · SAA-C03' },
-    ...(!isPremium ? [{ to: '/sample-questions', bg: '#eff6ff', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up' }] : []),
+    { to: '/certifications', bg: '#eff6ff', icon: '📝', label: 'Practice Quiz', sub: '3,910 questions · 12 certs', badge: '' },
+    { to: '/certifications?mode=mock', bg: '#f0fdf4', icon: '⏱️', label: 'Mock Exam', sub: 'Timed practice test · 65q · 130 min', badge: '' },
+    { to: '/architecture-builder', bg: '#f5f3ff', icon: '🏗️', label: 'Architecture Builder', sub: 'Drag & drop AWS services', badge: 'SAA-C03' },
+    { to: '/visual-exam', bg: '#fff0f0', icon: '🎯', label: 'Visual Exam', sub: 'Diagram-based questions', badge: 'SAA-C03' },
+    ...(!isPremium ? [{ to: '/sample-questions', bg: '#eff6ff', icon: '🆓', label: 'Sample Questions', sub: '20 free questions · no sign up', badge: '' }] : []),
   ]
 
   const studyItems = [
-    { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources' },
-    { to: '/keywords', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers — spot the right service' },
-    { to: '/glossary', bg: '#eff6ff', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply' },
-    { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams' },
-    { to: '/service-groups', bg: '#f0fdf4', icon: '🗂️', label: 'Service Groups', sub: 'Compare AWS services by category' },
-    { to: '/comparisons', bg: '#fef3c7', icon: '⚖️', label: 'Service Comparisons', sub: 'X vs Y tables from real exam data' },
-    { to: '/cheat-sheets', bg: '#fef2f2', icon: '📄', label: 'Cheat Sheets', sub: 'Domains, traps & patterns per cert' },
-    { to: '/prompt-patterns', bg: '#f5f3ff', icon: '✍️', label: 'Prompt Patterns', sub: 'AIF-C01 techniques, parameters & security' },
+    { to: '/resources', bg: '#eff6ff', icon: '📘', label: 'Study Guide', sub: 'Exam tips & curated resources', badge: '' },
+    { to: '/keywords', bg: '#faf5ff', icon: '🔑', label: 'Keywords & Terms', sub: 'Scenario identifiers — spot the right service', badge: '' },
+    { to: '/glossary', bg: '#eff6ff', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply', badge: '' },
+    { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams', badge: '' },
+    { to: '/service-groups', bg: '#f0fdf4', icon: '🗂️', label: 'Service Groups', sub: 'Compare AWS services by category', badge: '' },
+    { to: '/comparisons', bg: '#fef3c7', icon: '⚖️', label: 'Service Comparisons', sub: 'X vs Y tables from real exam data', badge: '' },
+    { to: '/cheat-sheets', bg: '#fef2f2', icon: '📄', label: 'Cheat Sheets', sub: 'Domains, traps & patterns per cert', badge: '' },
+    { to: '/prompt-patterns', bg: '#f5f3ff', icon: '✍️', label: 'Prompt Patterns', sub: 'AIF-C01 techniques, parameters & security', badge: 'AIF-C01' },
   ]
 
   const DropdownItem = ({ item }: { item: typeof practiceItems[0] }) => (
@@ -103,7 +103,14 @@ export default function Navbar() {
       <div style={{ width: '36px', height: '36px', background: item.bg, borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>{item.icon}</div>
       <div>
         <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827' }}>{item.label}</div>
-        <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '2px' }}>{item.sub}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '11px', color: '#9ca3af' }}>{item.sub}</span>
+          {item.badge && (
+            <span style={{ fontSize: '10px', fontWeight: 700, color: '#92400e', background: '#fef3c7', border: '1px solid #fde68a', padding: '1px 6px', borderRadius: '999px', letterSpacing: '0.04em' }}>
+              {item.badge}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   )
