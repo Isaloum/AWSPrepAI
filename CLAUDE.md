@@ -1,5 +1,5 @@
 # CertiPrepAI — Claude Context
-_Last updated: 2026-04-28 (night session)_
+_Last updated: 2026-05-01 (session 3)_
 
 ## What this project is
 AWS certification prep SaaS. React frontend on AWS Amplify, serverless backend on Lambda + DynamoDB + Cognito.
@@ -89,13 +89,19 @@ python3 -c "f=open('file.tsx').read(); f=f.replace('old','new'); open('file.tsx'
 | `react-app/src/lib/cognito.ts` | All auth functions. Email normalization MANDATORY. |
 | `react-app/src/lib/db.ts` | DynamoDB API wrapper. Uses ACCESS token. DB_API hardcoded. |
 | `react-app/src/contexts/AuthContext.tsx` | Auth state. Exposes: user, tier, isPremium, isFullAccess, loading. |
-| `react-app/src/components/Navbar.tsx` | Nav. Pricing hidden for paid users. Billing shown for paid users. AI Coach shown for lifetime only. |
+| `react-app/src/components/Navbar.tsx` | Nav. Pricing hidden for paid. Billing shown for paid. AI Coach for lifetime only. Dropdown items have `badge` field (amber pill) — SAA-C03 on Architecture Builder + Visual Exam, AIF-C01 on Prompt Patterns. |
 | `react-app/src/pages/Login.tsx` | Email normalized on input onChange. |
 | `react-app/src/pages/Signup.tsx` | Email normalized. Password strength indicator. |
 | `react-app/src/pages/Dashboard.tsx` | Plan display, cert selection, Skill Radar Chart. AI Coach widget for lifetime only. Cancel button REMOVED. |
 | `react-app/src/pages/Pricing.tsx` | Checkout + upgrade flows. Upgrade buttons with prorated preview modal. |
 | `react-app/src/pages/Billing.tsx` | ✅ NEW — /billing page. Current plan + upgrade options for paying users. |
 | `react-app/src/pages/AiCoach.tsx` | ✅ NEW — /ai-coach full page. Lifetime only (redirects others to /dashboard). |
+| `react-app/src/pages/PromptPatterns.tsx` | ✅ NEW — /prompt-patterns. AIF-C01 prompt engineering reference. isPremium gate. 5 tabs: Techniques (10), Parameters (7), Problems & Fixes (9), Security (6), Bedrock (6). 38 items total. |
+| `react-app/src/pages/Keywords.tsx` | Cert switcher: SAA-C03 ↔ AIF-C01. `saacKeywords` + `aifKeywords` (48 AIF items). `SAA_CATEGORIES` + `AIF_CATEGORIES`. |
+| `react-app/src/pages/ServiceGroups.tsx` | Cert switcher: SAA-C03 ↔ AIF-C01. `SAA_GROUPS` + `AIF_GROUPS` (4 groups, 28 AI services). |
+| `react-app/src/pages/ServiceComparison.tsx` | isPremium gate added. Cert switcher: SAA-C03 ↔ AIF-C01. `AIF_DATA` (15 comparisons, 5 groups). |
+| `react-app/src/pages/ArchitectureBuilder.tsx` | SAA-C03 badge in hero. Drag-and-drop canvas. SAA-C03 services only. |
+| `react-app/src/pages/VisualExam.tsx` | SAA-C03 badge next to title. Diagram connect questions. SAA-C03 only. |
 | `react-app/src/pages/CertDetail.tsx` | Practice mode. Bookmark questions. Retry wrong answers. Free tier 20q gating. |
 | `react-app/src/pages/MockExam.tsx` | Timed mock exam. Saves per-domain scores. Monthly/bundle gating. |
 | `react-app/src/pages/CheatSheets.tsx` | All 12 cert cheat sheets. 5 tabs per cert. |
@@ -203,6 +209,7 @@ const isFullAccess = tier === 'yearly' || tier === 'lifetime'
 |-------|------|-------|
 | ihabsaloum@gmail.com | Free | Test account |
 | ihabsaloum@hotmail.com | Monthly (paid) | Check Cognito before testing |
+| testuser@certiprepai.com | Monthly | Password: `Test1234!` — created 2026-05-01 for premium feature testing |
 
 To restore plan manually:
 ```bash
@@ -245,13 +252,35 @@ aws cognito-idp admin-update-user-attributes \
 
 ---
 
+## ✅ Built This Session (May 1, 2026)
+
+| # | Item | Details |
+|---|------|---------|
+| 1 | Prompt Patterns page | `/prompt-patterns` — 5 tabs, 38 items total. isPremium gate. Covers AIF-C01 Domains 2, 4 & 5. |
+| 2 | Prompt Patterns: Techniques | 10 techniques: Zero-Shot, Few-Shot, CoT, ReAct, Prompt Chaining, Tree of Thought, Role, Instruction, Context Injection, Structured Output |
+| 3 | Prompt Patterns: Parameters | 7 parameters: Temperature, Top-p, Top-k, Max Tokens, Stop Sequences, Repetition Penalty, Beam Search |
+| 4 | Prompt Patterns: Problems | 9 failure modes: Hallucination, Verbose, Wrong Format, Off-Topic, Inconsistent Persona, Context Overflow, Safety False Positive, Lost in the Middle, Repetitive Output |
+| 5 | Prompt Patterns: Security | 6 risks: Prompt Injection, Indirect Prompt Injection, Jailbreaking, Sensitive Data Leakage, Data Poisoning, Excessive Agency |
+| 6 | Prompt Patterns: Bedrock tab | NEW 5th tab — 6 items: System Prompt vs User Message API, Guardrails config, Knowledge Bases vs Agents, Model selection, Token economics, Fine-tuning vs RAG decision tree |
+| 7 | AIF-C01 Keywords | Keywords.tsx cert switcher: SAA-C03 ↔ AIF-C01. 48 AIF-C01 keywords across 5 categories. |
+| 8 | AIF-C01 Service Groups | ServiceGroups.tsx cert switcher. AIF_GROUPS: 4 groups, 28 AI/ML services. |
+| 9 | AIF-C01 Service Comparison | ServiceComparison.tsx cert switcher + isPremium gate (was unprotected). AIF_DATA: 15 comparisons. |
+| 10 | Stripe webhook secret rotated | Leaked secret removed from docs-project/README.md. New secret `whsec_A1seLNW08cP1cUDmRGp82PNvPNcUOQ1W` stored in Lambda env only. |
+| 11 | CLAUDE.md prompt templates | 5 reusable prompt templates added: New Page, New Lambda, UI Change, Gating, Deploy & Ship. |
+| 12 | Test account created | `testuser@certiprepai.com` / `Test1234!` — plan: monthly. Use for premium feature testing. |
+| 13 | SAA-C03 badges | Architecture Builder + Visual Exam: orange SAA-C03 badge in page hero + amber pill in navbar dropdown. |
+| 14 | Navbar dropdown badges | `badge` field added to practiceItems/studyItems. Amber pill renders when badge is non-empty. AIF-C01 on Prompt Patterns. |
+
+---
+
 ## 🔲 What's Next (Backlog)
 
 | Priority | Item |
 |----------|------|
 | 🔴 High | Manually verify Stripe prices in dashboard: $7/mo, $17/mo, $67/yr, $147 lifetime (restricted key can't read prices via API) |
-| 🟡 Medium | Analytics (Mixpanel or PostHog) — zero visibility into user behavior right now |
+| 🟡 Medium | CLF-C02 study tools — Keywords + Service Groups for highest-volume entry-level cert |
 | 🟡 Medium | Downgrade flow (yearly → monthly not yet built) |
+| 🟡 Medium | Analytics already integrated (PostHog `phc_vQkqAhkS2zJBrqL5roLz8iquSgXWuucyBodeyNH99dsS`) — review dashboards |
 | 🟢 Low | Move hardcoded API URLs back to env vars (fix Amplify build injection first) |
 | 🟢 Low | WAF in front of API Gateway (rate limiting, DDoS protection) |
 
@@ -301,3 +330,103 @@ aws cloudfront create-invalidation --distribution-id E149XOHRPMJ4D1 --paths "/*"
 # Remove git lock
 rm -f ~/Desktop/Projects/CertiPrepAI/.git/HEAD.lock
 ```
+
+---
+
+## 🧠 How to Prompt Claude for This Project
+
+Use these templates every time you ask Claude to build something.
+The more specific the prompt, the less back-and-forth needed.
+
+---
+
+### 🟦 Template 1 — New Page
+
+```
+Create a new page at `react-app/src/pages/[PageName].tsx`.
+
+- Route: /[route-name] (add to react-app/src/App.tsx)
+- Pattern: same structure as [ClosestExistingPage].tsx
+- Access: [free | isPremium | isFullAccess | tier === 'lifetime']
+  → if blocked: redirect to [/pricing | /dashboard]
+- Data: [fetches from DB_API using user.accessToken | no data needed | static content]
+- SEO: add entry to react-app/src/components/SEOMeta.tsx ROUTE_META
+- Nav: [add to Navbar under section X | no nav change needed]
+- Do NOT: [add anything to Dashboard | change auth logic | touch cognito.ts]
+```
+
+---
+
+### 🟩 Template 2 — New Lambda
+
+```
+Create a new Lambda at `aws-lambdas/[function-name]/index.js`.
+
+- Function name: awsprepai-[function-name]
+- Trigger: API Gateway HTTP (method: POST | GET)
+- Auth: [Cognito ACCESS token in Authorization header | no auth required]
+- Input: { field1, field2 } in request body
+- Output: { result } JSON
+- AWS services used: [DynamoDB table X | SES | Stripe | Cognito]
+- Error handling: return 400 for missing fields, 401 for bad token, 500 for AWS errors
+- Do NOT: use idToken — always ACCESS token for Cognito GetUserCommand
+- Zip: coach.zip (never lambda.zip)
+```
+
+---
+
+### 🟨 Template 3 — UI Change / Feature Tweak
+
+```
+In `react-app/src/pages/[File].tsx`:
+
+- Find: [describe the section or paste the exact text]
+- Change: [what to change and why]
+- Access rule: [keep existing | change to isPremium | lifetime only]
+- Style: match existing inline style pattern (no CSS modules, no Tailwind)
+- Do NOT: change any other file unless I list it here
+```
+
+---
+
+### 🟥 Template 4 — Gating / Access Control
+
+```
+Gate [feature/page/component] behind [isPremium | isFullAccess | tier === 'lifetime'].
+
+- File: react-app/src/pages/[File].tsx
+- Import: { isPremium } from useAuth() — already in AuthContext
+- If blocked: show paywall card with [lock emoji + message + "See Plans →" button → /pricing]
+- Paywall pattern: same as Keywords.tsx
+- Do NOT change the underlying data fetching — only wrap in the gate
+```
+
+---
+
+### 🟪 Template 5 — Deploy & Ship
+
+```
+Build and deploy this change:
+
+1. Run local build: cd react-app && npm run build
+2. Fix any TypeScript errors (no unused vars — TS6133 fails Amplify)
+3. git add [specific files only]
+4. git commit -m "[short description]"
+5. git push origin main
+6. Wait ~90s for Amplify build
+7. Invalidate CloudFront: aws cloudfront create-invalidation --distribution-id E149XOHRPMJ4D1 --paths "/*"
+8. Test in fresh incognito window at https://certiprepai.com
+```
+
+---
+
+### ✅ Golden Rules for All Prompts
+
+| Rule | Why |
+|------|-----|
+| Always name the exact file path | No guessing where it goes |
+| Say "same pattern as X.tsx" | Claude mirrors structure, imports, style |
+| Specify the access tier explicitly | isPremium ≠ isFullAccess ≠ lifetime |
+| List every file that needs updating | Routes, Nav, SEO — Claude won't assume |
+| End with "Do NOT touch X" | Prevents unintended side effects |
+| One feature per prompt | Easier to review, easier to roll back |
