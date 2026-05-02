@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { resetUser } from '../lib/analytics'
+import { useCertAccess } from '../hooks/useCertAccess'
 
 const ChevronDown = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: '3px' }}>
@@ -30,6 +31,8 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, isPremium, tier, signOut, loading } = useAuth()
+  const { hasAccess: hasSaaAccess, loading: saaLoading } = useCertAccess('saa-c03')
+  const { hasAccess: hasAifAccess, loading: aifLoading } = useCertAccess('aif-c01')
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -90,10 +93,12 @@ export default function Navbar() {
     { to: '/glossary', bg: '#eff6ff', icon: '📖', label: 'Glossary', sub: '50+ AWS terms explained simply', badge: '' },
     { to: '/diagrams', bg: '#f5f3ff', icon: '🗺️', label: 'Architecture Diagrams', sub: 'Interactive SAA-C03 diagrams', badge: '' },
     { to: '/service-groups', bg: '#f0fdf4', icon: '🗂️', label: 'Service Groups', sub: 'Compare AWS services by category', badge: '' },
-    { to: '/comparisons', bg: '#fef3c7', icon: '⚖️', label: 'Service Comparisons', sub: 'X vs Y tables from real exam data', badge: '' },
+    { to: '/comparisons', bg: '#fff7ed', icon: '⚖️', label: 'Service Comparisons', sub: 'X vs Y tables from real exam data', badge: '' },
     { to: '/cheat-sheets', bg: '#fef2f2', icon: '📄', label: 'Cheat Sheets', sub: 'Domains, traps & patterns per cert', badge: '' },
-    { to: '/prompt-patterns', bg: '#f5f3ff', icon: '✍️', label: 'Prompt Patterns', sub: 'AIF-C01 techniques, parameters & security', badge: 'AIF-C01' },
-    { to: '/saa-guide', bg: '#fef3c7', icon: '📖', label: 'SAA-C03 Deep Study', sub: 'Decision matrix, traps & 30-day study plan', badge: 'SAA-C03' },
+    // AIF-C01 specific — only show if user has AIF access (or still loading)
+    ...(aifLoading || hasAifAccess ? [{ to: '/prompt-patterns', bg: '#f5f3ff', icon: '✍️', label: 'Prompt Patterns', sub: 'AIF-C01 techniques, parameters & security', badge: 'AIF-C01' }] : []),
+    // SAA-C03 specific — only show if user has SAA access (or still loading)
+    ...(saaLoading || hasSaaAccess ? [{ to: '/saa-guide', bg: '#eff6ff', icon: '📖', label: 'SAA-C03 Deep Study', sub: 'Decision matrix, traps & 30-day study plan', badge: 'SAA-C03' }] : []),
   ]
 
   const DropdownItem = ({ item }: { item: typeof practiceItems[0] }) => (
