@@ -634,9 +634,10 @@ export default function SaaGuide() {
             </p>
             {TRAPS.map(t => {
               const isOpen = expanded === t.title
+              const trapId = `trap-${t.title.replace(/\s+/g, '-')}`
               return (
-                <div key={t.title} style={{ background: '#fff', border: `1px solid ${isOpen ? '#dc2626' : '#e5e7eb'}`, borderRadius: '14px', overflow: 'hidden', boxShadow: isOpen ? '0 0 0 3px rgba(220,38,38,0.07)' : 'none', transition: 'all 0.15s' }}>
-                  <button onClick={() => setExpanded(isOpen ? null : t.title)} style={{ width: '100%', padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', textAlign: 'left' }}>
+                <div id={trapId} key={t.title} style={{ background: '#fff', border: `1px solid ${isOpen ? '#dc2626' : '#e5e7eb'}`, borderRadius: '14px', overflow: 'hidden', boxShadow: isOpen ? '0 0 0 3px rgba(220,38,38,0.07)' : 'none', transition: 'all 0.15s' }}>
+                  <button onClick={() => { const opening = !isOpen; setExpanded(opening ? t.title : null); if (opening) setTimeout(() => document.getElementById(trapId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }} style={{ width: '100%', padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', textAlign: 'left' }}>
                     <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{t.icon}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#111827' }}>{t.title}</div>
@@ -678,9 +679,10 @@ export default function SaaGuide() {
             </p>
             {DEEP_DIVES.map(d => {
               const isOpen = expanded === d.id
+              const diveId = `dive-${d.id}`
               return (
-                <div key={d.id} style={{ background: '#fff', border: `1px solid ${isOpen ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: '14px', overflow: 'hidden', boxShadow: isOpen ? '0 0 0 3px rgba(29,78,216,0.08)' : 'none', transition: 'all 0.15s' }}>
-                  <button onClick={() => setExpanded(isOpen ? null : d.id)} style={{ width: '100%', padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', textAlign: 'left' }}>
+                <div id={diveId} key={d.id} style={{ background: '#fff', border: `1px solid ${isOpen ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: '14px', overflow: 'hidden', boxShadow: isOpen ? '0 0 0 3px rgba(29,78,216,0.08)' : 'none', transition: 'all 0.15s' }}>
+                  <button onClick={() => { const opening = !isOpen; setExpanded(opening ? d.id : null); if (opening) setTimeout(() => document.getElementById(diveId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80) }} style={{ width: '100%', padding: '1rem 1.25rem', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.875rem', textAlign: 'left' }}>
                     <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{d.icon}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#111827' }}>{d.title}</div>
