@@ -578,11 +578,11 @@ export default function Dashboard() {
       {/* Security / MFA section */}
       {(
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1rem 2rem' }}>
-        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ fontWeight: 700, color: '#111827', fontSize: '0.95rem' }}>🔐 Two-Factor Authentication</div>
-              <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.2rem' }}>
+              <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.25rem' }}>
                 {mfaEnabled ? '✅ Enabled — Google Authenticator / Authy' : 'Add an extra layer of security to your account'}
               </div>
             </div>
@@ -590,7 +590,7 @@ export default function Dashboard() {
               <button
                 onClick={mfaEnabled ? handleDisableMFA : handleEnableMFA}
                 disabled={mfaLoading}
-                style={{ padding: '0.5rem 1.1rem', background: mfaEnabled ? '#fff' : '#2563eb', color: mfaEnabled ? '#dc2626' : '#fff', border: mfaEnabled ? '1px solid #fca5a5' : 'none', borderRadius: '0.65rem', fontWeight: 600, fontSize: '0.82rem', cursor: mfaLoading ? 'not-allowed' : 'pointer' }}
+                style={{ padding: '0.55rem 1.4rem', background: mfaEnabled ? '#fff' : '#2563eb', color: mfaEnabled ? '#dc2626' : '#fff', border: mfaEnabled ? '1px solid #fca5a5' : 'none', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.85rem', cursor: mfaLoading ? 'not-allowed' : 'pointer', flexShrink: 0, boxShadow: mfaEnabled ? 'none' : '0 1px 3px rgba(37,99,235,0.3)' }}
               >
                 {mfaLoading ? '…' : mfaEnabled ? 'Disable MFA' : 'Enable MFA'}
               </button>
