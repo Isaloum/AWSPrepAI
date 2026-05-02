@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext'
 
 const CHECKOUT_API = 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
 const UPGRADE_API  = 'https://d8bmltyjpe.execute-api.us-east-1.amazonaws.com'
+const CANCEL_API   = 'https://hpcdl0ft8a.execute-api.us-east-1.amazonaws.com'
 
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, bundle: 1.5, yearly: 2, lifetime: 3 }
 
@@ -38,6 +39,26 @@ export default function Billing() {
     amount?: string
     error?: string
   } | null>(null)
+
+  const [cancelModal, setCancelModal] = useState<'idle' | 'confirm' | 'loading' | 'done' | 'error'>('idle')
+  const [cancelError, setCancelError] = useState('')
+
+  const handleCancelSubscription = async () => {
+    setCancelModal('loading')
+    try {
+      const res = await fetch(`${CANCEL_API}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user!.accessToken}` },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Cancellation failed.')
+      setCancelModal('done')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Something went wrong.'
+      setCancelError(msg)
+      setCancelModal('error')
+    }
+  }
 
   if (!loading && !user) {
     navigate('/login')
@@ -199,16 +220,110 @@ export default function Billing() {
           </>
         )}
 
-        {/* Cancel note */}
+        {/* Cancel Subscription */}
         {tier !== 'free' && tier !== 'lifetime' && (
-          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.25rem' }}>
-            <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
-              To cancel your subscription, please contact us at <a href="mailto:support@certiprepai.com" style={{ color: '#2563eb', textDecoration: 'underline' }}>support@certiprepai.com</a>.
-            </p>
+          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+              <div>
+                <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.875rem', margin: '0 0 0.2rem' }}>
+                  Cancel Subscription
+                </p>
+                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
+                  You'll keep access until the end of your current billing period.
+                </p>
+              </div>
+              <button
+                onClick={() => setCancelModal('confirm')}
+                style={{ padding: '8px 18px', background: '#fff', color: '#dc2626', border: '1.5px solid #fca5a5', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+              >
+                Cancel Plan
+              </button>
+            </div>
           </div>
         )}
 
       </div>
+
+      {/* Cancel Modal */}
+      {cancelModal !== 'idle' && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+          <div style={{ background: '#fff', borderRadius: '1rem', padding: '2rem', maxWidth: '400px', width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+
+            {cancelModal === 'confirm' && (
+              <>
+                <div style={{ fontSize: '2rem', marginBottom: '0.75rem', textAlign: 'center' }}>⚠️</div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', textAlign: 'center' }}>
+                  Cancel your subscription?
+                </h3>
+                <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem', textAlign: 'center' }}>
+                  Your plan will stay active until the end of the current billing period. After that, your account reverts to the free tier.
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    onClick={() => setCancelModal('idle')}
+                    style={{ flex: 1, padding: '0.7rem', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}
+                  >
+                    Keep Plan
+                  </button>
+                  <button
+                    onClick={handleCancelSubscription}
+                    style={{ flex: 1, padding: '0.7rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
+                  >
+                    Yes, Cancel
+                  </button>
+                </div>
+              </>
+            )}
+
+            {cancelModal === 'loading' && (
+              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>⏳</div>
+                <p style={{ color: '#6b7280' }}>Cancelling subscription…</p>
+              </div>
+            )}
+
+            {cancelModal === 'done' && (
+              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>✅</div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>
+                  Subscription cancelled
+                </h3>
+                <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                  You'll keep full access until your billing period ends. We're sorry to see you go — you're always welcome back.
+                </p>
+                <button
+                  onClick={() => setCancelModal('idle')}
+                  style={{ padding: '0.7rem 1.5rem', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}
+                >
+                  Close
+                </button>
+              </div>
+            )}
+
+            {cancelModal === 'error' && (
+              <>
+                <div style={{ fontSize: '2rem', marginBottom: '0.75rem', textAlign: 'center' }}>❌</div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', textAlign: 'center' }}>
+                  Something went wrong
+                </h3>
+                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '0.5rem', padding: '0.6rem 0.85rem', color: '#b91c1c', fontSize: '0.83rem', marginBottom: '1.25rem', textAlign: 'center' }}>
+                  {cancelError}
+                </div>
+                <p style={{ color: '#9ca3af', fontSize: '0.8rem', textAlign: 'center', marginBottom: '1.25rem' }}>
+                  Please email <a href="mailto:support@certiprepai.com" style={{ color: '#2563eb' }}>support@certiprepai.com</a> if this keeps happening.
+                </p>
+                <button
+                  onClick={() => setCancelModal('idle')}
+                  style={{ width: '100%', padding: '0.7rem', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}
+                >
+                  Close
+                </button>
+              </>
+            )}
+
+          </div>
+        </div>
+      )}
 
       {/* Upgrade Modal */}
       {upgradeModal && (
