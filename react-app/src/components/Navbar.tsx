@@ -93,6 +93,7 @@ export default function Navbar() {
     { to: '/comparisons', bg: '#fef3c7', icon: '⚖️', label: 'Service Comparisons', sub: 'X vs Y tables from real exam data', badge: '' },
     { to: '/cheat-sheets', bg: '#fef2f2', icon: '📄', label: 'Cheat Sheets', sub: 'Domains, traps & patterns per cert', badge: '' },
     { to: '/prompt-patterns', bg: '#f5f3ff', icon: '✍️', label: 'Prompt Patterns', sub: 'AIF-C01 techniques, parameters & security', badge: 'AIF-C01' },
+    { to: '/saa-guide', bg: '#fef3c7', icon: '📖', label: 'SAA-C03 Guide', sub: 'Decision matrix, traps & 30-day study plan', badge: 'SAA-C03' },
   ]
 
   const DropdownItem = ({ item }: { item: typeof practiceItems[0] }) => (

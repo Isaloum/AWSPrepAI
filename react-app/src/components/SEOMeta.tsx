@@ -112,6 +112,10 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
     title: 'Prompt Patterns — AIF-C01 Techniques, Parameters & Security | CertiPrepAI',
     description: 'Master prompt engineering for the AWS AI Practitioner exam. Zero-shot, few-shot, chain-of-thought, inference parameters, prompt injection defenses, and more.',
   },
+  '/saa-guide': {
+    title: 'SAA-C03 Complete Study Guide — Decision Matrix, Traps & Deep Dives | CertiPrepAI',
+    description: 'The complete SAA-C03 encyclopedia: 39-row decision matrix, 12 exam traps, 16 deep dives, 30-day study plan, port numbers, and exam strategy.',
+  },
   '/about': {
     title: 'About CertiPrepAI — Built by an AWS Engineer',
     description: 'CertiPrepAI is built by an AWS engineer who passed multiple certifications. 3,910 practice questions derived from official AWS documentation.',
