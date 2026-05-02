@@ -572,20 +572,6 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Quick links */}
-        <div style={{ marginTop: '2rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link to="/glossary" style={{ padding: '0.6rem 1.25rem', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', color: '#374151', textDecoration: 'none', background: '#fff' }}>
-            📖 Glossary
-          </Link>
-          <Link to="/resources" style={{ padding: '0.6rem 1.25rem', border: '1px solid #e5e7eb', borderRadius: '0.75rem', fontWeight: 600, fontSize: '0.875rem', color: '#374151', textDecoration: 'none', background: '#fff' }}>
-            📚 Resources
-          </Link>
-          {!isFullAccess && (
-            <Link to="/pricing" style={{ padding: '0.6rem 1.25rem', border: '1px solid #93c5fd', borderRadius: '0.75rem', fontWeight: 700, fontSize: '0.875rem', color: '#1d4ed8', textDecoration: 'none', background: '#eff6ff' }}>
-              ⚡ View Plans
-            </Link>
-          )}
-        </div>
 
       </div>
 
