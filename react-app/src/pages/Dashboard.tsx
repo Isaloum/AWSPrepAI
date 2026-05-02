@@ -577,7 +577,8 @@ export default function Dashboard() {
 
       {/* Security / MFA section */}
       {(
-        <div style={{ marginTop: '2rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 1rem 2rem' }}>
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '1rem', padding: '1.25rem 1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ fontWeight: 700, color: '#111827', fontSize: '0.95rem' }}>🔐 Two-Factor Authentication</div>
@@ -639,6 +640,7 @@ export default function Dashboard() {
             </div>
           )}
           {mfaError && !mfaSetup && <p style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.5rem' }}>{mfaError}</p>}
+        </div>
         </div>
       )}
 
