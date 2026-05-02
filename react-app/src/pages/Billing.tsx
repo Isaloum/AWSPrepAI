@@ -3,10 +3,12 @@
  * Subscription management for paying users.
  * Shows current plan + upgrade options via awsprepai-upgrade-subscription Lambda.
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
+
+const CANCELLED_KEY = 'certiprepai-plan-cancelled'
 
 const CHECKOUT_API = 'https://34zglioc5a.execute-api.us-east-1.amazonaws.com/checkout'
 const UPGRADE_API  = 'https://d8bmltyjpe.execute-api.us-east-1.amazonaws.com'
@@ -42,6 +44,17 @@ export default function Billing() {
 
   const [cancelModal, setCancelModal] = useState<'idle' | 'confirm' | 'loading' | 'done' | 'error'>('idle')
   const [cancelError, setCancelError] = useState('')
+  const [isCancelled, setIsCancelled] = useState(false)
+
+  // Persist cancelled state across page refreshes (cleared when tier drops to free)
+  useEffect(() => {
+    if (tier === 'free') {
+      localStorage.removeItem(CANCELLED_KEY)
+      setIsCancelled(false)
+    } else {
+      setIsCancelled(localStorage.getItem(CANCELLED_KEY) === 'true')
+    }
+  }, [tier])
 
   const handleCancelSubscription = async () => {
     setCancelModal('loading')
@@ -52,6 +65,8 @@ export default function Billing() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Cancellation failed.')
+      localStorage.setItem(CANCELLED_KEY, 'true')
+      setIsCancelled(true)
       setCancelModal('done')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong.'
@@ -149,7 +164,7 @@ export default function Billing() {
         </div>
 
         {/* Current Plan Card */}
-        <div style={{ background: info.bg, border: `2px solid ${info.color}30`, borderRadius: '1rem', padding: '1.5rem', marginBottom: '2rem' }}>
+        <div style={{ background: info.bg, border: `2px solid ${info.color}30`, borderRadius: '1rem', padding: '1.5rem', marginBottom: isCancelled ? '1rem' : '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '2rem' }}>{info.icon}</span>
             <div>
@@ -158,10 +173,30 @@ export default function Billing() {
             </div>
             <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
               <div style={{ fontSize: '1.1rem', fontWeight: 800, color: info.color }}>{info.price}</div>
+              {isCancelled && (
+                <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#d97706', background: '#fef3c7', padding: '2px 8px', borderRadius: '999px', marginTop: '4px' }}>
+                  Cancels at period end
+                </div>
+              )}
             </div>
           </div>
           <p style={{ color: '#4b5563', fontSize: '0.875rem', margin: 0 }}>{info.desc}</p>
         </div>
+
+        {/* Cancellation Notice Banner */}
+        {isCancelled && (
+          <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '2rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+            <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>⚠️</span>
+            <div>
+              <p style={{ fontWeight: 700, color: '#92400e', fontSize: '0.875rem', margin: '0 0 0.25rem' }}>
+                Your subscription is cancelled
+              </p>
+              <p style={{ color: '#78350f', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>
+                You still have full access to your current plan until your billing period ends — nothing changes until then. After that, your account moves to the free tier.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Upgrade Options */}
         {tier !== 'lifetime' && (
@@ -223,22 +258,29 @@ export default function Billing() {
         {/* Cancel Subscription */}
         {tier !== 'free' && tier !== 'lifetime' && (
           <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-              <div>
-                <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.875rem', margin: '0 0 0.2rem' }}>
-                  Cancel Subscription
-                </p>
-                <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
-                  You'll keep access until the end of your current billing period.
-                </p>
+            {isCancelled ? (
+              <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
+                Cancellation is already scheduled. You'll lose access when your billing period ends.
+                Changed your mind? Email <a href="mailto:support@certiprepai.com" style={{ color: '#2563eb' }}>support@certiprepai.com</a>.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                <div>
+                  <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.875rem', margin: '0 0 0.2rem' }}>
+                    Cancel Subscription
+                  </p>
+                  <p style={{ color: '#9ca3af', fontSize: '0.8rem', margin: 0 }}>
+                    You'll keep access until the end of your current billing period.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCancelModal('confirm')}
+                  style={{ padding: '8px 18px', background: '#fff', color: '#dc2626', border: '1.5px solid #fca5a5', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+                >
+                  Cancel Plan
+                </button>
               </div>
-              <button
-                onClick={() => setCancelModal('confirm')}
-                style={{ padding: '8px 18px', background: '#fff', color: '#dc2626', border: '1.5px solid #fca5a5', borderRadius: '0.6rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
-              >
-                Cancel Plan
-              </button>
-            </div>
+            )}
           </div>
         )}
 
