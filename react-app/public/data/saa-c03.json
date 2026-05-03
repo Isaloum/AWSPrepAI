@@ -21309,5 +21309,432 @@
       "s3:BypassGovernanceRetention",
       "compliance officer"
     ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A company needs to monitor an Amazon RDS instance and determine the percentage of CPU bandwidth consumed by each database process and thread. Which solution provides this per-process visibility?",
+    "options": [
+      "Enable Amazon CloudWatch detailed monitoring on the RDS instance",
+      "Create a CloudWatch custom metric using a script on the RDS instance",
+      "Enable RDS Enhanced Monitoring on the instance",
+      "Use AWS X-Ray to trace database query performance"
+    ],
+    "answer": 2,
+    "explain": "RDS Enhanced Monitoring installs an agent directly on the DB instance and reports per-process and per-thread CPU and memory usage. Standard CloudWatch RDS metrics come from the hypervisor and only show the overall instance CPU \u2014 not which specific database process is consuming it. X-Ray traces request flows but does not show OS-level process metrics. You cannot run custom scripts directly on RDS managed instances.",
+    "hint": "CloudWatch metrics come from the hypervisor (instance-level). The question asks for per-process/thread detail. That requires something running inside the OS itself.",
+    "keywords": [
+      "RDS Enhanced Monitoring",
+      "per-process CPU",
+      "CloudWatch",
+      "hypervisor",
+      "OS agent",
+      "RDSOSMetrics"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A company stores data in an Amazon S3 bucket. A web application hosted at http://app.s3-website-us-east-1.amazonaws.com uses JavaScript to make authenticated GET requests to the S3 API endpoint at https://app.s3.amazonaws.com. Users report that the browser blocks these requests. What is the fix?",
+    "options": [
+      "Enable cross-account access on the S3 bucket",
+      "Configure an S3 bucket policy to allow the requests",
+      "Enable Cross-origin resource sharing (CORS) on the S3 bucket",
+      "Enable Cross-Region Replication to sync the requests"
+    ],
+    "answer": 2,
+    "explain": "The browser blocks JavaScript requests from the S3 website endpoint to the S3 API endpoint because they are different origins (different hostnames). This is a Cross-Origin Resource Sharing (CORS) issue \u2014 a browser security mechanism. Enabling CORS on the bucket tells the browser that requests from the website endpoint domain are permitted. Cross-account access and bucket policies address IAM-level permissions, not browser origin restrictions. CRR is for replicating objects, not fixing browser behavior.",
+    "hint": "The website and the API endpoint have different hostnames. Browsers block cross-origin JavaScript requests by default. What S3 feature addresses this browser-level restriction?",
+    "keywords": [
+      "S3 CORS",
+      "cross-origin",
+      "JavaScript",
+      "browser",
+      "S3 website endpoint",
+      "S3 API endpoint"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A company has an Amazon RDS MySQL database. They need EC2 instances to connect to the database using credentials tied to the EC2 instance profile rather than a static password stored in the application. Which feature enables this?",
+    "options": [
+      "SSL/TLS encryption with RDS certificate authority",
+      "IAM database authentication",
+      "AWS Secrets Manager with automatic rotation",
+      "RDS Proxy with IAM authentication"
+    ],
+    "answer": 1,
+    "explain": "IAM database authentication allows EC2 instances to connect to RDS MySQL or PostgreSQL using a short-lived authentication token (valid 15 minutes) generated from the EC2 instance profile's IAM credentials \u2014 no static password is stored anywhere. AWS STS generates the token using the instance role. The connection is automatically encrypted with SSL. Secrets Manager also eliminates hardcoded passwords but still uses a password (it just rotates it automatically). IAM DB auth ties authentication directly to the instance identity.",
+    "hint": "The requirement is 'credentials tied to the EC2 instance profile.' That is specifically an IAM feature applied to database authentication.",
+    "keywords": [
+      "IAM DB authentication",
+      "RDS",
+      "instance profile",
+      "token",
+      "15 minutes",
+      "no password",
+      "SSL"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "An enterprise uses an on-premises Microsoft Active Directory to manage employee credentials. They want employees to access the AWS Management Console using their existing AD usernames and passwords without creating IAM users. Which combination of services achieves this?",
+    "options": [
+      "AWS Directory Service Simple AD and IAM Groups",
+      "Amazon Cognito User Pools and IAM Roles",
+      "AWS Directory Service AD Connector and IAM Roles",
+      "SAML 2.0 Federation with Web Identity Federation"
+    ],
+    "answer": 2,
+    "explain": "AD Connector acts as a directory gateway that redirects AWS authentication requests to the on-premises Active Directory \u2014 it does not replicate data or require creating a new directory. Paired with IAM Roles, employees authenticate with their existing AD credentials and receive temporary AWS credentials mapped to the appropriate IAM role. Simple AD is a standalone AWS directory (no on-prem AD required), so it cannot authenticate against an existing corporate AD. Cognito is for application end-users (web/mobile), not corporate employees. Web Identity Federation is for social login providers.",
+    "hint": "The company already has AD on-prem. The solution must proxy auth to that existing AD \u2014 not create a new one.",
+    "keywords": [
+      "AD Connector",
+      "IAM Roles",
+      "Active Directory",
+      "on-premises",
+      "AWS Console",
+      "directory gateway"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A pharmaceutical company requires employees to access AWS using their corporate Microsoft Active Directory credentials via single sign-on. The company uses Active Directory Federation Services (AD FS) as their identity provider. Which AWS authentication approach should be configured?",
+    "options": [
+      "Web Identity Federation using Amazon Cognito",
+      "AWS Directory Service AD Connector with IAM users",
+      "SAML 2.0-based federation with AD FS as the identity provider",
+      "Amazon Cognito Identity Pools with AD FS as a SAML provider"
+    ],
+    "answer": 2,
+    "explain": "SAML 2.0-based federation with AD FS allows corporate employees to authenticate with their AD credentials through AD FS, which generates a SAML assertion that AWS STS exchanges for temporary credentials via AssumeRoleWithSAML. This enables federated SSO to the AWS Console and APIs without creating individual IAM users. Web Identity Federation (Cognito) is for consumer-facing apps using Google/Facebook/Amazon \u2014 not corporate AD. AD Connector proxies individual auth requests but does not provide SAML SSO for Console access at scale.",
+    "hint": "Corporate AD + SSO to AWS Console = SAML 2.0. AD FS is Microsoft's SAML identity provider. Web Identity Federation is for social logins, not enterprise AD.",
+    "keywords": [
+      "SAML 2.0",
+      "AD FS",
+      "federation",
+      "SSO",
+      "Active Directory",
+      "AssumeRoleWithSAML",
+      "IAM role"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A compliance team needs to download AWS SOC 2 reports and PCI DSS compliance documents for their AWS account to present to auditors. Where can they find these documents?",
+    "options": [
+      "AWS Security Hub \u2014 under the compliance standards section",
+      "Amazon Inspector \u2014 run an assessment to generate compliance reports",
+      "AWS Artifact \u2014 download compliance reports and agreements on demand",
+      "AWS Trusted Advisor \u2014 view compliance checks and download reports"
+    ],
+    "answer": 2,
+    "explain": "AWS Artifact is the central repository for AWS compliance documentation. It provides on-demand access to SOC 1/2/3 reports, PCI DSS compliance documents, ISO certifications, and other audit artifacts. It also contains agreements like the HIPAA Business Associate Addendum. All AWS accounts have access. Security Hub aggregates security findings \u2014 it does not host AWS's own compliance documents. Inspector is a vulnerability scanner. Trusted Advisor provides best practice recommendations, not official compliance certifications.",
+    "hint": "The question is about AWS's own compliance certifications (SOC, PCI) \u2014 not scanning your workloads. One specific service is the document repository for this.",
+    "keywords": [
+      "AWS Artifact",
+      "SOC reports",
+      "PCI DSS",
+      "compliance documents",
+      "audit",
+      "BAA",
+      "certifications"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A company wants to upload large 500 GB weather data files from sensor stations in Europe, Asia, and South America to an S3 bucket in us-east-1 as quickly as possible. Which combination achieves the fastest transfer?",
+    "options": [
+      "Use S3 Cross-Region Replication from regional buckets to us-east-1",
+      "Enable S3 Transfer Acceleration on the destination bucket and use Multipart Upload",
+      "Use AWS DataSync to schedule transfers from each location to S3",
+      "Set up AWS Direct Connect links from each location to us-east-1"
+    ],
+    "answer": 1,
+    "explain": "S3 Transfer Acceleration routes uploads through CloudFront's global edge network, optimizing the path from the uploading location to the S3 bucket \u2014 it can improve speeds by 50-500% for large objects over long distances. Multipart Upload splits large files into parallel chunks, maximizing throughput. Together they are the fastest method for large file uploads from global locations to a single S3 bucket. CRR requires objects to first be uploaded to a source bucket before replication \u2014 it adds latency, not removes it. Direct Connect takes weeks to provision and is not practical for global sensor stations.",
+    "hint": "Two techniques combined: one optimizes the network route from global locations, the other parallelizes the actual upload. Both are pure S3 features.",
+    "keywords": [
+      "S3 Transfer Acceleration",
+      "Multipart Upload",
+      "CloudFront edge",
+      "large files",
+      "global upload",
+      "fastest transfer"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A company needs to handle sudden traffic spikes that go from near-zero to thousands of requests within seconds whenever a new product launch is announced. The backend needs to process these requests and query an Amazon RDS database. Which compute option handles the burst most effectively?",
+    "options": [
+      "An Auto Scaling group of EC2 instances with a target tracking policy",
+      "Amazon ECS with Service Auto Scaling based on CPU utilization",
+      "AWS Lambda functions invoked via Amazon API Gateway",
+      "Amazon Elastic Beanstalk with automatic load balancing"
+    ],
+    "answer": 2,
+    "explain": "AWS Lambda scales to thousands of concurrent executions in seconds \u2014 it can absorb a sudden burst of traffic almost instantly because AWS pre-warms Lambda execution environments. EC2 Auto Scaling, ECS Auto Scaling, and Elastic Beanstalk all provision new instances/containers which takes 2-5 minutes minimum \u2014 far too slow for a burst that happens within seconds. Lambda's concurrency model is specifically designed for this pattern: near-zero to thousands in seconds. For the RDS connection issue at scale, RDS Proxy would be paired with Lambda.",
+    "hint": "When traffic goes from zero to thousands within seconds, you need something that was already running \u2014 not something that needs to provision new servers.",
+    "keywords": [
+      "Lambda",
+      "burst traffic",
+      "seconds",
+      "API Gateway",
+      "Auto Scaling",
+      "concurrency",
+      "instantaneous scale"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A trading platform uses Amazon API Gateway backed by AWS Lambda. During high-traffic periods, the backend systems become overwhelmed. The solutions architect needs to protect the backend while ensuring legitimate requests are not permanently rejected. Which API Gateway feature should be implemented?",
+    "options": [
+      "Enable CloudFront in front of API Gateway to cache responses",
+      "Enable throttling limits and result caching in API Gateway",
+      "Move the Lambda functions to a VPC for better performance",
+      "Switch to an Application Load Balancer with EC2 instances"
+    ],
+    "answer": 1,
+    "explain": "API Gateway throttling limits the rate of incoming requests (per second and burst) \u2014 requests over the limit receive HTTP 429 Too Many Requests, and the client SDKs automatically retry. API Gateway result caching stores responses for a TTL period so repeated identical requests hit the cache instead of invoking Lambda. Together they protect the backend from traffic spikes while serving cached responses to legitimate users. CloudFront caches static content but doesn't protect the backend from request bursts. Moving Lambda to a VPC adds latency and doesn't address request volume.",
+    "hint": "Two complementary API Gateway features: one limits the rate of requests, the other stores results so backends don't get called for every repeat request.",
+    "keywords": [
+      "API Gateway",
+      "throttling",
+      "result caching",
+      "429",
+      "rate limiting",
+      "backend protection",
+      "TTL"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A company uses Amazon RDS MySQL in a single Availability Zone. They need to ensure the database is highly available and that data replication to the standby is synchronous, meaning no data loss if the primary fails. Which configuration achieves this?",
+    "options": [
+      "Create an RDS Read Replica in a different Availability Zone",
+      "Enable RDS Multi-AZ deployment",
+      "Configure cross-region replication for the RDS instance",
+      "Enable automated backups with a 1-day retention period"
+    ],
+    "answer": 1,
+    "explain": "RDS Multi-AZ creates a synchronous standby replica in a different AZ. Every write to the primary is synchronously replicated to the standby before the write is acknowledged \u2014 this means zero data loss (no RPO) if the primary fails, with automatic failover. Read Replicas use asynchronous replication \u2014 there can be replication lag, meaning some data may not have reached the replica when the primary fails. Automated backups reduce data loss to the last backup interval (not zero). Cross-region replication is asynchronous and not designed for automatic failover.",
+    "hint": "The key word is 'synchronous.' Only one RDS feature replicates synchronously. Read Replicas are asynchronous.",
+    "keywords": [
+      "RDS Multi-AZ",
+      "synchronous replication",
+      "standby",
+      "automatic failover",
+      "high availability",
+      "zero data loss"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A company is running an Amazon Aurora DB cluster and needs to route production OLTP traffic to high-memory instances while routing analytical reporting queries from the BI team to smaller, lower-cost instances in the same cluster. How should this be configured?",
+    "options": [
+      "Use the Aurora reader endpoint \u2014 it automatically routes by query type",
+      "Create two custom Aurora endpoints: one pointing to high-memory replicas, one to smaller replicas",
+      "Enable Aurora Auto Scaling to add the right replicas for each workload",
+      "Use Route 53 weighted routing between two separate Aurora clusters"
+    ],
+    "answer": 1,
+    "explain": "Aurora custom endpoints let you define named connection endpoints that point to specific subsets of DB instances in the cluster. You can create one custom endpoint pointing to high-capacity replicas for production traffic and another pointing to smaller replicas for reporting. The reader endpoint load-balances across ALL replicas without differentiation \u2014 it cannot route by workload type. Aurora Auto Scaling adds/removes replicas based on metrics but does not route traffic. Two separate clusters would work but is expensive and unnecessary.",
+    "hint": "The reader endpoint treats all replicas equally. Routing different workloads to different-sized instances requires a feature that lets you define which specific instances each endpoint points to.",
+    "keywords": [
+      "Aurora custom endpoint",
+      "read replicas",
+      "workload routing",
+      "production vs reporting",
+      "instance subset"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A car dealership application uses Amazon Aurora MySQL. When a vehicle listing is deleted from the database, the application must immediately forward the deleted record to a downstream processing queue. Which is the most efficient architecture?",
+    "options": [
+      "Create an RDS event subscription that sends notifications to SQS when records are deleted",
+      "Use AWS DMS to capture delete operations and forward them to SQS",
+      "Use an Aurora MySQL native function to invoke a Lambda function on DELETE, which sends the record to SQS",
+      "Enable DynamoDB Streams on the Aurora table to capture delete events"
+    ],
+    "answer": 2,
+    "explain": "Aurora MySQL native functions (lambda_sync or lambda_async) can invoke a Lambda function directly from a database trigger whenever a row is deleted. The Lambda function then sends the deleted record data to SQS. This is the most direct and efficient approach. RDS Event Subscriptions only capture infrastructure-level events (instance restart, failover, backup completion) \u2014 NOT data changes like INSERT, UPDATE, or DELETE. DMS is for database migration, not real-time event capture. DynamoDB Streams is a DynamoDB feature \u2014 it cannot be enabled on Aurora tables.",
+    "hint": "RDS Event Subscriptions = infrastructure events (backup, failover). You need data-level events (row deleted). Aurora MySQL has a built-in way to call Lambda directly from the database.",
+    "keywords": [
+      "Aurora MySQL native function",
+      "lambda_sync",
+      "lambda_async",
+      "database trigger",
+      "Lambda",
+      "RDS event subscription"
+    ]
+  },
+  {
+    "cat": "resilient-arch",
+    "q": "A company uses Amazon ECS with Fargate. A new batch processing job should start automatically whenever a CSV file is uploaded to an S3 bucket. The solution should require the least operational overhead. Which is the best approach?",
+    "options": [
+      "Create a CloudWatch alarm triggered by an S3 PUT metric, then use the alarm to start an ECS task",
+      "Configure an S3 event notification to invoke a Lambda function that calls the ECS StartTask API",
+      "Set up an Amazon EventBridge rule to detect S3 PutObject events and set the target directly to the ECS cluster to run a new task",
+      "Use AWS CodePipeline to monitor S3 for new files and trigger an ECS deployment"
+    ],
+    "answer": 2,
+    "explain": "Amazon EventBridge can directly target an ECS cluster as the rule target \u2014 no Lambda intermediary needed. When a PutObject event is detected in S3, EventBridge triggers a new ECS task run directly. This is the simplest, least operational overhead solution. Using Lambda as an intermediary (option B) works but adds unnecessary complexity and an extra service to manage. CloudWatch alarms cannot directly detect S3 object PUT events. CodePipeline is for CI/CD, not event-triggered batch jobs.",
+    "hint": "EventBridge can target ECS tasks directly. You don't need Lambda as an intermediary. The question asks for LEAST operational overhead.",
+    "keywords": [
+      "EventBridge",
+      "ECS",
+      "S3 PutObject event",
+      "direct target",
+      "no Lambda needed",
+      "least overhead"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A social media application stores user activity in DynamoDB. When a user follows another user, subscribers must be notified via email within seconds. Which architecture correctly implements this?",
+    "options": [
+      "Set up a DynamoDB DAX cluster to capture writes and push to SNS for email notification",
+      "Enable DynamoDB Streams, create a Lambda trigger on the stream, and have Lambda publish to an SNS topic that emails subscribers",
+      "Use DynamoDB Streams with a Kinesis Adapter application to poll the stream and send SNS notifications",
+      "Create a Lambda function that polls DynamoDB every second for new items and sends SNS notifications"
+    ],
+    "answer": 1,
+    "explain": "DynamoDB Streams must be explicitly enabled first \u2014 it captures a time-ordered log of all item-level changes. You then attach a Lambda trigger to the stream; Lambda is automatically invoked synchronously when new stream records appear. Lambda processes the change and publishes to an SNS topic, which sends emails. This is the most straightforward architecture. DAX is an in-memory read cache \u2014 it does not capture writes or push events. Polling DynamoDB every second adds latency and unnecessary read capacity consumption. The Kinesis Adapter approach works but is more complex than a direct Lambda trigger.",
+    "hint": "DynamoDB Streams are NOT enabled by default. Enable them first. Then Lambda can be triggered automatically on every change \u2014 no polling needed.",
+    "keywords": [
+      "DynamoDB Streams",
+      "Lambda trigger",
+      "SNS",
+      "enable streams",
+      "item-level changes",
+      "event-driven notification"
+    ]
+  },
+  {
+    "cat": "high-perf-arch",
+    "q": "A company is receiving thousands of HTTP requests per second with frequently changing IP addresses that appear to be a scripted attack. The solutions architect must block excessive requests from single IPs while allowing legitimate traffic through, with minimal impact on real users. Which solution is best?",
+    "options": [
+      "Add a deny rule to the Security Group of the Application Load Balancer for the offending IPs",
+      "Create a regular AWS WAF rule that matches the attack traffic pattern",
+      "Create a rate-based AWS WAF rule and associate it with the ALB",
+      "Configure a Network ACL to block the high-frequency IP addresses"
+    ],
+    "answer": 2,
+    "explain": "A WAF rate-based rule automatically tracks the request rate per source IP over a 5-minute window. IPs that exceed the defined threshold are automatically blocked and auto-unblocked when their rate drops \u2014 no manual intervention. This specifically handles 'frequently changing IPs' by dynamically blocking based on current rate, not a static IP list. Security Groups cannot block traffic (only allow). Regular WAF rules match patterns but do not limit request rates. NACLs with static IP blocks cannot keep up with frequently changing IPs.",
+    "hint": "Static IP blocks won't work if IPs change frequently. You need something that reacts to the RATE of requests dynamically. WAF has a specific rule type for this.",
+    "keywords": [
+      "WAF rate-based rule",
+      "requests per IP",
+      "5-minute window",
+      "auto-block",
+      "DDoS",
+      "dynamic blocking",
+      "429"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A company stores sensitive data in S3 and requires that both the master encryption key AND the unencrypted data must never be sent to AWS under any circumstances. Which S3 encryption method satisfies this requirement?",
+    "options": [
+      "Server-side encryption with AWS KMS (SSE-KMS)",
+      "Server-side encryption with customer-provided keys (SSE-C)",
+      "Client-side encryption using an AWS KMS key",
+      "Client-side encryption using a client-side master key"
+    ],
+    "answer": 3,
+    "explain": "Client-side encryption with a client-side master key means: (1) you generate and store the master key entirely on your own infrastructure \u2014 it never leaves your systems, (2) your application encrypts the data locally before uploading \u2014 unencrypted data never reaches S3. AWS only ever receives ciphertext. SSE-KMS encrypts server-side \u2014 unencrypted data is received by AWS. SSE-C requires sending the encryption key to AWS with each request. Client-side with a KMS key sends the KMS KeyId to AWS to derive a data key \u2014 the master key identifier goes to AWS.",
+    "hint": "Both the data AND the master key must never reach AWS. Server-side encryption means AWS handles encryption after receiving the data. Only one option ensures AWS never sees either.",
+    "keywords": [
+      "client-side encryption",
+      "client-side master key",
+      "never sent to AWS",
+      "data sovereignty",
+      "encrypt before upload"
+    ]
+  },
+  {
+    "cat": "cost-optimized-arch",
+    "q": "A company has multiple AWS accounts across different business units. They need to centrally manage billing, enforce security policies across all accounts, and share a centrally managed AWS Transit Gateway across all accounts without recreating it in each one. Which combination of services achieves this?",
+    "options": [
+      "AWS Control Tower for billing consolidation and AWS PrivateLink for Transit Gateway sharing",
+      "AWS Organizations for account management and AWS Resource Access Manager (RAM) for Transit Gateway sharing",
+      "AWS IAM cross-account roles for billing and AWS VPC Peering for connectivity",
+      "AWS Organizations with SCP policies and AWS Direct Connect for Transit Gateway sharing"
+    ],
+    "answer": 1,
+    "explain": "AWS Organizations consolidates multiple AWS accounts under one organization for centralized management, consolidated billing, and enforcement of Service Control Policies (SCPs). AWS Resource Access Manager (RAM) enables sharing specific AWS resources \u2014 including Transit Gateways, VPC subnets, and License Manager configurations \u2014 across accounts without recreating them. Together: Organizations manages the accounts, RAM shares the resources within that organization. Control Tower is for setting up new multi-account environments, not resource sharing. VPC Peering does not share Transit Gateways.",
+    "hint": "Two separate problems: account management and resource sharing. Each has its own dedicated AWS service.",
+    "keywords": [
+      "AWS Organizations",
+      "RAM",
+      "Resource Access Manager",
+      "Transit Gateway sharing",
+      "consolidated billing",
+      "SCP"
+    ]
+  },
+  {
+    "cat": "high-perf-arch",
+    "q": "A company is migrating an on-premises .NET application to AWS. The requirement is to minimize development changes and ensure the application remains highly available across multiple Availability Zones. The database is Oracle and must be migrated with minimal downtime. Which combination of services is correct?",
+    "options": [
+      "Refactor the application to run on AWS Lambda and migrate Oracle to DynamoDB using DMS",
+      "Rehost the .NET application on AWS Elastic Beanstalk Multi-AZ and migrate Oracle to RDS for Oracle Multi-AZ using DMS",
+      "Containerize the application in ECS and use AWS SCT to convert Oracle to PostgreSQL",
+      "Deploy the application on EC2 with Auto Scaling and use AWS Snowball to transfer the Oracle database"
+    ],
+    "answer": 1,
+    "explain": "Elastic Beanstalk supports .NET applications natively and handles provisioning, load balancing, and auto-scaling \u2014 minimizing development changes (no code refactoring needed). Multi-AZ deployment ensures high availability. AWS DMS migrates the Oracle database to RDS for Oracle with minimal downtime \u2014 the source database stays online during migration. Since it's Oracle-to-Oracle (homogeneous), no schema conversion tool (SCT) is needed. Refactoring to Lambda/DynamoDB requires significant code changes. Snowball is for bulk data migration, not live database migration.",
+    "hint": "Minimize development changes = don't refactor. Minimal downtime migration = DMS. Oracle to Oracle = homogeneous, no schema conversion needed.",
+    "keywords": [
+      "Elastic Beanstalk",
+      "DMS",
+      "RDS Oracle",
+      "Multi-AZ",
+      "homogeneous migration",
+      "no code changes",
+      ".NET"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A company needs all data on their EC2 instances monitored including memory utilization and disk space. They currently use Amazon CloudWatch but notice memory metrics are not appearing. What must be done?",
+    "options": [
+      "Enable Detailed Monitoring on the EC2 instances to capture memory metrics",
+      "Enable Enhanced Monitoring on the EC2 instances",
+      "Install the Amazon CloudWatch Agent on all EC2 instances",
+      "Create a CloudWatch custom dashboard \u2014 memory metrics are available but not displayed by default"
+    ],
+    "answer": 2,
+    "explain": "Memory utilization and disk space are NOT included in EC2's default CloudWatch metrics. Default metrics come from the hypervisor and include: CPU utilization, network in/out, disk read/write ops, status checks. To collect memory, disk space, disk swap, and log files, you must install the CloudWatch Agent on each EC2 instance. The agent runs inside the OS and reports these additional metrics. Detailed Monitoring just increases CloudWatch metric frequency from 5 minutes to 1 minute \u2014 it does not add new metric types. Enhanced Monitoring is an RDS feature, not EC2. The metrics are genuinely unavailable without the agent \u2014 they cannot be revealed by dashboards.",
+    "hint": "Default CloudWatch EC2 metrics: CPU, network, disk I/O operations. Memory and disk SPACE are NOT there. What do you need to install?",
+    "keywords": [
+      "CloudWatch Agent",
+      "memory utilization",
+      "disk space",
+      "custom metrics",
+      "EC2",
+      "not default",
+      "install agent"
+    ]
+  },
+  {
+    "cat": "secure-arch",
+    "q": "A startup uses AWS Lambda with environment variables to store MongoDB connection strings and API credentials. A security audit flags that other developers with Lambda console access can see these values in plaintext. What is the most secure solution?",
+    "options": [
+      "Move the credentials to AWS Systems Manager Parameter Store Standard tier",
+      "Do nothing \u2014 Lambda encrypts environment variables by default using KMS",
+      "Create a custom KMS key and enable encryption helpers for the Lambda environment variables",
+      "Store the credentials in an S3 bucket with server-side encryption and have Lambda read from S3 at runtime"
+    ],
+    "answer": 2,
+    "explain": "Lambda does encrypt environment variables by default using a KMS key \u2014 but uses the default AWS Lambda service key, which is accessible to anyone with Lambda console access in the account, so the values appear readable in the console. By creating a customer-managed KMS key and enabling Lambda's encryption helpers, the values are encrypted with your own key. Developers without access to your KMS key cannot see the decrypted values in the Lambda console. The encryption helpers encrypt the values client-side before storing them. Parameter Store Standard is not encrypted with a CMK by default. S3 adds unnecessary complexity.",
+    "hint": "Lambda already encrypts by default \u2014 but with a shared service key visible to console users. Creating your own KMS key and using encryption helpers prevents others from seeing decrypted values.",
+    "keywords": [
+      "Lambda",
+      "KMS",
+      "encryption helpers",
+      "environment variables",
+      "customer managed key",
+      "CMK",
+      "console access"
+    ]
   }
 ]
