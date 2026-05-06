@@ -5,9 +5,6 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/',
-  define: {
-    global: 'globalThis',
-  },
   build: {
     modulePreload: { polyfill: false }, // disable inline polyfill that violates CSP script-src
     rollupOptions: {

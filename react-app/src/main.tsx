@@ -1,3 +1,8 @@
+// Polyfill 'global' for AWS/Node.js libs — must be in bundle, not an inline script
+if (typeof (window as any).global === 'undefined') {
+  (window as any).global = window
+}
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
