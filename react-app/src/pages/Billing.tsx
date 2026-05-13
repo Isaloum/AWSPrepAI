@@ -90,10 +90,13 @@ export default function Billing() {
     }
   }
 
-  if (!loading && !user) {
-    navigate('/login')
-    return null
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login')
+    }
+  }, [loading, user, navigate])
+
+  if (!loading && !user) return null
 
   if (loading) {
     return (
