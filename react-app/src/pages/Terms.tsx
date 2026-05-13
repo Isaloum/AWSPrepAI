@@ -9,7 +9,7 @@ export default function Terms() {
           Terms of Service & Privacy Policy
         </h1>
         <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '2.5rem' }}>
-          Last updated: March 2026
+          Last updated: May 2026
         </p>
 
         {[
@@ -31,7 +31,7 @@ export default function Terms() {
           },
           {
             title: '5. No Refund Policy',
-            body: 'All purchases on CertiPrepAI are final and non-refundable. We offer a 3-day free trial on all subscription plans (Monthly, Bundle, Yearly) so you can evaluate the platform before being charged. By starting a paid subscription or purchasing a Lifetime plan, you acknowledge and agree that no refunds will be issued. If you believe you were charged in error, contact support@certiprepai.com within 7 days.',
+            body: 'All purchases on CertiPrepAI are final and non-refundable. By starting a paid subscription or purchasing a Lifetime plan, you acknowledge and agree that no refunds will be issued. If you believe you were charged in error, contact support@certiprepai.com within 7 days.',
           },
           {
             title: '6. Intellectual Property',

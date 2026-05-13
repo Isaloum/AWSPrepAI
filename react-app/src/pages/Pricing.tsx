@@ -12,12 +12,6 @@ const SUB_TIERS    = new Set(['monthly', 'bundle', 'yearly']) // tiers with acti
 
 const TIER_RANK: Record<string, number> = { free: 0, monthly: 1, bundle: 1.5, yearly: 2, lifetime: 3 }
 
-const DOWNGRADE_LABEL: Record<string, string> = {
-  Free:     'Switch to Free',
-  Monthly:  'Switch to Monthly',
-  Yearly:   'Switch to Yearly',
-  Lifetime: 'Get Lifetime',
-}
 
 const MOTIVATE_NOTE: Record<string, string> = {
   // shown above the CTA when a plan is the next upgrade
@@ -397,9 +391,10 @@ export default function Pricing() {
 
                 {/* CTA Button */}
                 <button
-                  disabled={checkingOut !== null || isCurrent}
+                  disabled={checkingOut !== null || isCurrent || !!isDowngrade}
                   onClick={() => {
                     if (isCurrent) return
+                    if (isDowngrade) return
                     if (isUpgrade) { handleUpgradeClick(plan.name.toLowerCase()); return }
                     handlePlanClick(plan)
                   }}
@@ -430,7 +425,7 @@ export default function Pricing() {
                     : checkingOut === plan.name
                       ? '⏳ Opening checkout…'
                       : isDowngrade
-                        ? DOWNGRADE_LABEL[plan.name]
+                        ? 'Contact support to downgrade'
                         : isUpgrade
                           ? `↑ Upgrade to ${plan.name}`
                           : plan.cta}

@@ -442,7 +442,7 @@ export default function Dashboard() {
           {[
             { label: 'Certifications', value: '12', icon: '📋' },
             { label: 'Total Questions', value: '3,910', icon: '📝' },
-            { label: 'Available to you', value: isFullAccess ? '3,910' : tier === 'monthly' ? '260' : '20', icon: '🔓' },
+            { label: 'Available to you', value: isFullAccess ? '3,910' : tier === 'bundle' ? '780' : tier === 'monthly' ? '260' : '20', icon: '🔓' },
           ].map(stat => (
             <div key={stat.label} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.875rem', padding: '1rem 1.25rem', textAlign: 'center' }}>
               <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{stat.icon}</div>
