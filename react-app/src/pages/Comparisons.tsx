@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
@@ -394,10 +394,26 @@ const tagColors: Record<string, string> = {
 
 export default function Comparisons() {
   const navigate = useNavigate()
-  const { tier } = useAuth()
+  const { user, tier, loading } = useAuth()
   const isPaid = tier && tier !== 'free'
   const [activeTag, setActiveTag] = useState('All')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login')
+    }
+  }, [loading, user, navigate])
+
+  if (loading || !user) {
+    return (
+      <Layout>
+        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>Loading…</div>
+        </div>
+      </Layout>
+    )
+  }
 
   const tags = ['All', ...Array.from(new Set(comparisons.map(c => c.tag)))]
   const filtered = activeTag === 'All' ? comparisons : comparisons.filter(c => c.tag === activeTag)
