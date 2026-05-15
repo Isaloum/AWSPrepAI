@@ -116,14 +116,14 @@ export default function Home() {
           {/* Left — text */}
           <div>
             <div style={{ display: 'inline-block', background: 'rgba(96,165,250,0.15)', color: '#93c5fd', fontSize: '0.8rem', fontWeight: 700, padding: '0.375rem 1rem', borderRadius: '999px', marginBottom: '1.5rem', border: '1px solid rgba(96,165,250,0.3)' }}>
-              🏗️ SAA-C03 Flagship · 1,050 Questions
+              🏗️ SAA-C03 · ☁️ CLF-C02 · 🤖 AIF-C01 — Plus 9 more AWS certs
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: '1.25rem' }}>
-              Pass Your AWS Cert.<br />
-              <span style={{ color: '#60a5fa' }}>Practice Smarter.</span>
+              The sharpest prep for<br />
+              <span style={{ color: '#60a5fa' }}>SAA-C03, CLF-C02 & AI Practitioner.</span>
             </h1>
             <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: 1.75, marginBottom: '2rem', maxWidth: '460px' }}>
-              Built by someone actively studying for SAA-C03 — 1,050 deep scenario questions with real explanations. 11 other certs included with 260 questions each.
+              1,050 deep scenario questions for SAA-C03. Full prep for CLF-C02 and the trending AIF-C01. All 12 AWS certs included — mock exams, cheat sheets, and a skill radar that shows your exact weak spots.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
               {isPaid ? (
@@ -295,22 +295,27 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '0.75rem' }}>
             {certs.map(cert => {
               const lc = levelColors[cert.level]
+              const isTrending = cert.id === 'aif-c01'
+              const isFlagship = cert.id === 'saa-c03'
               return (
                 <Link
                   key={cert.id}
                   to={`/cert/${cert.id}`}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.875rem', padding: '0.875rem 1rem', textDecoration: 'none', transition: 'border-color 0.15s, box-shadow 0.15s, transform 0.15s' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', background: '#fff', border: `1px solid ${isTrending ? '#fde68a' : isFlagship ? '#bfdbfe' : '#e5e7eb'}`, borderRadius: '0.875rem', padding: '0.875rem 1rem', textDecoration: 'none', transition: 'border-color 0.15s, box-shadow 0.15s, transform 0.15s', position: 'relative' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#93c5fd'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.07)'; (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-1px)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e5e7eb'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none'; (e.currentTarget as HTMLAnchorElement).style.transform = 'none' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = isTrending ? '#fde68a' : isFlagship ? '#bfdbfe' : '#e5e7eb'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = 'none'; (e.currentTarget as HTMLAnchorElement).style.transform = 'none' }}
                 >
                   <span style={{ fontSize: '1.75rem' }}>{cert.icon}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 700, color: '#111827', fontSize: '0.875rem' }}>{cert.name}</div>
                     <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{cert.code}</div>
                   </div>
-                  <span style={{ padding: '0.2rem 0.625rem', background: lc.bg, color: lc.text, borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                    {cert.level}
-                  </span>
+                  {isTrending
+                    ? <span style={{ padding: '0.2rem 0.625rem', background: '#fef3c7', color: '#d97706', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, whiteSpace: 'nowrap' }}>🔥 Trending</span>
+                    : isFlagship
+                    ? <span style={{ padding: '0.2rem 0.625rem', background: '#eff6ff', color: '#2563eb', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, whiteSpace: 'nowrap' }}>⭐ Flagship</span>
+                    : <span style={{ padding: '0.2rem 0.625rem', background: lc.bg, color: lc.text, borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, whiteSpace: 'nowrap' }}>{cert.level}</span>
+                  }
                 </Link>
               )
             })}
