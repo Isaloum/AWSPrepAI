@@ -54,6 +54,36 @@ const MATRIX: MatrixRow[] = [
   { requirement: 'Coordinate multiple Lambda functions with retries', solution: 'AWS Step Functions', why: 'Visual state machine. Handles retries, branching, parallel execution, error catching.' },
   { requirement: 'In-memory caching for DynamoDB (microseconds)', solution: 'DAX (DynamoDB Accelerator)', why: 'Purpose-built cache for DynamoDB. 10x speedup. API-compatible — no code change.' },
   { requirement: 'Cache RDS query results to reduce DB load', solution: 'ElastiCache (Redis or Memcached)', why: 'Cache identical query results. Redis for persistence/failover, Memcached for simplicity.' },
+
+  // ── EXAM-CRITICAL GAPS ──────────────────────────────────────────────────────
+  { requirement: 'Grant cross-account AWS access securely', solution: 'IAM Role with Trust Policy + sts:AssumeRole', why: 'Step 1: Account A creates a Role with Trust Policy allowing Account B principal. Step 2: Account B user has identity policy permitting sts:AssumeRole on that Role ARN. Two-step dance.' },
+  { requirement: 'Add user sign-up/sign-in to application (JWT tokens)', solution: 'Cognito User Pool', why: 'Full identity provider. Manages sign-up, sign-in, MFA, password policies. Returns JWT tokens (ID, Access, Refresh). Does NOT grant AWS service access directly.' },
+  { requirement: 'Grant app users temporary AWS credentials (e.g., upload to S3 directly)', solution: 'Cognito Identity Pool (Federated Identities)', why: 'Exchanges JWT (from User Pool, Google, SAML) for temporary IAM credentials via STS. Lets unauthenticated or authenticated users call AWS services directly from client.' },
+  { requirement: 'Run real Microsoft Active Directory in AWS — trusts with on-premises AD', solution: 'AWS Managed Microsoft AD', why: 'Full AD in AWS. Supports trusts with on-premises AD, Group Policy, RADIUS MFA. Use for hybrid AD scenarios.' },
+  { requirement: 'Authenticate AWS users against existing on-premises AD (proxy only)', solution: 'AD Connector', why: 'Redirects authentication requests to your on-prem AD. No local AD directory in AWS. Requires working on-prem AD. Lowest cost of the three.' },
+  { requirement: 'Cheap LDAP-compatible directory — no on-premises AD, no trusts needed', solution: 'Simple AD (Samba 4)', why: 'Samba 4 compatible. Supports basic AD features. Cannot trust with on-prem AD. Cheapest option. Not Microsoft AD.' },
+  { requirement: 'Aurora — route all write operations to the primary writer', solution: 'Aurora Cluster Endpoint', why: 'Always points to current writer instance. Auto-updated on failover. Use for INSERT/UPDATE/DELETE.' },
+  { requirement: 'Aurora — auto load-balance read traffic across all replicas', solution: 'Aurora Reader Endpoint', why: 'Single DNS name that distributes reads across all read replicas. Not granular — all replicas are pooled.' },
+  { requirement: 'Aurora — route reads to a specific subset of replica types', solution: 'Aurora Custom Endpoint', why: 'You define a named subset of instances (e.g., db.r5.4xlarge only). Useful for analytics queries that need larger instances without affecting regular read traffic.' },
+  { requirement: 'Modify CloudFront request/response at the edge (nearest PoP)', solution: 'Lambda@Edge', why: 'Runs at CloudFront edge locations. Four trigger points: Viewer Request (before cache), Origin Request (after cache miss), Origin Response (before caching response), Viewer Response (before returning to user).' },
+
+  // ── MEDIUM PRIORITY GAPS ────────────────────────────────────────────────────
+  { requirement: 'Immutable, cryptographically verifiable ledger (tamper-proof history)', solution: 'Amazon QLDB', why: 'Ledger DB with a complete, append-only journal. Every change is cryptographically hashed. Use for financial records, supply chain, any system of record requiring proof of immutability.' },
+  { requirement: 'IoT and operational time-series data — trillions of events/day', solution: 'Amazon Timestream', why: 'Purpose-built time-series DB. Automatically scales, tiered storage (hot/warm/cold). Built-in time-series analytics functions. Faster and cheaper than relational for time-ordered data.' },
+  { requirement: 'Create and manage blockchain networks (Hyperledger Fabric or Ethereum)', solution: 'Amazon Managed Blockchain', why: 'Managed blockchain for decentralised, multi-party applications. Supports Hyperledger Fabric (private permissioned) and Ethereum (public). Different from QLDB — blockchain is decentralised, QLDB is centralised.' },
+  { requirement: 'Monitor OS-level metrics (CPU per process, memory, disk) on RDS', solution: 'RDS Enhanced Monitoring', why: 'Installs an agent on the DB instance that reports OS-level metrics — CPU usage per process, free memory, disk I/O. Standard CloudWatch only gives hypervisor-level metrics, not per-process.' },
+  { requirement: 'Fast EC2 boot from saved state — resume exactly where left off', solution: 'EC2 Hibernate', why: 'Saves RAM contents to encrypted EBS root volume. Boot time is much faster than cold start. Must be enabled at launch. RAM must be < 150 GB. Cannot hibernate longer than 60 days.' },
+  { requirement: 'Automate the creation of custom, up-to-date AMIs on a schedule', solution: 'EC2 Image Builder', why: 'Managed pipeline for building, testing, and distributing AMIs (and container images). Applies patches, runs tests, rotates images. Eliminates manual AMI maintenance.' },
+  { requirement: 'Automate EBS snapshot creation, retention, and deletion on a schedule', solution: 'EBS Data Lifecycle Manager (DLM)', why: 'Create lifecycle policies that automatically snapshot EBS volumes and AMIs, enforce retention periods, and delete old snapshots. The managed alternative to scripting cron + AWS CLI.' },
+  { requirement: 'Per-application access to EFS with enforced user identity and root directory', solution: 'EFS Access Points', why: 'An access point enforces a specific POSIX user/group and restricts visibility to a named root directory within the file system. Multiple containers can share one EFS with isolated namespaces.' },
+  { requirement: 'Managed file system for apps requiring NetApp ONTAP features (iSCSI, NFS, SMB)', solution: 'FSx for NetApp ONTAP', why: 'Full ONTAP data management: snapshots, clones, SnapMirror replication, tiering to S3. Supports iSCSI, NFS, and SMB simultaneously. For lift-and-shift of NetApp-dependent workloads.' },
+  { requirement: 'Outbound-only internet for IPv6 private instances (IPv4 equivalent of NAT)', solution: 'Egress-Only Internet Gateway', why: 'Allows IPv6 instances to initiate outbound connections to the internet. Blocks all inbound-initiated IPv6 traffic. NAT Gateway is for IPv4 — Egress-Only IGW is the IPv6 equivalent.' },
+  { requirement: 'Connect on-premises network to Transit Gateway via Direct Connect', solution: 'Direct Connect Transit VIF (Virtual Interface)', why: 'A Transit Virtual Interface on a Direct Connect connection attaches to a Transit Gateway, giving your on-prem network access to all VPCs attached to that TGW — single DX connection to many VPCs.' },
+  { requirement: 'Deliver SNS messages only to subscribers matching specific attributes', solution: 'SNS Message Filtering (Filter Policy)', why: 'Each SNS subscription can define a JSON filter policy. Only messages whose MessageAttributes match the policy are delivered. Eliminates fan-out-then-filter Lambda functions.' },
+  { requirement: 'Migrate heterogeneous database (Oracle → Aurora) — schema conversion', solution: 'AWS Schema Conversion Tool (SCT) + DMS', why: 'SCT converts source schema (tables, indexes, views, stored procedures) to target-compatible format for heterogeneous migrations. DMS then migrates the data. SCT is not needed for homogeneous migrations (MySQL → MySQL).' },
+  { requirement: 'Personalised view of AWS service health events affecting your account', solution: 'AWS Health Dashboard (with EventBridge)', why: 'Shows operational issues, scheduled maintenance, and account-specific alerts. Integrate with EventBridge to trigger Lambda/SNS notifications automatically on health events affecting your resources.' },
+  { requirement: 'Track migration progress across multiple tools and servers in one place', solution: 'AWS Migration Hub', why: 'Central dashboard showing migration status from DMS, Server Migration Service, CloudEndure, and partners. Drill into server-level progress. Pair with Application Discovery Service for pre-migration planning.' },
+  { requirement: 'Collect on-premises server specs, performance, and dependencies before migrating', solution: 'AWS Application Discovery Service', why: 'Agentless (VMware) or agent-based discovery. Collects CPU, RAM, disk, network, and process dependency data. Feeds into Migration Hub to group servers into applications and estimate cloud sizing.' },
 ]
 
 // ─── EXAM TRAPS ───────────────────────────────────────────────────────────────
@@ -1097,6 +1127,94 @@ export default function SaaGuide() {
               </div>
             </div>
 
+            {/* DynamoDB RCU / WCU Math */}
+            <div>
+              <h3 style={{ fontWeight: 800, fontSize: '1rem', color: '#111827', marginBottom: '0.75rem' }}>🧮 DynamoDB RCU / WCU Capacity Math</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                {/* Formulas */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#eff6ff', borderBottom: '1px solid #bfdbfe' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1d4ed8', margin: 0 }}>📐 The Formulas</h4>
+                  </div>
+                  {[
+                    { label: '1 RCU', def: '= 1 strongly consistent read/sec for an item ≤ 4 KB', note: 'OR 2 eventually consistent reads/sec for ≤ 4 KB' },
+                    { label: '1 WCU', def: '= 1 write/sec for an item ≤ 1 KB', note: 'Larger items consume proportionally more WCUs' },
+                    { label: 'RCU Formula (strong)', def: 'CEIL(item_size_KB / 4) × reads_per_sec', note: 'Always round UP the item size division' },
+                    { label: 'RCU Formula (eventual)', def: 'CEIL(item_size_KB / 4) × reads_per_sec ÷ 2', note: 'Eventual consistency = half the RCUs' },
+                    { label: 'WCU Formula', def: 'CEIL(item_size_KB / 1) × writes_per_sec', note: 'Each 1 KB fraction counts as a full WCU' },
+                  ].map((f, i) => (
+                    <div key={i} style={{ padding: '9px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: '2px' }}>
+                        <span style={{ fontWeight: 800, fontSize: '0.78rem', color: '#1d4ed8', background: '#eff6ff', padding: '1px 7px', borderRadius: '5px', flexShrink: 0, whiteSpace: 'nowrap' }}>{f.label}</span>
+                        <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#111827', fontFamily: 'monospace' }}>{f.def}</span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#6b7280', paddingLeft: '4px' }}>{f.note}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Worked Examples */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fef9c3', borderBottom: '1px solid #fde047' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#713f12', margin: 0 }}>✏️ Worked Examples (Exam-style)</h4>
+                  </div>
+                  {[
+                    {
+                      q: 'Read 10 KB item, strong consistency, 10 reads/sec',
+                      steps: ['CEIL(10 / 4) = 3 RCU per read', '3 × 10 = 30 RCU total'],
+                      answer: '30 RCU',
+                      color: '#1d4ed8',
+                    },
+                    {
+                      q: 'Read 10 KB item, eventual consistency, 10 reads/sec',
+                      steps: ['CEIL(10 / 4) = 3 RCU per read (strong)', '3 × 10 ÷ 2 = 15 RCU (eventual = ½)'],
+                      answer: '15 RCU',
+                      color: '#059669',
+                    },
+                    {
+                      q: 'Write 3.5 KB item at 5 writes/sec',
+                      steps: ['CEIL(3.5 / 1) = 4 WCU per write', '4 × 5 = 20 WCU total'],
+                      answer: '20 WCU',
+                      color: '#dc2626',
+                    },
+                    {
+                      q: 'Read 1 KB item, eventual consistency, 100 reads/sec',
+                      steps: ['CEIL(1 / 4) = 1 RCU per read (rounds up to 1)', '1 × 100 ÷ 2 = 50 RCU'],
+                      answer: '50 RCU',
+                      color: '#7c3aed',
+                    },
+                  ].map((ex, i) => (
+                    <div key={i} style={{ padding: '10px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fffbeb' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#111827', marginBottom: '4px' }}>Q: {ex.q}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '4px' }}>
+                        {ex.steps.map((s, j) => (
+                          <div key={j} style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace', paddingLeft: '8px' }}>→ {s}</div>
+                        ))}
+                      </div>
+                      <div style={{ display: 'inline-block', fontWeight: 800, fontSize: '0.8rem', color: '#fff', background: ex.color, padding: '2px 10px', borderRadius: '6px' }}>Answer: {ex.answer}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick reference card */}
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '1rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
+                {[
+                  { rule: 'Item ≤ 4 KB', detail: '1 RCU (strong) · 0.5 RCU (eventual)' },
+                  { rule: 'Item = 5 KB', detail: '2 RCU (strong) · 1 RCU (eventual) — always round UP' },
+                  { rule: 'Item ≤ 1 KB', detail: '1 WCU regardless of actual size' },
+                  { rule: 'Item = 2.5 KB', detail: '3 WCU — CEIL(2.5) = 3' },
+                  { rule: 'Eventual = ÷2', detail: 'Exactly half the RCUs of strongly consistent' },
+                  { rule: 'Transactional', detail: '2× RCU and 2× WCU — transactions cost double' },
+                ].map((r, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#065f46' }}>{r.rule}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#374151' }}>{r.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Service Distinctions */}
             <div>
               <h3 style={{ fontWeight: 800, fontSize: '1rem', color: '#111827', marginBottom: '0.75rem' }}>⚡ Service Distinctions — Storage</h3>
@@ -1359,7 +1477,43 @@ Search / full-text?
 
 In-memory / session cache?
  ├─ Persistence / replication → ElastiCache Redis
- └─ Simple, multi-threaded → ElastiCache Memcached`}</pre>
+ └─ Simple, multi-threaded → ElastiCache Memcached
+
+Specialty databases?
+ ├─ Immutable tamper-proof ledger → Amazon QLDB
+ ├─ Graph (social/fraud/recommendations) → Amazon Neptune
+ ├─ Time-series (IoT, operational) → Amazon Timestream
+ └─ Blockchain (Hyperledger/Ethereum) → Amazon Managed Blockchain`}</pre>
+                </div>
+
+                {/* Lambda@Edge Decision Tree */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ background: 'linear-gradient(90deg,#0891b2,#0e7490)', padding: '10px 14px' }}>
+                    <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.88rem' }}>⚡ LAMBDA@EDGE — Which trigger?</span>
+                  </div>
+                  <div style={{ padding: '1rem', background: '#f9fafb' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px', marginBottom: '10px' }}>
+                      {[
+                        { stage: 'Viewer Request', arrow: '→ CF', when: 'Before CloudFront checks cache', use: 'A/B test routing, auth header injection, device detection, URL rewrite before cache lookup', color: '#1d4ed8' },
+                        { stage: 'Origin Request', arrow: 'CF →', when: 'After cache miss, before forwarding to origin', use: 'Rewrite origin URL, add headers to origin request, collapse cache keys, fetch from different origins', color: '#7c3aed' },
+                        { stage: 'Origin Response', arrow: '← Origin', when: 'After origin responds, before CloudFront caches', use: 'Add security headers (HSTS, CSP), modify response before it is cached at the edge', color: '#c2410c' },
+                        { stage: 'Viewer Response', arrow: '← CF', when: 'After CloudFront serves response to viewer', use: 'Add/modify response headers for every request regardless of cache hit/miss. Cannot modify body.', color: '#059669' },
+                      ].map((t, i) => (
+                        <div key={i} style={{ background: '#fff', border: `1.5px solid ${t.color}22`, borderRadius: '10px', padding: '10px' }}>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '4px' }}>
+                            <span style={{ fontWeight: 800, fontSize: '0.78rem', color: t.color }}>{t.stage}</span>
+                            <span style={{ fontSize: '0.7rem', color: '#9ca3af' }}>{t.arrow}</span>
+                          </div>
+                          <div style={{ fontSize: '0.72rem', color: '#6b7280', marginBottom: '4px', fontStyle: 'italic' }}>{t.when}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#374151', lineHeight: 1.5 }}>{t.use}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '8px 12px' }}>
+                      <span style={{ fontSize: '0.77rem', fontWeight: 700, color: '#92400e' }}>⚠️ Exam tip: </span>
+                      <span style={{ fontSize: '0.77rem', color: '#78350f' }}>Flow = User → [Viewer Request] → CloudFront Cache → [Origin Request] → Origin → [Origin Response] → CloudFront Cache → [Viewer Response] → User. "Modify before cache check" = Viewer Request. "Add headers always, even cache hits" = Viewer Response.</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1419,20 +1573,85 @@ In-memory / session cache?
 }`}</pre>
                   </div>
 
-                  <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1rem' }}>
-                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>🔑 IAM Evaluation Logic</h4>
-                    {[
-                      { rule: 'Explicit DENY always wins', detail: 'Even if 10 allows exist, one Deny overrides them all.' },
-                      { rule: 'Implicit DENY is default', detail: 'No policy = no access. Everything must be explicitly allowed.' },
-                      { rule: 'Permission boundary limits max access', detail: 'Effective permissions = Identity policy ∩ Permission boundary.' },
-                      { rule: 'SCPs don\'t grant permissions', detail: 'SCPs only restrict. An SCP allow still requires an IAM allow to act.' },
-                      { rule: 'Resource-based policies can allow cross-account', detail: 'S3 bucket policy + IAM role = no need for explicit trust in both places.' },
-                    ].map((r, i) => (
-                      <div key={i} style={{ marginBottom: '8px', paddingBottom: i < 4 ? '8px' : 0, borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none' }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#111827', marginBottom: '2px' }}>{r.rule}</div>
-                        <div style={{ fontSize: '0.78rem', color: '#6b7280', lineHeight: 1.5 }}>{r.detail}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1rem' }}>
+                      <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>🔑 IAM Evaluation Logic</h4>
+                      {[
+                        { rule: 'Explicit DENY always wins', detail: 'Even if 10 allows exist, one Deny overrides them all.' },
+                        { rule: 'Implicit DENY is default', detail: 'No policy = no access. Everything must be explicitly allowed.' },
+                        { rule: 'Permission boundary limits max access', detail: 'Effective permissions = Identity policy ∩ Permission boundary.' },
+                        { rule: 'SCPs don\'t grant permissions', detail: 'SCPs only restrict. An SCP allow still requires an IAM allow to act.' },
+                        { rule: 'Resource-based policies can allow cross-account', detail: 'S3 bucket policy + IAM role = no need for explicit trust in both places.' },
+                      ].map((r, i) => (
+                        <div key={i} style={{ marginBottom: '8px', paddingBottom: i < 4 ? '8px' : 0, borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none' }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#111827', marginBottom: '2px' }}>{r.rule}</div>
+                          <div style={{ fontSize: '0.78rem', color: '#6b7280', lineHeight: 1.5 }}>{r.detail}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* IAM Condition Operators */}
+                    <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                      <div style={{ padding: '10px 14px', background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
+                        <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#991b1b', margin: 0 }}>🎛️ IAM Condition Operators — Exam-Tested</h4>
                       </div>
-                    ))}
+                      {[
+                        { op: 'aws:SourceIp', use: 'Restrict API calls to specific IP addresses or CIDR ranges', example: '"aws:SourceIp": ["203.0.113.0/24"]' },
+                        { op: 'aws:RequestedRegion', use: 'Restrict actions to specific AWS regions (data residency / compliance)', example: '"aws:RequestedRegion": "eu-west-1"' },
+                        { op: 'aws:MultiFactorAuthPresent', use: 'Force MFA — action only allowed when user authenticated with MFA', example: '"aws:MultiFactorAuthPresent": "true"' },
+                        { op: 'ec2:ResourceTag', use: 'Allow/deny actions based on tags on the EC2 resource being acted upon', example: '"ec2:ResourceTag/Environment": "Production"' },
+                        { op: 's3:x-amz-server-side-encryption', use: 'Enforce that S3 PUT requests include server-side encryption header', example: '"s3:x-amz-server-side-encryption": "AES256"' },
+                        { op: 'aws:PrincipalOrgID', use: 'Restrict resource access to principals within your AWS Organization only', example: '"aws:PrincipalOrgID": "o-xxxxxxxxx"' },
+                      ].map((c, i) => (
+                        <div key={i} style={{ padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fef2f2' }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.77rem', color: '#dc2626', fontFamily: 'monospace', marginBottom: '2px' }}>{c.op}</div>
+                          <div style={{ fontSize: '0.76rem', color: '#374151', marginBottom: '2px', lineHeight: 1.5 }}>{c.use}</div>
+                          <div style={{ fontSize: '0.72rem', color: '#9ca3af', fontFamily: 'monospace' }}>{c.example}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Cross-Account Role */}
+                    <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1rem' }}>
+                      <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>🔄 Cross-Account Role — The Two-Step Dance</h4>
+                      {[
+                        { step: 'Step 1 — Account A (owner of the resource)', detail: 'Create an IAM Role. Attach a Trust Policy naming Account B\'s ARN (or specific user) as trusted Principal with Action: "sts:AssumeRole". This grants permission TO assume the role.' },
+                        { step: 'Step 2 — Account B (the one who needs access)', detail: 'Attach an Identity-based policy to the user/role in Account B explicitly allowing "sts:AssumeRole" on the Role ARN in Account A. Both policies must exist — one alone is not enough.' },
+                        { step: 'Result — STS issues temporary credentials', detail: 'When Account B user calls AssumeRole, STS returns a temporary Access Key ID, Secret Access Key, and Session Token valid for up to 12 hours. No long-term credentials cross account boundaries.' },
+                      ].map((s, i) => (
+                        <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: i < 2 ? '10px' : 0, paddingBottom: i < 2 ? '10px' : 0, borderBottom: i < 2 ? '1px solid #f3f4f6' : 'none', alignItems: 'flex-start' }}>
+                          <span style={{ width: '28px', height: '28px', background: ['#1d4ed8','#7c3aed','#059669'][i], color: '#fff', borderRadius: '50%', fontWeight: 800, fontSize: '0.72rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i+1}</span>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#111827', marginBottom: '2px' }}>{s.step}</div>
+                            <div style={{ fontSize: '0.77rem', color: '#6b7280', lineHeight: 1.55 }}>{s.detail}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Directory Services */}
+                    <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                      <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                        <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>🏢 AWS Directory Services — Pick the Right One</h4>
+                      </div>
+                      {[
+                        { svc: 'AWS Managed Microsoft AD', when: 'Run real Microsoft Active Directory in AWS. Need trusts with on-premises AD. Need Group Policy, RADIUS MFA, or MFA with smart cards.', keyword: 'Trust with on-prem AD', color: '#1d4ed8' },
+                        { svc: 'AD Connector', when: 'Proxy authentication to your existing on-premises AD. No local directory in AWS — just a forwarding connector. Requires on-prem AD to always be reachable.', keyword: 'Proxy to on-prem, no local AD', color: '#059669' },
+                        { svc: 'Simple AD (Samba 4)', when: 'Cheapest option. Samba 4 compatible. Basic AD features only. Cannot create trusts with on-prem AD. Use for standalone AWS-only environments needing basic LDAP.', keyword: 'Cheap, no trusts, standalone', color: '#7c3aed' },
+                      ].map((d, i) => (
+                        <div key={i} style={{ padding: '10px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
+                            <span style={{ fontWeight: 700, fontSize: '0.8rem', color: d.color }}>{d.svc}</span>
+                            <span style={{ fontSize: '0.7rem', background: `${d.color}15`, color: d.color, border: `1px solid ${d.color}30`, padding: '1px 7px', borderRadius: '5px', flexShrink: 0 }}>{d.keyword}</span>
+                          </div>
+                          <div style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.55 }}>{d.when}</div>
+                        </div>
+                      ))}
+                      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '0 0 12px 12px', padding: '8px 14px' }}>
+                        <span style={{ fontSize: '0.77rem', fontWeight: 700, color: '#92400e' }}>⚠️ Exam tip: </span>
+                        <span style={{ fontSize: '0.77rem', color: '#78350f' }}>"Trust with on-prem AD" → Managed Microsoft AD. "Proxy only, keep existing on-prem AD" → AD Connector. "Simple, standalone, cheapest" → Simple AD.</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
