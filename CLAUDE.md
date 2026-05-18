@@ -287,11 +287,10 @@ aws cognito-idp admin-update-user-attributes \
 
 | Priority | Item |
 |----------|------|
-| 🔴 High | Downgrade flow (yearly → monthly) not built — clicking lower plan on Pricing hits checkout, could create duplicate subscription |
+| 🟡 Medium | Downgrade flow (yearly → monthly) not built — buttons are disabled with "Contact support to downgrade" message. Build real flow when needed. |
 | 🟡 Medium | Billing.tsx: `navigate('/login')` called during render (not in useEffect) — React anti-pattern, causes warning |
 | 🟡 Medium | upgrade-subscription Lambda: Cognito updated before Stripe confirms payment — user could get free upgrade if card fails |
 | 🟡 Medium | CAN-SPAM: email drip "unsubscribe" link goes to homepage, not real unsubscribe mechanism |
-| 🟡 Medium | Terms.tsx mentions "3-day free trial" but no trial logic exists — legal risk |
 | 🟡 Medium | CLF-C02 study tools — Keywords + Service Groups for highest-volume entry cert |
 | 🟡 Medium | PostHog: Signup.tsx passes email as userId instead of Cognito sub — creates duplicate profiles |
 | 🟡 Medium | SkillRadarChart domain catKeys may not match CertDetail domain keys for gai-c01 |
