@@ -9,7 +9,7 @@ import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { useCertAccess } from '../hooks/useCertAccess'
 
-type Tab = 'matrix' | 'traps' | 'deepdives' | 'studyplan' | 'reference' | 'strategy'
+type Tab = 'matrix' | 'traps' | 'deepdives' | 'studyplan' | 'reference' | 'strategy' | 'codex'
 
 const STORAGE_KEY = 'certiprepai-aif-study-plan'
 
@@ -286,6 +286,7 @@ const TAB_LIST: { id: Tab; label: string; count: string }[] = [
   { id: 'studyplan', label: '📅 Study Plan',       count: '30 days' },
   { id: 'reference', label: '🔌 Quick Reference',  count: `${AI_SERVICES.length} services` },
   { id: 'strategy',  label: '🏆 Exam Strategy',    count: `${STRATEGY_TIPS.length} tips` },
+  { id: 'codex',    label: "🧭 AIF Codex",         count: '' },
 ]
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -897,6 +898,426 @@ export default function AifGuide() {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════════════
+             AIF CODEX TAB
+             ════════════════════════════════════════════════════════════ */}
+        {activeTab === 'codex' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            {/* SECTION 1 — ML FUNDAMENTALS */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#7c3aed,#4c1d95)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🧠</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 1 — AI/ML Fundamentals</h3>
+              </div>
+
+              {/* 4 ML Types */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                {[
+                  { type: 'Supervised Learning', icon: '🏷️', color: '#1d4ed8', bg: '#eff6ff', data: 'Labeled data (input + correct output)', uses: 'Classification (spam/not-spam) · Regression (price prediction)', algos: 'Linear regression, decision trees, neural networks' },
+                  { type: 'Unsupervised Learning', icon: '🔍', color: '#059669', bg: '#ecfdf5', data: 'Unlabeled data — finds patterns', uses: 'Clustering (customer segments) · Anomaly detection', algos: 'K-means, PCA, autoencoders' },
+                  { type: 'Reinforcement Learning', icon: '🎮', color: '#d97706', bg: '#fffbeb', data: 'Agent learns via rewards/punishments', uses: 'Robotics · Game AI · Autonomous vehicles', algos: 'Q-learning, policy gradients' },
+                  { type: 'Generative AI ⭐', icon: '✨', color: '#7c3aed', bg: '#f5f3ff', data: 'Creates NEW content from training patterns', uses: 'Chatbots · Content creation · Code generation · Design', algos: 'LLMs, diffusion models, GANs' },
+                ].map(m => (
+                  <div key={m.type} style={{ background: m.bg, border: `1.5px solid ${m.color}22`, borderRadius: '12px', padding: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '1.1rem' }}>{m.icon}</span>
+                      <span style={{ fontWeight: 800, fontSize: '0.85rem', color: m.color }}>{m.type}</span>
+                    </div>
+                    <div style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.6 }}>
+                      <div style={{ marginBottom: '3px' }}><span style={{ fontWeight: 700 }}>Data: </span>{m.data}</div>
+                      <div style={{ marginBottom: '3px' }}><span style={{ fontWeight: 700 }}>Uses: </span>{m.uses}</div>
+                      <div><span style={{ fontWeight: 700 }}>Algos: </span>{m.algos}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Key AI Terminology */}
+              <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                <div style={{ padding: '10px 14px', background: '#faf5ff', borderBottom: '1px solid #e9d5ff' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#6b21a8', margin: 0 }}>📖 Key AI Terminology — Know These Definitions</h4>
+                </div>
+                {[
+                  { term: 'Model', def: 'Mathematical representation learned from data. The output of training.' },
+                  { term: 'Training', def: 'Process of teaching a model using data. Computationally intensive — use Trainium chips.' },
+                  { term: 'Inference', def: 'Using a trained model to make predictions on new, unseen data.' },
+                  { term: 'Prompt', def: 'Input text that guides what a generative AI model produces.' },
+                  { term: 'Fine-tuning', def: 'Adapting a pre-trained foundation model to a specific domain or task using new data.' },
+                  { term: 'RAG', def: 'Retrieval-Augmented Generation — combine LLM with external knowledge base to reduce hallucinations.' },
+                  { term: 'Hallucination', def: 'When AI generates plausible-sounding but incorrect/fabricated information. Mitigate with RAG + grounding.' },
+                  { term: 'Token', def: 'Unit of text (word or subword) that LLMs process. Affects cost and context limits.' },
+                  { term: 'Embedding', def: 'Numerical vector representation of text. Enables semantic search in vector stores.' },
+                  { term: 'Temperature', def: 'Controls output randomness. Low = deterministic/factual. High = creative/diverse.' },
+                ].map((t, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '10px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#faf5ff', alignItems: 'start' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#7c3aed' }}>{t.term}</span>
+                    <span style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.55 }}>{t.def}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SECTION 2 — AWS AI/ML SERVICES */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#0891b2,#0e7490)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🛠️</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 2 — AWS AI/ML Services</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+
+                {/* Bedrock */}
+                <div style={{ background: '#fff', border: '2px solid #a78bfa', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '12px 16px', background: 'linear-gradient(90deg,#4c1d95,#7c3aed)', }}>
+                    <h4 style={{ fontWeight: 800, fontSize: '0.9rem', color: '#fff', margin: 0 }}>🏗️ Amazon Bedrock ⭐ — Exam Centrepiece</h4>
+                  </div>
+                  <div style={{ padding: '1rem' }}>
+                    <p style={{ fontSize: '0.8rem', color: '#374151', lineHeight: 1.6, margin: '0 0 10px' }}>Fully managed service to access <strong>Foundation Models (FMs)</strong> from AWS and third parties via API. No infrastructure to manage.</p>
+                    {[
+                      { label: 'Models available', val: 'Anthropic Claude · Meta Llama · AI21 Labs · Cohere · Amazon Titan · Amazon Nova' },
+                      { label: 'Use cases', val: 'Text generation · Summarisation · Q&A · Chatbots · Code generation' },
+                      { label: 'Knowledge Bases', val: 'RAG — connect FM to your data sources (S3, databases)' },
+                      { label: 'Agents', val: 'Autonomous multi-step task execution via Lambda action groups' },
+                      { label: 'Guardrails', val: 'Content filters · PII redaction · Denied topics · Prompt safety' },
+                      { label: 'Data privacy', val: '⚠️ Your data is NEVER used to train AWS models' },
+                    ].map((r, i) => (
+                      <div key={i} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px', padding: '6px 0', borderTop: '1px solid #f3f4f6', alignItems: 'start' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.75rem', color: '#7c3aed' }}>{r.label}</span>
+                        <span style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.5 }}>{r.val}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pre-built AI Services */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f0f9ff', borderBottom: '1px solid #bae6fd' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0369a1', margin: 0 }}>🔧 Pre-Built AI Services (No ML Expertise Needed)</h4>
+                  </div>
+                  {[
+                    { cat: 'Language', services: [
+                      { svc: 'Comprehend', desc: 'NLP: sentiment, entities, key phrases, language detection' },
+                      { svc: 'Translate', desc: 'Real-time translation across 75+ languages' },
+                      { svc: 'Polly', desc: 'Text-to-speech — natural voices in 60+ languages' },
+                      { svc: 'Transcribe', desc: 'Speech-to-text — call analytics, subtitles, medical' },
+                      { svc: 'Lex', desc: 'Build chatbots/voice assistants — powers Alexa' },
+                    ]},
+                    { cat: 'Vision', services: [
+                      { svc: 'Rekognition', desc: 'Image/video: faces, objects, text, content moderation' },
+                      { svc: 'Textract', desc: 'Extract text/tables from documents, forms, invoices' },
+                    ]},
+                    { cat: 'Search & Recommendations', services: [
+                      { svc: 'Kendra', desc: 'Intelligent enterprise search — natural language Q&A over docs' },
+                      { svc: 'Personalize', desc: 'Real-time product/content recommendations — no ML expertise' },
+                      { svc: 'Forecast', desc: 'Time-series forecasting: demand, inventory, traffic' },
+                    ]},
+                  ].map(cat => (
+                    <div key={cat.cat}>
+                      <div style={{ padding: '6px 14px', background: '#f8fafc', borderTop: '1px solid #e5e7eb', fontSize: '0.7rem', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{cat.cat}</div>
+                      {cat.services.map((s, i) => (
+                        <div key={i} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '8px', padding: '7px 14px', borderTop: '1px solid #f3f4f6', background: '#fff', alignItems: 'start' }}>
+                          <span style={{ fontWeight: 700, fontSize: '0.77rem', color: '#0369a1' }}>{s.svc}</span>
+                          <span style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+
+                {/* SageMaker */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fff7ed', borderBottom: '1px solid #fed7aa' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#c2410c', margin: 0 }}>⚗️ Amazon SageMaker ⭐ — End-to-End ML Platform</h4>
+                  </div>
+                  {[
+                    { component: 'Studio', desc: 'Web-based IDE for all ML development tasks' },
+                    { component: 'Autopilot', desc: 'AutoML — automatically builds, trains, tunes models (no-code)' },
+                    { component: 'Built-in Algos', desc: 'Pre-optimised for XGBoost, k-means, linear learner, and more' },
+                    { component: 'Pipelines', desc: 'CI/CD for ML workflows — reproducible, automated' },
+                    { component: 'Model Monitor', desc: 'Detect data drift and concept drift in production models' },
+                    { component: 'Clarify', desc: 'Detect bias in data/model + explain predictions (feature attribution)' },
+                    { component: 'Ground Truth', desc: 'Human labeling service to create training datasets' },
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px', padding: '7px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fff7ed', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.77rem', color: '#c2410c' }}>{c.component}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{c.desc}</span>
+                    </div>
+                  ))}
+                  <div style={{ padding: '10px 14px', background: '#fffbeb', borderTop: '1px solid #fed7aa' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#92400e', marginBottom: '4px' }}>⚖️ SageMaker vs Bedrock</div>
+                    <div style={{ fontSize: '0.76rem', color: '#78350f', lineHeight: 1.6 }}>
+                      <strong>SageMaker</strong> = build/train/customize your own models (full control, more work) ·
+                      <strong> Bedrock</strong> = use pre-trained FMs via API (less control, fastest time-to-value)
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI Chips */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>🖥️ AI-Optimised Infrastructure</h4>
+                  </div>
+                  {[
+                    { chip: 'Trainium (Trn1)', purpose: 'TRAINING', desc: 'Custom AWS chips for cost-effective model training at scale.' },
+                    { chip: 'Inferentia (Inf1/Inf2)', purpose: 'INFERENCE', desc: 'Custom chips for low-latency, high-throughput predictions in production.' },
+                    { chip: 'EC2 P4/P5 instances', purpose: 'GPU', desc: 'NVIDIA GPU-powered instances for intensive ML training workloads.' },
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'flex-start' }}>
+                      <div style={{ flexShrink: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#111827' }}>{c.chip}</div>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 800, background: c.purpose === 'TRAINING' ? '#dbeafe' : c.purpose === 'INFERENCE' ? '#dcfce7' : '#f3e8ff', color: c.purpose === 'TRAINING' ? '#1d4ed8' : c.purpose === 'INFERENCE' ? '#15803d' : '#7c3aed', padding: '1px 6px', borderRadius: '4px' }}>{c.purpose}</span>
+                      </div>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.55 }}>{c.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 3 — RESPONSIBLE AI */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#dc2626,#991b1b)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>⚖️</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 3 — Responsible AI &amp; Governance</h3>
+              </div>
+
+              {/* 4 Pillars */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px', marginBottom: '12px' }}>
+                {[
+                  { num: '1', pillar: 'Fairness', color: '#1d4ed8', bg: '#eff6ff', desc: 'Models must not discriminate against protected groups. Use diverse training data. Detect bias with SageMaker Clarify before and after training.' },
+                  { num: '2', pillar: 'Transparency & Explainability', color: '#059669', bg: '#ecfdf5', desc: 'Understand WHY a model made a prediction. Tools: SageMaker Clarify (feature attribution), model cards, explainability reports.' },
+                  { num: '3', pillar: 'Privacy & Security', color: '#7c3aed', bg: '#f5f3ff', desc: 'Protect training data and model outputs. KMS encryption, VPC isolation, Bedrock data privacy (your data never used for AWS training).' },
+                  { num: '4', pillar: 'Robustness & Safety', color: '#dc2626', bg: '#fef2f2', desc: 'Models perform reliably and prevent harmful outputs. Bedrock Guardrails: block toxic content, PII, jailbreaks. Human-in-the-loop for high-stakes decisions.' },
+                ].map(p => (
+                  <div key={p.num} style={{ background: p.bg, border: `1.5px solid ${p.color}22`, borderRadius: '12px', padding: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                      <span style={{ width: '24px', height: '24px', background: p.color, color: '#fff', borderRadius: '50%', fontWeight: 800, fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{p.num}</span>
+                      <span style={{ fontWeight: 800, fontSize: '0.85rem', color: p.color }}>{p.pillar}</span>
+                    </div>
+                    <p style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.6, margin: 0 }}>{p.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* AI Controls */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>🛡️ Bedrock Guardrails — 5 Control Types</h4>
+                  </div>
+                  {[
+                    { ctrl: 'Content Filters', desc: 'Block hate speech, violence, sexual content by severity level.' },
+                    { ctrl: 'Denied Topics', desc: 'Prevent discussion of specified sensitive subjects entirely.' },
+                    { ctrl: 'Word Filters', desc: 'Block specific words, phrases, or profanity from inputs/outputs.' },
+                    { ctrl: 'Sensitive Info (PII)', desc: 'Redact personal information — names, SSNs, credit cards, emails.' },
+                    { ctrl: 'Grounding Check', desc: 'Verify FM responses are grounded in provided source material (reduces hallucinations).' },
+                  ].map((g, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.77rem', color: '#7c3aed' }}>{g.ctrl}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{g.desc}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: '0 0 10px' }}>🔄 Human-in-the-Loop (HITL)</h4>
+                  <p style={{ fontSize: '0.8rem', color: '#374151', lineHeight: 1.6, margin: '0 0 10px' }}>Use <strong>Amazon A2I (Augmented AI)</strong> to route uncertain or low-confidence predictions to human reviewers.</p>
+                  <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: '8px', padding: '10px 12px', marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#7c3aed', marginBottom: '4px' }}>When to use HITL:</div>
+                    <div style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.6 }}>Medical diagnosis · Financial decisions · Legal document review · Content moderation at edge cases · Any prediction with severe consequences if wrong</div>
+                  </div>
+                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '8px 12px' }}>
+                    <div style={{ fontSize: '0.77rem', color: '#991b1b', lineHeight: 1.5 }}><strong>Exam tip:</strong> "High-stakes decisions" + "uncertain AI output" → Amazon A2I</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 4 — USE CASE DECISION FRAMEWORK */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#059669,#0d9488)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🗺️</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 4 — Use Case Decision Framework</h3>
+              </div>
+
+              <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
+                <div style={{ padding: '12px 16px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: 0 }}>What AI problem am I solving? → Which service?</h4>
+                </div>
+                <pre style={{ margin: 0, padding: '1rem', fontSize: '0.76rem', fontFamily: 'monospace', color: '#1f2937', background: '#f9fafb', lineHeight: 1.8, overflowX: 'auto', whiteSpace: 'pre' }}>{`What AI problem am I solving?
+│
+├─► "Chatbot / content generation / summarisation / Q&A"
+│   └─► Amazon Bedrock (Claude / Titan / Nova) + Guardrails + Knowledge Bases (RAG)
+│
+├─► "Analyse text (sentiment, entities, language, translation)"
+│   └─► Amazon Comprehend / Translate / Polly / Transcribe (pre-built APIs)
+│
+├─► "Analyse images or video (faces, objects, moderation)"
+│   └─► Amazon Rekognition (images/video) or Textract (documents/forms)
+│
+├─► "Real-time product or content recommendations"
+│   └─► Amazon Personalize (no ML expertise required)
+│
+├─► "Forecast demand, inventory, or time-series data"
+│   └─► Amazon Forecast (automatic model selection)
+│
+├─► "Search enterprise documents with natural language"
+│   └─► Amazon Kendra (intelligent semantic search)
+│
+├─► "Build a custom ML model with full control"
+│   └─► Amazon SageMaker (full pipeline) or SageMaker Autopilot (no-code)
+│
+├─► "Detect bias in data or explain model predictions"
+│   └─► SageMaker Clarify + Model Cards
+│
+├─► "Route uncertain predictions to human reviewers"
+│   └─► Amazon A2I (Augmented AI) — Human-in-the-Loop
+│
+└─► "Reduce hallucinations from LLM"
+    └─► RAG with Bedrock Knowledge Bases + Grounding Check Guardrail`}</pre>
+              </div>
+
+              {/* Quick Service → Keyword map */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>⚡ Exam Keyword → Service Instant Map</h4>
+                  {[
+                    { kw: '"managed FM / foundation model API"', svc: 'Amazon Bedrock' },
+                    { kw: '"RAG / real-time data / reduce hallucinations"', svc: 'Bedrock Knowledge Bases' },
+                    { kw: '"multi-step autonomous agent"', svc: 'Bedrock Agents' },
+                    { kw: '"content moderation / block toxic output"', svc: 'Bedrock Guardrails' },
+                    { kw: '"domain-specific style / behavior change"', svc: 'Fine-tuning' },
+                    { kw: '"semantic search / vector similarity"', svc: 'Embeddings + Vector Store' },
+                    { kw: '"extract text from forms/invoices"', svc: 'Amazon Textract' },
+                    { kw: '"sentiment / NLP / language detection"', svc: 'Amazon Comprehend' },
+                    { kw: '"speech to text / transcription"', svc: 'Amazon Transcribe' },
+                    { kw: '"image/video analysis"', svc: 'Amazon Rekognition' },
+                    { kw: '"chatbot / intent recognition"', svc: 'Amazon Lex' },
+                    { kw: '"enterprise document search"', svc: 'Amazon Kendra' },
+                    { kw: '"bias detection in model"', svc: 'SageMaker Clarify' },
+                    { kw: '"human review / uncertain prediction"', svc: 'Amazon A2I' },
+                  ].map((m, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', padding: '5px 0', borderBottom: i < 13 ? '1px solid #f3f4f6' : 'none', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.76rem', color: '#6b7280', fontStyle: 'italic' }}>{m.kw}</span>
+                      <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#7c3aed', flexShrink: 0 }}>→ {m.svc}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bedrock vs SageMaker decision */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                    <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                      <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>🆚 Bedrock vs SageMaker — Decision Table</h4>
+                    </div>
+                    {[
+                      { signal: '"No ML expertise needed"', winner: 'Bedrock', why: 'Use FM via API with zero setup' },
+                      { signal: '"Fastest time to value"', winner: 'Bedrock', why: 'No training, no infrastructure' },
+                      { signal: '"Build + train custom model"', winner: 'SageMaker', why: 'Full pipeline control' },
+                      { signal: '"AutoML, no-code training"', winner: 'SageMaker Autopilot', why: 'Hands-off model building' },
+                      { signal: '"Monitor production drift"', winner: 'SageMaker Monitor', why: 'Continuous model quality checks' },
+                      { signal: '"Detect training data bias"', winner: 'SageMaker Clarify', why: 'Pre/post-training bias reports' },
+                    ].map((r, i) => (
+                      <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 150px', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                        <span style={{ fontSize: '0.76rem', color: '#6b7280', fontStyle: 'italic', lineHeight: 1.5 }}>{r.signal}</span>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '0.76rem', color: '#7c3aed' }}>{r.winner}</div>
+                          <div style={{ fontSize: '0.72rem', color: '#9ca3af' }}>{r.why}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: '0 0 10px' }}>✂️ Quick Elimination Tricks</h4>
+                    {[
+                      '"Use EC2 to host an LLM" → WRONG (use Bedrock or SageMaker endpoint)',
+                      '"No guardrails needed" for customer-facing AI → WRONG (always include safety)',
+                      '"Train model from scratch" for a common task → WRONG (use pre-built or fine-tune)',
+                      '"Store PII in prompts without filtering" → WRONG (use Guardrails Sensitive Info)',
+                      '"Bedrock trains on your data" → WRONG (your data is never used for training)',
+                    ].map((e, i) => (
+                      <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: i < 4 ? '7px' : 0 }}>
+                        <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>❌</span>
+                        <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{e}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 5 — COST */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#059669,#065f46)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>💰</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 5 — Cost &amp; Optimisation</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>💲 Pricing Models for AI Services</h4>
+                  </div>
+                  {[
+                    { svc: 'Bedrock', model: 'Per token (input + output)', tip: 'Use shorter prompts + cache frequent responses. Enable provisioned throughput for predictable high-volume.' },
+                    { svc: 'SageMaker', model: 'Notebook time + training instance-hours + endpoint hours', tip: 'Spot Instances for training. Auto-scale endpoints. Shut down notebooks when idle.' },
+                    { svc: 'Pre-built Services', model: 'Per API call / per image / per minute of audio', tip: 'Batch process when possible. Cache results. Use async APIs for large jobs.' },
+                  ].map((r, i) => (
+                    <div key={i} style={{ padding: '10px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#059669' }}>{r.svc}</span>
+                        <span style={{ fontSize: '0.72rem', color: '#6b7280' }}>— {r.model}</span>
+                      </div>
+                      <div style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.5 }}>💡 {r.tip}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#065f46', margin: '0 0 10px' }}>✅ AI Cost Optimisation Checklist</h4>
+                  {[
+                    'Use Bedrock for generative AI (zero infrastructure overhead)',
+                    'Choose Inferentia chips for inference workloads; Trainium for training',
+                    'Enable auto-scaling on SageMaker endpoints (scale to zero when idle)',
+                    'Use S3 Intelligent-Tiering for training data sets',
+                    'Monitor with Cost Explorer — tag all AI resources by project/team',
+                    'Start with pre-built AI services before building custom models',
+                    'Use batch transforms for large inference jobs instead of real-time endpoints',
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: i < 6 ? '7px' : 0 }}>
+                      <span style={{ color: '#16a34a', fontWeight: 800, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', lineHeight: 1.5 }}>{c}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* AIF MANTRA */}
+            <div style={{ background: 'linear-gradient(135deg, #2e1065 0%, #7c3aed 50%, #4c1d95 100%)', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🤖</div>
+              <h3 style={{ color: '#f5f3ff', fontWeight: 800, fontSize: '1.1rem', margin: '0 0 1rem' }}>The AI Practitioner's Mantra</h3>
+              <div style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {[
+                  '"Bedrock = use foundation models. SageMaker = build your own. Never swap them."',
+                  '"RAG reduces hallucinations. Guardrails prevent harmful outputs. Both together = responsible AI."',
+                  '"Supervised = labeled data. Unsupervised = find patterns. Generative = create new content."',
+                  '"Bedrock never trains on your data. Privacy is built in by default."',
+                  '"Trainium trains. Inferentia infers. Remember the function, not just the name."',
+                  '"Responsible AI: Fairness, Explainability, Privacy, Robustness — Clarify detects bias, A2I adds humans."',
+                ].map((m, i) => (
+                  <div key={i} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 16px' }}>
+                    <span style={{ color: '#e0e7ff', fontSize: '0.84rem', fontStyle: 'italic', lineHeight: 1.55 }}>{m}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 

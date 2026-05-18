@@ -9,7 +9,7 @@ import Layout from '../components/Layout'
 import { useAuth } from '../contexts/AuthContext'
 import { useCertAccess } from '../hooks/useCertAccess'
 
-type Tab = 'matrix' | 'traps' | 'deepdives' | 'studyplan' | 'reference' | 'strategy'
+type Tab = 'matrix' | 'traps' | 'deepdives' | 'studyplan' | 'reference' | 'strategy' | 'codex'
 
 // ─── DECISION MATRIX ─────────────────────────────────────────────────────────
 interface MatrixRow { requirement: string; solution: string; why: string }
@@ -595,6 +595,7 @@ const TAB_LIST: { id: Tab; label: string; count: string }[] = [
   { id: 'studyplan', label: '📅 Study Plan',         count: '14d' },
   { id: 'reference', label: '📌 Quick Reference',   count: '' },
   { id: 'strategy',  label: '🎯 Exam Strategy',     count: '' },
+  { id: 'codex',    label: "🧭 CLF Codex",          count: '' },
 ]
 
 const STORAGE_KEY = 'certiprepai-clf-study-plan'
@@ -1048,6 +1049,504 @@ export default function ClfGuide() {
                 Know WHY each service exists and WHAT problem it solves. If you understand the Shared Responsibility Model, support plan tiers, IAM best practices, and cloud economics deeply — you will pass.
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════════════════════
+             CLF CODEX TAB
+             ════════════════════════════════════════════════════════════ */}
+        {activeTab === 'codex' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            {/* SECTION 1 — CLOUD CONCEPTS */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#059669,#065f46)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>☁️</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 1 — Cloud Concepts (The "Why AWS?")</h3>
+              </div>
+
+              {/* 6 Advantages */}
+              <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
+                <div style={{ padding: '12px 16px', background: '#ecfdf5', borderBottom: '1px solid #d1fae5' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#064e3b', margin: 0 }}>📋 The 6 Advantages of Cloud Computing — Memorise Exactly</h4>
+                </div>
+                {[
+                  { num: '1', advantage: 'Trade capital expense (CAPEX) for variable expense (OPEX)', note: 'No upfront hardware cost — pay only for what you use' },
+                  { num: '2', advantage: 'Benefit from massive economies of scale', note: 'AWS buys hardware at a scale you never can — savings passed to you' },
+                  { num: '3', advantage: 'Stop guessing capacity (elasticity)', note: 'Scale up or down in minutes instead of over-provisioning' },
+                  { num: '4', advantage: 'Increase speed and agility', note: 'Resources available in minutes vs weeks for physical procurement' },
+                  { num: '5', advantage: 'Stop spending money on running/maintaining data centers', note: 'AWS handles the undifferentiated heavy lifting' },
+                  { num: '6', advantage: 'Go global in minutes', note: 'Deploy to multiple regions with a few clicks' },
+                ].map((a, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: '10px', padding: '9px 16px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                    <span style={{ width: '22px', height: '22px', background: '#059669', color: '#fff', borderRadius: '50%', fontWeight: 800, fontSize: '0.72rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{a.num}</span>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#111827' }}>{a.advantage}</div>
+                      <div style={{ fontSize: '0.76rem', color: '#6b7280', marginTop: '2px' }}>{a.note}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Deployment Models + Service Models side by side */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
+
+                {/* Deployment Models */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '12px 16px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: 0 }}>🏗️ Cloud Deployment Models</h4>
+                  </div>
+                  {[
+                    { icon: '☁️', model: 'Public Cloud', desc: 'AWS — you share infrastructure with others. Lowest cost. No hardware ownership.' },
+                    { icon: '🏢', model: 'Private Cloud', desc: 'On-premises data center you own entirely. Full control, highest cost.' },
+                    { icon: '🔗', model: 'Hybrid Cloud', desc: 'AWS + on-prem connected via VPN or Direct Connect. Best of both worlds.' },
+                  ].map((m, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 16px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{m.icon}</span>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#059669' }}>{m.model}</div>
+                        <div style={{ fontSize: '0.78rem', color: '#374151', marginTop: '2px', lineHeight: 1.5 }}>{m.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Service Models — Fix #3: Lambda → FaaS */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '12px 16px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: 0 }}>🍕 Cloud Service Models</h4>
+                  </div>
+                  {[
+                    { model: 'IaaS', full: 'Infrastructure as a Service', you: 'Manage OS and above', aws: 'Manages hardware', example: 'EC2, VPC, EBS', color: '#1d4ed8' },
+                    { model: 'PaaS', full: 'Platform as a Service', you: 'Manage code + data', aws: 'Manages OS and above', example: 'Elastic Beanstalk, RDS', color: '#7c3aed' },
+                    { model: 'FaaS', full: 'Function as a Service (Serverless)', you: 'Write functions only', aws: 'Manages everything else', example: 'Lambda (event-driven, ≤15 min)', color: '#0891b2' },
+                    { model: 'SaaS', full: 'Software as a Service', you: 'Use the application', aws: 'Manages everything', example: 'Chime, WorkMail, Salesforce', color: '#059669' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ padding: '10px 16px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '3px' }}>
+                        <span style={{ fontWeight: 800, fontSize: '0.78rem', background: `${s.color}18`, color: s.color, border: `1px solid ${s.color}33`, padding: '1px 7px', borderRadius: '5px' }}>{s.model}</span>
+                        <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#111827' }}>{s.full}</span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#6b7280', lineHeight: 1.5 }}>You: {s.you} · Examples: <span style={{ fontWeight: 600, color: s.color }}>{s.example}</span></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 2 — GLOBAL INFRASTRUCTURE */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#0891b2,#0e7490)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🌍</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 2 — Global Infrastructure</h3>
+              </div>
+
+              <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', marginBottom: '12px' }}>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                    <thead>
+                      <tr style={{ background: '#f0fdfa' }}>
+                        {['Term', 'Definition', 'Exam Fact'].map(h => (
+                          <th key={h} style={{ padding: '9px 12px', textAlign: 'left', fontWeight: 700, color: '#0e7490', borderBottom: '2px solid #a5f3fc', whiteSpace: 'nowrap' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { term: 'Region', def: 'Geographic area containing multiple AZs', fact: 'Choose based on: compliance, latency, cost, service availability. Data stays in region unless you replicate.' },
+                        // Fix #1: "typically 3 AZs (minimum 2)" not "minimum 3"
+                        { term: 'Availability Zone (AZ)', def: 'Isolated data center(s) within a region', fact: 'Typically 3 AZs per region (minimum 2). Connected via low-latency private links. Survive AZ failure with Multi-AZ.' },
+                        { term: 'Edge Location', def: 'CloudFront cache endpoint near users', fact: '400+ globally. Serves static content closest to users. Used by CloudFront + Global Accelerator.' },
+                        { term: 'Regional Edge Cache', def: 'Larger cache between origin & Edge Locations', fact: 'Reduces calls to origin. Improves cache hit ratio for less-popular content.' },
+                      ].map((r, i) => (
+                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f0fdfa' }}>
+                          <td style={{ padding: '9px 12px', fontWeight: 700, color: '#0e7490', whiteSpace: 'nowrap' }}>{r.term}</td>
+                          <td style={{ padding: '9px 12px', color: '#374151' }}>{r.def}</td>
+                          <td style={{ padding: '9px 12px', color: '#6b7280', lineHeight: 1.5 }}>{r.fact}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div style={{ background: '#f0fdfa', border: '1px solid #a5f3fc', borderRadius: '10px', padding: '1rem' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#0e7490', marginBottom: '8px' }}>🔑 Key Region Facts</div>
+                {[
+                  'us-east-1 (N. Virginia) = Most services, lowest cost, the default region for many services',
+                  'Some services are region-specific (e.g., Amazon Lex available in select regions)',
+                  'Data stays in its region unless you explicitly replicate (S3 CRR, Aurora Global Tables)',
+                  'Compliance: GDPR → EU regions. HIPAA → eligible services + signed BAA with AWS',
+                ].map((f, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: i < 3 ? '6px' : 0 }}>
+                    <span style={{ color: '#059669', fontWeight: 800, flexShrink: 0 }}>✅</span>
+                    <span style={{ fontSize: '0.8rem', color: '#134e4a', lineHeight: 1.55 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SECTION 3 — CORE SERVICES */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>⚙️</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 3 — Core Services Cheat Sheet</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+
+                {/* Compute */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#eff6ff', borderBottom: '1px solid #bfdbfe' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#1d4ed8', margin: 0 }}>🖥️ Compute — Pick the Right One</h4>
+                  </div>
+                  {[
+                    { svc: 'EC2', desc: 'Virtual servers — you manage the OS. Full control. IaaS.' },
+                    { svc: 'Lambda', desc: 'Serverless functions (FaaS) — event-driven, ≤15 min, pay per request.' },
+                    { svc: 'ECS / EKS', desc: 'Managed container orchestration (Docker / Kubernetes).' },
+                    { svc: 'Elastic Beanstalk', desc: 'Deploy code without managing infrastructure. PaaS.' },
+                    { svc: 'Lightsail', desc: 'Simple VPS for beginners. Fixed monthly pricing. Easy setup.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#1d4ed8', fontFamily: 'monospace' }}>{s.svc}</span>
+                      <span style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Storage */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fef9c3', borderBottom: '1px solid #fde047' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#713f12', margin: 0 }}>📦 Storage — Match the Use Case</h4>
+                  </div>
+                  {[
+                    { svc: 'S3', desc: 'Object storage. 11 nines durability. Unlimited scale. Any file type.' },
+                    { svc: 'EBS', desc: 'Block storage attached to ONE EC2. AZ-locked. Like a hard drive.' },
+                    { svc: 'EFS', desc: 'Shared file system for multiple Linux EC2. Multi-AZ. Pay-per-use.' },
+                    { svc: 'FSx', desc: 'Managed Windows (SMB) / Lustre / NetApp file systems.' },
+                    { svc: 'Snow Family', desc: 'Physical devices for offline data transfer (Edge computing → AWS).' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '60px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fffbeb', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#b45309', fontFamily: 'monospace' }}>{s.svc}</span>
+                      <span style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* S3 Storage Classes */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fff7ed', borderBottom: '1px solid #fed7aa' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#c2410c', margin: 0 }}>🪣 S3 Storage Classes — Access Patterns</h4>
+                  </div>
+                  {[
+                    { cls: 'Standard', when: 'Frequent access. Default class.' },
+                    { cls: 'Intelligent-Tiering', when: 'Unknown/changing patterns. Auto-moves between tiers.' },
+                    { cls: 'Standard-IA', when: 'Infrequent access, fast retrieval. Multi-AZ. Min 30 days.' },
+                    { cls: 'One Zone-IA', when: 'Infrequent + reproducible data only. Single AZ. Cheaper.' },
+                    { cls: 'Glacier Instant', when: 'Archive with milliseconds retrieval. Min 90 days.' },
+                    { cls: 'Glacier Flexible', when: 'Archive — minutes to hours retrieval. Min 90 days.' },
+                    { cls: 'Glacier Deep Archive', when: 'Long-term archive. 12h+ retrieval. Cheapest storage.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '8px', padding: '7px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fff7ed', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.76rem', color: '#c2410c' }}>{s.cls}</span>
+                      <span style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.5 }}>{s.when}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Databases */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fdf4ff', borderBottom: '1px solid #e9d5ff' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#6b21a8', margin: 0 }}>🗃️ Databases — Relational vs NoSQL</h4>
+                  </div>
+                  {[
+                    { svc: 'RDS', desc: 'Managed relational DBs (MySQL, PostgreSQL, Oracle, SQL Server). Multi-AZ = HA. Read Replicas = read scale.' },
+                    { svc: 'Aurora', desc: 'AWS-native relational DB. 5× MySQL performance. Auto-scales. Compatible with MySQL/PostgreSQL.' },
+                    { svc: 'DynamoDB', desc: 'NoSQL key-value. Single-digit ms latency. Serverless. Global Tables for multi-region.' },
+                    { svc: 'ElastiCache', desc: 'In-memory cache (Redis/Memcached). Sub-millisecond. Reduces DB load.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fdf4ff', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#7c3aed', fontFamily: 'monospace' }}>{s.svc}</span>
+                      <span style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Networking */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#ecfdf5', borderBottom: '1px solid #a7f3d0' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#065f46', margin: 0 }}>🌐 Networking Basics</h4>
+                  </div>
+                  {[
+                    { svc: 'VPC', desc: 'Your isolated virtual network inside AWS. Foundation for all resources.' },
+                    { svc: 'Subnet', desc: 'Segment of VPC. Public = route to IGW. Private = no direct internet.' },
+                    { svc: 'IGW', desc: 'Internet Gateway — allows VPC ↔ Internet communication (bidirectional).' },
+                    { svc: 'NAT Gateway', desc: 'Lets private instances reach internet outbound only. In public subnet.' },
+                    { svc: 'Security Group', desc: 'Stateful firewall at instance level. Allow rules only.' },
+                    { svc: 'NACL', desc: 'Stateless firewall at subnet level. Allow + Deny rules. Processed in order.' },
+                    { svc: 'Route 53', desc: 'DNS service. Domain registration. Health checks. Routing policies.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: '8px', padding: '7px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#ecfdf5', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#059669', fontFamily: 'monospace' }}>{s.svc}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 4 — SECURITY */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#dc2626,#991b1b)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🔐</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 4 — Security &amp; Compliance</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+
+                {/* Shared Responsibility */}
+                <div style={{ background: '#fff', border: '2px solid #fca5a5', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 800, fontSize: '0.9rem', color: '#dc2626', margin: '0 0 1rem' }}>🤝 Shared Responsibility Model — EXAM CRITICAL</h4>
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '10px 14px', marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#1d4ed8', marginBottom: '4px' }}>AWS Responsible FOR (Security OF the cloud)</div>
+                    <div style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.6 }}>Hardware · Software · Networking · Physical facilities · Hypervisor · Managed service OS patches</div>
+                  </div>
+                  <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '8px', padding: '10px 14px', marginBottom: '10px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.8rem', color: '#059669', marginBottom: '4px' }}>Customer Responsible FOR (Security IN the cloud)</div>
+                    <div style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.6 }}>Data · IAM users/roles/policies · OS patching on EC2 · Application security · Encryption settings · Firewall config</div>
+                  </div>
+                  <div style={{ background: '#fef9c3', border: '1px solid #fde047', borderRadius: '8px', padding: '8px 12px' }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#713f12' }}>💡 Mnemonic: </span>
+                    <span style={{ fontSize: '0.78rem', color: '#78350f' }}>"AWS protects the cloud. You protect what's IN it."</span>
+                  </div>
+                </div>
+
+                {/* IAM */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>🔑 IAM Fundamentals</h4>
+                  </div>
+                  {[
+                    { term: 'User', def: 'Person or service that interacts with AWS. Has credentials (password + access keys).' },
+                    { term: 'Group', def: 'Collection of users. Attach policies to groups — not individual users.' },
+                    { term: 'Role', def: 'Temporary credentials for EC2, Lambda, or cross-account access. No long-term keys.' },
+                    { term: 'Policy', def: 'JSON document defining permissions. Always apply least privilege.' },
+                    { term: 'MFA', def: 'Multi-factor authentication. REQUIRED for root account. Best practice for all users.' },
+                  ].map((r, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '55px 1fr', gap: '10px', padding: '9px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#dc2626' }}>{r.term}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{r.def}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Security Services */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#991b1b', margin: 0 }}>🛡️ Security Services Overview</h4>
+                  </div>
+                  {[
+                    { svc: 'Shield Standard', desc: 'Free DDoS protection — always on for all AWS customers.' },
+                    { svc: 'WAF', desc: 'Web Application Firewall. Blocks SQLi, XSS, bots. Layer 7.' },
+                    { svc: 'KMS', desc: 'Key Management Service. Create and manage encryption keys.' },
+                    { svc: 'CloudTrail', desc: 'Logs ALL API calls. Audit who did what and when. Always enable.' },
+                    { svc: 'Config', desc: 'Tracks resource config changes over time. Compliance auditing.' },
+                    { svc: 'GuardDuty', desc: 'Threat detection using ML + threat intelligence feeds.' },
+                    { svc: 'Inspector', desc: 'Vulnerability scanning for EC2 instances and Lambda functions.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '8px', padding: '7px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fef2f2', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.77rem', color: '#dc2626' }}>{s.svc}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{s.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 5 — BILLING */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#059669,#065f46)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>💰</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Section 5 — Billing &amp; Pricing</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+
+                {/* Pricing Models — Fix #2: RI 72% not 75% */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#ecfdf5', borderBottom: '1px solid #a7f3d0' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#065f46', margin: 0 }}>EC2 Pricing Models</h4>
+                  </div>
+                  {[
+                    { model: 'On-Demand', discount: 'List price', when: 'Short-term, unpredictable, testing. No commitment.', color: '#6b7280' },
+                    { model: 'Savings Plans', discount: 'Up to 72%', when: 'Commit to $/hr for 1–3 yrs. Flexible across services + regions.', color: '#2563eb' },
+                    { model: 'Reserved Instances', discount: 'Up to 72%', when: 'Specific instance type + region, 1–3 yr. Predictable, steady-state.', color: '#7c3aed' },
+                    { model: 'Spot Instances', discount: 'Up to 90%', when: 'Fault-tolerant, stateless, batch. Can be interrupted with 2-min notice.', color: '#d97706' },
+                  ].map((p, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '150px 70px 1fr', gap: '8px', padding: '9px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#ecfdf5', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.8rem', color: p.color }}>{p.model}</span>
+                      <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#059669' }}>{p.discount}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{p.when}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Free Tier */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f0fdf4', borderBottom: '1px solid #bbf7d0' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#15803d', margin: 0 }}>🎁 Free Tier (12 months from sign-up)</h4>
+                  </div>
+                  {[
+                    '750 hrs/month EC2 t2/t3.micro (Linux or Windows)',
+                    '5 GB S3 Standard storage',
+                    '25 GB DynamoDB storage (Always Free)',
+                    '1 million Lambda requests/month (Always Free)',
+                    '100 GB data transfer OUT to internet/month',
+                  ].map((f, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '10px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#f0fdf4', alignItems: 'center' }}>
+                      <span style={{ color: '#16a34a', fontWeight: 800, flexShrink: 0 }}>✅</span>
+                      <span style={{ fontSize: '0.78rem', color: '#374151' }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Support Plans */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#111827', margin: 0 }}>📞 Support Plans — Know the Differences</h4>
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr style={{ background: '#f1f5f9' }}>
+                          {['Plan', 'Cost', 'Critical Response', 'Key Feature'].map(h => (
+                            <th key={h} style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '1px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { plan: 'Basic', cost: 'Free', resp: 'None', feat: 'Forums + Health Dashboard', color: '#6b7280' },
+                          { plan: 'Developer', cost: '$29/mo', resp: '12 hours', feat: 'Business-hours email support', color: '#059669' },
+                          { plan: 'Business', cost: '$100/mo', resp: '1 hour', feat: '24/7 phone/chat + full Trusted Advisor', color: '#2563eb' },
+                          { plan: 'Enterprise On-Ramp', cost: '$5,500/mo', resp: '30 min', feat: 'Pool of TAMs + proactive guidance', color: '#7c3aed' },
+                          { plan: 'Enterprise', cost: '$15,000+/mo', resp: '15 min', feat: 'Dedicated TAM + Infrastructure Event Mgmt', color: '#dc2626' },
+                        ].map((r, i) => (
+                          <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                            <td style={{ padding: '7px 10px', fontWeight: 700, color: r.color, whiteSpace: 'nowrap' }}>{r.plan}</td>
+                            <td style={{ padding: '7px 10px', color: '#374151', whiteSpace: 'nowrap' }}>{r.cost}</td>
+                            <td style={{ padding: '7px 10px', fontWeight: 700, color: '#dc2626', whiteSpace: 'nowrap' }}>{r.resp}</td>
+                            <td style={{ padding: '7px 10px', color: '#6b7280', lineHeight: 1.5 }}>{r.feat}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Cost Tools */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 14px', background: '#ecfdf5', borderBottom: '1px solid #a7f3d0' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#065f46', margin: 0 }}>🔧 Cost Management Tools</h4>
+                  </div>
+                  {[
+                    { tool: 'Cost Explorer', desc: 'Visualise spending trends. Forecast 12 months. Filter by tag/service/account.' },
+                    { tool: 'Budgets', desc: 'Set custom cost/usage alerts. Notify via email or SNS when threshold exceeded.' },
+                    { tool: 'Trusted Advisor', desc: 'Best practice checks: cost, security, performance, fault tolerance, limits.' },
+                    { tool: 'AWS Organizations', desc: 'Consolidated billing across accounts. Volume discounts. SCPs for governance.' },
+                    { tool: 'Pricing Calculator', desc: 'Estimate monthly AWS costs before deploying. No sign-in required.' },
+                  ].map((t, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#ecfdf5', alignItems: 'start' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.78rem', color: '#059669' }}>{t.tool}</span>
+                      <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{t.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* EXAM STRATEGY QUICK CARD */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#059669,#0891b2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🎯</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Quick Exam Strategy</h3>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
+
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>🔎 Question Patterns</h4>
+                  {[
+                    { trigger: '"Which service is BEST for…?"', answer: 'Match use case to service from the cheat sheet' },
+                    { trigger: '"Who is responsible for…?"', answer: 'Apply Shared Responsibility Model' },
+                    { trigger: '"How to reduce cost…?"', answer: 'Right-size → S3 lifecycle → correct pricing model' },
+                    { trigger: '"Which is MOST secure…?"', answer: 'MFA + least privilege IAM + encryption + CloudTrail' },
+                    { trigger: '"AWS manages vs customer manages?"', answer: 'Security OF vs security IN the cloud' },
+                  ].map((p, i) => (
+                    <div key={i} style={{ marginBottom: i < 4 ? '8px' : 0, paddingBottom: i < 4 ? '8px' : 0, borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none' }}>
+                      <div style={{ fontSize: '0.77rem', fontStyle: 'italic', color: '#6b7280', marginBottom: '2px' }}>{p.trigger}</div>
+                      <div style={{ fontSize: '0.79rem', fontWeight: 700, color: '#059669' }}>→ {p.answer}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 10px' }}>✂️ Quick Elimination Tricks</h4>
+                  {[
+                    '"Install OS patches on RDS" → WRONG (AWS manages RDS OS)',
+                    '"EC2 for serverless" → WRONG (EC2 is not serverless — use Lambda)',
+                    '"S3 for relational queries" → WRONG (use RDS/Aurora)',
+                    '"Root account for daily tasks" → WRONG (always use IAM users/roles)',
+                    '"Access keys on EC2" → WRONG (use IAM Role — never embed credentials)',
+                  ].map((e, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: i < 4 ? '7px' : 0 }}>
+                      <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>❌</span>
+                      <span style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.5 }}>{e}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '1.25rem' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#15803d', margin: '0 0 10px' }}>☑️ Final 24-Hour Checklist</h4>
+                  {[
+                    'Memorise the 6 cloud advantages (exact wording)',
+                    'Know Shared Responsibility Model cold — OF vs IN',
+                    'Match all 7 S3 classes to their access patterns',
+                    'Distinguish Security Groups (stateful) vs NACLs (stateless)',
+                    'Recall support plan response times + TAM tiers',
+                    'Remember: Multi-AZ = HA within region. Multi-Region = DR.',
+                    'FaaS/Lambda is NOT PaaS — it\'s serverless compute',
+                    'Sleep well 😴',
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: i < 7 ? '6px' : 0 }}>
+                      <span style={{ color: '#16a34a', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', lineHeight: 1.5 }}>{c}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CLF MANTRA */}
+            <div style={{ background: 'linear-gradient(135deg, #064e3b 0%, #059669 50%, #065f46 100%)', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>☁️</div>
+              <h3 style={{ color: '#ecfdf5', fontWeight: 800, fontSize: '1.1rem', margin: '0 0 1rem' }}>The CLF Practitioner's Mantra</h3>
+              <div style={{ maxWidth: '620px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {[
+                  '"AWS protects the cloud. You protect what\'s in it."',
+                  '"Stateful = Security Groups. Stateless = NACLs. Never confuse them."',
+                  '"Multi-AZ survives AZ failure. Multi-Region survives region failure."',
+                  '"TAM requires Enterprise or Enterprise On-Ramp. Full Trusted Advisor requires Business+."',
+                  '"Reserved = predictable. Spot = interruptible. Savings Plans = flexible commitment."',
+                  '"The CLF tests conceptual understanding — know WHY each service exists."',
+                ].map((m, i) => (
+                  <div key={i} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px', padding: '10px 16px' }}>
+                    <span style={{ color: '#a7f3d0', fontSize: '0.84rem', fontStyle: 'italic', lineHeight: 1.55 }}>{m}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
       </div>
