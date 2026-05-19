@@ -47,6 +47,15 @@ const MATRIX: MatrixRow[] = [
   { requirement: 'Cheapest FM for simple classification or extraction', solution: 'Claude Haiku / Amazon Titan Lite', why: 'Smallest, fastest, cheapest models. Always use smallest model that meets your quality bar.' },
   { requirement: 'Highest quality reasoning for complex tasks', solution: 'Claude 3.5 Sonnet / Amazon Nova Pro', why: 'Best performance at higher cost. Reserve for tasks where quality outweighs cost.' },
   { requirement: 'Deploy FM inside your own VPC', solution: 'SageMaker JumpStart', why: 'Deploy open-source FMs (Llama, Mistral) into your own infrastructure. Full data isolation.' },
+  // ── SageMaker tooling ──
+  { requirement: 'Build ML model without writing any code — business analyst use case', solution: 'SageMaker Canvas', why: 'Visual no-code ML tool. Import CSV, join datasets, auto-train classification or regression model — no data science skills needed. Point-and-click from data to prediction.' },
+  { requirement: 'Visual data preparation and cleaning before ML training — no code', solution: 'SageMaker Data Wrangler', why: '300+ built-in data transforms. Import, explore, clean, and prepare datasets visually. Exports directly to S3 or feeds a SageMaker training job. Separate from Canvas (prep only, not training).' },
+  { requirement: 'Offline batch predictions on a large dataset — no real-time endpoint needed', solution: 'SageMaker Batch Transform', why: 'Runs inference on an entire S3 dataset using a temporary fleet. No persistent endpoint — cost-effective for overnight or scheduled jobs. Results saved back to S3. Not for real-time use cases.' },
+  // ── Pre-built AI services ──
+  { requirement: 'Call center audio — transcription + sentiment + PII redaction + agent insights', solution: 'Amazon Transcribe Call Analytics', why: 'Optimized for call center audio. Produces transcripts, extracts call sentiment, non-talk time, interruption rate, and redacts PII (SSN, card numbers). Separate from standard Transcribe.' },
+  { requirement: 'Cloud contact center with integrated chatbot and voice bot', solution: 'Amazon Connect + Amazon Lex', why: 'Connect = omnichannel contact center (chat, voice, email). Lex provides NLU intent recognition for bots. Polly provides TTS responses. Full call center deployable in minutes on AWS.' },
+  { requirement: 'Computer vision on existing on-premises IP cameras — no cloud streaming', solution: 'AWS Panorama', why: 'Hardware appliance + SDK. Runs CV models locally at the edge, analyzing video without sending it to the cloud. Low latency for real-time factory quality control or security monitoring.' },
+  { requirement: 'Human labeling / crowdsourced annotation for training data', solution: 'Amazon Mechanical Turk (MTurk)', why: 'Crowdsourcing marketplace for human intelligence tasks (data labeling, content moderation, survey). SageMaker Ground Truth can use MTurk as its human workforce for labeling pipelines.' },
 ]
 
 // ─── EXAM TRAPS ───────────────────────────────────────────────────────────────
@@ -1295,6 +1304,125 @@ export default function AifGuide() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            {/* MDLC + EVAL METRICS + DRIFT + SAGEMAKER INFERENCE + Q */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#7c3aed,#4c1d95)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>📐</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>ML Lifecycle, Metrics, Drift & Deployment Patterns</h3>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+                {/* MDLC 7 phases */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#f5f3ff', borderBottom: '1px solid #ddd6fe' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#5b21b6', margin: 0 }}>🔄 ML Development Lifecycle (MDLC) — 7 Phases</h4>
+                  </div>
+                  {[
+                    { phase: '1 — Business Goal', action: 'Define the problem in business terms', detail: 'What KPI are you moving? Is ML even needed? Success criteria must be measurable before any data work begins.' },
+                    { phase: '2 — Problem Framing', action: 'Translate to ML task type', detail: 'Decide: regression (continuous output), classification (categorical output), or clustering (no labels). This choice drives all downstream decisions.' },
+                    { phase: '3 — Data Collection & Prep', action: 'Collect, clean, and engineer features', detail: 'Most time-consuming phase. Handle missing values, remove duplicates, normalize, one-hot encode. Feature engineering creates new variables. "Garbage in, garbage out."' },
+                    { phase: '4 — Model Training', action: 'Feed labeled data to algorithm', detail: 'Algorithm iteratively learns weights and parameters mapping inputs → outputs. SageMaker Training Jobs = fully managed, pay-per-use training compute.' },
+                    { phase: '5 — Model Evaluation', action: 'Test on hold-out data never seen during training', detail: 'Measure accuracy, precision, recall, F1. Use confusion matrix for classification. A model that performs well on training data but poorly on hold-out data = overfitting.' },
+                    { phase: '6 — Deployment', action: 'Integrate model into production application', detail: 'Real-time endpoint (low latency), serverless endpoint (intermittent traffic), or batch transform (large offline dataset). Choose based on traffic pattern.' },
+                    { phase: '7 — Monitoring', action: 'Continuously watch production model', detail: 'Detect data drift (input distribution changes) and concept drift (relationship between input and output changes). SageMaker Model Monitor automates this.' },
+                  ].map((p, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '155px 145px 1fr', padding: '9px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', gap: '10px', alignItems: 'start' }}>
+                      <span style={{ fontSize: '0.77rem', fontWeight: 700, color: '#7c3aed' }}>{p.phase}</span>
+                      <span style={{ fontSize: '0.76rem', fontWeight: 600, color: '#111827' }}>{p.action}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#6b7280', lineHeight: 1.55 }}>{p.detail}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Evaluation Metrics */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#991b1b', margin: 0 }}>📊 Classification Evaluation Metrics — Know the Formulas</h4>
+                  </div>
+                  {[
+                    { metric: 'Accuracy', formula: 'Correct Predictions ÷ Total Predictions', when: 'Balanced datasets', trap: 'Misleading on imbalanced data — a model predicting "not fraud" 99% of the time looks 99% accurate if fraud is 1% of data.' },
+                    { metric: 'Precision', formula: 'True Positives ÷ (True Positives + False Positives)', when: 'When false positives are costly', trap: 'High precision = few false alarms. Use when flagging something wrongly is expensive (e.g., spam filter — you don\'t want legit emails deleted).' },
+                    { metric: 'Recall', formula: 'True Positives ÷ (True Positives + False Negatives)', when: 'When false negatives are costly', trap: 'High recall = few misses. Use when missing a real case is dangerous (e.g., cancer screening — you don\'t want to miss a real case).' },
+                    { metric: 'F1 Score', formula: 'Harmonic mean of Precision and Recall', when: 'Imbalanced datasets', trap: 'Best single metric when you care about both precision and recall equally. Harmonic mean punishes extreme imbalance between the two.' },
+                  ].map((m, i) => (
+                    <div key={i} style={{ padding: '10px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fef2f2' }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '3px' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.82rem', color: '#dc2626' }}>{m.metric}</span>
+                        <code style={{ fontSize: '0.72rem', background: '#fee2e2', color: '#991b1b', padding: '1px 8px', borderRadius: '4px' }}>{m.formula}</code>
+                        <span style={{ fontSize: '0.68rem', background: '#f3f4f6', color: '#6b7280', padding: '1px 7px', borderRadius: '4px', flexShrink: 0 }}>Use when: {m.when}</span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#6b7280', lineHeight: 1.5 }}>{m.trap}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Data Drift vs Concept Drift */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  {[
+                    { type: '📈 Data Drift', color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe', definition: 'The statistical distribution of the input features changes from the distribution seen during training.', example: 'You trained a model on summer sales data. In winter, purchasing patterns are completely different — the model sees new inputs it was never trained on.', detect: 'SageMaker Model Monitor — compares live input distribution against training baseline.' },
+                    { type: '🔀 Concept Drift', color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe', definition: 'The relationship between the input features and the target outcome changes — even if the input distribution looks the same.', example: 'A credit-scoring model trained before COVID. After COVID, the same income/debt ratio now predicts default differently — the world changed.', detect: 'SageMaker Model Monitor — compares predicted label distribution against ground truth labels (if available).' },
+                  ].map((d, i) => (
+                    <div key={i} style={{ background: d.bg, border: `1px solid ${d.border}`, borderRadius: '10px', padding: '1rem' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.85rem', color: d.color, marginBottom: '8px' }}>{d.type}</div>
+                      <div style={{ fontSize: '0.77rem', color: '#374151', marginBottom: '8px', lineHeight: 1.55 }}><strong>Definition:</strong> {d.definition}</div>
+                      <div style={{ fontSize: '0.77rem', color: '#374151', marginBottom: '8px', lineHeight: 1.55 }}><strong>Example:</strong> {d.example}</div>
+                      <div style={{ fontSize: '0.75rem', color: d.color, lineHeight: 1.5 }}><strong>Detection:</strong> {d.detect}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* SageMaker Inference Types */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#f0fdf4', borderBottom: '1px solid #bbf7d0' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#15803d', margin: 0 }}>⚡ SageMaker Inference Types — Pick the Right Deployment</h4>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', background: '#f9fafb', padding: '8px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#374151', gap: '8px', borderBottom: '1px solid #e5e7eb' }}>
+                    {['Type', 'Traffic Pattern', 'Cost Model', 'Exam Trigger'].map(h => <span key={h}>{h}</span>)}
+                  </div>
+                  {[
+                    { type: 'Real-Time Inference', traffic: 'Steady, continuous, low-latency required', cost: 'Pay for instance uptime 24/7', trigger: '"Real-time predictions", "low-latency endpoint", "online inference"' },
+                    { type: 'Serverless Inference', traffic: 'Intermittent or unpredictable — traffic spikes then silence', cost: 'Pay only for compute used during requests (scales to zero)', trigger: '"Minimize cost", "unpredictable traffic", "no idle server cost"' },
+                    { type: 'Batch Transform', traffic: 'Large offline dataset — not real-time', cost: 'Pay for temporary fleet only during job run', trigger: '"Millions of records overnight", "batch scoring", "no live endpoint needed"' },
+                    { type: 'Async Inference', traffic: 'Large payloads or long inference time (up to 1 hour)', cost: 'Pay for instance uptime + queue', trigger: '"Large input payload", "video processing", "document analysis with long wait"' },
+                  ].map((r, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', padding: '9px 14px', borderTop: '1px solid #f3f4f6', background: i % 2 === 0 ? '#fff' : '#f0fdf4', gap: '8px', alignItems: 'start' }}>
+                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#15803d' }}>{r.type}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#374151' }}>{r.traffic}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#374151' }}>{r.cost}</span>
+                      <span style={{ fontSize: '0.73rem', color: '#6b7280', fontStyle: 'italic' }}>{r.trigger}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Amazon Q Business vs Developer */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#fffbeb', borderBottom: '1px solid #fde68a' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#92400e', margin: 0 }}>🆚 Amazon Q Business vs Amazon Q Developer — Know the Difference</h4>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr 1fr', background: '#f9fafb', padding: '8px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#374151', gap: '8px', borderBottom: '1px solid #e5e7eb' }}>
+                    {['Attribute', 'Q Business', 'Q Developer'].map(h => <span key={h}>{h}</span>)}
+                  </div>
+                  {[
+                    { attr: 'Audience', biz: 'Business users and employees', dev: 'Software developers' },
+                    { attr: 'Primary use case', biz: 'Ask questions about company data — HR policies, sales docs, internal wikis', dev: 'Write code, scan for vulnerabilities, generate tests, upgrade legacy code' },
+                    { attr: 'Data sources', biz: 'S3, SharePoint, Salesforce, Slack, Confluence, 40+ connectors', dev: 'IDE (VS Code, JetBrains), CLI, AWS Console' },
+                    { attr: 'Key differentiator', biz: 'Respects existing access controls — if user can\'t see doc in source system, Q won\'t show it', dev: 'Security scans for OWASP Top 10 vulnerabilities with one-click remediation' },
+                    { attr: 'Killer feature', biz: 'Role-based access control on AI answers', dev: 'Code Transformation Agent — auto-upgrades Java 8 → 17' },
+                    { attr: 'Formerly known as', biz: 'N/A (new product)', dev: 'Amazon CodeWhisperer' },
+                    { attr: 'Exam trigger', biz: '"Employee self-service", "internal chatbot", "enterprise knowledge base"', dev: '"AI coding assistant", "code security scan", "legacy code upgrade"' },
+                  ].map((r, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '160px 1fr 1fr', padding: '8px 14px', borderTop: '1px solid #f3f4f6', background: i % 2 === 0 ? '#fff' : '#fffbeb', gap: '8px', alignItems: 'start' }}>
+                      <span style={{ fontSize: '0.77rem', fontWeight: 700, color: '#92400e' }}>{r.attr}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#374151' }}>{r.biz}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#374151' }}>{r.dev}</span>
+                    </div>
+                  ))}
+                </div>
+
               </div>
             </div>
 

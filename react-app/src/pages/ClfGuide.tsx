@@ -75,6 +75,16 @@ const MATRIX: MatrixRow[] = [
   { requirement: 'Fastest 24/7 AWS support with dedicated TAM', solution: 'Enterprise Support (or Enterprise On-Ramp)', why: 'Enterprise: <15 min critical response, dedicated Technical Account Manager. Enterprise On-Ramp: pool of TAMs, <30 min critical.' },
   { requirement: 'Business-hours support for production issues', solution: 'Business Support Plan', why: 'Business: 24/7 access, <1 hr critical response, full Trusted Advisor checks, AWS Health API, IEM (paid extra). $100/month minimum.' },
   { requirement: 'Cheapest paid plan with 12-hour business-hours response', solution: 'Developer Support Plan', why: 'Developer: business hours only, 1 primary contact, <12 hr general response. Good for testing and development environments.' },
+  // ── Compliance & IaC ──
+  { requirement: 'Download AWS compliance reports for auditors (SOC, PCI DSS, ISO)', solution: 'AWS Artifact', why: 'Self-service portal for AWS security and compliance documents. Instantly download SOC 2 Type II, PCI DSS, ISO 27001 certifications — no AWS contact required. Free.' },
+  { requirement: 'Deploy infrastructure as code / reproduce environments from templates', solution: 'AWS CloudFormation', why: 'Define all AWS resources in JSON or YAML. CloudFormation provisions them in order, handles dependencies, and supports drift detection. Repeatable, version-controlled infra.' },
+  { requirement: 'Migrate a database to AWS with minimal downtime', solution: 'AWS Database Migration Service (DMS)', why: 'Source DB stays fully operational during migration. Supports homogeneous (MySQL→MySQL) and heterogeneous (Oracle→Aurora) migrations. Continuous replication until cutover.' },
+  // ── Networking ──
+  { requirement: 'Fast encrypted tunnel to AWS over the internet (cheaper, quick setup)', solution: 'AWS Site-to-Site VPN', why: 'IPsec encrypted tunnel over public internet. Sets up in minutes. Lower cost than Direct Connect. Less consistent bandwidth — not for latency-sensitive or high-throughput workloads.' },
+  // ── Database ──
+  { requirement: 'High-performance MySQL / PostgreSQL-compatible cloud-native relational database', solution: 'Amazon Aurora', why: 'AWS cloud-native relational DB inside RDS. Up to 5× MySQL throughput, 3× PostgreSQL. Fully managed, auto-scales storage. Multi-AZ built-in. Exam keyword: "cloud-optimized relational DB."' },
+  // ── Cost Management ──
+  { requirement: 'Most detailed raw cost breakdown / line-item billing data sent to S3', solution: 'AWS Cost and Usage Report (CUR)', why: 'Hourly line-item cost report delivered to an S3 bucket you choose. Most granular billing data on AWS. Integrate with Athena or QuickSight for BI analysis. Distinct from Cost Explorer (visual/analytical).' },
 ]
 
 // ─── EXAM TRAPS ───────────────────────────────────────────────────────────────
@@ -1524,6 +1534,89 @@ export default function ClfGuide() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            {/* SECURING A NEW ACCOUNT + CONNECTIVITY + COST TRANSFER */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg,#dc2626,#991b1b)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🔐</div>
+                <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Account Security, Connectivity & Cost Traps</h3>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+                {/* Securing a New Account */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#991b1b', margin: 0 }}>🔑 Securing a New AWS Account — First 4 Steps</h4>
+                  </div>
+                  {[
+                    { step: '1. Lock the root user', detail: 'Enable MFA on the root account immediately. Do NOT create access keys for root. Only use it for the few tasks that require it (e.g., changing support plan, closing account).' },
+                    { step: '2. Create an IAM admin user', detail: 'Create a named IAM user and attach the AdministratorAccess policy. Use this user for all day-to-day administration — never the root account.' },
+                    { step: '3. Create an IAM group for admins', detail: 'Create an "Administrators" IAM group, attach AdministratorAccess, and add the new IAM admin user to it. Manage permissions at the group level, not per user.' },
+                    { step: '4. Enable AWS CloudTrail', detail: 'Turn on CloudTrail to log every API call: who, what, when, from where. This is a non-negotiable security baseline. Required for compliance, forensics, and change tracking.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', padding: '10px 16px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'flex-start' }}>
+                      <span style={{ background: '#dc2626', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.72rem', flexShrink: 0 }}>{i + 1}</span>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#111827', marginBottom: '2px' }}>{s.step}</div>
+                        <div style={{ fontSize: '0.78rem', color: '#6b7280', lineHeight: 1.55 }}>{s.detail}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Direct Connect vs VPN */}
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                  <div style={{ padding: '10px 16px', background: '#f0f9ff', borderBottom: '1px solid #bae6fd' }}>
+                    <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#075985', margin: 0 }}>🌐 AWS Direct Connect vs Site-to-Site VPN</h4>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', background: '#f9fafb', padding: '8px 14px', fontSize: '0.72rem', fontWeight: 700, color: '#374151', gap: '8px', borderBottom: '1px solid #e5e7eb' }}>
+                    {['Attribute', 'Direct Connect', 'Site-to-Site VPN'].map(h => <span key={h}>{h}</span>)}
+                  </div>
+                  {[
+                    { attr: 'Connection type', dc: 'Dedicated private fiber link', vpn: 'Encrypted tunnel over public internet' },
+                    { attr: 'Setup time', dc: 'Weeks to months', vpn: 'Minutes' },
+                    { attr: 'Bandwidth', dc: '1 Gbps to 100 Gbps', vpn: 'Up to ~1.25 Gbps' },
+                    { attr: 'Consistency', dc: 'Predictable, low latency', vpn: 'Variable (internet-dependent)' },
+                    { attr: 'Cost', dc: 'Higher (port + data transfer)', vpn: 'Lower' },
+                    { attr: 'Encryption', dc: 'Not encrypted by default (add MACsec)', vpn: 'IPsec encrypted always' },
+                    { attr: 'Exam keyword', dc: '"Consistent throughput", "private", "dedicated"', vpn: '"Quick setup", "cheaper", "encrypted over internet"' },
+                  ].map((r, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', padding: '8px 14px', borderTop: '1px solid #f3f4f6', background: i % 2 === 0 ? '#fff' : '#f0f9ff', gap: '8px', alignItems: 'start' }}>
+                      <span style={{ fontSize: '0.77rem', fontWeight: 700, color: '#374151' }}>{r.attr}</span>
+                      <span style={{ fontSize: '0.76rem', color: '#075985' }}>{r.dc}</span>
+                      <span style={{ fontSize: '0.76rem', color: '#5b21b6' }}>{r.vpn}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Data Transfer Pricing */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                  {[
+                    { dir: '⬇️ Data IN to AWS', rule: 'Always FREE', detail: 'Uploading files, backups, migrations — AWS never charges for inbound data transfer.', color: '#059669', bg: '#ecfdf5', border: '#bbf7d0' },
+                    { dir: '⬆️ Data OUT to Internet', rule: 'Metered & billed', detail: 'Downloads, API responses to users, CDN origin pulls — all charged per GB. Use CloudFront to reduce costs.', color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
+                    { dir: '↔️ Between AWS Regions', rule: 'Metered & billed', detail: 'Cross-region replication, Global Accelerator traffic — charged at inter-region rates. Within same region between AZs has a small charge too.', color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
+                  ].map((d, i) => (
+                    <div key={i} style={{ background: d.bg, border: `1px solid ${d.border}`, borderRadius: '10px', padding: '1rem' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.82rem', color: d.color, marginBottom: '4px' }}>{d.dir}</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#111827', marginBottom: '6px' }}>{d.rule}</div>
+                      <div style={{ fontSize: '0.76rem', color: '#374151', lineHeight: 1.5 }}>{d.detail}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* AWS Artifact callout */}
+                <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: '10px', padding: '1rem' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#5b21b6', marginBottom: '6px' }}>📜 AWS Artifact — Compliance Report Portal</div>
+                  <div style={{ fontSize: '0.78rem', color: '#374151', lineHeight: 1.6 }}>
+                    <strong>What it is:</strong> A self-service portal where you download AWS security and compliance documents on-demand. Free. No support ticket needed.<br/>
+                    <strong>What you get:</strong> SOC 1, SOC 2, SOC 3 reports · PCI DSS certificates · ISO 27001, ISO 9001, ISO 27017 · HIPAA BAA · FedRAMP docs<br/>
+                    <strong>Exam trigger:</strong> "My auditor needs AWS compliance documentation" → <span style={{ fontWeight: 700, color: '#5b21b6' }}>AWS Artifact</span>. Not Trusted Advisor, not Config, not GuardDuty.
+                  </div>
+                </div>
+
               </div>
             </div>
 
