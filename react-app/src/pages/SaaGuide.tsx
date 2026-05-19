@@ -1525,7 +1525,7 @@ Specialty databases?
                 <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827', margin: 0 }}>Part 3 — Security Architecture</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
                 {/* Layered Defense */}
                 <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
@@ -1550,8 +1550,7 @@ Specialty databases?
                 </div>
 
                 {/* IAM Skeleton + Key Rules */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
                     <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb' }}>
                       <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: 0 }}>📄 IAM Policy Skeleton</h4>
                     </div>
@@ -1653,7 +1652,6 @@ Specialty databases?
                       </div>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
 
