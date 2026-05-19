@@ -460,7 +460,7 @@ const TAB_LIST: { id: Tab; label: string; count: string }[] = [
   { id: 'reference', label: '🔌 Quick Reference',   count: `${PORTS.length} ports` },
   { id: 'strategy',  label: '🏆 Exam Strategy',     count: `${STRATEGY_TIPS.length} tips` },
   { id: 'numbers',   label: '📊 Numbers & Facts',   count: `${CRITICAL_NUMBERS.length}` },
-  { id: 'codex',    label: "🧭 Architect's Codex", count: '' },
+  { id: 'codex',    label: "🧭 Architect's Codex", count: '8' },
 ]
 
 const STORAGE_KEY = 'certiprepai-saa-study-plan'
