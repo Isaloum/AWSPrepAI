@@ -85,6 +85,11 @@ const MATRIX: MatrixRow[] = [
   { requirement: 'High-performance MySQL / PostgreSQL-compatible cloud-native relational database', solution: 'Amazon Aurora', why: 'AWS cloud-native relational DB inside RDS. Up to 5× MySQL throughput, 3× PostgreSQL. Fully managed, auto-scales storage. Multi-AZ built-in. Exam keyword: "cloud-optimized relational DB."' },
   // ── Cost Management ──
   { requirement: 'Most detailed raw cost breakdown / line-item billing data sent to S3', solution: 'AWS Cost and Usage Report (CUR)', why: 'Hourly line-item cost report delivered to an S3 bucket you choose. Most granular billing data on AWS. Integrate with Athena or QuickSight for BI analysis. Distinct from Cost Explorer (visual/analytical).' },
+  { requirement: 'Identify right-sizing opportunities / find over-provisioned EC2 instances', solution: 'AWS Compute Optimizer', why: 'ML-powered recommendations to right-size EC2 instances, Auto Scaling groups, EBS volumes, and Lambda functions. Reduces cost without impacting performance. Different from Trusted Advisor — much deeper analysis.' },
+  // ── Storage ──
+  { requirement: 'Store data with unknown or unpredictable access patterns / auto-tiering', solution: 'S3 Intelligent-Tiering', why: 'Automatically moves objects between frequent, infrequent, and archive tiers based on access patterns. No retrieval fees. Small monthly monitoring fee per object. Best when access patterns are unknown.' },
+  // ── Decoupling ──
+  { requirement: 'Decouple application components / buffer messages between services', solution: 'Amazon SQS (Simple Queue Service)', why: 'Managed message queue. Producer sends messages; consumer reads at its own pace. If consumer fails, messages wait safely — no data loss. The key service for building resilient, loosely coupled architectures.' },
 ]
 
 // ─── EXAM TRAPS ───────────────────────────────────────────────────────────────
@@ -1142,6 +1147,25 @@ export default function ClfGuide() {
                   ))}
                 </div>
               </div>
+
+              {/* Cloud Architecture Design Principles */}
+              <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', marginTop: '12px' }}>
+                <div style={{ padding: '12px 16px', background: '#ecfdf5', borderBottom: '1px solid #d1fae5' }}>
+                  <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#064e3b', margin: 0 }}>🏛️ Cloud Architecture Design Principles — Know All 4</h4>
+                </div>
+                {[
+                  { num: '1', principle: 'Design for Failure', desc: 'Assume every component will fail. Build systems that automatically recover. Use Multi-AZ, health checks, and Auto Scaling to eliminate single points of failure.' },
+                  { num: '2', principle: 'Decouple Components', desc: 'Break monolithic apps into loosely coupled services. Use SQS queues between components so a failure in one does not cascade to others.' },
+                  { num: '3', principle: 'Implement Elasticity', desc: 'Automate scaling in response to demand — provision resources when needed and release them when not. Avoid over-provisioning (wasted money) and under-provisioning (outages).' },
+                  { num: '4', principle: 'Think Parallel', desc: 'Avoid serial, sequential processing. Distribute workloads across multiple parallel resources to increase throughput and reduce latency.' },
+                ].map((p, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '28px 140px 1fr', gap: '10px', padding: '9px 16px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fafafa', alignItems: 'start' }}>
+                    <span style={{ width: '22px', height: '22px', background: '#059669', color: '#fff', borderRadius: '50%', fontWeight: 800, fontSize: '0.72rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{p.num}</span>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#065f46' }}>{p.principle}</span>
+                    <span style={{ fontSize: '0.77rem', color: '#374151', lineHeight: 1.5 }}>{p.desc}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* SECTION 2 — GLOBAL INFRASTRUCTURE */}
@@ -1273,7 +1297,8 @@ export default function ClfGuide() {
                     { svc: 'RDS', desc: 'Managed relational DBs (MySQL, PostgreSQL, Oracle, SQL Server). Multi-AZ = HA. Read Replicas = read scale.' },
                     { svc: 'Aurora', desc: 'AWS-native relational DB. 5× MySQL performance. Auto-scales. Compatible with MySQL/PostgreSQL.' },
                     { svc: 'DynamoDB', desc: 'NoSQL key-value. Single-digit ms latency. Serverless. Global Tables for multi-region.' },
-                    { svc: 'ElastiCache', desc: 'In-memory cache (Redis/Memcached). Sub-millisecond. Reduces DB load.' },
+                    { svc: 'DAX', desc: 'DynamoDB Accelerator. In-memory cache for DynamoDB. Microsecond latency. Drop-in compatible — no app code changes.' },
+                    { svc: 'ElastiCache', desc: 'In-memory cache (Redis/Memcached). Sub-millisecond. Reduces DB load for relational databases.' },
                   ].map((s, i) => (
                     <div key={i} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: '8px', padding: '8px 14px', borderTop: i > 0 ? '1px solid #f3f4f6' : 'none', background: i % 2 === 0 ? '#fff' : '#fdf4ff', alignItems: 'start' }}>
                       <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#7c3aed', fontFamily: 'monospace' }}>{s.svc}</span>
