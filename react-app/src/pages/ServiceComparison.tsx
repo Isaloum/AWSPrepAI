@@ -720,8 +720,13 @@ export default function ServiceComparison() {
         <p style={{ color: '#64748b', fontSize: '0.95rem', maxWidth: '520px', margin: '0 auto 0.75rem' }}>
           {totalPairs} side-by-side comparisons across {activeData.length} groups — the most-tested "X vs Y" questions on the {cert === 'saa' ? 'SAA-C03' : 'AIF-C01'} exam.
         </p>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '999px', padding: '4px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#4ade80', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '999px', padding: '4px 14px', fontSize: '0.75rem', fontWeight: 700, color: '#4ade80', marginBottom: '0.75rem' }}>
           ✅ Derived from AWS official documentation and exam guide objectives
+        </div>
+        <div style={{ marginBottom: '1.25rem' }}>
+          <a href="/comparisons" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.25)', borderRadius: '999px', padding: '5px 14px', fontSize: '0.75rem', fontWeight: 600, color: '#93c5fd', textDecoration: 'none' }}>
+            📊 Looking for exam frequency data? → AWS Service Comparisons by Cert
+          </a>
         </div>
 
         {/* Cert Switcher */}

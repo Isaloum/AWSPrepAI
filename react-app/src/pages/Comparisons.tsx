@@ -431,9 +431,14 @@ export default function Comparisons() {
         <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#f8fafc', marginBottom: '0.5rem' }}>
           Service Comparisons
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.95rem', maxWidth: '540px', margin: '0 auto 1.5rem' }}>
+        <p style={{ color: '#64748b', fontSize: '0.95rem', maxWidth: '540px', margin: '0 auto 0.75rem' }}>
           The most-tested "X vs Y" comparisons across 12 AWS certifications — derived from AWS official documentation, exam guide objectives, and AWS whitepapers.
         </p>
+        <div style={{ marginBottom: '1.25rem' }}>
+          <a href="/service-comparison" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.25)', borderRadius: '999px', padding: '5px 14px', fontSize: '0.75rem', fontWeight: 600, color: '#93c5fd', textDecoration: 'none' }}>
+            ⚖️ Looking for side-by-side X vs Y breakdowns? → Service Comparison Guide
+          </a>
+        </div>
         {/* Tag filter */}
         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           {tags.map(tag => (
