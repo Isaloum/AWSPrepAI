@@ -1492,7 +1492,7 @@ Specialty databases?
                     <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.88rem' }}>⚡ LAMBDA@EDGE — Which trigger?</span>
                   </div>
                   <div style={{ padding: '1rem', background: '#f9fafb' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px', marginBottom: '10px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '10px' }}>
                       {[
                         { stage: 'Viewer Request', arrow: '→ CF', when: 'Before CloudFront checks cache', use: 'A/B test routing, auth header injection, device detection, URL rewrite before cache lookup', color: '#1d4ed8' },
                         { stage: 'Origin Request', arrow: 'CF →', when: 'After cache miss, before forwarding to origin', use: 'Rewrite origin URL, add headers to origin request, collapse cache keys, fetch from different origins', color: '#7c3aed' },
