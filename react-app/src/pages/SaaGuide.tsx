@@ -1704,7 +1704,7 @@ Specialty databases?
               {/* HA Checklist */}
               <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.25rem' }}>
                 <h4 style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827', margin: '0 0 1rem' }}>✅ HA Architecture Checklist</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                   {[
                     { check: 'Load Balancer spans ≥ 2 AZs', detail: 'ALB / NLB with cross-zone enabled' },
                     { check: 'Auto Scaling Group across ≥ 2 AZs', detail: 'Minimum capacity > 0 in each AZ' },
