@@ -119,7 +119,7 @@ export default function Home() {
               🏗️ SAA-C03 · ☁️ CLF-C02 · 🤖 AIF-C01 — Plus 9 more AWS certs
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: '1.25rem' }}>
-              The sharpest prep for<br />
+              The sharpest prep for <br />
               <span style={{ color: '#60a5fa' }}>SAA-C03, CLF-C02 & AI Practitioner.</span>
             </h1>
             <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: 1.75, marginBottom: '2rem', maxWidth: '460px' }}>

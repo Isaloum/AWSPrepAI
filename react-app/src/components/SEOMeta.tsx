@@ -148,6 +148,14 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
     title: 'Payment Successful | CertiPrepAI',
     description: 'Your CertiPrepAI plan is now active. Start practicing for your AWS certification today.',
   },
+  '/sample-questions': {
+    title: 'Free AWS Certification Sample Questions | CertiPrepAI',
+    description: 'Try 20 free AWS certification practice questions covering SAA-C03, CLF-C02, and AIF-C01. No account required.',
+  },
+  '/clf-guide': {
+    title: 'CLF-C02 Complete Study Guide — Decision Matrix, Traps & Deep Dives | CertiPrepAI',
+    description: 'The complete CLF-C02 encyclopedia: decision matrix, exam traps, 10 deep dives, 14-day study plan, and exam strategy for the AWS Cloud Practitioner exam.',
+  },
 }
 
 // ── JSON-LD structured data ──────────────────────────────────────
@@ -221,10 +229,14 @@ export default function SEOMeta({ title, description, canonical }: SEOProps) {
     setMeta('og:type', 'website', 'property')
     setMeta('og:site_name', 'CertiPrepAI', 'property')
 
+    // Open Graph image
+    setMeta('og:image', 'https://certiprepai.com/og-image.svg', 'property')
+
     // Twitter
     setMeta('twitter:card', 'summary_large_image')
     setMeta('twitter:title', t)
     setMeta('twitter:description', d)
+    setMeta('twitter:image', 'https://certiprepai.com/og-image.svg')
 
     // Canonical
     let canon = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
